@@ -333,3 +333,61 @@ Stage Summary:
 - Status: code-level correctness revision complete and tested; live runs remain
   BLOCKED_BY_ENVIRONMENT until a machine supplies the game image, BIOS and
   core (env_probe.py is the deterministic check). No mission clear is claimed.
+
+---
+Task ID: 9 (v0.7)
+Agent: main (Z.ai)
+Task: MASTER MISSION round 2 — verify the active policy path against the
+v0.6 source, fix confirmed defects, add offline regression tests, and
+verify the emulator layer with real artifacts supplied by the owner.
+
+Work Log:
+- Cloned the repo at f02a9e8 (v0.6, clean tree) and re-read the full active
+  path: run_mission1_legit.py -> RobustLegitPolicy.decide() -> execute() ->
+  LibretroCore.run_frame()/set_buttons(); also run_semantic2.py, loop.py,
+  policy.py (SemanticPolicy), mission.py, events.py, progress.py,
+  perception.py, report_validate.py, profiles/SLUS-01212 JSON
+- CONFIRMED defect A (frame/chunk quantization): fc advanced once per chunk
+  while (fc % 300) == 30 and (fc % 900) % 75 == 0 were evaluated per frame,
+  so a chunk landing on the residue pressed A on all 60 frames (grenade
+  dump). CONFIRMED defect B: decide() accepted timer/zone/churn and never
+  used them. CONFIRMED defect C: stall counts 60-frame chunks, so
+  stall > 60 is 3,660 frames; cross-path inconsistency with
+  run_semantic2.py which passes stall in frames. CONFIRMED defect D: no
+  recovery path without a VERIFIED bombs counter (wedge-forever risk).
+  Report defect: frames == chunks*60 ignored ~95-frame keepalive probes
+  every 3rd chunk (report vs p.t disagreement)
+- v0.7 fixes in run_mission1_legit.py: global per-frame frame index;
+  scheduled actions as pure predicates (timeline invariant to chunk
+  partitioning); 4-frame grenade press windows counted once; signature
+  reduced to (chunk, stall_chunks, bombs, bombs_verified); stall units
+  explicit via named constants STALL_SHRED_AFTER_CHUNKS (60) and
+  STALL_PAUSE_AFTER_CHUNKS (30); bounded UNSTICK window (30 f LEFT+Y,
+  13 f LEFT+B hop) every 900 f while stalled without verified bombs;
+  report records frames (actual p.t delta) vs frames_nominal vs
+  overhead_frames
+- New tests/test_policy_frames.py (14 UNIT tests, fully offline): chunk
+  invariance for sizes 1/13/30/59/60/61/120 in four regimes, grenade
+  cadence + press length + counting, shred boundary (60 vs 61 chunks),
+  unstick coverage, no-grenade-without-verification, burst continuity,
+  signature contract, segment budget coverage
+- Environment: downloaded mednafen_psx_libretro.so (Beetle PSX 0.9.44.1,
+  libretro buildbot nightly, linux x86_64) and verified it through the
+  real host with new scripts/emulator_smoke.py -> EMULATOR_SMOKE PASS
+  (retro_init ok, env wiring ok). Extracted the core's own embedded BIOS
+  table: ONLY scph5500/5501/5502/5503/5552/7003 (+openbios/psxonpsp) are
+  accepted -> the owner-supplied SCPH-1001/7502 images cannot boot this
+  core by design. Owner-supplied Metal Slug X download URL is
+  geo-gated (HTTP 503 'internal IP only' page) from this sandbox
+- env_probe.py verdict on the current machine: python deps OK, core OK,
+  workspace OK; missing exactly: game_image (.cue, SLUS-01212) and BIOS
+  scph5501.bin (MD5 490f666e1afb15b7362b406ed1cea246). No live run
+  attempted beyond smoke; nothing fabricated
+- Test suite: 75 passed (61 prior Level-A + 14 new), 0.44 s
+- All README/docs/worklog content in this commit is English-only
+
+Stage Summary:
+- Live gameplay still NOT achieved and NOT claimed: BLOCKED_BY_ENVIRONMENT
+  on exactly two files (disc image + scph5501.bin). The emulator layer
+  itself is now verified on this machine (was previously untested here),
+  and the active policy timeline is proven chunk-invariant offline

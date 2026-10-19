@@ -88,6 +88,30 @@ The report self-consistency validator (`agent/report_validate.py`) **fails on th
 original v0.5 report** (that is a unit test) and the new runner refuses to write
 a report that does not pass it.
 
+## v0.7 — frame-scheduled policy + verified emulator smoke
+
+A source-grounded re-inspection of the *active* Mission-1 execution path
+(`run_mission1_legit.py` → `RobustLegitPolicy.decide()` → `execute()` →
+`LibretroCore.run_frame()`) confirmed four more defects and fixed them
+(`tests/test_policy_frames.py`, 14 new unit tests — all offline):
+
+| # | Defect in v0.6 | Root cause | v0.7 fix |
+|---|---|---|---|
+| 1 | A chunk aligned with the grenade phase pressed **A on all 60 frames** (up to `bombs` grenades dumped in one chunk) | `fc` advanced once per chunk while `(fc % 300) == 30` / `(fc % 900) % 75 == 0` were evaluated inside the per-frame loop | global frame index advances per frame; scheduled actions are pure predicates over it → the button timeline is **invariant to chunk partitioning** (tested for sizes 1, 13, 30, 59, 60, 61, 120) |
+| 2 | `decide()` accepted `timer`, `zone`, `churn` and never used them (dead ZONE mode) | signature grew without validation | signature reduced to `decide(chunk, stall_chunks, bombs, bombs_verified)`; the contract is unit-tested |
+| 3 | `stall > 60` meant **3,660 frames** (stall counts chunks of 60), not 60 | unit ambiguity | units explicit: `stall_chunks` + named thresholds (`STALL_SHRED_AFTER_CHUNKS`, `STALL_PAUSE_AFTER_CHUNKS`); boundary tests pin the exact engagement point |
+| 4 | a blocked walker with an **unverified** bombs counter had no recovery path at all (shred required verification) | bounded tactical behavior missing | deterministic UNSTICK window (30 f step-back LEFT + 13 f hop, every 900 f while stalled) — tested |
+| 5 | report claimed `frames == chunks * 60` while keepalive/recovery probes ran ~95 extra frames every 3rd chunk | report-vs-telemetry disagreement | report now records `frames` (actual `p.t` delta), `frames_nominal` and `overhead_frames` separately |
+
+New evidence artifact: `scripts/emulator_smoke.py` (EMULATOR_SMOKE tier) —
+loads the real libretro core through the real ctypes host and extracts the
+core's own embedded BIOS table. On the current dev sandbox it proves:
+`Beetle PSX 0.9.44.1` loads and `retro_init()` runs, and **this core build only
+accepts SCPH-55xx/7003 BIOS revisions** — an SCPH-1001 image is rejected by
+design. The remaining blockers for a real run are exactly two files
+(`env_probe.py` prints them): the disc image and `scph5501.bin`
+(MD5 `490f666e1afb15b7362b406ed1cea246`).
+
 ## Source-of-truth table (live status of every claim)
 
 | Claim | Evidence today | Status |
@@ -129,6 +153,11 @@ PS-X EXE from the .bin, `static_re.py` disassembles it with capstone and builds 
 - **v0.6**: correctness revision — the six defects above fixed with 61 unit tests;
   no new live run yet (the current sandbox has no game image / BIOS / core —
   see *Run it* below for the deterministic environment check).
+- **v0.7**: frame-scheduled policy (chunk-invariant timelines, explicit stall
+  units, unstick recovery, honest frame accounting) + 75 unit tests green +
+  first EMULATOR_SMOKE evidence on the current sandbox (core loads; accepted
+  BIOS revisions extracted from the core binary itself). Live run still
+  blocked on the two copyrighted artifacts.
 - **v0.4** (GS-assist session): 27,000 frames @ 215 fps, 25 × +100 score events,
   Invincible + Infinite Bombs freeze codes re-anchored after every mission reload.
 

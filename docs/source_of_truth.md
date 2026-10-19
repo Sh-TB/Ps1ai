@@ -28,3 +28,13 @@ verified feature.
 | HotMolts posts | research leads (curiosity, pause usage) | Unverified | public code unavailable | Do not treat as proven |
 | TASVideos (9399M, 8813M) | legal input sequences / timing | Depends on exact game version | TAS versions/platform not confirmed to match PSX SLUS-01212 | Reject for RAM addresses; inputs only after version check |
 | gamehacking.org /game/89284 | published GS code table for SLUS-01212 | Yes, as seeds | addresses verified live (static cluster) or re-derived per boot (dynamic cluster) | Reused as watch-list seeds, never blindly trusted |
+
+## v0.7 additions (frame-scheduled policy + emulator smoke)
+
+| Claim | Source file/function | Current evidence | Status | Next verification |
+|---|---|---|---|---|
+| Policy button timeline is chunk-invariant | `run_mission1_legit.py` `RobustLegitPolicy` (v0.7) | 14 unit tests incl. identical timelines for chunk sizes 1/13/30/59/60/61/120 (`tests/test_policy_frames.py`) | TESTED (UNIT) | EMULATOR_SMOKE + REAL_GAME_SEGMENT once content is present |
+| Grenade presses are frame-exact (4-frame window, 1 per 300 f) | v0.7 scheduler | poison-chunk test: aligned chunk yields 1 press, v0.6 emitted 60 A-frames | TESTED (UNIT) | live grenade-count vs bombs counter delta |
+| stall thresholds are chunk-denominated and named | `STALL_SHRED_AFTER_CHUNKS`, `STALL_PAUSE_AFTER_CHUNKS` | boundary tests: no shred at 60, shred at 61 chunks | TESTED (UNIT) | tune only from measured live stall data |
+| Beetle PSX 0.9.44.1 loads on the current sandbox | `core/host.py` + `scripts/emulator_smoke.py` | EMULATOR_SMOKE PASS: retro_init ok, env wiring ok, embedded BIOS table = SCPH-55xx/7003 only | OBSERVED (this machine) | load_game with real cue + scph5501 |
+| SCPH-1001/7502 BIOS cannot boot this core | core binary's own embedded BIOS names | `strings` + emulator_smoke: no 1001/7502 in the accepted set | VERIFIED (binary evidence) | obtain scph5501.bin (MD5 490f666e…) |

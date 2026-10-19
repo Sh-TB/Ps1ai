@@ -32,9 +32,27 @@ What changed vs v0.5 and WHY (root causes from the v0.5 report audit):
   RC8 configuration     — all paths/limits are CLI/env configurable with
         the original defaults preserved; validated before boot.
 
-Policy (RobustLegitPolicy): unchanged backbone — ALWAYS advance,
-tap-fire rhythm, hop cadence, escalate when stalled — with one honesty
-fix: grenades are only thrown when the bombs counter is VERIFIED > 0.
+Policy (RobustLegitPolicy v0.7) — frame-scheduled backbone. Fixes
+verified against the v0.6 source (mission review §3):
+  A) frame/chunk quantization — v0.6 advanced `fc` once per CHUNK while
+     evaluating (fc % 300) == 30 and (fc % 900) % 75 == 0 inside the
+     per-frame loop, so a scheduled grenade fired on ALL frames of the
+     chunk or none (a chunk landing on the residue dumped up to
+     `bombs` grenades in 60 frames). v0.7 advances the global frame
+     index per FRAME; every scheduled action is a predicate over that
+     index, so the button timeline is invariant to chunk partitioning
+     (tests: chunk sizes 1,13,30,59,60,61,120).
+  B) unused inputs — v0.6 accepted timer/zone/churn and never used
+     them (churn-based ZONE mode was retired in v18). v0.7 signature
+     carries only inputs with validated semantics.
+  C) stall units — v0.6 compared `stall > 60` where stall counted
+     CHUNKS (60 frames each): the real latency was 3,660 frames, not
+     60. Units are now explicit (stall_chunks + named constants).
+  D) stuck-without-bombs recovery — v0.6 had NO recovery path when the
+     bombs counter was unverified (shred required it), so a blocked
+     walker could wedge forever. v0.7 adds a bounded, deterministic
+     UNSTICK window (step-back + hop) on the same cadence as shred.
+Grenades are still only thrown when the bombs counter is VERIFIED > 0.
 """
 import argparse
 import json
@@ -326,77 +344,127 @@ class KillCorrelator:
 
 
 # ====================================================================
-# RobustLegitPolicy — noise-tolerant survival backbone (unchanged core;
-# grenade now requires a VERIFIED bombs counter > 0).
+# RobustLegitPolicy v0.7 — frame-scheduled survival backbone.
+# Scheduled actions are pure predicates over the GLOBAL frame index,
+# so the produced button timeline does not depend on how the frames
+# are partitioned into chunks (mission review §3A).
 # ====================================================================
 FIRE_ON, FIRE_OFF = 8, 6
+GRENADE_PRESS_LEN = 4        # frames a scheduled grenade tap is held
+GRENADE_PERIOD = 300         # normal mode: one grenade every 300 frames
+GRENADE_PHASE = 30           # press begins at fc % period == phase
+SHRED_PERIOD = 900           # stall-escape window period (frames)
+SHRED_LEN = 240              # shred window length (frames)
+SHRED_GRENADE_PERIOD = 75    # grenade cadence inside a shred window
+UNSTICK_LEN = 45             # no-bombs recovery window (frames)
+UNSTICK_LEFT = 30            # step-back frames inside an unstick window
+UNSTICK_HOP = 13             # hop frames inside an unstick window
+STALL_SHRED_AFTER_CHUNKS = 60    # stall latency before shred (60f chunks)
+STALL_PAUSE_AFTER_CHUNKS = 30    # stall latency before the PAUSE tap
 
 
 class RobustLegitPolicy:
-    """WALK mode: RIGHT + tap-fire + real jumps.
-    ZONE mode (camera locked): find the target side with EXPLOSION
-    feedback — throw a probe grenade left; a churn spike (>12000)
-    proves the blast hit a crowd/vehicle -> SHRED that side. No spike
-    -> probe right. No hits at all -> alternate facing (v6 style).
-    Verifiable, zero tokens, no reliance on noisy entity slots."""
+    """WALK mode: RIGHT + tap-fire + real jumps, scheduled per frame.
 
-    SPIKE = 12000           # churn spike = explosion hit something
+    STALL escape (stall_chunks > STALL_SHRED_AFTER_CHUNKS), recurring
+    every SHRED_PERIOD frames:
+      * bombs VERIFIED > 0 -> SHRED window: walk LEFT with tap-fire and
+        a grenade every SHRED_GRENADE_PERIOD frames (v18 lab winners:
+        F right-fire / C left+grenades / B alternation patterns).
+      * otherwise -> UNSTICK window: UNSTICK_LEFT frames of LEFT+Y
+        step-back, UNSTICK_HOP frames of LEFT+B hop, then resume — a
+        blocked walker without verified bombs can no longer wedge
+        forever (mission review §3D, bounded and deterministic).
+
+    Inputs (units explicit; all others removed vs v0.6):
+      chunk          -- frames to plan (int >= 1)
+      stall_chunks   -- consecutive stalled 60-frame chunks (int >= 0)
+      bombs          -- bombs counter reading; advisory unless verified
+                        (None-like values are treated as 0)
+      bombs_verified -- True iff PerceptionGuard verified the bombs role
+    """
 
     def __init__(self):
+        self.fc = 0               # GLOBAL frame index (advances each frame)
         self.burst = 0
         self.hop_cd = 150
         self.hop_hold = 0
-        self.fc = 0               # global frame counter (input rhythm)
+        self.press = 0            # remaining frames of a grenade tap
         self.stats = defaultdict(int)
 
-    def decide(self, chunk, stall, bombs, timer, zone, churn,
-               bombs_verified=False):
-        """v18 — evidence-gated grenades. Evidence: the lab winners were
-        plain input patterns (F: right-fire 9s, C: left+grenades 1-2s, B:
-        alternation 9s) and the diag bot (walk+fire+rare jumps) crossed
-        canyon+market+village in 15s. Churn-based zone detection misfires
-        on normal fights (fights churn 1000-2400 too). Final policy:
-        ALWAYS walk right + tap-fire + rare jumps + periodic side-
-        alternating grenade ONLY IF bombs counter is VERIFIED and > 0;
-        on a long stall do one left-shred burst."""
-        plan = []
-        self.fc += chunk
-        # long-stall escape: one C-burst (left + grenades), then resume
-        shred = stall > 60 and (self.fc % 900) < 240 and bombs_verified
+    # --- scheduled predicates (pure functions of the global frame) ---
+    def _in_shred(self, stall_chunks, bombs_verified):
+        return (stall_chunks > STALL_SHRED_AFTER_CHUNKS
+                and bombs_verified
+                and (self.fc % SHRED_PERIOD) < SHRED_LEN)
+
+    def _in_unstick(self, stall_chunks, bombs_verified):
+        return (stall_chunks > STALL_SHRED_AFTER_CHUNKS
+                and not bombs_verified
+                and (self.fc % SHRED_PERIOD) < UNSTICK_LEN)
+
+    def decide(self, chunk, stall_chunks=0, bombs=0, bombs_verified=False):
+        """Plan `chunk` frames; return compressed button segments.
+
+        The schedule is a pure function of the global frame index, so
+        any partitioning of the same frame range yields the same
+        button timeline (test_policy_frames covers chunk sizes
+        1, 13, 30, 59, 60, 61, 120)."""
+        bombs = int(bombs or 0)
+        segs = []
+        prev = None
         for _ in range(chunk):
+            shred = self._in_shred(stall_chunks, bombs_verified)
+            unstick = self._in_unstick(stall_chunks, bombs_verified)
+            started = False
             if shred:
+                if self.fc % SHRED_PERIOD == 0:
+                    self.stats["shred_window"] += 1
                 btns = {"LEFT", "Y"}
-                if (self.fc % 900) % 75 == 0 and bombs:
-                    btns.add("A")
-                    self.stats["grenade"] += 1
+                if (self.fc % SHRED_GRENADE_PERIOD == 0
+                        and (self.fc % SHRED_PERIOD) < SHRED_LEN
+                        and bombs):
+                    self.press = GRENADE_PRESS_LEN
+                    started = True
+            elif unstick:
+                u = self.fc % SHRED_PERIOD
+                if u == 0:
+                    self.stats["unstick_window"] += 1
+                if u < UNSTICK_LEFT:
+                    btns = {"LEFT", "Y"}          # step back, keep firing
+                elif u < UNSTICK_LEFT + UNSTICK_HOP:
+                    btns = {"LEFT", "B"}          # hop during step-back
+                else:
+                    btns = {"LEFT"}
             else:
                 btns = {"RIGHT"}
                 self.burst = (self.burst + 1) % (FIRE_ON + FIRE_OFF)
                 if self.burst < FIRE_ON:
                     btns.add("Y")
-                # side-alternating grenade every ~5s (A no-ops when empty)
-                if (self.fc % 300) == 30 and bombs_verified and bombs:
-                    btns.add("A")
+                if (bombs_verified and bombs
+                        and self.fc % GRENADE_PERIOD == GRENADE_PHASE):
+                    self.press = GRENADE_PRESS_LEN
+                    started = True
+                if self.hop_hold > 0:
+                    btns.add("B")                 # hold B = full jump
+                    self.hop_hold -= 1
+                elif self.hop_cd <= 0:
+                    self.hop_hold = 13
+                    self.hop_cd = 200 + 13
+                    self.stats["jump"] += 1
+                else:
+                    self.hop_cd -= 1
+            if self.press > 0:
+                btns.add("A")
+                self.press -= 1
+                if started:
                     self.stats["grenade"] += 1
-                    self.stats["gren_right" if (self.fc // 300) % 2
-                               else "gren_left"] += 1
-            if self.hop_hold > 0:
-                btns.add("B")                # hold B = full jump
-                self.hop_hold -= 1
-            elif self.hop_cd <= 0:
-                self.hop_hold = 13
-                self.hop_cd = 200 + 13
-                self.stats["jump"] += 1
+            self.fc += 1
+            if prev is not None and prev["btns"] == btns:
+                prev["frames"] += 1
             else:
-                self.hop_cd -= 1
-            plan.append(btns)
-        # compress into segments
-        segs = []
-        for b in plan:
-            if segs and segs[-1]["btns"] == b:
-                segs[-1]["frames"] += 1
-            else:
-                segs.append({"frames": 1, "btns": set(b)})
+                prev = {"frames": 1, "btns": btns}
+                segs.append(prev)
         return segs
 
 
@@ -561,6 +629,7 @@ def main(argv=None):
     log("worldmodel:", disc)
 
     # ---- live run -----------------------------------------------------
+    run_t0 = p.t        # v0.7: actual-frame accounting baseline
     p.save_state("m1_start")
     evidence_files.append(png(p, evid, "00_mission_start.png") or
                           "00_mission_start.png")
@@ -578,10 +647,9 @@ def main(argv=None):
     kc = KillCorrelator()
     tel = []
     score_event_log = []
-    stall = 0
+    stall = 0            # unit: CHUNKS of 60 frames (stall_chunks)
     last_cam = None
     last_churn = 0
-    zone = False
     continues = 0
     deaths_seen = []
     prev_lives = guard.read("lives") if l_addr else None
@@ -686,10 +754,12 @@ def main(argv=None):
                 lc.transition("PLAYING", "recovery complete")
                 report.setdefault("continues", []).append(
                     {"chunk": i, "score": tracker.value})
-            elif stall > 30:
+            elif stall > STALL_PAUSE_AFTER_CHUNKS:
                 # PAUSED-DEAD-INPUT detector: pad mirror alive but the
                 # inputs have zero world effect in BOTH directions ->
                 # one START (unpause). Self-corrects if false positive.
+                # stall counts CHUNKS here: the tap fires after 31*60
+                # stalled frames, not 31 (units made explicit in v0.7).
                 s0 = p.mem.snapshot()
                 p.core.run(24, {"LEFT"})
                 cl = int(np.count_nonzero(s0 != p.mem.snapshot()))
@@ -708,10 +778,13 @@ def main(argv=None):
                     policy.hop_cd = max(policy.hop_cd, 60)
 
         # ---- policy + execute (with per-chunk churn measurement) -------
+        # v0.7: decide() receives only inputs with validated semantics
+        # (timer/zone/churn were accepted but unused in v0.6 — removed).
+        # stall is passed with its unit made explicit (stall_chunks).
         bombs = guard.read("bombs")
         timer = guard.read("timer") if t_addr else None
         lives = guard.read("lives") if l_addr else None
-        segs = policy.decide(60, stall, bombs, timer, zone, last_churn,
+        segs = policy.decide(60, stall_chunks=stall, bombs=bombs,
                              bombs_verified=(
                                  guard.verification.get(
                                      "bombs", {}).get("status")
@@ -720,7 +793,6 @@ def main(argv=None):
         execute(p, segs, 60)
         churn = int(np.count_nonzero(s_before != p.mem.snapshot()))
         last_churn = churn
-        zone = churn < 2500  # simple low-churn marker for the policy
 
         # ---- POST-action sampling: events attributed to THIS interval
         frame_end = p.t
@@ -789,7 +861,7 @@ def main(argv=None):
         if i % 5 == 4:
             act = policy.stats
             log(f"[t] i={i} score={score_a} cam={cam_now} "
-                f"churn={last_churn} zone={int(zone)} "
+                f"churn={last_churn} "
                 f"enemies={scene_n} bombs={bombs} timer={timer} "
                 f"lives={lives} stall={stall} "
                 f"act={max(act, key=act.get) if act else '-'}")
@@ -810,10 +882,19 @@ def main(argv=None):
 
     wall = time.time() - t0
     raw_end, score_end = read_score_raw(p.mem)
+    # v0.7 frame accounting: the live run also consumes frames outside
+    # the policy chunks (keepalive probes, recovery taps), so the
+    # report now distinguishes actual emulated frames (p.t delta) from
+    # the nominal chunk schedule ((i+1)*60). The v0.6 report claimed
+    # only the nominal number — a report-vs-telemetry disagreement.
+    frames_actual = p.t - run_t0
+    frames_nominal = (i + 1) * 60
     report["play"] = {
-        "chunks": i + 1, "frames": (i + 1) * 60,
+        "chunks": i + 1, "frames": frames_actual,
+        "frames_nominal": frames_nominal,
+        "overhead_frames": frames_actual - frames_nominal,
         "wall_s": round(wall, 1),
-        "fps": round((i + 1) * 60 / max(wall, 0.1), 1),
+        "fps": round(frames_actual / max(wall, 0.1), 1),
         "score": dict(tracker.to_dict(), raw_end=raw_end.hex()),
         "score_start": int(score0),
         "score_end": int(score_end),
