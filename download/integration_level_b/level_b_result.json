@@ -1,0 +1,47 @@
+{
+ "started": "2026-10-19 19:15:42",
+ "level": "B",
+ "checks": [],
+ "status": "BLOCKED_BY_ENVIRONMENT",
+ "environment": {
+  "ready": false,
+  "missing": [
+   "game_image",
+   "libretro_core",
+   "bios"
+  ],
+  "checks": [
+   {
+    "check": "python:numpy",
+    "ok": true,
+    "detail": "importable"
+   },
+   {
+    "check": "python:PIL",
+    "ok": true,
+    "detail": "importable"
+   },
+   {
+    "check": "game_image",
+    "ok": false,
+    "detail": "not found: /home/z/my-project/ps1-test/emu/games/Metal Slug X (USA).cue \u2014 supply your own SLUS-01212 (copyrighted, never committed)"
+   },
+   {
+    "check": "libretro_core",
+    "ok": false,
+    "detail": "not found: /home/z/my-project/ps1-test/cores/mednafen_psx_libretro.so \u2014 build mednafen_psx_libretro.so from https://github.com/libretro/beetle-psx-libretro"
+   },
+   {
+    "check": "bios",
+    "ok": false,
+    "detail": "no scph5501.bin/scph5500.bin/scph5502.bin in /home/z/my-project/ps1-test/emu/system \u2014 SCPH-5501 required for SLUS-01212 (copyrighted, never committed)"
+   },
+   {
+    "check": "workspace_writable",
+    "ok": true,
+    "detail": "/home/z/my-project/ps1-test/emu"
+   }
+  ]
+ },
+ "note": "supply the missing artifacts listed in environment.missing; the game image and BIOS are copyrighted and are never committed"
+}

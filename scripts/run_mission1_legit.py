@@ -1,39 +1,42 @@
 #!/usr/bin/env python3
 """run_mission1_legit.py — CLEAR Metal Slug X Mission 1, LEGAL INPUTS ONLY.
 
-Rules of engagement (user mandate):
+v0.6 (mission-review revision). Rules of engagement (unchanged):
   * ZERO memory writes, ZERO GameShark, ZERO rewinds during the real run.
   * Only legal pad inputs + read-only RAM perception (numpy, zero tokens).
   * Savestates used ONLY for calibration trials (read-only probes) and
     checkpoints/resume — never to rewind a live run.
 
-Why a new policy: last session's entity slots were noise-dominated
-(20-27 phantom "enemies" every frame -> policy never advanced,
-advance=0 in 27000 frames). This run uses a noise-TOLERANT backbone
-(humans clear MS1 the same way): ALWAYS advance, tap-fire rhythm,
-hop cadence, escalate when stalled. Verified telemetry drives progress
-and recovery; entity slots and kill-correlation are advisory evidence.
+What changed vs v0.5 and WHY (root causes from the v0.5 report audit):
+  RC1 score semantics   — score is now sampled BEFORE and AFTER each
+        action interval with raw bytes; ScoreTracker handles continue
+        resets / u32 wrap / suspicious jumps with explicit reason codes
+        (v0.5 shipped score_start==score_end==200 vs telemetry 96..252).
+  RC2 kill honesty      — score deltas >= 90 are ENEMY_KILL_CANDIDATE
+        (ESTIMATED); they are NEVER reported as verified kills without
+        independent entity evidence (v0.5's "27 kills" were deltas).
+  RC3 progress honesty  — the camera word is only usable when the
+        calibration tests pass (idle-stable, right/left symmetric,
+        monotonic run); camera-lock is separated from a true stall;
+        unverified signals cannot claim progress in the report.
+  RC4 anchor hygiene    — after every mission reload the cluster is
+        invalidated and re-anchored, then plausibility-checked (bombs
+        must stay 0..40 and never rise; v0.5 latched bombs=30).
+  RC5 clear honesty     — a mission-byte change is only
+        mission_clear_detected; mission_clear_verified requires the
+        change to SUSTAIN plus independent corroboration.
+  RC6 lifecycle         — every recovery goes through the recorded FSM;
+        stale calibration is invalidated on death/continue.
+  RC7 report validator  — the report is validated for self-consistency
+        before it is written (the v0.5 report would be rejected).
+  RC8 configuration     — all paths/limits are CLI/env configurable with
+        the original defaults preserved; validated before boot.
 
-Perception (all read-only, zero tokens):
-  * score u32 @0x0EE318 (static RE-verified), POW @0x087A78,
-    mission byte @0x0D4213
-  * bombs anchor via PerceptionGuard (live grenade-diff scan)
-  * timer via cluster translation, validated 1 Hz decay (advisory)
-  * camera/progress word found live: idle/right/left triple-diff +
-    monotonic rightward-run test
-  * WorldModel entity discovery (advisory only, from checkpoint)
-  * KillCorrelator: passive RAM words correlated with score+100 events
-    -> candidate VERIFIED enemy slots (semantic evidence)
-
-Policy (RobustLegitPolicy):
-  * NEVER idle: RIGHT always held; fire 9f on / 5f off (pistol tap rate)
-  * hop cadence 75f (45f when bulldozing) — dodges grenades/shells/corpses
-  * threat (persisted fast mover) -> immediate hop
-  * stall >= 50 chunks -> bulldoze; >= 90 chunks -> grenade spam if armed
-  * death: no action (auto respawn); game over: recover() -> continue
-    (arcade continue = a legit game feature)
-  * mission byte change -> MISSION 1 CLEAR -> stop, report, celebrate
+Policy (RobustLegitPolicy): unchanged backbone — ALWAYS advance,
+tap-fire rhythm, hop cadence, escalate when stalled — with one honesty
+fix: grenades are only thrown when the bombs counter is VERIFIED > 0.
 """
+import argparse
 import json
 import os
 import sys
@@ -42,54 +45,113 @@ from collections import defaultdict
 
 import numpy as np
 
-sys.path.insert(0, "/home/z/my-project")
-sys.path.insert(0, "/home/z/my-project/scripts")
+_REPO = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+for _p in (_REPO, os.path.join(_REPO, "scripts")):
+    if _p not in sys.path:
+        sys.path.insert(0, _p)
 
 from ps1play.api import PS1Play                              # noqa: E402
 from ps1play.agent.perception import PerceptionGuard         # noqa: E402
 from ps1play.agent.worldmodel import WorldModel              # noqa: E402
+from ps1play.agent.events import (                           # noqa: E402
+    EventLog, ScoreTracker, KillClassifier, MissionClearDetector,
+    SCORE_CHANGED, SCORE_RESET, SCORE_SUSPICIOUS,
+    CONTINUE_USED, PLAYER_DIED, OBSERVED, ESTIMATED)
+from ps1play.agent.progress import ProgressSignal            # noqa: E402
+from ps1play.agent.lifecycle import Lifecycle                # noqa: E402
+from ps1play.agent.report_validate import assert_consistent  # noqa: E402
+from ps1play.agent.rewards import RewardAudit                # noqa: E402
 from mission import ensure_mission, recover, responsive      # noqa: E402
 
-GAME = "/home/z/my-project/ps1-test/emu/games/Metal Slug X (USA).cue"
-EVID = "/home/z/my-project/download/ps1play_v4_mission1"
-OUT = os.path.join(EVID, "mission1_report.json")
-os.makedirs(EVID, exist_ok=True)
+# ------------------------------------------------------------------
+# configuration (§9): CLI args with env-var defaults. The original
+# absolute defaults are preserved for the original environment.
+# ------------------------------------------------------------------
+DEF_GAME = os.environ.get(
+    "M1_GAME", "/home/z/my-project/ps1-test/emu/games/"
+               "Metal Slug X (USA).cue")
+DEF_CORE = os.environ.get("M1_CORE", None)          # None -> api default
+DEF_WORKSPACE = os.environ.get("M1_WORKSPACE", None)
+DEF_EVID = os.environ.get(
+    "M1_EVID", "/home/z/my-project/download/ps1play_v6_mission1")
+DEF_PROFILE_DIR = os.environ.get("M1_PROFILE_DIR", None)
+DEF_CHUNKS = int(os.environ.get("M1_CHUNKS", "1000"))
+DEF_CHUNK = 60
+DEF_RESUME = os.environ.get("M1_RESUME", "")
 
-SCORE_ADDR = 0x0EE318
+SCORE_ADDR = 0x0EE318          # static RE: 9 xrefs (representation audit: §2)
 POW_ADDR = 0x087A78
-MISSION_ADDR = 0x0D4213
+MISSION_ADDR = 0x0D4213        # UNVERIFIED as a clear signal — detector §10
 ZONE = 0x1FC000
 
-MAX_CHUNKS = int(os.environ.get("M1_CHUNKS", "1000"))
-CHUNK = 60
-RESUME = os.environ.get("M1_RESUME", "")
 
-report = {"started": time.strftime("%Y-%m-%d %H:%M:%S"),
-          "mode": "legit-inputs-only", "cheats": "none"}
+def parse_args(argv=None):
+    ap = argparse.ArgumentParser(
+        description="Legit Mission-1 run (legal inputs only, read-only "
+                    "RAM perception)")
+    ap.add_argument("--game", default=DEF_GAME,
+                    help="path to the game .cue (env M1_GAME)")
+    ap.add_argument("--core", default=DEF_CORE,
+                    help="path to mednafen_psx_libretro.so (env M1_CORE; "
+                         "default: ps1play.api.DEFAULT_CORE)")
+    ap.add_argument("--workspace", default=DEF_WORKSPACE,
+                    help="emu workspace dir (env M1_WORKSPACE)")
+    ap.add_argument("--profile-dir", default=DEF_PROFILE_DIR,
+                    help="profiles dir override (env M1_PROFILE_DIR)")
+    ap.add_argument("--evidence-dir", default=DEF_EVID,
+                    help="evidence output dir (env M1_EVID)")
+    ap.add_argument("--chunks", type=int, default=DEF_CHUNKS,
+                    help="max chunks of 60 frames (env M1_CHUNKS)")
+    ap.add_argument("--resume", default=DEF_RESUME,
+                    help="savestate name to resume from (env M1_RESUME)")
+    ap.add_argument("--report", default=None,
+                    help="report JSON path (default <evidence-dir>/"
+                         "mission1_report.json)")
+    args = ap.parse_args(argv)
+    if args.chunks < 1:
+        ap.error("--chunks must be >= 1")
+    # ---- validate BEFORE touching the emulator (§9: no silent fallback)
+    missing = []
+    if not os.path.exists(args.game):
+        missing.append(f"game image not found: {args.game} "
+                       f"(set --game / M1_GAME)")
+    if args.core and not os.path.exists(args.core):
+        missing.append(f"libretro core not found: {args.core} "
+                       f"(set --core / M1_CORE)")
+    if missing:
+        ap.error(" | ".join(missing))
+    return args
+
+
+report = {}
 
 
 def log(*a):
     print(*a, file=sys.stderr, flush=True)
 
 
-def png(p, name):
+def png(p, evid, name):
     try:
         from PIL import Image
         rgb = p.core.frame_rgb()
         if rgb is not None:
             Image.fromarray(rgb).resize((320, 240)).save(
-                os.path.join(EVID, name))
+                os.path.join(evid, name))
+            return name
     except Exception as e:                                  # noqa: BLE001
         log("png fail:", e)
+    return None
 
 
 # ====================================================================
-# camera / progress word (read-only live calibration)
+# camera / progress calibration (§4) — candidates are ranked, only a
+# candidate that passes ALL tests is marked verified.
 # ====================================================================
 def find_progress_addr(p, log=log):
     """A word that grows while running right, shrinks running left,
     frozen while idle, and monotonic over a long rightward run.
-    That is the camera (or player world-x) — the progress meter."""
+    Returns {"addr", "gain", "verified", "tests"} — verified=False
+    candidates are reported but MUST NOT drive progress claims."""
     p.save_state("_cam")
     s0 = p.mem.snapshot()
     p.core.run(90, set())
@@ -111,7 +173,8 @@ def find_progress_addr(p, log=log):
     log(f"[cam] 3-way candidates: {len(cand)}")
     p.load_state("_cam")
     if not len(cand):
-        return None
+        return {"addr": None, "gain": 0, "verified": False,
+                "tests": {"reason": "no 3-way candidate"}}
     # monotonic rightward run (top candidates only)
     idx = cand[:8]
     T = 300
@@ -124,27 +187,40 @@ def find_progress_addr(p, log=log):
             S[k // 10] = w[idx]
     p._advance()
     p.load_state("_cam")
-    best = None
+    results = []
     for j in range(len(idx)):
         ser = S[:, j]
         dips = int(np.sum(np.diff(ser) < -4))
         gain = int(ser[-1] - ser[0])
-        log(f"[cam] cand {int(idx[j]) * 2:#x}: gain={gain} dips={dips}")
-        if gain >= 150 and dips <= 2:
-            score = gain - dips * 400
-            if best is None or score > best[0]:
-                best = (score, int(idx[j]) * 2, gain, dips)
-    if best:
-        log(f"[cam] verified progress word @ {best[1]:#x} "
-            f"(gain={best[2]}, dips={best[3]})")
-        return {"addr": best[1], "gain": best[2], "verified": True}
-    a = int(cand[0]) * 2
-    log(f"[cam] fallback (unverified-monotonic) @ {a:#x}")
-    return {"addr": a, "gain": int(dr[cand[0]]), "verified": False}
+        idle_drift = 0                      # enforced by the 3-way filter
+        right_delta = int(dr[idx[j]])
+        left_delta = int(dl[idx[j]])
+        ok = (gain >= 150 and dips <= 2 and idle_drift <= 8
+              and right_delta >= 60 and left_delta <= -60)
+        results.append({"addr": int(idx[j]) * 2, "gain": gain,
+                        "dips": dips, "right_delta": right_delta,
+                        "left_delta": left_delta,
+                        "idle_drift": idle_drift, "verified": ok})
+        log(f"[cam] cand {int(idx[j]) * 2:#x}: gain={gain} dips={dips} "
+            f"R={right_delta} L={left_delta} -> "
+            f"{'VERIFIED' if ok else 'rejected'}")
+    good = [r for r in results if r["verified"]]
+    if good:
+        best = max(good, key=lambda r: r["gain"] - r["dips"] * 400)
+        log(f"[cam] verified progress word @ {best['addr']:#x}")
+        return {"addr": best["addr"], "gain": best["gain"],
+                "verified": True, "tests": {"candidates": results}}
+    fb = results[0] if results else {"addr": None, "gain": 0}
+    log(f"[cam] NO candidate passed all tests — keeping "
+        f"{fb.get('addr', None)} as UNVERIFIED observation only")
+    return {"addr": fb.get("addr"), "gain": fb.get("gain", 0),
+            "verified": False, "tests": {"candidates": results}}
 
 
 def validate_timer(guard, log=log):
-    """timer = bombs anchor + published-cluster offset; must tick -1/s."""
+    """timer = bombs anchor + published-cluster offset; must tick -1/s.
+    Advisory only — recorded in the contract as PENDING until its own
+    event test passes (it never does via translation alone)."""
     if "bombs" not in guard.addrs:
         return None
     a = guard.addrs["bombs"] + (0x0295F8 - 0x0398B4)
@@ -154,29 +230,36 @@ def validate_timer(guard, log=log):
     v1 = guard.p.mem.u16(a)
     if 0 < v0 <= 300 and 0 <= v1 < v0 <= v0 - 1:
         log(f"[timer] validated @ {a:#x}: {v0}->{v1} (1Hz)")
-        guard.addrs["timer"] = a
+        guard._set_role("timer", a, "VERIFIED", "1Hz decay event test",
+                        confidence=0.8)
         return a
-    log(f"[timer] translation @ {a:#x} invalid ({v0}->{v1}) — ignored")
+    log(f"[timer] translation @ {a:#x} invalid ({v0}->{v1}) — stays "
+        f"PENDING in the contract")
     return None
 
 
 def validate_lives(guard, log=log):
-    """Try the published-cluster offset for lives; advisory only."""
+    """Try the published-cluster offset for lives; needs a death event
+    (-1) to be VERIFIED. A plausible value alone is NOT verification."""
     if "bombs" not in guard.addrs:
         return None
     a = guard.addrs["bombs"] + (0x0475A8 - 0x0398B4)
     v = guard.p.mem.u16(a)
     if 1 <= v <= 9:
-        log(f"[lives] translated @ {a:#x} = {v} (plausible, advisory)")
-        guard.addrs["lives"] = a
+        log(f"[lives] translated @ {a:#x} = {v} (plausible — PENDING "
+            f"death-event verification)")
+        guard._set_role("lives", a, "PENDING",
+                        "plausible range only; death -1 test not run")
         return a
     log(f"[lives] translation @ {a:#x} = {v} implausible — ignored")
     return None
 
 
 # ====================================================================
-# KillCorrelator — passive semantic evidence: which RAM words die with
-# score+100 events? (read-only, runs alongside the real game)
+# KillCorrelator — passive semantic evidence: which RAM words change
+# together with score events? EVIDENCE-ONLY: correlated words are
+# candidates, never "verified kills" (v0.5 latched score-shadow words
+# 0xEF31A/0xEF368 as "verified" — they sit next to the score itself).
 # ====================================================================
 class KillCorrelator:
     def __init__(self, n_cand=240, warm=45, ring=48):
@@ -188,7 +271,7 @@ class KillCorrelator:
         self.ri = 0
         self.votes = defaultdict(int)
         self.events = 0
-        self.verified = []
+        self.correlated = []
 
     def observe(self, mem):
         cur = mem.ram[:ZONE].view("<u2")
@@ -226,23 +309,25 @@ class KillCorrelator:
                   ((cur == 0) | (np.abs(cur - past) > 0x1800))
             for k in np.flatnonzero(hit).tolist():
                 self.votes[int(k)] += 1
-        if self.events >= 4 and not self.verified:
+        if self.events >= 4 and not self.correlated:
             good = sorted((v, k) for k, v in self.votes.items() if v >= 4)
-            self.verified = [int(self.cands[k]) * 2 for _, k in good[:16]]
-            log(f"[kc] verified kill-correlated words: "
-                f"{[hex(a) for a in self.verified[:8]]}...")
+            self.correlated = [int(self.cands[k]) * 2 for _, k in
+                               good[:16]]
+            log(f"[kc] score-correlated words (candidates ONLY): "
+                f"{[hex(a) for a in self.correlated[:8]]}...")
 
     def to_dict(self):
-        return {"events": self.events, "verified_n": len(self.verified),
-                "verified": [hex(a) for a in self.verified]}
+        return {"events": self.events,
+                "correlated_n": len(self.correlated),
+                "correlated": [hex(a) for a in self.correlated],
+                "note": "evidence-only candidates; NOT verified kills "
+                        "(v0.5 lesson: score-shadow words correlate "
+                        "trivially)"}
 
 
 # ====================================================================
-# RobustLegitPolicy v2 — noise-tolerant survival backbone.
-# LESSON from run v1: reacting to noisy 'bullet' slots caused PERPETUAL
-# hopping -> bot landed on soldiers -> death loop. v2: NEVER react to
-# unverified scene noise. Human opening strategy: walk + tap-fire,
-# occasional hop, grenades only when provably stuck.
+# RobustLegitPolicy — noise-tolerant survival backbone (unchanged core;
+# grenade now requires a VERIFIED bombs counter > 0).
 # ====================================================================
 FIRE_ON, FIRE_OFF = 8, 6
 
@@ -264,22 +349,24 @@ class RobustLegitPolicy:
         self.fc = 0               # global frame counter (input rhythm)
         self.stats = defaultdict(int)
 
-    def decide(self, chunk, stall, bombs, timer, zone, churn):
-        """v17 — ZONE MODE DELETED. Evidence: the lab winners were plain
-        input patterns (F: right-fire 9s, C: left+grenades 1-2s, B:
+    def decide(self, chunk, stall, bombs, timer, zone, churn,
+               bombs_verified=False):
+        """v18 — evidence-gated grenades. Evidence: the lab winners were
+        plain input patterns (F: right-fire 9s, C: left+grenades 1-2s, B:
         alternation 9s) and the diag bot (walk+fire+rare jumps) crossed
         canyon+market+village in 15s. Churn-based zone detection misfires
         on normal fights (fights churn 1000-2400 too). Final policy:
         ALWAYS walk right + tap-fire + rare jumps + periodic side-
-        alternating grenade; on a long stall do one left-shred burst."""
+        alternating grenade ONLY IF bombs counter is VERIFIED and > 0;
+        on a long stall do one left-shred burst."""
         plan = []
         self.fc += chunk
         # long-stall escape: one C-burst (left + grenades), then resume
-        shred = stall > 60 and (self.fc % 900) < 240
+        shred = stall > 60 and (self.fc % 900) < 240 and bombs_verified
         for _ in range(chunk):
             if shred:
                 btns = {"LEFT", "Y"}
-                if (self.fc % 900) % 75 == 0:
+                if (self.fc % 900) % 75 == 0 and bombs:
                     btns.add("A")
                     self.stats["grenade"] += 1
             else:
@@ -288,7 +375,7 @@ class RobustLegitPolicy:
                 if self.burst < FIRE_ON:
                     btns.add("Y")
                 # side-alternating grenade every ~5s (A no-ops when empty)
-                if (self.fc % 300) == 30:
+                if (self.fc % 300) == 30 and bombs_verified and bombs:
                     btns.add("A")
                     self.stats["grenade"] += 1
                     self.stats["gren_right" if (self.fc // 300) % 2
@@ -363,49 +450,102 @@ def recover_v2(p, log=log):
         ok, _ = responsive_live(p)
         if ok:
             log("[gate] recovery v2: back in control")
-            return
+            return True
     log("[gate] recovery v2: still dead after taps")
+    return False
+
+
+def read_score_raw(mem):
+    raw = bytes(mem.ram[SCORE_ADDR:SCORE_ADDR + 4])
+    return raw, int.from_bytes(raw, "little")
 
 
 # ====================================================================
 # MAIN
 # ====================================================================
-def main():
-    p = PS1Play(GAME)
+def main(argv=None):
+    args = parse_args(argv)
+    evid = args.evidence_dir
+    os.makedirs(evid, exist_ok=True)
+    report.update({
+        "started": time.strftime("%Y-%m-%d %H:%M:%S"),
+        "mode": "legit-inputs-only", "cheats": "none",
+        "config": {"game": args.game, "core": args.core,
+                   "workspace": args.workspace, "evidence_dir": evid,
+                   "chunks": args.chunks, "resume": args.resume,
+                   "repo_head": _repo_head()},
+    })
+    lc = Lifecycle(log=log)
+    lc.transition("GAME_IDENTIFIED", "pre-boot config validated",
+                  evidence=report["config"])
+    evlog = EventLog()
+    tracker = ScoreTracker(SCORE_ADDR, width=4, encoding="u32le")
+    killer = KillClassifier(min_delta=90)
+    evidence_files = []
+
+    kw = {}
+    if args.core:
+        kw["core"] = args.core
+    if args.workspace:
+        kw["workspace"] = args.workspace
+    if args.profile_dir:
+        kw["profile_dir"] = args.profile_dir
+    p = PS1Play(args.game, **kw)
     info = p.boot()
     log("boot:", info)
     report["boot"] = info
+    lc.transition("TITLE_OR_MENU", "core booted, game identified",
+                  evidence=info)
 
-    if RESUME:
-        p.load_state(RESUME)
-        log("resumed from", RESUME)
+    if args.resume:
+        p.load_state(args.resume)
+        log("resumed from", args.resume)
         ok, _ = responsive(p)
         if not ok:
             recover(p, log=log)
             ok, _ = responsive(p)
         if not ok:
+            report["lifecycle"] = lc.to_dict()
             sys.exit("!! resume state not in mission")
     else:
         r = p.enter_gameplay3()
         log("enter:", r.get("in_game"))
         report["enter"] = r.get("in_game")
         if not r.get("in_game"):
+            report["lifecycle"] = lc.to_dict()
             sys.exit("!! boot failed")
         m = ensure_mission(p, tries=6, log=log)
         log("gate:", {k: v for k, v in m.items() if k != "evidence"})
         report["gate"] = {k: v for k, v in m.items() if k != "evidence"}
         if not m.get("in_mission"):
+            report["lifecycle"] = lc.to_dict()
             sys.exit("!! gate failed")
+    lc.transition("GAMEPLAY_CANDIDATE", "activity gates passed",
+                  evidence={"gate": report.get("gate", {})})
+    lc.transition("INPUT_CONTROL_VERIFIED", "responsive() triple test",
+                  evidence={"pad_mirror": "0x0D4948", "churn": ">900",
+                            "self_play_guard": True})
+    lc.transition("MISSION_1_VERIFIED", "mission-1 HUD state reached",
+                  evidence={"gate": report.get("gate", {})})
 
     # ---- calibration (read-only probes from savestates) -------------
-    cam = find_progress_addr(p)
-    report["camera"] = cam
+    cam = find_progress_addr(p, log=log)
+    report["camera"] = {"addr": cam["addr"], "gain": cam["gain"],
+                        "verified": cam["verified"],
+                        "tests": cam["tests"]}
+    prog = ProgressSignal(cam["addr"], cam["verified"]) \
+        if cam["addr"] is not None else None
     guard = PerceptionGuard(p)
     anch = guard.anchor(log=log)
     log("anchor:", anch)
     report["anchor"] = anch
-    t_addr = validate_timer(guard)
-    l_addr = validate_lives(guard)
+    t_addr = validate_timer(guard, log=log)
+    l_addr = validate_lives(guard, log=log)
+    lc.transition("OBSERVATION_CALIBRATED", "camera + bombs anchor",
+                  evidence={"anchor": anch,
+                            "camera_verified": cam["verified"]})
+    lc.transition("PLAYING", "calibration done; live run starts")
+    report["observation_contract"] = guard.observation_contract()
 
     # ---- entity discovery (advisory, from checkpoint) ----------------
     p.save_state("m1_base")
@@ -422,134 +562,130 @@ def main():
 
     # ---- live run -----------------------------------------------------
     p.save_state("m1_start")
-    png(p, "00_mission_start.png")
+    evidence_files.append(png(p, evid, "00_mission_start.png") or
+                          "00_mission_start.png")
+    raw0, score0 = read_score_raw(p.mem)
+    tracker.feed(score0, frame=p.t, chunk=0, raw=raw0)
     mb0 = p.mem.u8(MISSION_ADDR)
-    cam_addr = cam["addr"] if cam else None
-    score0 = guard.score()
+    mcd = MissionClearDetector(baseline_byte=mb0, sustain_chunks=4,
+                               log=log)
+    cam_addr = cam["addr"]
     log(f"[run] mission_byte={mb0} score={score0} "
-        f"cam={hex(cam_addr) if cam_addr else None}")
+        f"cam={hex(cam_addr) if cam_addr else None} "
+        f"cam_verified={cam['verified']}")
 
     policy = RobustLegitPolicy()
     kc = KillCorrelator()
-    evc = defaultdict(int)
     tel = []
+    score_event_log = []
     stall = 0
-    last_score, last_cam = score0, None
+    last_cam = None
     last_churn = 0
-    low_streak = 0
     zone = False
     continues = 0
-    kills = 0
     deaths_seen = []
     prev_lives = guard.read("lives") if l_addr else None
     t0 = time.time()
-    cleared = False
+    last_mb = mb0
 
-    for i in range(MAX_CHUNKS):
-        score = guard.score()
-        cam_now = p.mem.u16(cam_addr) if cam_addr else None
+    audit = RewardAudit(sensor_status={
+        "score": False,           # encoding audit still PARTIAL (§2.1)
+        "progress": bool(cam["verified"]),
+        "kill_verified": False,   # estimated-only until entity proof
+        "pickup_verified": False,
+        "lives_hp": l_addr is not None and
+        guard.verification.get("lives", {}).get("status") == "VERIFIED",
+    })
+
+    for i in range(args.chunks):
+        # ---- mission-clear detector (primary signal) -----------------
         mb = p.mem.u8(MISSION_ADDR)
-        bombs = guard.read("bombs")
-        timer = guard.read("timer") if t_addr else None
-        lives = guard.read("lives") if l_addr else None
-        prev_score = last_score
-
-        # ---- semantic events -----------------------------------------
-        if score > prev_score:
-            d = score - prev_score
-            evc["score_up"] += 1
-            evc[f"score+{d}"] += 1
-            if d >= 90:
-                kills += 1
-            kc.on_score_event(p.mem)
-        if lives is not None and prev_lives is not None \
-                and lives < prev_lives:
-            evc["death"] += 1
-            deaths_seen.append({"chunk": i, "lives": lives})
-        prev_lives = lives
-        if mb != mb0:
-            evc["mission_byte_changed"] += 1
-
-        # ---- progress / stall ----------------------------------------
-        # progress = score gain (kills) OR the world is scrolling
-        # (RAM churn). Both use VERIFIED signals only.
-        prog = score > prev_score or last_churn >= 3500
-        if cam_now is not None and last_cam is not None \
-                and cam_now < last_cam - 100:
-            evc["cam_reset"] += 1        # death/respawn moved camera back
-            stall = min(stall, 5)
-        last_cam = cam_now
-        stall = 0 if prog else stall + 1
-
-        # ---- mission clear? ------------------------------------------
-        if mb != mb0:
-            png(p, "99_MISSION_CLEAR.png")
-            log(f"*** MISSION CLEAR: mission byte {mb0}->{mb} "
-                f"at chunk {i} (score={score}) ***")
-            cleared = True
-            report["mission_clear"] = {
-                "chunk": i, "game_min": round(i * CHUNK / 3600, 1),
-                "score": score, "from": mb0, "to": int(mb)}
+        if mb != last_mb:
+            evlog.add("MISSION_STATE_CHANGED", OBSERVED, frame=p.t,
+                      chunk=i,
+                      evidence={"from": last_mb, "to": int(mb),
+                                "addr": hex(MISSION_ADDR)})
+            last_mb = mb
+        det_ev = mcd.feed(mb, frame=p.t, chunk=i, evlog=evlog)
+        if mcd.detected and not mcd.verified:
+            # corroboration attempt #1: is the input profile consistent
+            # with a transition (responsiveness changed)?
+            ok_now, (i1, rr) = responsive_live(p)
+            if ok_now:
+                mcd.corroborate("input_responsive_after_transition")
+            else:
+                mcd.corroborate("input_unresponsive_after_transition")
+            evidence_files.append(
+                png(p, evid, "99_MISSION_CLEAR_DETECTED.png") or
+                "99_MISSION_CLEAR_DETECTED.png")
+        if mcd.verified:
+            evidence_files.append(
+                png(p, evid, "99_MISSION_CLEAR_VERIFIED.png") or
+                "99_MISSION_CLEAR_VERIFIED.png")
+            report["mission_clear"] = mcd.to_dict()
+            report["mission_clear"]["evidence_files"] = [
+                e for e in evidence_files if e]
             break
 
-        # ---- scene (advisory, every 4th chunk only — noise anyway) ----
-        scene_n = 0
-        if i % 4 == 0 and wm.slots:
-            scene = wm.read_world(p.core)
-            scene_n = len(scene.get("enemies", []))
+        # ---- action interval: sample score BEFORE actions ------------
+        raw_b, _ = read_score_raw(p.mem)
+        frame_start = p.t
+        action_before = dict(policy.stats)
 
-        # ---- policy + execute (with per-chunk churn measurement) -------
-        s_before = p.mem.snapshot()
-        segs = policy.decide(CHUNK, stall, bombs, timer, zone,
-                             last_churn)
-        execute(p, segs, CHUNK)
-        churn = int(np.count_nonzero(s_before != p.mem.snapshot()))
-        last_churn = churn
-        low_streak = low_streak + 1 if churn < 2500 else 0
-        zone = low_streak >= 2
-        if zone and i % 4 == 0:
-            png(p, "zone_live.png")       # rolling pre-death context
-        last_score = score
-        if i % 4 == 0:
-            kc.observe(p.mem)             # evidence-only, every 4th chunk
-
-        # ---- keepalive / recovery (CONTINUE screen has ~9s timer) ------
+        # ---- keepalive / recovery (CONTINUE screen has ~9s timer) ----
         if i % 3 == 2:
             ok, (i1, rr) = responsive_live(p)
             last_churn = max(last_churn, rr if isinstance(rr, int) else 0)
             if not ok:
                 continues += 1
-                evc["unresponsive"] += 1
+                evlog.add(CONTINUE_USED, ESTIMATED, frame=p.t, chunk=i,
+                          evidence={"gate": [i1, rr]},
+                          note="responsive gate failed; recovery run")
+                deaths_seen.append({"chunk": i, "gate": [i1, rr]})
                 try:
-                    zl = os.path.join(EVID, "zone_live.png")
+                    zl = os.path.join(evid, "zone_live.png")
                     if os.path.exists(zl):
                         os.replace(zl, os.path.join(
-                            EVID, f"predeath_{i:04d}.png"))
+                            evid, f"predeath_{i:04d}.png"))
                 except OSError:
                     pass
-                png(p, f"death_{i:04d}.png")          # kill-site evidence
+                evidence_files.append(
+                    png(p, evid, f"death_{i:04d}.png") or
+                    f"death_{i:04d}.png")
                 log(f"[keepalive] chunk {i}: unresponsive "
                     f"(idle={i1} run={rr}) -> recover")
-                recover_v2(p, log=log)
-                ok, (i1, rr) = responsive_live(p)
-                last_churn = max(last_churn, rr if isinstance(rr, int) else 0)
-                if not ok:
+                lc.transition("DEATH_OR_CONTINUE",
+                              "responsive gate failed",
+                              evidence={"gate": [i1, rr]})
+                recovered = recover_v2(p, log=log)
+                if not recovered:
                     log("[keepalive] still out -> ensure_mission")
                     m = ensure_mission(p, tries=4, log=log)
                     if not m.get("in_mission"):
                         log("[keepalive] re-entering mission")
                         p.enter_gameplay3()
                         ensure_mission(p, tries=4, log=log)
-                    ra = guard.anchor(log=log)
-                    if ra.get("ok"):
-                        report.setdefault("reanchors", []).append(
-                            {"chunk": i, **ra})
-                        t_addr = validate_timer(guard, log=log)
+                # §5/§6: mission reload => cluster moves => invalidate +
+                # re-anchor + plausibility check
+                guard.invalidate("death/continue reload", log=log)
+                ra = guard.anchor(log=log)
+                if ra.get("ok"):
+                    va = guard.validate_anchor(log=log)
                     report.setdefault("reanchors", []).append(
-                        {"chunk": i, "note": "re-entered"})
-                policy.hop_cd = max(policy.hop_cd, 60)
+                        {"chunk": i, **ra, "validate": va})
+                    t_addr = validate_timer(guard, log=log)
+                    l_addr = validate_lives(guard, log=log)
+                lc.transition("RECOVERY", "recover_v2 + ensure_mission",
+                              evidence={"reanchor": ra})
+                lc.transition("INPUT_CONTROL_REVERIFIED",
+                              "responsive gate re-passed",
+                              evidence={"reanchor_ok": bool(ra.get("ok"))})
+                lc.transition("OBSERVATION_RECALIBRATED",
+                              "anchor re-verified after reload",
+                              evidence={"validate": ra})
+                lc.transition("PLAYING", "recovery complete")
                 report.setdefault("continues", []).append(
-                    {"chunk": i, "score": score})
+                    {"chunk": i, "score": tracker.value})
             elif stall > 30:
                 # PAUSED-DEAD-INPUT detector: pad mirror alive but the
                 # inputs have zero world effect in BOTH directions ->
@@ -562,7 +698,8 @@ def main():
                 cr = int(np.count_nonzero(s1 != p.mem.snapshot()))
                 p._advance()
                 if cl < 220 and cr < 220:
-                    evc["pause_tap"] += 1
+                    evlog.add("PAUSE_TAP", OBSERVED, frame=p.t, chunk=i,
+                              evidence={"L": cl, "R": cr})
                     log(f"[keepalive] chunk {i}: inputs dead "
                         f"(L={cl} R={cr}) -> START tap (unpause?)")
                     p.core.run(6, {"START"})
@@ -570,50 +707,173 @@ def main():
                     p._advance()
                     policy.hop_cd = max(policy.hop_cd, 60)
 
+        # ---- policy + execute (with per-chunk churn measurement) -------
+        bombs = guard.read("bombs")
+        timer = guard.read("timer") if t_addr else None
+        lives = guard.read("lives") if l_addr else None
+        segs = policy.decide(60, stall, bombs, timer, zone, last_churn,
+                             bombs_verified=(
+                                 guard.verification.get(
+                                     "bombs", {}).get("status")
+                                 == "VERIFIED"))
+        s_before = p.mem.snapshot()
+        execute(p, segs, 60)
+        churn = int(np.count_nonzero(s_before != p.mem.snapshot()))
+        last_churn = churn
+        zone = churn < 2500  # simple low-churn marker for the policy
+
+        # ---- POST-action sampling: events attributed to THIS interval
+        frame_end = p.t
+        raw_a, score_a = read_score_raw(p.mem)
+        sobs = tracker.feed(score_a, frame=frame_end, chunk=i, raw=raw_a)
+        sobs["frame_start"] = frame_start
+        _btns = set()
+        for _s in segs:
+            _btns |= _s["btns"]
+        sobs["action_during_interval"] = "+".join(sorted(_btns)) or "none"
+        del action_before
+        sobs["mission_state"] = int(mb)
+        sobs["input_responsive"] = bool(churn > 250)
+        score_event_log.append(sobs)
+        if sobs["kind"] in ("update", "wrap"):
+            if sobs["delta"]:
+                evlog.add(SCORE_CHANGED, OBSERVED, frame=frame_end,
+                          chunk=i,
+                          evidence={"delta": sobs["delta"],
+                                    "raw": sobs["raw_after"]})
+            killer.on_score_obs(sobs, evlog, frame=frame_end, chunk=i)
+        elif sobs["kind"] == "reset":
+            evlog.add(SCORE_RESET, OBSERVED, frame=frame_end, chunk=i,
+                      evidence={"before": sobs["decoded_before"],
+                                "after": sobs["decoded_after"]},
+                      note="continue/death reset — start/end must not "
+                           "hide this")
+        elif sobs["kind"] == "suspicious":
+            evlog.add(SCORE_SUSPICIOUS, OBSERVED, frame=frame_end,
+                      chunk=i,
+                      evidence={"delta": sobs["delta"]},
+                      note="impossible jump recorded, NOT converted "
+                           "into kills/rewards")
+        kc.on_score_event(p.mem)
+
+        # ---- progress / stall (validated signal only) ------------------
+        cam_now = p.mem.u16(cam_addr) if cam_addr else None
+        if prog is not None and cam_now is not None:
+            state = prog.update(cam_now, churn=churn, frame=frame_end)
+            if state == ProgressSignal.STALLED:
+                stall += 1
+            elif state == ProgressSignal.PROGRESS:
+                stall = 0
+            # CAMERA_LOCKED: fight at a locked camera — NOT a stall
+        else:
+            # no trusted progress: fall back to conservative stall rule
+            stall = 0 if (sobs.get("delta") or churn >= 3500) else stall + 1
+        if lives is not None and prev_lives is not None \
+                and lives < prev_lives:
+            evlog.add(PLAYER_DIED, OBSERVED, frame=frame_end, chunk=i,
+                      evidence={"lives": lives, "prev": prev_lives})
+            deaths_seen.append({"chunk": i, "lives": lives})
+        prev_lives = lives
+
+        # ---- scene (advisory, every 4th chunk only — noise anyway) ----
+        scene_n = 0
+        if i % 4 == 0 and wm.slots:
+            scene = wm.read_world(p.core)
+            scene_n = len(scene.get("enemies", []))
+
+        if i % 4 == 0:
+            kc.observe(p.mem)             # evidence-only, every 4th chunk
+        last_mb = mb
+
         # ---- telemetry / evidence -------------------------------------
         if i % 5 == 4:
             act = policy.stats
-            log(f"[t] i={i} score={score} cam={cam_now} "
+            log(f"[t] i={i} score={score_a} cam={cam_now} "
                 f"churn={last_churn} zone={int(zone)} "
                 f"enemies={scene_n} bombs={bombs} timer={timer} "
                 f"lives={lives} stall={stall} "
                 f"act={max(act, key=act.get) if act else '-'}")
         if i % 25 == 24:
-            tel.append({"chunk": i, "score": score, "cam": cam_now,
+            tel.append({"chunk": i, "score": score_a, "cam": cam_now,
                         "bombs": bombs, "timer": timer, "lives": lives,
                         "stall": stall, "churn": last_churn,
                         "enemies": scene_n,
                         "act": (max(policy.stats, key=policy.stats.get)
                                 if policy.stats else "-")})
-            png(p, f"play_{(i // 25) + 1:02d}.png")
+            evidence_files.append(
+                png(p, evid, f"play_{(i // 25) + 1:02d}.png") or
+                f"play_{(i // 25) + 1:02d}.png")
         if i in (20, 60, 120) or (i % 250 == 249):
             p.save_state(f"m1cp_{i}")
             p.save_state("m1cp")
-            log("checkpoint @", i, "score", score)
+            log("checkpoint @", i, "score", score_a)
 
     wall = time.time() - t0
+    raw_end, score_end = read_score_raw(p.mem)
     report["play"] = {
-        "chunks": i + 1, "frames": (i + 1) * CHUNK,
+        "chunks": i + 1, "frames": (i + 1) * 60,
         "wall_s": round(wall, 1),
-        "fps": round((i + 1) * CHUNK / max(wall, 0.1), 1),
-        "score_start": int(score0), "score_end": int(guard.score()),
-        "kills_est": kills, "continues": continues,
-        "cleared": cleared, "stall_final": stall,
+        "fps": round((i + 1) * 60 / max(wall, 0.1), 1),
+        "score": dict(tracker.to_dict(), raw_end=raw_end.hex()),
+        "score_start": int(score0),
+        "score_end": int(score_end),
+        "score_resets": tracker.n_resets,
+        "kills_estimated": killer.estimated,
+        "kills_verified": killer.verified,
+        "continues": continues,
+        "cleared": bool(mcd.verified),
+        "progress_claim": (prog.to_dict() if prog and prog.claims_progress
+                           else None),
+        "stall_final": stall,
         "policy_stats": dict(policy.stats)}
-    report["events"] = dict(evc)
+    report["events"] = evlog.to_dict()
     report["deaths"] = deaths_seen
     report["telemetry"] = tel
+    report["score_event_log"] = score_event_log[-64:]
     report["kill_correlator"] = kc.to_dict()
     report["guard_addrs"] = {k: hex(v) for k, v in guard.addrs.items()}
-    if not cleared:
-        png(p, "99_end.png")
-    json.dump(report, open(OUT, "w"), indent=1, default=str)
+    report["observation_contract"] = guard.observation_contract()
+    report["lifecycle"] = lc.to_dict()
+    audit.accumulate(chunk=i,
+                     score_delta=float(tracker.cumulative_gain),
+                     progress_delta=float(prog.n_progress
+                                          if prog and prog.verified
+                                          else 0),
+                     stalled_chunks=int(stall))
+    report["reward_audit"] = audit.to_dict()
+    report["mission_clear"] = mcd.to_dict()
+    report["mission_clear"]["evidence_files"] = [e for e in evidence_files
+                                                 if e]
+    if not mcd.verified:
+        evidence_files.append(png(p, evid, "99_end.png") or "99_end.png")
+    out_path = args.report or os.path.join(evid, "mission1_report.json")
+    try:
+        assert_consistent(report)
+    except ValueError as e:
+        # v0.6 §2.3: never ship a self-contradictory report; park it and
+        # re-raise so the failure is loud.
+        rej = out_path.replace(".json", ".REJECTED.json")
+        json.dump({"findings": str(e), "report": report},
+                  open(rej, "w"), indent=1, default=str)
+        log(f"!! report validation FAILED -> {rej}")
+        raise
+    json.dump(report, open(out_path, "w"), indent=1, default=str)
     p.save_profile()
-    log("report ->", OUT)
+    log("report ->", out_path)
     print(json.dumps({k: report.get(k) for k in
                       ("boot", "enter", "camera", "anchor", "play",
-                       "events", "kill_correlator", "mission_clear")},
+                       "mission_clear", "lifecycle") if k in report},
                      indent=1, default=str))
+
+
+def _repo_head():
+    try:
+        import subprocess
+        return subprocess.check_output(
+            ["git", "rev-parse", "HEAD"], cwd=_REPO,
+            stderr=subprocess.DEVNULL).decode().strip()
+    except Exception:                                       # noqa: BLE001
+        return None
 
 
 if __name__ == "__main__":

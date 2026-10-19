@@ -34,6 +34,78 @@ class PerceptionGuard:
         self.addrs = {}
         self.hp_scale = None            # 100 or 200
         self.anchors_done = 0
+        # v0.6 §5: per-role verification ledger. Code existing is not
+        # verification: a role is VERIFIED only after its own event test.
+        self.verification = {}
+        self.invalidations = []
+
+    # ---------------- observation contract (v0.6 §5) ----------------
+    def _set_role(self, role, addr, status, method, frame=None,
+                  confidence=0.0):
+        self.addrs[role] = addr
+        self.verification[role] = {
+            "address": addr, "width": 2, "encoding": "u16le",
+            "status": status, "verification_method": method,
+            "last_verified_frame": frame, "confidence": confidence,
+            "valid_for_current_mission": status in ("VERIFIED",
+                                                    "CALIBRATED"),
+            "source_probe": method}
+
+    def observation_contract(self):
+        """The §5 contract: EVERY public role with its honest status.
+        Roles never anchored are reported PENDING with null address —
+        the bombs anchor working does NOT make the rest verified."""
+        contract = {}
+        for role in PUB:
+            v = self.verification.get(role)
+            if v is None:
+                contract[role] = {
+                    "role": role, "value": None, "address": None,
+                    "width": 2, "encoding": "u16le", "status": "PENDING",
+                    "verification_method": None,
+                    "last_verified_frame": None, "source_probe": None,
+                    "valid_for_current_mission": False, "confidence": 0.0}
+            else:
+                entry = dict(v)
+                entry["role"] = role
+                entry["value"] = self.read(role)
+                contract[role] = entry
+        return contract
+
+    def invalidate(self, reason, log=print):
+        """Drop ALL dynamic-cluster roles (they move per mission reload);
+        static globals (pad/score/pow) survive. Caller must re-anchor."""
+        dropped = [r for r in list(self.addrs)
+                   if r not in ("pad", "score", "pow")]
+        for r in dropped:
+            self.addrs.pop(r, None)
+            v = self.verification.get(r)
+            if v:
+                v["status"] = "INVALID"
+                v["valid_for_current_mission"] = False
+        self.invalidations.append({"reason": reason, "dropped": dropped})
+        log(f"[percept] INVALIDATED {dropped}: {reason}")
+
+    def validate_anchor(self, log=print):
+        """Post-reload plausibility re-check of the bombs anchor:
+        in-range (0..40) and NOT increasing across a short window
+        (grenades can only decrement; a rising word is a wrong field).
+        Returns {"ok": bool, "reason": str}."""
+        b = self.read("bombs")
+        if b is None:
+            return {"ok": False, "reason": "no anchor"}
+        if not (0 <= b <= 40):
+            self.invalidate(f"bombs out of range: {b}", log=log)
+            return {"ok": False, "reason": f"out of range: {b}"}
+        p = self.p
+        p.core.run(30, set())
+        p._advance()
+        b2 = self.read("bombs")
+        if b2 is not None and b2 > b:
+            self.invalidate(f"bombs rose {b}->{b2}: wrong field latched",
+                            log=log)
+            return {"ok": False, "reason": f"rose {b}->{b2}"}
+        return {"ok": True, "reason": "in range and stable/decreasing"}
 
     # ---------------- anchor ----------------
     def anchor(self, tries=3, log=print):
@@ -65,7 +137,9 @@ class PerceptionGuard:
                 p.core.run(90, set())
                 p._advance()
                 if p.mem.u16(addr) == v0 - 1:      # 2nd grenade confirms
-                    self.addrs["bombs"] = addr
+                    self._set_role("bombs", addr, "VERIFIED",
+                                   "grenade event: -1 exactly, repeated 2x",
+                                   confidence=0.95)
                     self.delta = addr - PUB["bombs"]
                     self.anchors_done += 1
                     log(f"[percept] anchor #{self.anchors_done}: "

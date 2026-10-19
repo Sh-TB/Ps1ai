@@ -1,6 +1,11 @@
 # PS1Play v0.5 — AI agent that plays PS1 games by reading RAM
 
-> **v0.5 (this session): Mission-1 assault, LEGAL INPUTS ONLY.**
+> **v0.6 note:** the v0.5 report's kill counts and distance estimate are
+> re-interpreted by the v0.6 honesty audit — see the root-cause table in the
+> root `README.md` and `docs/source_of_truth.md`. Numbers below are kept as
+> originally recorded, with their evidence status now labeled.
+>
+> **v0.5 (that session): Mission-1 assault, LEGAL INPUTS ONLY.**
 > `scripts/run_mission1_legit.py` = zero cheats / zero memory writes /
 > zero rewinds during the run; savestates only for read-only calibration
 > probes and checkpoints. 17 policy iterations root-caused six distinct
@@ -17,7 +22,8 @@
 > tactic grid): the soldier truck IS destructible — left-fire + grenades
 > shred it in ~1-2s and the camera unlocks. HUD score reached 4300 and
 > 2 POWs freed in evidence runs; bot reliably crosses canyon -> market ->
-> village (~35% of Mission 1) every life. Remaining wall: surviving the
+> village (distance ESTIMATED from screenshots — the camera word was never
+> verified). Remaining wall: surviving the
 > village bomber-chopper + soldier-truck section long enough — all
 > tactics win in the lab; sustaining them live is the next iteration.
 
@@ -120,7 +126,9 @@ Requires: the game .cue/.bin and BIOS SCPH-5501 in ps1-test/emu
 * GameShark assist: Invincible + Infinite Bombs (freeze codes,
   re-anchored and re-verified after reloads)
 * WorldModel: enemies/bullets/items slots discovered live per boot
-* SemanticPolicy kills registered on the real score counter (+100 kills)
+* SemanticPolicy: 25 score +100 events observed on the RE-verified static
+  score counter (kill identity ESTIMATED from score deltas, not
+  independently verified)
 * checkpoints (savestates) + resume; PNG evidence each 25 chunks
 
 ## Honest limitations / next steps
