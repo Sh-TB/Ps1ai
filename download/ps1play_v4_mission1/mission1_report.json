@@ -1,0 +1,616 @@
+{
+ "started": "2026-10-18 18:40:24",
+ "mode": "legit-inputs-only",
+ "cheats": "none",
+ "boot": {
+  "core": "Beetle PSX 0.9.44.1 e57860d",
+  "serial": "SLUS-01212",
+  "plugin": "metal_slug_x",
+  "ram_bytes": 2097152,
+  "profile_reused": true
+ },
+ "enter": true,
+ "gate": {
+  "in_mission": true,
+  "idle": 32,
+  "run": 3296,
+  "hp_cands": 52,
+  "hp_cand_addrs": [
+   "0xe2e8",
+   "0x95710",
+   "0x9583c",
+   "0x9585c",
+   "0xca290",
+   "0xca2e6",
+   "0xca2fa",
+   "0xca302"
+  ]
+ },
+ "camera": {
+  "addr": 828130,
+  "gain": 175,
+  "verified": false
+ },
+ "anchor": {
+  "ok": true,
+  "bombs": "0xcaf9c",
+  "delta": 595688
+ },
+ "worldmodel": {
+  "samples": 900,
+  "cand_words": 2940,
+  "blocks": 76,
+  "slots": 51,
+  "classes": {
+   "enemy": 32,
+   "item": 12,
+   "player": 3,
+   "bullet": 4
+  },
+  "player_anchor": "0xe23b0"
+ },
+ "continues": [
+  {
+   "chunk": 17,
+   "score": 120
+  },
+  {
+   "chunk": 77,
+   "score": 96
+  },
+  {
+   "chunk": 92,
+   "score": 96
+  },
+  {
+   "chunk": 125,
+   "score": 97
+  },
+  {
+   "chunk": 128,
+   "score": 97
+  },
+  {
+   "chunk": 131,
+   "score": 97
+  },
+  {
+   "chunk": 167,
+   "score": 172
+  },
+  {
+   "chunk": 170,
+   "score": 172
+  },
+  {
+   "chunk": 218,
+   "score": 96
+  },
+  {
+   "chunk": 236,
+   "score": 164
+  },
+  {
+   "chunk": 521,
+   "score": 108
+  },
+  {
+   "chunk": 530,
+   "score": 252
+  },
+  {
+   "chunk": 533,
+   "score": 96
+  },
+  {
+   "chunk": 554,
+   "score": 40
+  },
+  {
+   "chunk": 563,
+   "score": 0
+  },
+  {
+   "chunk": 614,
+   "score": 152
+  },
+  {
+   "chunk": 659,
+   "score": 196
+  },
+  {
+   "chunk": 698,
+   "score": 152
+  }
+ ],
+ "reanchors": [
+  {
+   "chunk": 131,
+   "ok": true,
+   "bombs": "0xe80ca",
+   "delta": 714774
+  },
+  {
+   "chunk": 131,
+   "note": "re-entered"
+  },
+  {
+   "chunk": 170,
+   "ok": true,
+   "bombs": "0xe80ca",
+   "delta": 714774
+  },
+  {
+   "chunk": 170,
+   "note": "re-entered"
+  },
+  {
+   "chunk": 218,
+   "ok": true,
+   "bombs": "0xcaf9c",
+   "delta": 595688
+  },
+  {
+   "chunk": 218,
+   "note": "re-entered"
+  },
+  {
+   "chunk": 533,
+   "ok": true,
+   "bombs": "0xcb20c",
+   "delta": 596312
+  },
+  {
+   "chunk": 533,
+   "note": "re-entered"
+  },
+  {
+   "chunk": 554,
+   "note": "re-entered"
+  },
+  {
+   "chunk": 563,
+   "ok": true,
+   "bombs": "0xeedc4",
+   "delta": 742672
+  },
+  {
+   "chunk": 563,
+   "note": "re-entered"
+  },
+  {
+   "chunk": 614,
+   "ok": true,
+   "bombs": "0xe80ca",
+   "delta": 714774
+  },
+  {
+   "chunk": 614,
+   "note": "re-entered"
+  },
+  {
+   "chunk": 659,
+   "ok": true,
+   "bombs": "0xe80ca",
+   "delta": 714774
+  },
+  {
+   "chunk": 659,
+   "note": "re-entered"
+  },
+  {
+   "chunk": 698,
+   "ok": true,
+   "bombs": "0xcaf9c",
+   "delta": 595688
+  },
+  {
+   "chunk": 698,
+   "note": "re-entered"
+  }
+ ],
+ "play": {
+  "chunks": 750,
+  "frames": 45000,
+  "wall_s": 398.6,
+  "fps": 112.9,
+  "score_start": 200,
+  "score_end": 200,
+  "kills_est": 27,
+  "continues": 18,
+  "cleared": false,
+  "stall_final": 8,
+  "policy_stats": {
+   "jump": 356,
+   "grenade": 51,
+   "spike_hit": 1
+  }
+ },
+ "events": {
+  "score_up": 33,
+  "score+100": 19,
+  "cam_reset": 48,
+  "score+88": 3,
+  "unresponsive": 18,
+  "score+1": 1,
+  "score+64": 1,
+  "score+188": 1,
+  "score+104": 1,
+  "score+200": 6,
+  "score+48": 1
+ },
+ "deaths": [],
+ "telemetry": [
+  {
+   "chunk": 24,
+   "score": 96,
+   "cam": 88,
+   "bombs": 0,
+   "timer": null,
+   "lives": null,
+   "stall": 18,
+   "churn": 329,
+   "enemies": 25,
+   "act": "jump"
+  },
+  {
+   "chunk": 49,
+   "score": 96,
+   "cam": 88,
+   "bombs": 0,
+   "timer": null,
+   "lives": null,
+   "stall": 43,
+   "churn": 378,
+   "enemies": 0,
+   "act": "jump"
+  },
+  {
+   "chunk": 74,
+   "score": 96,
+   "cam": 88,
+   "bombs": 0,
+   "timer": null,
+   "lives": null,
+   "stall": 68,
+   "churn": 426,
+   "enemies": 0,
+   "act": "jump"
+  },
+  {
+   "chunk": 99,
+   "score": 97,
+   "cam": 112,
+   "bombs": 0,
+   "timer": null,
+   "lives": null,
+   "stall": 6,
+   "churn": 1611,
+   "enemies": 0,
+   "act": "jump"
+  },
+  {
+   "chunk": 124,
+   "score": 97,
+   "cam": 0,
+   "bombs": 0,
+   "timer": null,
+   "lives": null,
+   "stall": 2,
+   "churn": 147,
+   "enemies": 23,
+   "act": "jump"
+  },
+  {
+   "chunk": 149,
+   "score": 172,
+   "cam": 0,
+   "bombs": 21,
+   "timer": null,
+   "lives": null,
+   "stall": 2,
+   "churn": 1363,
+   "enemies": 0,
+   "act": "jump"
+  },
+  {
+   "chunk": 174,
+   "score": 144,
+   "cam": 196,
+   "bombs": 5,
+   "timer": null,
+   "lives": null,
+   "stall": 0,
+   "churn": 5268,
+   "enemies": 0,
+   "act": "jump"
+  },
+  {
+   "chunk": 199,
+   "score": 96,
+   "cam": 37,
+   "bombs": 10,
+   "timer": null,
+   "lives": null,
+   "stall": 4,
+   "churn": 1550,
+   "enemies": 0,
+   "act": "jump"
+  },
+  {
+   "chunk": 224,
+   "score": 200,
+   "cam": 64,
+   "bombs": 4,
+   "timer": null,
+   "lives": null,
+   "stall": 5,
+   "churn": 6348,
+   "enemies": 23,
+   "act": "jump"
+  },
+  {
+   "chunk": 249,
+   "score": 108,
+   "cam": 58,
+   "bombs": 3,
+   "timer": null,
+   "lives": null,
+   "stall": 15,
+   "churn": 399,
+   "enemies": 0,
+   "act": "jump"
+  },
+  {
+   "chunk": 274,
+   "score": 108,
+   "cam": 58,
+   "bombs": 3,
+   "timer": null,
+   "lives": null,
+   "stall": 40,
+   "churn": 268,
+   "enemies": 0,
+   "act": "jump"
+  },
+  {
+   "chunk": 299,
+   "score": 108,
+   "cam": 58,
+   "bombs": 3,
+   "timer": null,
+   "lives": null,
+   "stall": 65,
+   "churn": 427,
+   "enemies": 0,
+   "act": "jump"
+  },
+  {
+   "chunk": 324,
+   "score": 108,
+   "cam": 58,
+   "bombs": 3,
+   "timer": null,
+   "lives": null,
+   "stall": 90,
+   "churn": 268,
+   "enemies": 26,
+   "act": "jump"
+  },
+  {
+   "chunk": 349,
+   "score": 108,
+   "cam": 58,
+   "bombs": 3,
+   "timer": null,
+   "lives": null,
+   "stall": 115,
+   "churn": 362,
+   "enemies": 0,
+   "act": "jump"
+  },
+  {
+   "chunk": 374,
+   "score": 108,
+   "cam": 58,
+   "bombs": 3,
+   "timer": null,
+   "lives": null,
+   "stall": 140,
+   "churn": 378,
+   "enemies": 0,
+   "act": "jump"
+  },
+  {
+   "chunk": 399,
+   "score": 108,
+   "cam": 58,
+   "bombs": 3,
+   "timer": null,
+   "lives": null,
+   "stall": 165,
+   "churn": 321,
+   "enemies": 0,
+   "act": "jump"
+  },
+  {
+   "chunk": 424,
+   "score": 108,
+   "cam": 58,
+   "bombs": 3,
+   "timer": null,
+   "lives": null,
+   "stall": 190,
+   "churn": 416,
+   "enemies": 26,
+   "act": "jump"
+  },
+  {
+   "chunk": 449,
+   "score": 108,
+   "cam": 58,
+   "bombs": 3,
+   "timer": null,
+   "lives": null,
+   "stall": 215,
+   "churn": 251,
+   "enemies": 0,
+   "act": "jump"
+  },
+  {
+   "chunk": 474,
+   "score": 108,
+   "cam": 58,
+   "bombs": 3,
+   "timer": null,
+   "lives": null,
+   "stall": 240,
+   "churn": 392,
+   "enemies": 0,
+   "act": "jump"
+  },
+  {
+   "chunk": 499,
+   "score": 108,
+   "cam": 58,
+   "bombs": 3,
+   "timer": null,
+   "lives": null,
+   "stall": 265,
+   "churn": 303,
+   "enemies": 0,
+   "act": "jump"
+  },
+  {
+   "chunk": 524,
+   "score": 52,
+   "cam": 40,
+   "bombs": 3,
+   "timer": null,
+   "lives": null,
+   "stall": 290,
+   "churn": 56364,
+   "enemies": 26,
+   "act": "jump"
+  },
+  {
+   "chunk": 549,
+   "score": 40,
+   "cam": 0,
+   "bombs": 3,
+   "timer": null,
+   "lives": null,
+   "stall": 15,
+   "churn": 1491,
+   "enemies": 0,
+   "act": "jump"
+  },
+  {
+   "chunk": 574,
+   "score": 76,
+   "cam": 16,
+   "bombs": 2,
+   "timer": null,
+   "lives": null,
+   "stall": 4,
+   "churn": 1056,
+   "enemies": 0,
+   "act": "jump"
+  },
+  {
+   "chunk": 599,
+   "score": 152,
+   "cam": 0,
+   "bombs": 5,
+   "timer": null,
+   "lives": null,
+   "stall": 8,
+   "churn": 1541,
+   "enemies": 0,
+   "act": "jump"
+  },
+  {
+   "chunk": 624,
+   "score": 208,
+   "cam": 210,
+   "bombs": 22,
+   "timer": null,
+   "lives": null,
+   "stall": 0,
+   "churn": 1441,
+   "enemies": 26,
+   "act": "jump"
+  },
+  {
+   "chunk": 649,
+   "score": 196,
+   "cam": 0,
+   "bombs": 30,
+   "timer": null,
+   "lives": null,
+   "stall": 12,
+   "churn": 1350,
+   "enemies": 0,
+   "act": "jump"
+  },
+  {
+   "chunk": 674,
+   "score": 208,
+   "cam": 224,
+   "bombs": 23,
+   "timer": null,
+   "lives": null,
+   "stall": 5,
+   "churn": 1938,
+   "enemies": 0,
+   "act": "jump"
+  },
+  {
+   "chunk": 699,
+   "score": 200,
+   "cam": 55,
+   "bombs": 4,
+   "timer": null,
+   "lives": null,
+   "stall": 0,
+   "churn": 1113,
+   "enemies": 0,
+   "act": "jump"
+  },
+  {
+   "chunk": 724,
+   "score": 200,
+   "cam": 211,
+   "bombs": 4,
+   "timer": null,
+   "lives": null,
+   "stall": 7,
+   "churn": 929,
+   "enemies": 23,
+   "act": "jump"
+  },
+  {
+   "chunk": 749,
+   "score": 200,
+   "cam": 211,
+   "bombs": 4,
+   "timer": null,
+   "lives": null,
+   "stall": 8,
+   "churn": 901,
+   "enemies": 0,
+   "act": "jump"
+  }
+ ],
+ "kill_correlator": {
+  "events": 33,
+  "verified_n": 2,
+  "verified": [
+   "0xef31a",
+   "0xef368"
+  ]
+ },
+ "guard_addrs": {
+  "bombs": "0xcaf9c"
+ }
+}

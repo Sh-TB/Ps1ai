@@ -1,0 +1,749 @@
+{
+ "serial": "SLUS-01212",
+ "plugin": "metal_slug_x",
+ "discovered": {
+  "player_y": {
+   "addr": 978816,
+   "dtype": "u32",
+   "score": 60,
+   "dir": "+",
+   "verified": "calibration"
+  }
+ },
+ "history": [
+  {
+   "op": "enter_gameplay",
+   "taps": 2,
+   "addr": 949792,
+   "dtype": "u32",
+   "score": 39800
+  },
+  {
+   "op": "discover",
+   "buttons": "RIGHT",
+   "frames_used": 450,
+   "role": "player_x",
+   "addr": 950404
+  },
+  {
+   "op": "monotonic",
+   "frames_used": 180
+  },
+  {
+   "op": "enter_gameplay",
+   "taps": 1,
+   "addr": 634474,
+   "dtype": "u16",
+   "score": 240
+  },
+  {
+   "op": "verify_map",
+   "bombs_ok": false,
+   "ammo_ok": false,
+   "pad_ok": false,
+   "score_ok": false,
+   "player_y": false,
+   "blocks": 3
+  },
+  {
+   "op": "enter_gameplay3",
+   "steps": 7,
+   "detector": "activity_ratio"
+  },
+  {
+   "op": "verify_map",
+   "bombs_ok": false,
+   "ammo_ok": false,
+   "pad_ok": false,
+   "score_ok": false,
+   "player_y": false,
+   "blocks": 0
+  },
+  {
+   "op": "enter_gameplay3",
+   "steps": 11,
+   "detector": "activity+echo",
+   "echo": {
+    "addr": 2096714,
+    "dtype": "u16",
+    "mask": "0x82",
+    "hits": 1
+   }
+  },
+  {
+   "op": "verify_map_v2",
+   "bombs_cands": [],
+   "hp_cands": [
+    58062,
+    829378,
+    829420,
+    829462
+   ],
+   "score_cands": [
+    950300,
+    950344,
+    950388
+   ],
+   "pad_echo": 894720,
+   "player_y": false,
+   "blocks": 65
+  },
+  {
+   "op": "enter_gameplay3",
+   "iters": 1,
+   "detector": "activity+echo",
+   "echo": {
+    "addr": 836118,
+    "dtype": "u16",
+    "mask": "0x82",
+    "hits": 2
+   }
+  },
+  {
+   "op": "verify_map_v2",
+   "bombs_cands": [
+    838396
+   ],
+   "hp_cands": [
+    58048,
+    58080,
+    58108,
+    612986
+   ],
+   "score_cands": [
+    915188,
+    841304,
+    899780
+   ],
+   "pad_echo": 826370,
+   "player_y": false,
+   "blocks": 44
+  },
+  {
+   "op": "enter_gameplay3",
+   "steps": 39,
+   "detector": "adaptive+activity",
+   "echo": []
+  },
+  {
+   "op": "verify_map_v2",
+   "bombs_cands": [
+    1621010,
+    1654944,
+    1655072,
+    1659376
+   ],
+   "hp_cands": [
+    58152,
+    613884,
+    836704,
+    841352
+   ],
+   "score_cands": [
+    871468,
+    874028
+   ],
+   "pad_echo": 828222,
+   "player_y": false,
+   "blocks": 68
+  },
+  {
+   "op": "enter_gameplay3",
+   "steps": 44,
+   "detector": "adaptive+activity",
+   "echo": [
+    {
+     "addr": 649446,
+     "dtype": "u16",
+     "mask": "0x82",
+     "hits": 2
+    },
+    {
+     "addr": 651158,
+     "dtype": "u16",
+     "mask": "0x82",
+     "hits": 2
+    },
+    {
+     "addr": 660154,
+     "dtype": "u16",
+     "mask": "0x82",
+     "hits": 2
+    }
+   ]
+  },
+  {
+   "op": "verify_map_v2",
+   "bombs_cands": [],
+   "hp_cands": [
+    58076,
+    58080,
+    613864,
+    613884
+   ],
+   "score_cands": [],
+   "pad_echo": 843762,
+   "player_y": false,
+   "blocks": 51
+  },
+  {
+   "op": "enter_gameplay3",
+   "steps": 44,
+   "detector": "adaptive+activity",
+   "echo": [
+    {
+     "addr": 649446,
+     "dtype": "u16",
+     "mask": "0x82",
+     "hits": 2
+    },
+    {
+     "addr": 651158,
+     "dtype": "u16",
+     "mask": "0x82",
+     "hits": 2
+    },
+    {
+     "addr": 660154,
+     "dtype": "u16",
+     "mask": "0x82",
+     "hits": 2
+    }
+   ]
+  },
+  {
+   "op": "verify_map_v2",
+   "bombs_cands": [],
+   "hp_cands": [
+    58076,
+    58080,
+    613864,
+    613884
+   ],
+   "score_cands": [],
+   "pad_echo": 843762,
+   "player_y": false,
+   "blocks": 51
+  },
+  {
+   "op": "enter_gameplay3",
+   "attempt": 0,
+   "detector": "boot-taps+overlay"
+  },
+  {
+   "op": "verify_map_v2",
+   "bombs_cands": [
+    1977744,
+    1990216,
+    1990596,
+    1990976
+   ],
+   "hp_cands": [
+    58152,
+    612368,
+    612986,
+    828072
+   ],
+   "score_cands": [
+    895076,
+    911460
+   ],
+   "pad_echo": 950140,
+   "player_y": false,
+   "blocks": 80
+  },
+  {
+   "op": "enter_gameplay3",
+   "attempt": 0,
+   "detector": "boot-taps+overlay"
+  },
+  {
+   "op": "run2",
+   "frames": 15000,
+   "fps": 402.9,
+   "deaths": 0,
+   "hits": 0
+  },
+  {
+   "op": "enter_gameplay3",
+   "attempt": 0,
+   "detector": "boot-taps+overlay"
+  },
+  {
+   "op": "run2",
+   "frames": 15000,
+   "fps": 399.5,
+   "deaths": 0,
+   "hits": 0
+  },
+  {
+   "op": "enter_gameplay3",
+   "attempt": 0,
+   "detector": "boot-taps+overlay"
+  },
+  {
+   "op": "run2",
+   "frames": 15000,
+   "fps": 406.7,
+   "deaths": 0,
+   "hits": 0
+  },
+  {
+   "op": "enter_gameplay3",
+   "attempt": 0,
+   "detector": "boot-taps+overlay+responsive",
+   "proof": {
+    "addr": 950140,
+    "ok": 0,
+    "reps": 3,
+    "last": [
+     130,
+     130
+    ]
+   }
+  },
+  {
+   "op": "enter_gameplay3",
+   "attempt": 0,
+   "detector": "boot-taps+overlay+trajectory",
+   "proof": {
+    "method": "trajectory",
+    "d_run": "85cf43acdc963b68",
+    "d_left": "c574311bd2744c77",
+    "d_idle": "479b1a986da388ec",
+    "frames": 300
+   }
+  },
+  {
+   "op": "profile_surgery",
+   "note": "semantic picks from savestate scans: hp=829336(200) bombs=833328(12) lives=829338(5) timer=964034(250); stale discovered cleared"
+  },
+  {
+   "op": "enter_gameplay3",
+   "attempt": 0,
+   "detector": "boot-taps+overlay+trajectory",
+   "proof": {
+    "method": "trajectory",
+    "d_run": "7afacfb398d4c466",
+    "d_left": "2f1a5ad65dd4329b",
+    "d_idle": "1e24a19f3b0189b4",
+    "frames": 300
+   }
+  },
+  {
+   "op": "enter_gameplay3",
+   "attempt": 0,
+   "detector": "boot-taps+overlay+trajectory",
+   "proof": {
+    "method": "trajectory",
+    "d_run": "7afacfb398d4c466",
+    "d_left": "2f1a5ad65dd4329b",
+    "d_idle": "1e24a19f3b0189b4",
+    "frames": 300
+   }
+  },
+  {
+   "op": "enter_gameplay3",
+   "attempt": 0,
+   "detector": "boot-taps+overlay+trajectory",
+   "proof": {
+    "method": "trajectory",
+    "d_run": "7afacfb398d4c466",
+    "d_left": "2f1a5ad65dd4329b",
+    "d_idle": "1e24a19f3b0189b4",
+    "frames": 300
+   }
+  },
+  {
+   "op": "enter_gameplay3",
+   "attempt": 0,
+   "detector": "boot-taps+overlay+trajectory",
+   "proof": {
+    "method": "trajectory",
+    "d_run": "7afacfb398d4c466",
+    "d_left": "2f1a5ad65dd4329b",
+    "d_idle": "1e24a19f3b0189b4",
+    "frames": 300
+   }
+  },
+  {
+   "op": "enter_gameplay3",
+   "attempt": 0,
+   "detector": "boot-taps+overlay+trajectory",
+   "proof": {
+    "method": "trajectory",
+    "d_run": "7afacfb398d4c466",
+    "d_left": "2f1a5ad65dd4329b",
+    "d_idle": "1e24a19f3b0189b4",
+    "frames": 300
+   }
+  },
+  {
+   "op": "enter_gameplay3",
+   "attempt": 0,
+   "detector": "boot-taps+overlay+trajectory",
+   "proof": {
+    "method": "trajectory",
+    "d_run": "7afacfb398d4c466",
+    "d_left": "2f1a5ad65dd4329b",
+    "d_idle": "1e24a19f3b0189b4",
+    "frames": 300
+   }
+  },
+  {
+   "op": "enter_gameplay3",
+   "attempt": 0,
+   "detector": "boot-taps+overlay+trajectory",
+   "proof": {
+    "method": "trajectory",
+    "d_run": "7afacfb398d4c466",
+    "d_left": "2f1a5ad65dd4329b",
+    "d_idle": "1e24a19f3b0189b4",
+    "frames": 300
+   }
+  },
+  {
+   "op": "enter_gameplay3",
+   "attempt": 0,
+   "detector": "boot-taps+overlay+trajectory",
+   "proof": {
+    "method": "trajectory",
+    "d_run": "7afacfb398d4c466",
+    "d_left": "2f1a5ad65dd4329b",
+    "d_idle": "1e24a19f3b0189b4",
+    "frames": 300
+   }
+  },
+  {
+   "op": "enter_gameplay3",
+   "attempt": 0,
+   "detector": "boot-taps+overlay+trajectory",
+   "proof": {
+    "method": "trajectory",
+    "d_run": "7afacfb398d4c466",
+    "d_left": "2f1a5ad65dd4329b",
+    "d_idle": "1e24a19f3b0189b4",
+    "frames": 300
+   }
+  },
+  {
+   "op": "enter_gameplay3",
+   "attempt": 0,
+   "detector": "boot-taps+overlay+trajectory",
+   "proof": {
+    "method": "trajectory",
+    "d_run": "7afacfb398d4c466",
+    "d_left": "2f1a5ad65dd4329b",
+    "d_idle": "1e24a19f3b0189b4",
+    "frames": 300
+   }
+  },
+  {
+   "op": "enter_gameplay3",
+   "attempt": 0,
+   "detector": "boot-taps+overlay+trajectory",
+   "proof": {
+    "method": "trajectory",
+    "d_run": "7afacfb398d4c466",
+    "d_left": "2f1a5ad65dd4329b",
+    "d_idle": "1e24a19f3b0189b4",
+    "frames": 300
+   }
+  },
+  {
+   "op": "verify_gs_live",
+   "confirmed": [
+    "weapon",
+    "mission",
+    "pow"
+   ],
+   "frames": 4400
+  },
+  {
+   "op": "enter_gameplay3",
+   "attempt": 0,
+   "detector": "boot-taps+overlay+trajectory",
+   "proof": {
+    "method": "trajectory",
+    "d_run": "7afacfb398d4c466",
+    "d_left": "2f1a5ad65dd4329b",
+    "d_idle": "1e24a19f3b0189b4",
+    "frames": 300
+   }
+  },
+  {
+   "op": "verify_gs_live3",
+   "delta": 592360,
+   "checks": {
+    "bombs": false,
+    "hp": false,
+    "timer": false,
+    "lives": false,
+    "ammo": true,
+    "weapon": true,
+    "score": true,
+    "pow": true,
+    "pad": false
+   },
+   "anchor": "0xca29c"
+  },
+  {
+   "op": "enter_gameplay3",
+   "attempt": 0,
+   "detector": "boot-taps+overlay+trajectory",
+   "proof": {
+    "method": "trajectory",
+    "d_run": "7afacfb398d4c466",
+    "d_left": "2f1a5ad65dd4329b",
+    "d_idle": "1e24a19f3b0189b4",
+    "frames": 300
+   }
+  },
+  {
+   "op": "enter_gameplay3",
+   "attempt": 0,
+   "detector": "boot-taps+overlay+trajectory",
+   "proof": {
+    "method": "trajectory",
+    "d_run": "7afacfb398d4c466",
+    "d_left": "2f1a5ad65dd4329b",
+    "d_idle": "1e24a19f3b0189b4",
+    "frames": 300
+   }
+  },
+  {
+   "op": "enter_gameplay3",
+   "attempt": 0,
+   "detector": "boot-taps+overlay+trajectory",
+   "proof": {
+    "method": "trajectory",
+    "d_run": "7afacfb398d4c466",
+    "d_left": "2f1a5ad65dd4329b",
+    "d_idle": "1e24a19f3b0189b4",
+    "frames": 300
+   }
+  },
+  {
+   "op": "enter_gameplay3",
+   "attempt": 0,
+   "detector": "boot-taps+overlay+trajectory",
+   "proof": {
+    "method": "trajectory",
+    "d_run": "7afacfb398d4c466",
+    "d_left": "2f1a5ad65dd4329b",
+    "d_idle": "1e24a19f3b0189b4",
+    "frames": 300
+   }
+  },
+  {
+   "op": "enter_gameplay3",
+   "attempt": 0,
+   "detector": "boot-taps+overlay+trajectory",
+   "proof": {
+    "method": "trajectory",
+    "d_run": "7afacfb398d4c466",
+    "d_left": "2f1a5ad65dd4329b",
+    "d_idle": "1e24a19f3b0189b4",
+    "frames": 300
+   }
+  },
+  {
+   "op": "enter_gameplay3",
+   "attempt": 0,
+   "detector": "boot-taps+overlay+trajectory",
+   "proof": {
+    "method": "trajectory",
+    "d_run": "7afacfb398d4c466",
+    "d_left": "2f1a5ad65dd4329b",
+    "d_idle": "1e24a19f3b0189b4",
+    "frames": 300
+   }
+  },
+  {
+   "op": "enter_gameplay3",
+   "attempt": 0,
+   "detector": "boot-taps+overlay+trajectory",
+   "proof": {
+    "method": "trajectory",
+    "d_run": "6307f6f332b077b6",
+    "d_left": "419b7390b226a8a8",
+    "d_idle": "fc1936193ea75551",
+    "frames": 300
+   }
+  },
+  {
+   "op": "enter_gameplay3",
+   "attempt": 0,
+   "detector": "boot-taps+overlay+trajectory",
+   "proof": {
+    "method": "trajectory",
+    "d_run": "58d4848a7d0c9465",
+    "d_left": "d5fb6cf020ab82ad",
+    "d_idle": "f54fa7b188c0b8ca",
+    "frames": 300
+   }
+  },
+  {
+   "op": "enter_gameplay3",
+   "attempt": 0,
+   "detector": "boot-taps+overlay+trajectory",
+   "proof": {
+    "method": "trajectory",
+    "d_run": "7afacfb398d4c466",
+    "d_left": "2f1a5ad65dd4329b",
+    "d_idle": "1e24a19f3b0189b4",
+    "frames": 300
+   }
+  },
+  {
+   "op": "enter_gameplay3",
+   "attempt": 0,
+   "detector": "boot-taps+overlay+trajectory",
+   "proof": {
+    "method": "trajectory",
+    "d_run": "6307f6f332b077b6",
+    "d_left": "419b7390b226a8a8",
+    "d_idle": "fc1936193ea75551",
+    "frames": 300
+   }
+  },
+  {
+   "op": "enter_gameplay3",
+   "attempt": 0,
+   "detector": "boot-taps+overlay+trajectory",
+   "proof": {
+    "method": "trajectory",
+    "d_run": "58d4848a7d0c9465",
+    "d_left": "d5fb6cf020ab82ad",
+    "d_idle": "f54fa7b188c0b8ca",
+    "frames": 300
+   }
+  },
+  {
+   "op": "enter_gameplay3",
+   "attempt": 0,
+   "detector": "boot-taps+overlay+trajectory",
+   "proof": {
+    "method": "trajectory",
+    "d_run": "7afacfb398d4c466",
+    "d_left": "2f1a5ad65dd4329b",
+    "d_idle": "1e24a19f3b0189b4",
+    "frames": 300
+   }
+  }
+ ],
+ "updated": "2026-10-18 18:47:45",
+ "gsmap": {
+  "score": {
+   "addr": 975640,
+   "dtype": "u32",
+   "verified": true,
+   "source": "static RE xrefs + live increment"
+  },
+  "score_p2": {
+   "addr": 975648,
+   "dtype": "u32",
+   "note": "Max Score P2 | awaiting event verification",
+   "verified": false,
+   "last_value": 0
+  },
+  "hp": {
+   "addr": 978424,
+   "dtype": "u16",
+   "verified": true,
+   "last_value": null,
+   "note": "u16 next to lives; full=200 matches GS code 80032764 00C8 scale",
+   "evidence": "boot-time calibration"
+  },
+  "bombs": {
+   "addr": 871094,
+   "dtype": "u16",
+   "verified": true,
+   "last_value": null,
+   "note": "grenade counter (starts 10-12, decs on circle throw)",
+   "evidence": "boot-time calibration"
+  },
+  "lives": {
+   "addr": 829338,
+   "dtype": "u16",
+   "verified": true,
+   "last_value": 5,
+   "note": "u16 adjacent to hp (same struct); HUD 1UP counter",
+   "evidence": "death-dec scan; needs death-event confirmation in play"
+  },
+  "ammo": {
+   "addr": 187608,
+   "dtype": "u16",
+   "note": "Extra Arms Ammo 0001; infinite-ammo NOP @0x2DCE6 | awaiting event verification",
+   "verified": false,
+   "last_value": 255,
+   "evidence": "pistol is infinite in MSX; needs a weapon pickup event to scan \u2014 deferred"
+  },
+  "weapon": {
+   "addr": 186668,
+   "dtype": "u16",
+   "verified": true,
+   "source": "gamehacking.org codes + live event proof",
+   "note": "Weapon Modifier"
+  },
+  "timer": {
+   "addr": 978586,
+   "dtype": "u16",
+   "verified": true,
+   "last_value": null,
+   "note": "1Hz countdown, starts ~250",
+   "evidence": "boot-time calibration"
+  },
+  "pow": {
+   "addr": 555640,
+   "dtype": "u16",
+   "verified": true,
+   "source": "static RE xrefs"
+  },
+  "mission": {
+   "addr": 868883,
+   "dtype": "u8",
+   "verified": true,
+   "source": "gamehacking.org codes + live event proof",
+   "note": "Unlock Another Mission"
+  },
+  "pad_mirror": {
+   "addr": 870728,
+   "dtype": "u16",
+   "note": "Rapid-fire joker D00D4948 8000 -> P1 pad bits (bit15 = SQUARE = fire) mirrored in RAM | awaiting event verification",
+   "verified": false,
+   "last_value": 0,
+   "evidence": "0x0D4948 not updated on menus/this revision \u2014 bit-probe all zero"
+  }
+ },
+ "entities": {
+  "main_block": {
+   "start": 950016,
+   "end": 950356,
+   "step": 4,
+   "n_live": 12,
+   "zone": "player-x zone"
+  }
+ },
+ "session_2026_10_18_b": {
+  "goal": "clear Mission 1 with legal inputs only",
+  "iterations": 17,
+  "root_causes_found_and_fixed": [
+   "noisy entity slots drove perpetual threat-hopping (deaths) -> policy v2 removed threat reactions",
+   "1-frame jump taps cannot clear obstacles -> hold B ~13f",
+   "responsive() churn>900 gate false-positives during camera-locked fights -> keepalive pressed START = PAUSE -> responsive_live (pad+churn+selfplay)",
+   "fixed 3-tap recovery: 3rd tap PAUSED the game right after continue -> adaptive tap+verify recovery",
+   "attract demo churns 200k+ AND mirrors its own inputs so gates accepted it as the real game -> self-play guard (pad must mirror 0 when we press nothing)",
+   "free-scrolling jumps land the player ON the scenery truck -> stalls",
+   "bombs counter reading is garbage across continues (cluster moves) -> dry-gate removed (A no-ops when empty)"
+  ],
+  "key_discoveries": [
+   "soldier truck IS destructible: left-fire + grenades shred it in ~1-2s and the camera unlocks (zone_lab tactic C)",
+   "zone lab winners from identical savestate: C=1.1s, B=9s, F=9s; A/D/E fail",
+   "MSX PS1 = FREE PLAY (unlimited continues, legit)",
+   "score word @0x0EE318 is NOT the HUD score (diverges); HUD score reached 4300 in run v2, 1400+ in diag with 2 POWs freed",
+   "bot reliably crosses canyon->market->village (~35% of M1) each life; wall = village soldier-truck + bomber chopper"
+  ],
+  "evidence": "download/ps1play_v4_mission1/ (PNG predeath/death/zone_live/lab)"
+ }
+}

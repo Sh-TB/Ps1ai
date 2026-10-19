@@ -1,0 +1,5 @@
+__pycache__/
+*.pyc
+*.state
+ps1-test/
+emu/
