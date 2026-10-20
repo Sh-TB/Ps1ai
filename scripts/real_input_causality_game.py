@@ -16,6 +16,7 @@ If B/C diverge from A in the direction held, controller causality on
 the real game is PROVEN (OBSERVED). Save states live only in the local
 autolab workspace (never committed).
 """
+import argparse
 import json
 import os
 import sys
@@ -23,16 +24,11 @@ import sys
 import numpy as np
 from PIL import Image
 
-_REPO = "/home/z/my-project/ps1ai"
+_REPO = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 sys.path.insert(0, _REPO)
 
+from ps1play import labconfig  # noqa: E402
 from ps1play.api import PS1Play  # noqa: E402
-
-GAME = "/home/z/my-project/ps1-test/emu/games/Metal Slug X (USA).cue"
-CORE = "/home/z/my-project/ps1-test/cores/mednafen_psx_libretro.so"
-WORKSPACE = "/home/z/my-project/ps1-test/emu"
-OUT = "/home/z/my-project/ps1-test/emu/autolab/real_input_causality_game"
-os.makedirs(OUT, exist_ok=True)
 
 SAVE_AT = 5600
 BRANCH_LEN = 240
@@ -54,25 +50,51 @@ def small_diff(a, b):
     return float(np.mean(np.abs(a.astype(np.int16) - b.astype(np.int16))))
 
 
-def main():
-    p = PS1Play(GAME, core=CORE, workspace=WORKSPACE,
-                var_overrides={b"beetle_psx_override_bios": b"openbios"},
-                verbose=False)
+def main(argv=None):
+    ap = argparse.ArgumentParser(
+        description="A/B/C controller->world causality on the REAL game "
+                    "(deterministic branches from one savestate)")
+    ap.add_argument("--game", default=labconfig.resolve_path("game"))
+    ap.add_argument("--core", default=labconfig.resolve_path("core"))
+    ap.add_argument("--workspace", default=labconfig.resolve_path(
+        "workspace"))
+    ap.add_argument("--out", default=os.path.join(
+        labconfig.resolve_path("workspace") or ".", "autolab",
+        "real_input_causality_game"))
+    ap.add_argument("--save-at", type=int, default=SAVE_AT)
+    ap.add_argument("--branch-len", type=int, default=BRANCH_LEN)
+    ap.add_argument("--firmware", default="openbios",
+                    choices=list(labconfig.FIRMWARE_MODES))
+    a = ap.parse_args(argv)
+    os.makedirs(a.out, exist_ok=True)
+
+    fw = labconfig.resolve_firmware(a.firmware, a.workspace)
+    kw = {"core": a.core, "workspace": a.workspace}
+    if fw["override_vars"]:
+        kw["var_overrides"] = fw["override_vars"]
+    p = PS1Play(a.game, **kw)
     info = p.boot()
+    fw_ev = labconfig.firmware_log_evidence(
+        getattr(p.core, "log_history", []))
+    fw_ok, fw_detail = labconfig.check_firmware_trust(fw, fw_ev)
     print("boot:", json.dumps(info, default=str), flush=True)
+    print(f"firmware: mode={fw['mode']} trust_ok={fw_ok} ({fw_detail})",
+          flush=True)
+    if not fw_ok:
+        sys.exit(f"!! firmware trust failed: {fw_detail}")
 
     # drive into live mission 1
     prev = None
-    for f in range(1, SAVE_AT + 1):
+    for f in range(1, a.save_at + 1):
         p.core.set_buttons(buttons_at(f))
         p.core.run_frame()
     rgb = p.core.frame_rgb()
     arr0 = np.asarray(rgb)
-    Image.fromarray(arr0).save(os.path.join(OUT, "state_S.png"))
+    Image.fromarray(arr0).save(os.path.join(a.out, "state_S.png"))
     state = p.core.serialize()
-    with open(os.path.join(OUT, "state_S.bin"), "wb") as fh:
+    with open(os.path.join(a.out, "state_S.bin"), "wb") as fh:
         fh.write(state)
-    print("state saved at f", SAVE_AT, "mean", round(float(arr0.mean()), 1))
+    print("state saved at f", a.save_at, "mean", round(float(arr0.mean()), 1))
 
     # branches
     finals = {}
@@ -80,10 +102,10 @@ def main():
                       ("C_LEFT", "LEFT")):
         p.core.unserialize(state)
         p.core.set_buttons(btn)
-        for i in range(BRANCH_LEN):
+        for i in range(a.branch_len):
             p.core.run_frame()
         arr = np.asarray(p.core.frame_rgb())
-        png = os.path.join(OUT, f"final_{name}.png")
+        png = os.path.join(a.out, f"final_{name}.png")
         Image.fromarray(arr).save(png)
         finals[name] = arr
         print(f"branch {name}: final mean {float(arr.mean()):.1f}")
@@ -103,8 +125,12 @@ def main():
               "boundary = expected no-op)" \
         if (dAB > 5.0 and dBC > 5.0) else "NOT PROVEN"
     print("verdict:", verdict)
-    with open(os.path.join(OUT, "report.json"), "w") as fh:
-        json.dump({"save_at": SAVE_AT, "branch_len": BRANCH_LEN,
+    with open(os.path.join(a.out, "report.json"), "w") as fh:
+        json.dump({"save_at": a.save_at, "branch_len": a.branch_len,
+                   "firmware": {"mode": fw["mode"],
+                                "bios_md5": fw["bios_md5"],
+                                "trust_ok": fw_ok},
+                   "core": a.core, "game": a.game,
                    "diff_A_vs_B_RIGHT": round(dAB, 3),
                    "diff_A_vs_C_LEFT": round(dAC, 3),
                    "diff_B_vs_C": round(dBC, 3),

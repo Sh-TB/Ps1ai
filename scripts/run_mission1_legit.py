@@ -82,17 +82,21 @@ from ps1play.agent.rewards import RewardAudit                # noqa: E402
 from mission import ensure_mission, recover, responsive      # noqa: E402
 
 # ------------------------------------------------------------------
-# configuration (§9): CLI args with env-var defaults. The original
-# absolute defaults are preserved for the original environment.
+# configuration (§9 + v0.12): CLI args with env-var defaults resolved
+# through the shared contract (ps1play.labconfig). No machine-specific
+# absolute paths remain in this file.
 # ------------------------------------------------------------------
-DEF_GAME = os.environ.get(
-    "M1_GAME", "/home/z/my-project/ps1-test/emu/games/"
-               "Metal Slug X (USA).cue")
-DEF_CORE = os.environ.get("M1_CORE", None)          # None -> api default
-DEF_WORKSPACE = os.environ.get("M1_WORKSPACE", None)
-DEF_EVID = os.environ.get(
-    "M1_EVID", "/home/z/my-project/download/ps1play_v6_mission1")
-DEF_PROFILE_DIR = os.environ.get("M1_PROFILE_DIR", None)
+from ps1play import labconfig                                 # noqa: E402
+from ps1play.labconfig import (                               # noqa: E402
+    ConfigError, FirmwareError)
+
+DEF_GAME = labconfig.resolve_path("game")
+DEF_CORE = labconfig.resolve_path("core")          # None -> api default
+DEF_WORKSPACE = labconfig.resolve_path("workspace")
+DEF_EVID = labconfig.resolve_path("evidence_dir") or os.path.join(
+    _REPO, "evidence_local", "mission1")
+DEF_PROFILE_DIR = labconfig.resolve_path("profile_dir")
+DEF_FIRMWARE = os.environ.get("M1_FIRMWARE", "auto")
 DEF_CHUNKS = int(os.environ.get("M1_CHUNKS", "1000"))
 DEF_CHUNK = 60
 DEF_RESUME = os.environ.get("M1_RESUME", "")
@@ -122,6 +126,12 @@ def parse_args(argv=None):
                     help="max chunks of 60 frames (env M1_CHUNKS)")
     ap.add_argument("--resume", default=DEF_RESUME,
                     help="savestate name to resume from (env M1_RESUME)")
+    ap.add_argument("--firmware", default=DEF_FIRMWARE,
+                    choices=list(labconfig.FIRMWARE_MODES),
+                    help="firmware mode: auto | openbios | retail "
+                         "(env M1_FIRMWARE); the selected mode is "
+                         "recorded in the report and verified against "
+                         "the core log — never switched silently")
     ap.add_argument("--report", default=None,
                     help="report JSON path (default <evidence-dir>/"
                          "mission1_report.json)")
@@ -130,14 +140,16 @@ def parse_args(argv=None):
         ap.error("--chunks must be >= 1")
     # ---- validate BEFORE touching the emulator (§9: no silent fallback)
     missing = []
-    if not os.path.exists(args.game):
-        missing.append(f"game image not found: {args.game} "
+    cue_ok, cue_detail = labconfig.validate_cue(args.game)
+    if not cue_ok:
+        missing.append(f"game image invalid: {args.game} ({cue_detail}) "
                        f"(set --game / M1_GAME)")
     if args.core and not os.path.exists(args.core):
         missing.append(f"libretro core not found: {args.core} "
                        f"(set --core / M1_CORE)")
     if missing:
         ap.error(" | ".join(missing))
+    args.cue_detail = cue_detail
     return args
 
 
@@ -558,10 +570,40 @@ def main(argv=None):
         kw["workspace"] = args.workspace
     if args.profile_dir:
         kw["profile_dir"] = args.profile_dir
+    # ---- v0.12: explicit firmware contract (Phase B). The probe and
+    # the runner now share ONE resolver; the selected mode, BIOS hash
+    # and the core's own log evidence are recorded — and trusted — or
+    # the run fails early.
+    try:
+        fw = labconfig.resolve_firmware(args.firmware, args.workspace)
+    except FirmwareError as e:
+        report["firmware"] = {"mode": args.firmware,
+                              "satisfied": False, "error": str(e)}
+        sys.exit(f"!! firmware configuration error: {e}")
+    if fw["override_vars"]:
+        kw["var_overrides"] = fw["override_vars"]
+    report["firmware"] = {
+        "mode": fw["mode"], "requested": args.firmware,
+        "bios_path": fw["bios_path"], "bios_md5": fw["bios_md5"],
+        "override_engaged": bool(fw["override_vars"]),
+        "detail": fw["detail"], "cue": args.cue_detail,
+        "game_sha1": labconfig.file_md5(
+            _game_bin(args.game)) if _game_bin(args.game) else None,
+        "game_md5": _game_md5(args.game),
+    }
     p = PS1Play(args.game, **kw)
     info = p.boot()
     log("boot:", info)
     report["boot"] = info
+    fw_ev = labconfig.firmware_log_evidence(
+        getattr(p.core, "log_history", []))
+    fw_ok, fw_detail = labconfig.check_firmware_trust(fw, fw_ev)
+    report["firmware"]["core_log"] = fw_ev
+    report["firmware"]["trust"] = {"ok": fw_ok, "detail": fw_detail}
+    if not fw_ok:
+        report["lifecycle"] = lc.to_dict()
+        sys.exit(f"!! firmware trust failed: {fw_detail}")
+    log(f"firmware: mode={fw['mode']} trust_ok={fw_ok} ({fw_detail})")
     lc.transition("TITLE_OR_MENU", "core booted, game identified",
                   evidence=info)
 
@@ -954,6 +996,27 @@ def _repo_head():
             ["git", "rev-parse", "HEAD"], cwd=_REPO,
             stderr=subprocess.DEVNULL).decode().strip()
     except Exception:                                       # noqa: BLE001
+        return None
+
+
+def _game_bin(game):
+    """Path of the cue's first FILE entry (or the file itself)."""
+    if game and game.lower().endswith(".cue"):
+        try:
+            with open(game, "r", errors="replace") as f:
+                for ln in f:
+                    if 'FILE "' in ln:
+                        return os.path.join(os.path.dirname(game),
+                                            ln.split('"')[1])
+        except OSError:                                     # noqa: BLE001
+            return None
+    return game
+
+
+def _game_md5(game):
+    try:
+        return labconfig.file_md5(game)
+    except OSError:                                         # noqa: BLE001
         return None
 
 

@@ -22,9 +22,15 @@ from .agent.observer import Observer
 from .agent.discovery import DiscoverySession
 from .agent.loop import AgentLoop
 from .plugins.base import parse_serial, detect_plugin
+from . import labconfig
+from .labconfig import ConfigError                      # noqa: F401 (re-export)
 
-DEFAULT_CORE = "/home/z/my-project/ps1-test/cores/mednafen_psx_libretro.so"
-DEFAULT_WORKSPACE = "/home/z/my-project/ps1-test/emu"
+# v0.12: machine-specific absolute defaults were removed. Defaults now
+# resolve through the shared configuration contract (env var > gitignored
+# machine config). They may legitimately be None — PS1Play then fails
+# early with a concise, actionable error instead of a ctypes traceback.
+DEFAULT_CORE = labconfig.resolve_path("core")
+DEFAULT_WORKSPACE = labconfig.resolve_path("workspace")
 DEFAULT_PROFILES = os.path.join(os.path.dirname(__file__), "profiles")
 
 
@@ -39,10 +45,27 @@ def _corner_blue(arr):
 
 
 class PS1Play:
-    def __init__(self, game, core=DEFAULT_CORE, workspace=DEFAULT_WORKSPACE,
+    def __init__(self, game, core=None, workspace=None,
                  profile_dir=DEFAULT_PROFILES, profile_name=None,
                  states_dir=None, journal_path=None, verbose=False,
                  var_overrides=None):
+        # v0.12: explicit fail-early configuration contract. A None or
+        # missing core/workspace is an immediate, actionable error —
+        # never a silent fallback to a different environment.
+        core = core if core is not None else DEFAULT_CORE
+        workspace = workspace if workspace is not None else \
+            DEFAULT_WORKSPACE
+        if not core:
+            raise ConfigError(
+                "no libretro core configured — pass core=..., set "
+                "M1_CORE, or create .autolab_config.json (see "
+                "ps1play/labconfig.py)")
+        if not os.path.exists(core):
+            raise ConfigError(f"libretro core not found: {core}")
+        if not workspace:
+            raise ConfigError(
+                "no workspace configured — pass workspace=..., set "
+                "M1_WORKSPACE, or create .autolab_config.json")
         self.game = game
         self.core_path = core
         self.workspace = workspace

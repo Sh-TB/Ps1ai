@@ -630,9 +630,57 @@
     "d_idle": "1e24a19f3b0189b4",
     "frames": 300
    }
+  },
+  {
+   "op": "enter_gameplay3",
+   "attempt": 0,
+   "detector": "boot-taps+overlay+trajectory",
+   "proof": {
+    "method": "trajectory",
+    "d_run": "2a915de400592c3a",
+    "d_left": "ab5bd6f28cbf1ad5",
+    "d_idle": "cd24d7c3846955c7",
+    "frames": 300
+   }
+  },
+  {
+   "op": "enter_gameplay3",
+   "attempt": 0,
+   "detector": "boot-taps+overlay+trajectory",
+   "proof": {
+    "method": "trajectory",
+    "d_run": "ae2f1c6d61baccdd",
+    "d_left": "1ccd8cae8fba6237",
+    "d_idle": "c26e0a63fb1431be",
+    "frames": 300
+   }
+  },
+  {
+   "op": "enter_gameplay3",
+   "attempt": 0,
+   "detector": "boot-taps+overlay+trajectory",
+   "proof": {
+    "method": "trajectory",
+    "d_run": "2a915de400592c3a",
+    "d_left": "ab5bd6f28cbf1ad5",
+    "d_idle": "cd24d7c3846955c7",
+    "frames": 300
+   }
+  },
+  {
+   "op": "enter_gameplay3",
+   "attempt": 0,
+   "detector": "boot-taps+overlay+trajectory",
+   "proof": {
+    "method": "trajectory",
+    "d_run": "ae2f1c6d61baccdd",
+    "d_left": "1ccd8cae8fba6237",
+    "d_idle": "c26e0a63fb1431be",
+    "frames": 300
+   }
   }
  ],
- "updated": "2026-10-18 18:47:45",
+ "updated": "2026-10-20 08:14:35",
  "gsmap": {
   "score": {
    "addr": 975640,

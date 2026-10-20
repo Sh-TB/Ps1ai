@@ -42,14 +42,18 @@ import time
 _REPO = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 sys.path.insert(0, _REPO)
 
-DEF_CORE = os.environ.get(
-    "M1_CORE", "/home/z/my-project/ps1-test/cores/mednafen_psx_libretro.so")
-DEF_WORKSPACE = os.environ.get("M1_WORKSPACE",
-                               "/home/z/my-project/ps1-test/emu")
-DEF_GAME = os.environ.get(
-    "M1_GAME", "/home/z/my-project/ps1-test/emu/games/"
-               "Metal Slug X (USA).cue")
+# v0.12: defaults resolve through the shared configuration contract;
+# no machine-specific absolute paths remain in this file.
+from ps1play import labconfig                                 # noqa: E402
+
+DEF_CORE = labconfig.resolve_path("core")
+DEF_WORKSPACE = labconfig.resolve_path("workspace")
+DEF_GAME = labconfig.resolve_path("game")
+DEF_EVID = labconfig.resolve_path("evidence_dir") or os.path.join(
+    _REPO, "evidence_local", "mission1")
+DEF_FIRMWARE = os.environ.get("M1_FIRMWARE", "auto")
 OPENBIOS = os.path.join(_REPO, "third_party", "openbios", "openbios.bin")
+RUNNER = os.path.join(_REPO, "scripts", "run_mission1_legit.py")
 
 
 def sha1_file(path):
@@ -91,10 +95,13 @@ class Lab:
                         seen[r["fingerprint"]] = r
         return seen
 
-    def run(self, gate, hypothesis, next_action, cmd, inputs, fn=None):
+    def run(self, gate, hypothesis, next_action, cmd, inputs, fn=None,
+            force=None):
         """Run one gate (or reuse its deduped result). `cmd` is the
         command vector for the record; `fn` executes it in-process and
-        returns (status, detail, extras)."""
+        returns (status, detail, extras). `force` overrides the
+        instance-level --force for this gate only."""
+        force = self.force if force is None else force
         fp_src = {"gate": gate, "cmd": cmd, "inputs": inputs,
                   "head": _repo_head()}
         fp = hashlib.sha1(json.dumps(fp_src, sort_keys=True).encode()) \
@@ -103,8 +110,9 @@ class Lab:
         rec = {"gate": gate, "fingerprint": fp,
                "hypothesis": hypothesis, "next_action": next_action,
                "cmd": cmd, "ts": time.strftime("%Y-%m-%dT%H:%M:%S")}
-        if prior and not self.force:
+        if prior and not force:
             rec.update(status="DEDUP",
+                       prior_status=prior.get("status"),
                        detail=f"reused {prior.get('gate')} result "
                               f"({prior.get('detail', '')[:80]})",
                        elapsed_s=0.0)
@@ -334,6 +342,182 @@ def gate_target_game(lab, game, core, workspace):
         fn)
 
 
+def _file_sha1(path):
+    try:
+        return sha1_file(path)
+    except OSError:
+        return None
+
+
+def _cue_bin(game):
+    """First FILE entry of a cue (or the path itself for non-cue)."""
+    if game and game.lower().endswith(".cue"):
+        try:
+            with open(game, "r", errors="replace") as f:
+                for ln in f:
+                    if 'FILE "' in ln:
+                        return os.path.join(os.path.dirname(game),
+                                            ln.split('"')[1])
+        except OSError:                                     # noqa: BLE001
+            return None
+    return game
+
+
+def gate_mission1_progress(lab, game, core, workspace, firmware="auto",
+                           chunks=30, evidence_dir=None, timeout_s=1200,
+                           force=False):
+    """v0.12 Phase C: actually LAUNCH the bounded real Mission-1 runner.
+
+    Environment readiness is preflight, not the result. The runner is
+    executed as a bounded subprocess (hard timeout), its JSON report is
+    parsed, and the gameplay result is classified separately:
+      PASS    runner exit 0 AND report says mission clear verified
+      PARTIAL runner exit 0 AND report reached live Mission-1 gameplay
+      FAIL    boot/enter failed, invalid/absent report, or subprocess
+              stopped (timeout recorded honestly)
+    """
+    evidence_dir = evidence_dir or DEF_EVID
+    runner_sha = _file_sha1(RUNNER)
+    labconfig_sha = _file_sha1(
+        os.path.join(_REPO, "ps1play", "labconfig.py"))
+    game_bin = _cue_bin(game)
+    inputs = {
+        "core_sha1": _file_sha1(core) if core else None,
+        "game_md5": (labconfig.file_md5(game_bin)
+                     if game_bin and os.path.exists(game_bin) else None),
+        "firmware_mode": firmware,
+        "chunks": chunks,
+        "runner_sha1": runner_sha,
+        "labconfig_sha1": labconfig_sha,
+    }
+
+    def fn():
+        t0 = time.time()
+        # 1. cheapest preflight — env readiness (never the result)
+        rc, j = _run_json(
+            [sys.executable, "scripts/env_probe.py", "--game", game,
+             "--core", core, "--workspace", workspace, "--json"], 600)
+        if not (rc == 0 and j.get("ready")):
+            return "BLOCKED", (
+                "environment not ready — TARGET_GAME lists the exact "
+                f"missing artifacts: {', '.join(j.get('missing', []))}"), {
+                    "exit": rc, "probe": j}
+        # 2. explicit firmware resolution (shared contract)
+        try:
+            fw = labconfig.resolve_firmware(firmware, workspace)
+        except labconfig.FirmwareError as e:
+            return "BLOCKED", f"firmware unresolved: {e}", {}
+        # 3. bounded real-runner launch (budget-aware hard timeout)
+        run_id = time.strftime("%Y%m%d_%H%M%S")
+        run_evid = os.path.join(evidence_dir, f"m1p_{run_id}")
+        os.makedirs(run_evid, exist_ok=True)
+        report_path = os.path.join(run_evid, "mission1_report.json")
+        remaining = max(60.0, lab.budget_s - lab.elapsed())
+        hard_timeout = min(float(timeout_s), remaining)
+        cmd = [sys.executable, RUNNER,
+               "--game", game or "", "--core", core or "",
+               "--workspace", workspace or "",
+               "--evidence-dir", run_evid,
+               "--firmware", fw["mode"],
+               "--chunks", str(chunks),
+               "--report", report_path]
+        timed_out = False
+        exit_code = None
+        stderr_tail = ""
+        stdout_tail = ""
+        try:
+            pr = subprocess.run(cmd, capture_output=True,
+                                timeout=hard_timeout, cwd=_REPO)
+            exit_code = pr.returncode
+            stderr_tail = pr.stderr.decode(errors="replace")[-800:]
+            stdout_tail = pr.stdout.decode(errors="replace")[-800:]
+        except subprocess.TimeoutExpired as e:
+            timed_out = True
+            stderr_tail = ((e.stderr or b"").decode(errors="replace")
+                           [-800:])
+        elapsed = round(time.time() - t0, 1)
+        # 4. parse the real gameplay report
+        rep = None
+        parse_err = None
+        if not timed_out:
+            try:
+                with open(report_path) as f:
+                    rep = json.load(f)
+            except (OSError, json.JSONDecodeError) as e:
+                parse_err = str(e)
+        if timed_out:
+            status = "FAIL"
+            detail = (f"runner exceeded hard timeout at "
+                      f"{hard_timeout:.0f}s (chunks={chunks}); subprocess "
+                      "stopped; timeout recorded honestly")
+        elif rep is None:
+            status = "FAIL"
+            detail = (f"runner exit={exit_code} without a valid report "
+                      f"JSON ({parse_err}); stderr: "
+                      f"{stderr_tail.strip()[-300:]}")
+        else:
+            play = rep.get("play") or {}
+            cleared = bool(play.get("cleared"))
+            in_game = bool(rep.get("enter"))
+            in_mission = bool((rep.get("gate") or {}).get("in_mission"))
+            frames = play.get("frames")
+            cam_ver = bool((rep.get("camera") or {}).get("verified"))
+            prog = play.get("progress_claim")
+            if cleared:
+                status = "PASS"
+                detail = ("MISSION CLEAR VERIFIED by the real runner "
+                          f"(frames={frames})")
+            elif in_game and in_mission:
+                status = "PARTIAL"
+                detail = (
+                    f"live Mission-1 gameplay executed (frames={frames}, "
+                    f"chunks={chunks}, camera_verified={cam_ver}, "
+                    f"progress_claim={'yes' if prog else 'none'}, "
+                    f"continues={play.get('continues')}) — environment "
+                    "readiness is NOT the claim; full progress still "
+                    "unproven")
+            else:
+                status = "FAIL"
+                detail = (f"runner exit={exit_code} but gameplay was not "
+                          f"reached (enter={in_game}, "
+                          f"in_mission={in_mission}); stderr: "
+                          f"{stderr_tail.strip()[-300:]}")
+        extras = {
+            "experiment_id": f"mission1-progress_{run_id}",
+            "head": _repo_head(),
+            "cmd": cmd,
+            "core_sha1": inputs["core_sha1"],
+            "game_md5": inputs["game_md5"],
+            "firmware_mode": fw["mode"],
+            "firmware_bios_md5": fw["bios_md5"],
+            "chunks": chunks,
+            "exit": exit_code,
+            "timed_out": timed_out,
+            "hard_timeout_s": round(hard_timeout, 1),
+            "runner_elapsed_s": elapsed,
+            "frames_actual": (rep or {}).get("play", {}).get("frames"),
+            "frames_nominal": (rep or {}).get("play", {}).get(
+                "frames_nominal"),
+            "report_path": report_path,
+            "evidence_dir": run_evid,
+            "stderr_tail": stderr_tail[-400:],
+            "stdout_tail": stdout_tail[-400:],
+            "repro_cmd": " ".join(cmd),
+            "runner_sha1": runner_sha,
+        }
+        return status, detail, extras
+
+    return lab.run(
+        "MISSION1_PROGRESS",
+        "the active policy executes real bounded gameplay after verified "
+        "Mission-1 entry (environment readiness is preflight, not the "
+        "result)",
+        "if FAIL: read the runner report and stderr tail; if PARTIAL: "
+        "classify the first live divergence (Phase E)",
+        [sys.executable, "scripts/run_mission1_legit.py"],
+        inputs, fn, force=force)
+
+
 def main():
     ap = argparse.ArgumentParser()
     ap.add_argument("--goal", default="gates",
@@ -342,6 +526,18 @@ def main():
     ap.add_argument("--game", default=DEF_GAME)
     ap.add_argument("--core", default=DEF_CORE)
     ap.add_argument("--workspace", default=DEF_WORKSPACE)
+    ap.add_argument("--evidence-dir", default=DEF_EVID,
+                    help="evidence root for the mission1-progress run")
+    ap.add_argument("--firmware", default=DEF_FIRMWARE,
+                    choices=list(labconfig.FIRMWARE_MODES),
+                    help="firmware mode for the real runner (auto | "
+                         "openbios | retail); recorded in the ledger")
+    ap.add_argument("--chunks", type=int, default=30,
+                    help="policy chunks (60 frames each) for the "
+                         "mission1-progress diagnostic run (default 30 "
+                         "= 1800 frames)")
+    ap.add_argument("--timeout-s", type=float, default=1200,
+                    help="hard subprocess timeout for the real run")
     ap.add_argument("--force", action="store_true",
                     help="re-run even if the fingerprint has a result")
     a = ap.parse_args()
@@ -368,11 +564,16 @@ def main():
         executed.append(gate_target_game(lab, a.game, a.core, a.workspace))
         if not lab.out_of_budget():
             last = executed[-1]
-            if last["status"] == "PASS":
-                print("[mission1-progress] environment ready — the "
-                      "bounded Mission-1 run is the NEXT experiment "
-                      "(run scripts/run_mission1_legit.py with the "
-                      "verified paths)")
+            last_ok = (last["status"] == "PASS"
+                       or last.get("prior_status") == "PASS")
+            if last_ok:
+                # v0.12 Phase C: launch the bounded REAL runner — an
+                # environment-ready verdict alone is NOT gameplay
+                # progress and must never be labelled as such.
+                executed.append(gate_mission1_progress(
+                    lab, a.game, a.core, a.workspace,
+                    firmware=a.firmware, chunks=a.chunks,
+                    evidence_dir=a.evidence_dir, timeout_s=a.timeout_s))
             else:
                 print("[mission1-progress] environment blocked — see "
                       "the TARGET_GAME record for exact artifacts")

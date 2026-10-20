@@ -232,6 +232,34 @@ fetched byte-identical images — sha256 `45cde149…`, 104,315,904 bytes,
 `SYSTEM.CNF` boot `SLUS_012.12;1`, license string `SLUS-01212`. The
 identity evidence is therefore not tied to a single source file.
 
+## v0.12 — the runner actually runs; every action verified
+
+Issue #1 (MASTER MISSION v0.12) executed end to end:
+
+- **Shared config contract** (`ps1play/labconfig.py`): one resolver for
+  paths + firmware (`auto|openbios|retail`) used by every script; the
+  selected mode, BIOS hash and the core's own log evidence are recorded,
+  and a run fails early when the log contradicts the requested mode.
+  Machine-specific absolute paths are gone from reusable scripts.
+- **`autolab.py --goal mission1-progress` now LAUNCHES the bounded real
+  runner** (hard timeout, full-provenance ledger records, sensitive
+  fingerprints) instead of printing that the run is a "next experiment".
+- **First bounded live integrations**: two fresh-boot diagnostic runs
+  (30 policy chunks, 20,125 actual frames each, ~465 fps) reached
+  verified Mission-1 gameplay; score 200 -> 4,000 via 10 OBSERVED score
+  events; one death -> continue -> recovery -> re-anchor handled
+  autonomously. Deterministic across boots. Status: PARTIAL — Mission 1
+  is not cleared.
+- **Action controls verified** (`scripts/action_lab.py`, savestate
+  tier, 3 reps + negative control): FIRE (Y), JUMP (B), GRENADE (A,
+  exactly -1 bomb per press against a fresh per-boot anchor), and
+  directional movement all affect the real game; an irrelevant button
+  (X) is inert. Two traps documented: the 0x0D4948 mirror carries
+  DIRECTIONAL bits only, and profile per-boot RAM addresses do not
+  survive a new boot.
+- **Tests 98 -> 136** (`test_config_contract.py`,
+  `test_autolab_progress.py`); no copyrighted content committed.
+
 ## Source-of-truth table (live status of every claim)
 
 | Claim | Evidence today | Status |

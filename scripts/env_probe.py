@@ -22,69 +22,17 @@ import sys
 _REPO = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 sys.path.insert(0, _REPO)
 
-# The known-good defaults from the original dev environment (§9 keeps
-# them working); override with CLI flags or env vars.
-DEF_GAME = os.environ.get(
-    "M1_GAME", "/home/z/my-project/ps1-test/emu/games/"
-               "Metal Slug X (USA).cue")
-DEF_CORE = os.environ.get(
-    "M1_CORE", "/home/z/my-project/ps1-test/cores/"
-               "mednafen_psx_libretro.so")
-DEF_WORKSPACE = os.environ.get("M1_WORKSPACE",
-                               "/home/z/my-project/ps1-test/emu")
-BIOS_NAMES = ("scph5501.bin", "scph5500.bin", "scph5502.bin")
-# SCPH-5501 (NTSC-U) — MD5 verified in this repo's dev log (worklog task 2);
-# Beetle PSX additionally pins SHA1 0555c6fa…88e9f30b for NTSC-U BIOS.
-BIOS_MD5_OK = "490f666e1afb15b7362b406ed1cea246"
-BIOS_SHA1_OK = "0555c6fae8906f3f09baf5988f00e55f88e9f30b"
-# BIOS files this core build REJECTS by name+SHA1 region gate (verified
-# against libretro.c firmware_is_present() and by executable boot tests,
-# scripts/bios_probe.py). Providing them looks ready but silently falls
-# back to the core's embedded OpenBIOS — the exact trap this probe
-# exists to flag.
-KNOWN_UNSUPPORTED_BIOS_MD5 = {
-    "4dc4690a277144675bfe5ac5aaf5896d": "SCPH-1001 (NTSC-U retail)",
-    "30a25911fa858048e8adde16590f218a": "SCPH-7502 (PAL retail)",
-}
-OPENBIOS_MD5 = "664ee444f38f6008d0cffc9d23e5c40d"
+# v0.12: all defaults and the BIOS truth table now come from the shared
+# configuration contract (ps1play.labconfig); the names below are
+# re-exported for tests/test_bios_truth.py compatibility.
+from ps1play import labconfig                                  # noqa: E402
+from ps1play.labconfig import (                                # noqa: E402,F401
+    BIOS_MD5_OK, BIOS_NAMES, KNOWN_UNSUPPORTED_BIOS_MD5,
+    OPENBIOS_MD5, classify_bios)
 
-
-def classify_bios(filename, md5hex):
-    """Pure classifier: what will THIS core build do with a BIOS file?
-
-    Returns (verdict, detail). Verdicts:
-      RETAIL_OK        — accepted by the core's region list for NTSC-U
-      OPENBIOS_OK      — lawful OpenBIOS image (MIT, see third_party/)
-      KNOWN_UNSUPPORTED — boots but SILENTLY falls back to embedded
-                          OpenBIOS (name+SHA1 gate, not a hash crash)
-      UNKNOWN          — not in any verified list; test it explicitly
-                          with scripts/bios_probe.py before trusting it
-    """
-    name = (filename or "").lower()
-    if name == "openbios.bin":
-        if md5hex == OPENBIOS_MD5:
-            return "OPENBIOS_OK", (
-                "open-source BIOS replacement (MIT, PCSX-Redux) — use with "
-                "beetle_psx_override_bios=openbios; its shell cannot drive "
-                "the INPUT_CAUSALITY gate")
-        return "UNKNOWN", "openbios.bin with unexpected md5 — re-verify"
-    if name in ("scph5501.bin", "scph5500.bin", "scph5502.bin"):
-        if name == "scph5501.bin" and md5hex == BIOS_MD5_OK:
-            return "RETAIL_OK", (
-                "SCPH-5501 NTSC-U retail — accepted by the core region "
-                "list; required for SLUS-01212 legit runs")
-        return "UNKNOWN", (
-            f"{name} present but md5 {md5hex} is not the verified NTSC-U "
-            "hash — the core will warn and may misbehave")
-    if md5hex in KNOWN_UNSUPPORTED_BIOS_MD5:
-        label = KNOWN_UNSUPPORTED_BIOS_MD5[md5hex]
-        return "KNOWN_UNSUPPORTED", (
-            f"{label}: this core build rejects it by name+SHA1 region "
-            "gate (libretro.c firmware_is_present); booting will "
-            "SILENTLY FALL BACK to the core's embedded OpenBIOS")
-    return "UNKNOWN", (
-        f"{filename} md5 {md5hex} not in any verified list — run "
-        "scripts/bios_probe.py for an executable boot verdict")
+DEF_GAME = labconfig.resolve_path("game")
+DEF_CORE = labconfig.resolve_path("core")
+DEF_WORKSPACE = labconfig.resolve_path("workspace")
 
 
 def _hashes(path, n=1 << 20):

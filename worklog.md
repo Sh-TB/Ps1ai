@@ -620,3 +620,96 @@ Stage Summary:
 - Evidence is visible in-repo for the first time (docs/evidence_v011/)
 - Next: real-frames audit of the v0.7 policy from the gameplay
   checkpoint, then the Mission 1 clear attempt ladder
+
+## v0.12 — execute the real policy, verify the action controls, first bounded live integrations (Issue #1)
+
+Date: 2026-10-20. Baseline verified: local HEAD = origin/main =
+`d74dbba018dbffd09751b08eef528f7bc2e24b2c`, clean worktree.
+
+### Phase A (baseline reproduction)
+- `pytest tests/ -q` -> 98/98 green (pre-change suite).
+- `env_probe.py --json` -> READY: game+cue ok, core ok, BIOS
+  OPENBIOS_OK, boot smoke `serial=SLUS-01212 fallback=False
+  override=True`.
+- `emulator_smoke.py --json` -> PASS.
+- `autolab.py --goal gates` -> UNIT PASS / EMULATOR_SMOKE PASS /
+  TARGET_GAME PASS / TARGET_EXE PARTIAL; BIOS_BOOT FAIL,
+  CONTENT_BOOT FAIL, INPUT_CAUSALITY BLOCKED. Root cause found and
+  recorded honestly: the patched exe-direct core binary (md5
+  `c0207b04…`) was a build artifact lost in the sandbox reset; only
+  the stock buildbot core (sha1 `88440a6e…`) exists now. The
+  real-disc OpenBIOS path does not depend on that chain.
+
+### Phase B (shared firmware/config contract)
+- New `ps1play/labconfig.py`: path resolution (CLI arg > env var >
+  gitignored `.autolab_config.json`), cue validation, the BIOS truth
+  table (env_probe re-exports for test compat), explicit firmware
+  modes `auto|openbios|retail`, and core-log trust checks so a run
+  FAILS EARLY when the log contradicts the requested mode (no more
+  "retail" runs on the silent embedded-OpenBIOS fallback; no more
+  probe-vs-runner firmware mismatch).
+- Wired into `api.py` (fail-early core/workspace), `env_probe.py`,
+  `run_mission1_legit.py` (`--firmware`, `report["firmware"]` with
+  mode, BIOS md5, override flag, core-log evidence, cue + game md5),
+  `real_input_causality_game.py` (now CLI-driven), `autolab.py`.
+- Machine-specific absolute paths removed from all reusable scripts;
+  repo root derived from `__file__`.
+
+### Phase C (autolab executes real gameplay)
+- `gate_mission1_progress()`: preflight (env probe) -> shared
+  firmware resolve -> bounded subprocess launch of
+  `run_mission1_legit.py` (hard timeout, budget-aware) -> JSON report
+  parse -> honest classification (PASS only for verified clear;
+  PARTIAL for live gameplay; FAIL for boot/enter/timeout/invalid
+  report; BLOCKED for env/firmware) -> full-provenance ledger record
+  (head, core/game/firmware hashes, cmd, frames, exit, timeout,
+  report path, repro command).
+- Fingerprint inputs now include core sha1, game md5, firmware mode,
+  chunks, runner sha1 and labconfig sha1; DEDUP records carry
+  `prior_status`; `Lab.run` accepts per-gate force.
+- Live execution #1: MISSION1_PROGRESS = PARTIAL — real runner, 30
+  chunks over 20,125 actual frames (43 s wall, ~465 fps), score 200
+  -> 4,000 via 10 OBSERVED score events (kills ESTIMATED only), one
+  death at chunk 29 -> continue -> recover_v2 -> re-anchor ok.
+  Environment readiness was preflight, not the claim.
+
+### Phase D (action verification, savestate tier, negative controls)
+- New `scripts/action_lab.py`: A/B experiments from the real Mission-1
+  start savestate, 3 reps each, fresh per-boot bombs anchor.
+- Verdicts (all TRUE): fire_world_effect (block diff 42.13, churn
+  +337), jump_world_effect (block diff 15.79, churn +211),
+  grenade_bombs_minus1_each_rep (`[-1,-1,-1]` at anchor `0xCA660`),
+  direction_mirror_responds (RIGHT 0x20 at 97.8% of held frames),
+  negative_control_inert (X: frame diff 0.0, churn ~7, bombs unchanged).
+- Findings encoded: (1) pad-mirror 0x0D4948 is DIRECTIONAL-only —
+  Y/B/A never appear there, so action presence must be verified by
+  outcomes; (2) profile per-boot RAM addresses are invalid across
+  boots (profile player_x read a frozen 255; old bombs anchor
+  misread) — re-anchor per boot or drop; (3) the mission-start
+  drop-in animation ignores Y/B/A for ~3.5 s — labs must pre-roll.
+
+### Phase F (milestone, reproduced twice from fresh boots)
+- Milestone (precise): from a fresh boot with legal inputs only, the
+  runner reaches verified Mission-1 gameplay and accumulates >= 1,000
+  OBSERVED score gain (10 score events, 200 -> 4,000) inside the
+  bounded diagnostic, handling death/continue/re-anchor correctly.
+- Reproduced twice: `m1p_20261020_075806` and `milestone_rep2` —
+  20,125 frames both, identical score trajectory and event count,
+  deterministic. Mission 1 NOT cleared (honest: cleared=false).
+
+### Tests and hygiene
+- Suite now 136/136 green (98 -> 136): `test_config_contract.py` (24)
+  + `test_autolab_progress.py` (14). No Persian in any changed file.
+- No copyrighted content, no savestates, no BIOS committed; evidence
+  lives in the local evidence dir.
+
+### What this does NOT prove
+- No forward-progress sensor is verified (camera candidate failed
+  monotonic validation again); score events are kills ESTIMATED, not
+  verified kills. The milestone is combat-sector survival + score,
+  not a map-position claim. Mission 1 remains uncleared.
+
+### Next single highest-value action
+- Longer bounded run (e.g. 120 chunks) with the milestone as the
+  gate, plus a validated forward sensor (player_x/scroll re-derived
+  per boot) to turn "survived and scored" into "advanced".

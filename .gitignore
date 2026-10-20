@@ -1,3 +1,5 @@
+.autolab_config.json
+evidence_local/
 __pycache__/
 *.pyc
 *.state
