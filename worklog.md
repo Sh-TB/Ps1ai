@@ -713,3 +713,122 @@ Date: 2026-10-20. Baseline verified: local HEAD = origin/main =
 - Longer bounded run (e.g. 120 chunks) with the milestone as the
   gate, plus a validated forward sensor (player_x/scroll re-derived
   per boot) to turn "survived and scored" into "advanced".
+
+## Issue #3 — source-indexed RE: executable, assets, map, entity semantics
+
+Date: 2026-10-20. Baseline: origin/main = `59ec381` (Issue #2), 182/182
+tests green, clean worktree.
+
+### Phase A (audit + entry-point fix)
+- Local HEAD == origin/main == `59ec381`; the stale pre-pull tree was
+  stashed (never mixed in). Tool audit: capstone 5.0.7 installed; no
+  Ghidra/radare2/objdump-mips — everything below is pure-Python.
+- CRITICAL defect found: the in-repo `ps1play/re/SLUS_012.12` was
+  TRUNCATED by its final 2048 bytes (620,544 vs the ISO9660-recorded
+  622,592). All earlier static analysis used a truncated image.
+- `static_re.py` rewritten: CLI (arg > --game ISO extraction > legacy
+  fallback with a loud warning), repo-relative paths, outputs to the
+  external workspace by default.
+
+### Phase B (reuse of the recomp projects)
+- `alexbeavs-ps1-ports/metal-slug-x-recomp` @ `4fb558b5`: 1 named symbol
+  (BootEntry, guessed) + 1640 JAL seeds; NO semantic decompilation.
+- `TechnicallyComputers/Metal-Slug-X-Recomp` @ `eddccb54`: the payload —
+  `analysis/functions.tsv` (2,930 functions: addr/size/confidence/args/
+  callers/callees/tags), edges.json (7,720 edges), refs.json (5,501
+  data refs), indirect.json (261 sites), plus 52 named BIOS thunks.
+  Imported as a provenance-marked hypothesis table; re-verified locally
+  against OUR bytes (their 2 giant "functions" are data blobs).
+- Their reference `boot_exe_sha256` (0c36eb17…) matches NEITHER our
+  whole-file nor text-only hash of the fresh extraction — recorded as
+  unresolved; all local work uses local hashes.
+
+### Phase C (disc + executable index) — `scripts/game_rebuild_index.py`
+- Disc discovered via ISO9660 records + SYSTEM.CNF (never fixed
+  offsets): 354 files / 28 dirs on the owner's local image (md5
+  37d9e1179a32661800e74858009a4f8b, volume METALSLUGX).
+- Boot exe 622,592 B, pc0 0x80082A44, t_addr 0x80010000,
+  t_size 0x97800; 8 further PS-X EXE candidates catalogued.
+- Index (external workspace, cached by input hash + tool version):
+  4,915 function candidates (2,930 external + own JAL/prologue seeds),
+  8,118 call edges, 3,004 global-ref targets, 908 strings (104
+  code-referenced), 96.6% byte coverage; JSON + SQLite + report.
+- Registry: `data/games/SLUS-01212/re_index.json` (metadata only).
+- Copyright hygiene: the previously committed game binaries
+  (ps1play/re/SLUS_012.12, ENEMY.BIN, MISSION.BIN) are REMOVED from git
+  (gitignored; owner-local extraction documented in ps1play/re/README).
+
+### Phase D (assets) — `scripts/asset_catalog.py`
+- Full TIM parser with structural validation (magic/flag/CLUT/image
+  blocks, bounds): 618 valid TIM assets + 269 container candidates in
+  15 s. 4bpp/8bpp/16bpp decode to thumbnails + 4 contact sheets + a
+  local HTML browser (external workspace only).
+- X09.BIN = environment tilesets; X1_*.BIN = stage-1 sheets (64x256
+  4bpp); PL/PAT*.BIN are NOT plain TIMs (container candidates).
+- Committed registry carries offsets/hashes/dims/role-hypotheses only —
+  zero copyrighted pixels.
+
+### Phase E (map) — `data/games/SLUS-01212/mission1_map.json`
+- S000 (camera 0-139, VERIFIED traversal), S001 (139-224, OBSERVED),
+  S002 (224+, BLOCKED), 7 landmarks (1 OBSERVED, 6 HEURISTIC), stage
+  data candidates from ST01/ + STD/CAM01.BIN. Nothing fabricated.
+
+### Phase F (semantics)
+- Static: 0x800C9A98 = most-referenced global (1,144 xrefs) — used as a
+  game-state root pointer by exe AND overlay code.
+- The VERIFIED bombs patch site decoded: `sb $v0, 0xB6($v1)` with
+  $v1=[0x800C9A98] in func_80039878 — the only published code that is a
+  true store-NOP in this build.
+- Every other published site decoded structurally: ammo = call-NOP
+  (jal 0x80017300), time = epilogue-NOP (lw $s0,0x10($sp)), lives =
+  data bytes, invuln lines 2-3 = undecodable bytes — EXACTLY matching
+  the Issue-#2 live verdicts (VERIFIED bombs; FAILED invuln; BLOCKED
+  ammo/time/lives).
+- OVERLAYS RUN THE MISSION: ENEMY.BIN file[0xD180:] maps to VA
+  0x800A7800..~0x800B66D4 (right after exe text; 964 internal j/jal
+  targets + coherent disasm). Boot-exe-only analysis cannot see
+  mission logic. Runtime confirmation: [0x800C9A98] = 0xA0 (not a
+  pointer) during Mission 1.
+
+### Phase G (runtime correlation) — `scripts/entity_probe.py`,
+`scripts/live_crosscheck.py`
+- Live chain (openbios override verified in the core log):
+  grenade inventory RE-VERIFIED (u8 0xEDCF4, strict series 10,9,8,7,6,
+  boot-dynamic — the +0xB6 struct hypothesis is honestly REFUTED this
+  boot).
+- VRAM: the frontend exposes a 128 KB window; sliding exact-match found
+  a 256-byte extracted TIM block (ART.BAK/ARTG.BIN) at 100% byte match
+  in BOTH title and Mission-1 snapshots — a real word-level
+  asset-to-runtime correlation, with the window limitation documented.
+- Timer candidate u16@0x800D47D4: decrements 1/frame ONLY under
+  no-input; frozen for an entire 35k-frame route run — SUPERSEDED to
+  idle/attract-countdown candidate, NOT the mission timer (negative
+  result recorded).
+
+### Phase I (policy A/B) — `scripts/route_timed_run.py`
+- Two fresh-boot legit runs, 320x60-frame chunks, identical RoutePolicy
+  backbone; only variable = grenade usage:
+  baseline (grenade-free) max score 10,930 (1 death) vs grenades-on
+  4,900 (2 deaths, 128 grenades). Both above the recorded Issue-2
+  baseline (4,000-4,800). Grenade presses cost traversal budget.
+
+### Phase H (knowledge base) — `scripts/gkb_query.py`
+- One CLI over the registries + external index: --grenade-logic,
+  --projectile-candidates, --asset-by-hash, --map-after, --unverified,
+  --function-at/--refs/--string (delegates to re_lookup), --timer,
+  --stats. Statuses never merged; VERIFIED facts only where earned.
+
+### Tests
+- Suite 182 -> 202 (+20: path resolution, cue->bin, ISO walk, PS-X EXE
+  header, offset<->VA mapping, xref extraction on hand-encoded MIPS,
+  TIM valid/malformed bounds, cache invalidation, registry schemas +
+  status vocabulary, gkb queries). All committed content English-only;
+  no game bytes committed anywhere.
+
+### What this does NOT prove
+- Mission 1 remains uncleared; no enemy-projectile source/update path
+  yet; MISSION.BIN load base unknown; camera->world transform
+  unverified; root-pointer slot value 0xA0 unexplained. Next
+  highest-value experiment: derive MISSION.BIN's load base the same way
+  ENEMY.BIN's was derived, then xref the live grenade counter
+  (0xEDCF4-region) inside the OVERLAY to anchor the player struct.

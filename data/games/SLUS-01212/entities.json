@@ -1,0 +1,133 @@
+{
+ "schema": "ps1play-entities/1",
+ "serial": "SLUS-01212",
+ "mission": "mission1",
+ "generated_utc": "2026-10-20T00:00:00Z",
+ "provenance": {
+  "image_md5": "37d9e1179a32661800e74858009a4f8b",
+  "exe_text_sha256": "7daee616527e82af8c349d3a474a68e25adfeb0221ebc25ea8cfa249aa48c8a7",
+  "exe_whole_sha256": "1508b53216cc20dad8c1354e7702dae2940c34e7b2adeffb00337ab6659e0f35",
+  "exe_size": 622592,
+  "tools": [
+   "scripts/game_rebuild_index.py (capstone 5.0.7, numpy 2.1.3)",
+   "scripts/re_lookup.py",
+   "scripts/entity_probe.py + scripts/live_crosscheck.py (live)"
+  ],
+  "note": "every entry carries a status; guessed facts are never marked VERIFIED"
+ },
+ "root_pointer": {
+  "va": "0x800C9A98",
+  "static_refs": 1144,
+  "status": "OBSERVED",
+  "detail": "most-referenced global in the boot exe (lui 0x800d + lw -0x6568 pattern); statically used as a pointer to a game-state object (fields +0xB6, +0x13D, +0x28, +0x80, +0xC0 accessed in exe and overlay code)",
+  "runtime_this_boot": "slot value 0x000000A0 constant through Mission-1 entry/settled/run (entity_probe + live_crosscheck) \u2014 NOT a plain pointer during Mission 1 gameplay; either mode-dependent or the root object is relocated; struct-offset hypotheses below remain UNVERIFIED",
+  "evidence": [
+   "work/evidence/crosscheck/crosscheck.jsonl"
+  ]
+ },
+ "player": {
+  "grenade_inventory": {
+   "status": "VERIFIED",
+   "kind": "u8",
+   "runtime_addr_this_boot": "0x800EDCF4",
+   "note": "strict-series live anchor: exactly -1 per separated grenade press, series 10,9,8,7,6 (Issue #2 protocol; RE-VERIFIED live 2026-10-20 in live_crosscheck). Address is boot-dynamic; the OFFSET-based hypothesis (root+0xB6) failed this boot (root slot=0xA0) \u2014 the counter is located by the strict series scan every boot (ps1play.agent.perception.PerceptionGuard.anchor)",
+   "evidence": [
+    "work/evidence/crosscheck/crosscheck.jsonl grenade_struct_crosscheck"
+   ]
+  },
+  "grenade_store_instruction": {
+   "status": "TESTED",
+   "va": "0x800398BC",
+   "instruction": "sb $v0, 0xB6($v1) with $v1=[0x800C9A98]",
+   "containing_function": "func_80039878 (psxrecomp conf=high, addr_taken)",
+   "note": "structural decode of the live-VERIFIED bombs patch site (800398BE 2400 NOPs this store). The boot-exe store and the live 0xEDCF4 counter may be DIFFERENT objects (root slot=0xA0 at runtime) \u2014 behavioral unlimited-throw equivalence not separately proven"
+  },
+  "published_cheat_sites_decode": {
+   "status": "TESTED",
+   "note": "structural decode of every published DATA-address cheat against OUR exe (analyze_patch_sites + re_lookup):",
+   "sites": {
+    "8002DCE6 2400 (ammo)": "patches jal 0x80017300 at 0x8002DCE4 -> a CALL is suppressed, not an ammo store; live status BLOCKED (no ammo slot)",
+    "8002962A 2400 (time)": "patches lw $s0,0x10($sp) in a function epilogue at 0x80029628 -> corrupts a restore, no timer-store NOP; the 'timer' region 0x800295F8-0x80029630 is a HUD/counter drawing path calling 0x80025104",
+    "800475AE 2400 / 80047522 2400 (lives)": "both land in data/invalid-decode regions (no code semantics)",
+    "8003273E/64/66 (invuln)": "line 1 = sw $v1,($v0) region; lines 2-3 land in undecodable bytes -> explains the live FAILED verdict",
+    "800398BE 2400 (bombs)": "ONLY site that is a true store-NOP (sb) \u2014 matches its live VERIFIED status"
+   }
+  }
+ },
+ "mission_timer": {
+  "status": "SUPERSEDED",
+  "va": "0x800D47D4",
+  "kind": "u16 (low half of u32)",
+  "initial_hypothesis": "mission timer decrementing 1/frame",
+  "live_verdict": "REFUTED as mission timer: constant 112 during an entire 35k-frame grenade-free route run (route_timed_baseline); decrements 1/frame ONLY during no-input windows (entity_probe timer_hunt)",
+  "reclassification": "idle/attract-mode countdown candidate (decrements without input, freezes on input) \u2014 HEURISTIC role",
+  "mission_timer_actual": "still UNIDENTIFIED; the 300s time-up remains measured indirectly (Issue #2 route deaths)",
+  "evidence": [
+   "work/evidence/entity_probe/entity_probe.jsonl timer_hunt",
+   "work/evidence/route_timed_baseline/series.json"
+  ]
+ },
+ "overlays": {
+  "status": "TESTED",
+  "note": "disc overlays contain MIPS code that RUNS during gameplay; the boot exe references \\ENEMY.BIN;1 (0x80010D80), \\MISSION.BIN;1 (0x80010854), \\ST01\\ST01.BIN;1 (0x80010EDC) in a runtime-indexed path table (0x80010428..0x80010EDC; no static refs to individual entries \u2014 dynamic base+index)",
+  "enemy_bin": {
+   "file": "ENEMY.BIN;1 (lba 2758, 115400 bytes)",
+   "code_region": "file[0xD180..~0x1C060] maps to VA 0x800A7800..~0x800B66D4 (immediately after exe text)",
+   "evidence": "964 internal j/jal targets cluster in 0x800A7860..0x800B66D4; coherent disasm at base (jal 0x800A7860; function epilogue/prologue sequence); overlay code reads [0x800C9A98] fields +0x80/+0xC0",
+   "status": "TESTED"
+  },
+  "mission_bin": {
+   "file": "MISSION.BIN;1 (lba 2815, 21252 bytes)",
+   "code_like": "1342 R-type + 172 jal words; calls into exe 0x8001-0x8005 + 0x800F; load base NOT yet derived (pending same method as ENEMY.BIN)",
+   "status": "PENDING"
+  }
+ },
+ "vram": {
+  "status": "PARTIAL",
+  "frontend_view": "core.vram exposes 131072 bytes (not the full 1MB PS1 VRAM) in this core build",
+  "correlation": "sliding exact-match of extracted TIM bodies: 2 registry entries (ART.BAK / ARTG.BIN first 256-byte block \u2014 same content) match 100% at view offset 4490 in BOTH title and Mission-1 VRAM snapshots \u2014 a real, word-level asset-to-runtime correlation for a small common UI element; large stage tiles do NOT appear in this 128KB window (window semantics documented as the limitation)",
+  "evidence": [
+   "work/evidence/crosscheck/vram_title.png",
+   "work/evidence/crosscheck/vram_mission.png",
+   "work/evidence/crosscheck/crosscheck.jsonl"
+  ]
+ },
+ "camera_progress": {
+  "status": "BLOCKED",
+  "note": "find_progress_addr 3-way candidate scan still rejects all camera-word candidates this boot (same as v0.12); progress remains measured via score + the new timer sensor",
+  "evidence": [
+   "work/evidence/entity_probe/entity_probe_report.json progress"
+  ]
+ },
+ "unresolved": [
+  "root pointer slot value 0xA0 during Mission 1 (mode-dependent?)",
+  "MISSION.BIN load base",
+  "enemy projectile source/update path (needs bounded entity-window experiments)",
+  "player position fields inside the runtime entity (structure not yet anchored to the live counter)",
+  "full VRAM visibility (128KB window limitation)"
+ ],
+ "route_ab_experiment": {
+  "status": "OBSERVED",
+  "design": "two fresh-boot legit runs, identical 320x60-frame chunks, RoutePolicy backbone; only variable = grenade usage",
+  "baseline_grenade_free": {
+   "max_score": 10930,
+   "final_score": 1600,
+   "deaths": 1,
+   "jumps": 84,
+   "frames": 35002
+  },
+  "grenades_on_issue2_style": {
+   "max_score": 4900,
+   "final_score": 4700,
+   "deaths": 2,
+   "grenades": 128,
+   "jumps": 84,
+   "frames": 34298
+  },
+  "comparison_note": "grenade-free max score 2.2x the grenades-on run and above the recorded Issue-2 baseline (4000-4800); grenade presses cost traversal budget",
+  "evidence": [
+   "work/evidence/route_timed_baseline/",
+   "work/evidence/route_timed_grenades/"
+  ]
+ }
+}

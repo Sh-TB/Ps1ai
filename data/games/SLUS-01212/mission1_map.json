@@ -1,0 +1,157 @@
+{
+ "schema": "ps1play-map/1",
+ "serial": "SLUS-01212",
+ "mission": "mission1",
+ "generated_utc": "2026-10-20T00:00:00Z",
+ "sources": {
+  "route_ledger": "data/games/SLUS-01212/mission1_route.json (Issue #2, live)",
+  "disc": "ST01/ directory (lba 19031): SEQ01.BIN 69884B, ST01.BIN 275284B, VAB01.BIN 513664B, X1*.BIN tiles; STD/CAM01.BIN 18284B",
+  "re_index": "external workspace index (disc.json, functions.json, xrefs.json)",
+  "live": "route_explorer runs (172k+184k frames) + entity_probe timer/camera observations"
+ },
+ "coordinate_note": "camera units are the route ledger's verified progress word readings (camera 0..224 observed); world coordinates UNKNOWN until the camera->world transform is identified (camera_progress BLOCKED)",
+ "segments": [
+  {
+   "id": "S000",
+   "name": "opening drop + sign + first hostages",
+   "camera_range": [
+    0,
+    139
+   ],
+   "terrain": "flat street, destructible sign, hostage pickups",
+   "terrain_status": "OBSERVED",
+   "enemies": "infantry spawns from both sides; truck + helicopter encounter at the far end",
+   "enemies_status": "OBSERVED (engaged, score 200->4800 across runs)",
+   "hazards": [],
+   "hazards_status": "UNKNOWN",
+   "traversal": "RIGHT + burst fire; periodic jump not required so far",
+   "traversal_status": "VERIFIED (crossed 17x cheat-assisted / 16x legit)",
+   "timer_note": "cycle takes ~15-20k frames; the 300s mission timer (u32@0x800D47D4, VERIFIED 1/frame) is the run-killer",
+   "status": "OBSERVED",
+   "evidence": [
+    "mission1_route.json segments[0]",
+    "route_cheat3/route_report.json",
+    "route_legit/route_report.json"
+   ]
+  },
+  {
+   "id": "S001",
+   "name": "post-sign stretch to max observed camera (water/pit approach)",
+   "camera_range": [
+    139,
+    224
+   ],
+   "terrain": "UNKNOWN beyond camera 177 (cheat-assisted max) / 224 (legit max)",
+   "terrain_status": "UNKNOWN",
+   "enemies": "continued infantry + first structured encounters (unclassified)",
+   "enemies_status": "HEURISTIC",
+   "hazards": "suspected first pit/water section (walkthrough-derived, NOT observed)",
+   "hazards_status": "HEURISTIC",
+   "traversal": "reached in both modes; exact furthest landmark not yet classified",
+   "traversal_status": "OBSERVED",
+   "status": "OBSERVED",
+   "evidence": [
+    "mission1_route.json segments[1]"
+   ]
+  },
+  {
+   "id": "S002",
+   "name": "beyond camera 224 (unreached)",
+   "camera_range": [
+    224,
+    null
+   ],
+   "terrain": "UNKNOWN",
+   "terrain_status": "UNKNOWN",
+   "enemies": "UNKNOWN",
+   "enemies_status": "UNKNOWN",
+   "hazards": "UNKNOWN",
+   "hazards_status": "UNKNOWN",
+   "traversal": "never reached; the 300s timer kills the run before further progress",
+   "traversal_status": "BLOCKED",
+   "status": "BLOCKED",
+   "evidence": [
+    "mission1_route.json"
+   ]
+  }
+ ],
+ "landmarks": [
+  {
+   "id": "L00",
+   "name": "parachute drop + sign + hostages",
+   "status": "OBSERVED",
+   "camera": 0
+  },
+  {
+   "id": "L01",
+   "name": "truck + helicopter encounter",
+   "status": "HEURISTIC",
+   "camera": null
+  },
+  {
+   "id": "L02",
+   "name": "tall machine",
+   "status": "HEURISTIC",
+   "camera": null
+  },
+  {
+   "id": "L03",
+   "name": "three rocket towers + Enemy Chaser",
+   "status": "HEURISTIC",
+   "camera": null
+  },
+  {
+   "id": "L04",
+   "name": "camel + tank vehicles",
+   "status": "HEURISTIC",
+   "camera": null
+  },
+  {
+   "id": "L05",
+   "name": "later helicopter",
+   "status": "HEURISTIC",
+   "camera": null
+  },
+  {
+   "id": "L06",
+   "name": "Mission 1 boss",
+   "status": "HEURISTIC",
+   "camera": null
+  }
+ ],
+ "stage_data_candidates": {
+  "ST01.BIN": {
+   "size": 275284,
+   "role_hypothesis": "stage geometry/spawn container",
+   "status": "UNKNOWN (no TIM found; compressed or custom format)"
+  },
+  "SEQ01.BIN": {
+   "size": 69884,
+   "role_hypothesis": "stage sequence/spawn script",
+   "status": "UNKNOWN"
+  },
+  "X1_*.BIN": {
+   "role_hypothesis": "stage tile sheets (TIM, extracted; 9 assets 64x256 4bpp)",
+   "status": "EXTRACTED_UNVERIFIED"
+  },
+  "VAB01.BIN": {
+   "size": 513664,
+   "role_hypothesis": "stage audio (QSound VAB)",
+   "status": "UNKNOWN"
+  },
+  "CAM01.BIN": {
+   "size": 18284,
+   "role_hypothesis": "Mission-1 camera data (STD dir)",
+   "status": "UNKNOWN"
+  }
+ },
+ "timer": {
+  "va": "0x800D47D4",
+  "status": "SUPERSEDED",
+  "note": "initial 1/frame mission-timer hypothesis REFUTED (frozen at 112 during active input; decrements only in no-input windows) \u2014 reclassified as idle/attract countdown candidate; mission 300s budget still measured indirectly"
+ },
+ "mission_clear": {
+  "status": "UNKNOWN",
+  "note": "clear transition never observed; MissionClearDetector remains armed in every run"
+ }
+}
