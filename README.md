@@ -181,16 +181,63 @@ What was built to make this decidable and repeatable:
 **Remaining blockers, precisely:** (1) `scph5501.bin`
 (MD5 `490f666e1afb15b7362b406ed1cea246`, SHA1 `0555c6fa…`) for retail
 NTSC-U runs — the supplied SCPH-1001/7502 files cannot be loaded by
-this core; (2) the SLUS-01212 disc image (the known download is
-geo-gated and returns an HTML block page). No gameplay, progress or
-mission-clear result is claimed from this machine.
+this core; (2) ~~the SLUS-01212 disc image~~ **solved in v0.11** — the
+user supplied the disc; the file stays outside the repository
+(copyright), only hashes and screenshots are kept.
+
+## v0.11 — the real SLUS-01212 disc boots; control proven on the real game
+
+v0.10's exe-direct path died on a SYSCALL because it skipped kernel
+initialization. v0.11 closed the gap lawfully: the **user supplied the
+disc image** and the OpenBIOS official firmware path boots it. The
+boot flow is observed frame-accurately: BIOS cube → title loading →
+Agetec "PRESS 1P OR 2P START" → mode menu (ARCADE MISSION / COMBAT
+SCHOOL / ART GALLERY / OPTION) → `OK? YES` → SOLDIER SELECT →
+**Mission 1 live gameplay** (arcade HUD, 1UP=2, mission timer counting).
+
+Menu semantics were decoded **empirically with pixel checks**, not
+guessed — including a negative result: the Agetec screen idle-times-out
+into the attract replay, so a no-input control run is mandatory before
+crediting any button with a transition. START enters the mode menu;
+UP/DOWN move the highlight; circle opens and confirms the `OK?` dialog.
+
+The decisive experiment (`scripts/real_input_causality_game.py`): one
+save-state at f5600, three branches of 240 frames:
+
+| Branch | Input | Result |
+|---|---|---|
+| A | none | Marco at the start signpost (control) |
+| B | RIGHT held | Marco walks into the level, camera scrolls, two enemies engage; diff vs A = **22.60** |
+| C | LEFT held | diff vs A = **1.29** — Mission 1 starts at the LEFT map boundary, so zero displacement is the expected physical response, not a failure |
+
+B-vs-C = 22.57, and the numbers reproduce exactly across re-runs
+(deterministic). **Controller → world causality is PROVEN (OBSERVED)
+on the real SLUS-01212 game.** Mission clear is NOT claimed — that is
+the next stage (real-frames audit of the v0.7 policy).
+
+Evidence rendered by the real game on this machine
+(`docs/evidence_v011/`):
+
+| File | Screen |
+|---|---|
+| `title_interactive.png` | Agetec title — "PRESS 1P OR 2P START" |
+| `mode_menu.png` | mode menu: ARCADE MISSION / COMBAT SCHOOL / TIME ATTACK / OPTION |
+| `ok_dialog.png` | `OK? YES` confirmation dialog |
+| `soldier_select.png` | SOLDIER SELECT (Marco / Eri / Tarma / Fio) |
+| `mission1_start.png` | Mission 1 start, full HUD |
+| `mission1_right_walk.png` | branch B: world changed after holding RIGHT |
+
+Provenance note: two independent download sessions (different archives)
+fetched byte-identical images — sha256 `45cde149…`, 104,315,904 bytes,
+`SYSTEM.CNF` boot `SLUS_012.12;1`, license string `SLUS-01212`. The
+identity evidence is therefore not tied to a single source file.
 
 ## Source-of-truth table (live status of every claim)
 
 | Claim | Evidence today | Status |
 |---|---|---|
-| Core boots the disc + adaptive nav reaches Mission 1 | v0.4/v0.5 runs: gate `in_mission=true`, 45,000 frames played | TESTED (needs game+BIOS+core locally) |
-| Injected inputs control the player | pad-mirror toggle + churn + self-play guard + trajectory divergence | VERIFIED (on the original machine) |
+| Core boots the disc + adaptive nav reaches Mission 1 | v0.4/v0.5 runs: gate `in_mission=true`, 45,000 frames played; **v0.11: the real SLUS-01212 disc boots on this machine and reaches Mission 1 gameplay via real inputs** | TESTED + v0.11 OBSERVED (this machine) |
+| Injected inputs control the player | pad-mirror toggle + churn + self-play guard + trajectory divergence; **v0.11: START/UP/DOWN/circle/RIGHT proven causal on the real game (A/B/C save-state branches, deterministic)** | VERIFIED (this machine, real game) |
 | Score word `0x0EE318` (u32 LE) | static RE (9 code xrefs) + live +100 increments | PARTIAL — width/encoding not yet cross-checked against the HUD |
 | Kills | 33 score events incl. 19 × +100 observed | ESTIMATED only — never independently verified |
 | Camera/progress `0xCA2E2` | v0.5 calibration failed monotonic check | UNVERIFIED — cannot support progress claims |

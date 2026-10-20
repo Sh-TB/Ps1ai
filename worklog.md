@@ -576,3 +576,47 @@ Stage Summary:
   real_title_btnscan/, real_arcade_flow*/, real_menu_confirm*/,
   real_menu_yes/, real_mode_menu_select/, real_b_spam/,
   real_input_causality_game/ (state_S + branch finals + report.json).
+
+---
+Task ID: 12 (v0.11 evidence consolidation)
+Agent: main (Z.ai)
+Task: independently re-confirm the v0.11 chain on a fresh download,
+unify image provenance across sources, and publish the evidence gallery.
+
+Work Log:
+- Fresh session re-verified the environment from the local clone at
+  155c6de, then downloaded the disc AGAIN from a different user-suggested
+  archive (romsfun WordPress mirror: the page-level CDN link was
+  Cloudflare-cached and expired -> fresh signed URL via the
+  `action=k_get_download` admin-ajax endpoint; the CDN serves data only
+  on Range requests, so a chunked Range downloader was used). Result:
+  byte-identical to the earlier fetch - sha256 45cde149..., MD5
+  37d9e117..., 104,315,904 B. Identity re-checked with an independent
+  raw-2352-sector ISO parser (scripts/verify_disc_identity.py):
+  SYSTEM.CNF BOOT = cdrom:\\SLUS_012.12;1, SCEA license sector,
+  volume METALSLUGX, PS-EXE region "for North America area"
+- Independent re-run of the whole causal chain with separate probe
+  scripts (game_boot_timeline / game_causality / game_menu_probe2,3 /
+  gameplay_causality) reproduced every v0.11 result: boot to the
+  interactive title by ~f4250-4500; START -> mode menu (A/B divergence
+  >40, persistent 13/13); DOWN moves the cursor; confirm opens the OK?
+  dialog; soldier select -> Marco -> Mission 1 gameplay; RIGHT in
+  gameplay diverges from the no-input control from f120 (17.6 -> 26.3,
+  persistent 6/6, CAUSAL). One correction applied on the way: the
+  confirm button semantics follow the v0.11 pixel-verified decode
+  (circle) - the independent probes are kept as cross-checks
+- Remote line adopted as the base (v0.9-v0.11 already published);
+  this commit adds ONLY complementary artifacts: docs/evidence_v011/
+  (six real-game screenshots), scripts/game_boot_timeline.py
+  (reusable boot-timeline mapper), scripts/verify_disc_identity.py
+  (independent identity parser), the cross-source provenance row in
+  docs/source_of_truth.md, and the README v0.11 section + gallery
+- Tests: 98/98 green on the adopted base; all committed content
+  English-only; no copyrighted material committed
+
+Stage Summary:
+- The v0.11 results are now independently reproduced and the image
+  provenance is cross-source (two archives -> identical bytes)
+- Evidence is visible in-repo for the first time (docs/evidence_v011/)
+- Next: real-frames audit of the v0.7 policy from the gameplay
+  checkpoint, then the Mission 1 clear attempt ladder
