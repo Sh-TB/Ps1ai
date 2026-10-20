@@ -1,0 +1,141 @@
+{
+ "schema": "ps1play-route-ledger/1",
+ "serial": "SLUS-01212",
+ "mission": "mission1",
+ "walkthrough_reference": "https://gamefaqs.gamespot.com/ps/467916-metal-slug-x/faqs/11299",
+ "controls_reference": {
+  "LEFT/RIGHT": "move backward/forward",
+  "DOWN": "crouch; while jumping, aim/shoot down",
+  "UP": "aim/shoot up",
+  "CROSS/X (libretro B)": "jump",
+  "SQUARE (libretro Y)": "fire",
+  "CIRCLE (libretro A)": "throw a bomb",
+  "START": "pause"
+ },
+ "controls_status": "VERIFIED live in v0.12 action_lab (direction mirror 0x0D4948, fire/jump/grenade world effects, negative control inert); libretro->PSX mapping: B=CROSS jump, Y=SQUARE fire, A=CIRCLE grenade",
+ "landmark_expectations": [
+  {
+   "id": "L00",
+   "landmark": "opening parachute drop + sign + first hostages",
+   "status": "HEURISTIC",
+   "note": "walkthrough-derived expectation; not yet observed as a verified visual signature"
+  },
+  {
+   "id": "L01",
+   "landmark": "truck + helicopter encounter",
+   "status": "HEURISTIC"
+  },
+  {
+   "id": "L02",
+   "landmark": "tall machine",
+   "status": "HEURISTIC"
+  },
+  {
+   "id": "L03",
+   "landmark": "three rocket towers + Enemy Chaser",
+   "status": "HEURISTIC"
+  },
+  {
+   "id": "L04",
+   "landmark": "camel + tank vehicles",
+   "status": "HEURISTIC"
+  },
+  {
+   "id": "L05",
+   "landmark": "later helicopter encounter",
+   "status": "HEURISTIC"
+  },
+  {
+   "id": "L06",
+   "landmark": "Mission 1 boss",
+   "status": "HEURISTIC"
+  }
+ ],
+ "segments": [
+  {
+   "id": "S000",
+   "landmark": "opening parachute + sign area (L00)",
+   "landmark_status": "OBSERVED",
+   "mode": "both",
+   "entry_frame": 0,
+   "exit_frame": "~15-20k per cycle",
+   "action_pattern": "RIGHT + burst fire + periodic jump (+ grenades when enabled)",
+   "observed": "traversed repeatedly in BOTH modes; camera 0 -> 139/224; enemies engaged; score climbs to 2000-4800",
+   "cheat_assisted_result": "crossed (17 cycles)",
+   "legit_result": "crossed (16 cycles)",
+   "hazard": "time-up at ~300s",
+   "status": "OBSERVED",
+   "evidence": [
+    "route_cheat3/play_*.png",
+    "route_legit/play_*.png",
+    "route_cheat3/route_report.json",
+    "route_legit/route_report.json"
+   ]
+  },
+  {
+   "id": "S001",
+   "landmark": "post-sign stretch up to camera ~224 (approach to first water/pit section)",
+   "landmark_status": "HEURISTIC",
+   "mode": "both",
+   "observed": "reached in both modes (max 177 cheat / 224 legit); the exact visual landmark at the furthest point not yet classified",
+   "cheat_assisted_result": "reached, died by timer",
+   "legit_result": "reached, died by timer",
+   "hazard": "suspected water/pit crossing requires jumps; timer expiry kills first",
+   "status": "OBSERVED",
+   "evidence": [
+    "route_legit/play_*.png"
+   ]
+  },
+  {
+   "id": "S002",
+   "landmark": "beyond camera ~224 (truck/helicopter per walkthrough L01)",
+   "landmark_status": "UNKNOWN",
+   "observed": "never reached: the 300s timer expires first under the current policy",
+   "cheat_assisted_result": "not reached",
+   "legit_result": "not reached",
+   "status": "PENDING",
+   "evidence": []
+  }
+ ],
+ "events": [],
+ "cheat_assisted_result": null,
+ "legit_result": null,
+ "updated": "2026-10-20 09:46:44",
+ "observed_summary": {
+  "date": "2026-10-20",
+  "identity": {
+   "core": "Beetle PSX 0.9.44.1 df2b53b",
+   "firmware": "OpenBIOS (MIT, override)",
+   "disc_md5": "37d9e1179a32661800e74858009a4f8b"
+  },
+  "progress_sensor": {
+   "addr": "0xCA2E2 (camera-like word)",
+   "verified": false,
+   "note": "rejected by the 3-way calibration (R=+175/L=-106 but non-monotonic gain); used as ADVISORY only, corroborated by score + screenshots + churn"
+  },
+  "cheat_assisted_run": {
+   "evidence": "issue2_evidence/route_cheat3 (172,329 frames, 421s wall, 410 fps)",
+   "cheats": [
+    "bombs (published 800398BE 2400)",
+    "hp_freeze (derived 800D41FC 0073 this boot)"
+   ],
+   "result": "max camera ~177; 17 timer-death cycles; score peaks ~4800 per life; NOT a mission clear and never reported as one"
+  },
+  "legit_run": {
+   "evidence": "issue2_evidence/route_legit (184,531 frames, no cheats, assertion enforced)",
+   "result": "max camera ~224; 16 death cycles; score peaks ~4300; NOT a mission clear"
+  },
+  "root_cause_of_non_advance": [
+   "1. Input causality is NOT the fault (proven v0.11/v0.12): RIGHT reaches the core and moves the player; fire/jump/grenade verified",
+   "2. The mission timer (300s, verified visible in HUD screenshots) expires during slow fighting-heavy traversal -> time-up death -> continue resets score and position",
+   "3. The policy's pacing (grenade every 150f, hop every 200f, combat-first) burns the time budget; both profiles die around camera 139-224 on the FIRST cycle's timeout",
+   "4. hp_freeze prevents combat deaths but NOT timer deaths (and possibly not pit/water deaths)",
+   "5. The v0.12 camera word stays unverified, so the runner's churn-based stall logic masked the death-loop as activity (churn stays high during fighting)"
+  ],
+  "next_obstacle": {
+   "name": "time-budget wall + first environmental hazard beyond camera ~224",
+   "evidence": "death cycle timing ~18k frames (~300s); timer=60 visible in deadevent screenshots; cam resets 139/224 -> 0",
+   "remedy": "fast-traversal policy: continuous RIGHT + minimal fighting (fire only when blocked), jump water pits, no grenade spam; target reaching camera >224 within 300s"
+  }
+ }
+}

@@ -54,6 +54,10 @@ DEF_EVID = labconfig.resolve_path("evidence_dir") or os.path.join(
 DEF_FIRMWARE = os.environ.get("M1_FIRMWARE", "auto")
 OPENBIOS = os.path.join(_REPO, "third_party", "openbios", "openbios.bin")
 RUNNER = os.path.join(_REPO, "scripts", "run_mission1_legit.py")
+EXPLORER = os.path.join(_REPO, "scripts", "route_explorer.py")
+VALIDATOR = os.path.join(_REPO, "scripts", "validate_cheats.py")
+DEF_REGISTRY = os.path.join(_REPO, "data", "games", "SLUS-01212",
+                            "cheats.json")
 
 
 def sha1_file(path):
@@ -518,11 +522,203 @@ def gate_mission1_progress(lab, game, core, workspace, firmware="auto",
         inputs, fn, force=force)
 
 
+def gate_route_discovery(lab, game, core, workspace, firmware="auto",
+                         mode="cheat-assisted", cheats="bombs_freeze,hp_freeze",
+                         registry=DEF_REGISTRY, evidence_dir=None,
+                         budget_minutes=8.0, timeout_s=1500,
+                         cheat_opt_in=False, force=False):
+    """Issue #2 section 10: bounded CHEAT_ASSISTED_EXPLORATION or
+    LEGIT_CONTROLLER_RUN via scripts/route_explorer.py.
+
+    Contract:
+      * cheat mode requires the explicit operator opt-in flag
+        (--cheat-opt-in) — without it the gate runs the legit profile
+      * cheat mode requires EVERY requested code to be VERIFIED in the
+        registry; otherwise the gate is BLOCKED with the exact remedy
+        (run scripts/validate_cheats.py first)
+    Classification: PASS = mission clear verified by the run;
+    PARTIAL = real gameplay evidence recorded without a verified clear;
+    FAIL = boot/enter failure or no valid report; BLOCKED = missing
+    verified codes / environment not ready.
+    """
+    evidence_dir = evidence_dir or DEF_EVID
+    inputs = {
+        "mode": mode,
+        "cheats": cheats if mode == "cheat-assisted" else None,
+        "cheat_opt_in": bool(cheat_opt_in),
+        "registry_sha1": _file_sha1(registry),
+        "explorer_sha1": _file_sha1(EXPLORER),
+        "core_sha1": _file_sha1(core) if core else None,
+        "game_md5": (labconfig.file_md5(_cue_bin(game))
+                     if _cue_bin(game) and os.path.exists(_cue_bin(game))
+                     else None),
+        "firmware_mode": firmware,
+        "budget_minutes": budget_minutes,
+    }
+
+    def fn():
+        t0 = time.time()
+        # 0. registry contract BEFORE any emulator work
+        if mode == "cheat-assisted":
+            if not cheat_opt_in:
+                return "BLOCKED", (
+                    "CHEAT_ASSISTED_EXPLORATION needs the explicit "
+                    "operator flag --cheat-opt-in; re-run with it or "
+                    "use --route-mode legit"), {}
+            try:
+                from ps1play.agent.cheatprof import (CheatRegistry,
+                                                     ST_VERIFIED)
+                reg = CheatRegistry.load(registry)
+                names = [s.strip() for s in cheats.split(",")
+                         if s.strip()]
+                unverified = [n for n in names
+                              if reg.entries.get(n, {}).get("status")
+                              != ST_VERIFIED]
+                if unverified:
+                    return "BLOCKED", (
+                        f"cheats not VERIFIED in {registry}: "
+                        f"{', '.join(unverified)} — run 'python3 "
+                        f"scripts/validate_cheats.py --codes "
+                        f"{cheats}' first; CANDIDATE codes never drive "
+                        "exploration"), {"unverified": unverified}
+            except Exception as e:                          # noqa: BLE001
+                return "BLOCKED", f"registry unreadable: {e}", {}
+        # 1. environment preflight
+        rc, j = _run_json(
+            [sys.executable, "scripts/env_probe.py", "--game", game,
+             "--core", core, "--workspace", workspace, "--json"], 600)
+        if not (rc == 0 and j.get("ready")):
+            return "BLOCKED", (
+                "environment not ready — missing: "
+                f"{', '.join(j.get('missing', []))}"), {
+                    "exit": rc, "probe": j}
+        try:
+            fw = labconfig.resolve_firmware(firmware, workspace)
+        except labconfig.FirmwareError as e:
+            return "BLOCKED", f"firmware unresolved: {e}", {}
+        # 2. bounded explorer launch
+        run_id = time.strftime("%Y%m%d_%H%M%S")
+        run_evid = os.path.join(evidence_dir,
+                                f"route_{mode}_{run_id}")
+        os.makedirs(run_evid, exist_ok=True)
+        report_path = os.path.join(run_evid, "route_report.json")
+        cmd = [sys.executable, EXPLORER,
+               "--mode", mode, "--evidence-dir", run_evid,
+               "--firmware", fw["mode"],
+               "--registry", registry,
+               "--budget-minutes", str(budget_minutes),
+               "--report", report_path]
+        if mode == "cheat-assisted":
+            cmd += ["--opt-in", "--cheats", cheats]
+        remaining = max(60.0, lab.budget_s - lab.elapsed())
+        hard_timeout = min(float(timeout_s), remaining)
+        timed_out = False
+        exit_code = None
+        stderr_tail = ""
+        try:
+            pr = subprocess.run(cmd, capture_output=True,
+                                timeout=hard_timeout, cwd=_REPO)
+            exit_code = pr.returncode
+            stderr_tail = pr.stderr.decode(errors="replace")[-800:]
+        except subprocess.TimeoutExpired as e:
+            timed_out = True
+            stderr_tail = ((e.stderr or b"").decode(errors="replace")
+                           [-800:])
+        elapsed = round(time.time() - t0, 1)
+        rep = None
+        parse_err = None
+        if not timed_out:
+            try:
+                with open(report_path) as f:
+                    rep = json.load(f)
+            except (OSError, json.JSONDecodeError) as e:
+                parse_err = str(e)
+        if timed_out:
+            status = "FAIL"
+            detail = (f"explorer exceeded hard timeout at "
+                      f"{hard_timeout:.0f}s; stopped; recorded "
+                      "honestly")
+        elif rep is None:
+            status = "FAIL"
+            detail = (f"explorer exit={exit_code} without a valid "
+                      f"report ({parse_err}); stderr: "
+                      f"{stderr_tail.strip()[-300:]}")
+        else:
+            play = rep.get("play") or {}
+            cleared = bool((play.get("mission_clear") or {}).get(
+                "verified"))
+            frames = play.get("frames")
+            cheats_active = bool(rep.get("cheats_enabled"))
+            stalled = play.get("stopped_reason") == "stall_blocked"
+            if cleared:
+                status = "PASS"
+                label = ("CHEAT-ASSISTED" if cheats_active
+                         else "NO-CHEAT")
+                detail = (f"MISSION CLEAR VERIFIED ({label} profile, "
+                          f"frames={frames})")
+            elif frames:
+                status = "PARTIAL"
+                detail = (
+                    f"bounded {'cheat-assisted' if cheats_active else 'legit'} "
+                    f"run recorded real gameplay (frames={frames}, "
+                    f"stopped={play.get('stopped_reason')}, "
+                    f"stalled={stalled}, "
+                    f"score_end={play.get('score_end')}) — a "
+                    "cheat-assisted traversal is NOT a no-cheat clear")
+            else:
+                status = "FAIL"
+                detail = (f"explorer exit={exit_code} but no gameplay "
+                          f"frames recorded; stderr: "
+                          f"{stderr_tail.strip()[-300:]}")
+        extras = {
+            "experiment_id": f"route-discovery_{run_id}",
+            "head": _repo_head(),
+            "cmd": cmd,
+            "mode": mode,
+            "cheats": cheats if mode == "cheat-assisted" else [],
+            "core_sha1": inputs["core_sha1"],
+            "game_md5": inputs["game_md5"],
+            "firmware_mode": fw["mode"],
+            "exit": exit_code,
+            "timed_out": timed_out,
+            "explorer_elapsed_s": elapsed,
+            "report_path": report_path,
+            "evidence_dir": run_evid,
+            "stderr_tail": stderr_tail[-400:],
+            "repro_cmd": " ".join(cmd),
+        }
+        return status, detail, extras
+
+    return lab.run(
+        "ROUTE_DISCOVERY",
+        f"{mode} bounded route experiment records real Mission-1 "
+        "traversal evidence (cheat codes VERIFIED-first, profiles "
+        "isolated)",
+        "if BLOCKED: satisfy the named registry/env contract; if "
+        "PARTIAL: mine the route ledger for the next obstacle",
+        [sys.executable, EXPLORER, "--mode", mode],
+        inputs, fn, force=force)
+
+
 def main():
     ap = argparse.ArgumentParser()
     ap.add_argument("--goal", default="gates",
-                    choices=["gates", "mission1-progress"])
+                    choices=["gates", "mission1-progress",
+                             "mission1-route-discovery"])
     ap.add_argument("--budget-minutes", type=float, default=10)
+    ap.add_argument("--route-mode", default="cheat-assisted",
+                    choices=["cheat-assisted", "legit"],
+                    help="execution profile for the route-discovery "
+                         "goal (issue section 4)")
+    ap.add_argument("--cheats", default="bombs_freeze,hp_freeze",
+                    help="registry cheat names for the cheat-assisted "
+                         "route profile (all must be VERIFIED)")
+    ap.add_argument("--cheat-opt-in", action="store_true",
+                    help="EXPLICIT operator consent for cheat-assisted "
+                         "exploration; never assumed")
+    ap.add_argument("--registry", default=DEF_REGISTRY)
+    ap.add_argument("--route-budget-minutes", type=float, default=8.0,
+                    help="wall budget handed to the explorer run")
     ap.add_argument("--game", default=DEF_GAME)
     ap.add_argument("--core", default=DEF_CORE)
     ap.add_argument("--workspace", default=DEF_WORKSPACE)
@@ -560,6 +756,23 @@ def main():
         executed.append(gate_input_causality(lab, a.core, a.workspace))
         executed.append(gate_target_exe(lab, a.core, a.workspace))
         executed.append(gate_target_game(lab, a.game, a.core, a.workspace))
+    elif a.goal == "mission1-route-discovery":
+        executed.append(gate_target_game(lab, a.game, a.core, a.workspace))
+        if not lab.out_of_budget():
+            last = executed[-1]
+            last_ok = (last["status"] == "PASS"
+                       or last.get("prior_status") == "PASS")
+            if last_ok:
+                executed.append(gate_route_discovery(
+                    lab, a.game, a.core, a.workspace,
+                    firmware=a.firmware, mode=a.route_mode,
+                    cheats=a.cheats, registry=a.registry,
+                    evidence_dir=a.evidence_dir,
+                    budget_minutes=a.route_budget_minutes,
+                    timeout_s=a.timeout_s, cheat_opt_in=a.cheat_opt_in))
+            else:
+                print("[mission1-route-discovery] environment blocked — "
+                      "see the TARGET_GAME record")
     else:  # mission1-progress
         executed.append(gate_target_game(lab, a.game, a.core, a.workspace))
         if not lab.out_of_budget():

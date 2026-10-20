@@ -34,6 +34,7 @@ class PerceptionGuard:
         self.addrs = {}
         self.hp_scale = None            # 100 or 200
         self.anchors_done = 0
+        self.dtypes = {}          # role -> "u8" | "u16" (default u16)
         # v0.6 §5: per-role verification ledger. Code existing is not
         # verification: a role is VERIFIED only after its own event test.
         self.verification = {}
@@ -108,10 +109,54 @@ class PerceptionGuard:
         return {"ok": True, "reason": "in range and stable/decreasing"}
 
     # ---------------- anchor ----------------
+    def _series_snaps(self):
+        """Boundary snapshots around 4 separated grenade presses (no
+        long idle: the mission-1 opening is lethal to idlers)."""
+        p = self.p
+        snaps = []
+
+        def snap():
+            snaps.append(p.mem.ram[:0x1FC000].copy())
+
+        p.core.run(45, set())
+        snap()
+        p.core.run(30, set())
+        snap()
+        for _ in range(4):
+            p.core.set_buttons({"A"})
+            for _ in range(30):
+                p.core.run_frame()
+            p.core.set_buttons(set())
+            p.core.run(60, set())
+            snap()
+        p._advance()
+        return snaps
+
+    @staticmethod
+    def _series_vals(snaps, idx, width):
+        a = [s.view("<u2" if width == 2 else np.uint8).astype(np.int32)
+             for s in snaps]
+        return [int(a[i][idx]) for i in (1, 2, 3, 4, 5)]
+
     def anchor(self, tries=3, log=print):
-        """Find bombs via live A-diff (exact -1, idle-stable, in 3..30).
-        NOTE: hp is NOT assumed to follow the cluster delta — it gets its
-        own freeze-verified anchor (find_player_hp)."""
+        """Find the REAL grenade-inventory counter via the STRICT
+        4-press series: exactly -1 per separated throw, bounded 0..60,
+        idle-stable, REPRODUCED from a savestate reload.
+
+        v0.13 honesty fix: the previous '-1 x2' anchor locked onto an
+        animation/scratch impostor at 0xCAF9C (its series jumps
+        4->84->74 across 135 frames; scripts/scan_bombs_strict.py and
+        scripts/diag_bombs_anchor.py document the trap). The real
+        counter is a u8 (series 10,9,8,7,6 in this boot) which the
+        u16-only A-diff scan could never see. Both u16 words and u8
+        bytes are scanned here, and every candidate must reproduce
+        the full series from an equivalent starting state.
+
+        NOTE: the published-cluster 'delta' is INVALID (the state area
+        is dynamically placed per boot and the old delta came from the
+        impostor); translations from the published layout are never
+        trusted by this guard.
+        """
         p = self.p
         from mission import responsive, recover
         for k in range(tries):
@@ -119,35 +164,52 @@ class PerceptionGuard:
             if not ok:
                 recover(p, log=log)
             p.save_state("_pg")
-            i0, i1 = self._trial("_pg", set())
-            a0, a1 = self._trial("_pg", {"A"})
-            ai0 = i0[:0x1FC000].view("<u2").astype(np.int32)
-            ai1 = i1[:0x1FC000].view("<u2").astype(np.int32)
-            aa0 = a0[:0x1FC000].view("<u2").astype(np.int32)
-            aa1 = a1[:0x1FC000].view("<u2").astype(np.int32)
-            d_idle, d_a = ai1 - ai0, aa1 - aa0
-            c = np.flatnonzero((d_a != d_idle) & (d_a == -1) &
-                               (aa0 >= 3) & (aa0 <= 30) & (ai0 == aa0))
-            for w in c.tolist():
-                addr = int(w) * 2
+            snaps = self._series_snaps()
+            found = None
+            for width in (2, 1):
+                view = "<u2" if width == 2 else np.uint8
+                a = [s.view(view).astype(np.int32) for s in snaps]
+                idle_stable = a[1] == a[0]
+                dec = np.ones(a[0].shape, bool)
+                bounded = np.ones(a[0].shape, bool)
+                for m in range(4):
+                    dec &= (a[2 + m] - a[1 + m]) == -1
+                for arr in a[1:6]:
+                    bounded &= (arr >= 0) & (arr <= 60)
+                cand = np.flatnonzero(idle_stable & dec & bounded)
+                log(f"[percept] anchor strict try{k} "
+                    f"width={'u16' if width == 2 else 'u8'}: "
+                    f"{len(cand)} candidate(s)")
+                for idx in cand.tolist()[:8]:
+                    # stage 2: independent reproduction from savestate
+                    p.load_state("_pg")
+                    snaps2 = self._series_snaps()
+                    vals = self._series_vals(snaps2, idx, width)
+                    if all(vals[m + 1] - vals[m] == -1
+                           for m in range(4)):
+                        found = (int(idx) * width, width, vals)
+                        break
+                if found:
+                    break
+            if found:
+                addr, width, vals = found
+                dtype = "u8" if width == 1 else "u16"
+                self._set_role(
+                    "bombs", addr, "VERIFIED",
+                    f"strict 4-press grenade series {vals}: -1 each, "
+                    "bounded, idle-stable, reproduced from savestate",
+                    confidence=0.97)
+                self.dtypes["bombs"] = dtype
+                self.delta = None
+                self.anchors_done += 1
+                log(f"[percept] anchor #{self.anchors_done}: "
+                    f"bombs@{addr:#x} ({dtype}) series={vals}")
                 p.load_state("_pg")
-                p.core.run(10, set())
-                v0 = p.mem.u16(addr)
-                p.core.run(15, {"A"})
-                p.core.run(90, set())
-                p._advance()
-                if p.mem.u16(addr) == v0 - 1:      # 2nd grenade confirms
-                    self._set_role("bombs", addr, "VERIFIED",
-                                   "grenade event: -1 exactly, repeated 2x",
-                                   confidence=0.95)
-                    self.delta = addr - PUB["bombs"]
-                    self.anchors_done += 1
-                    log(f"[percept] anchor #{self.anchors_done}: "
-                        f"bombs@{addr:#x} delta={self.delta:+#x}")
-                    return {"ok": True, "bombs": hex(addr),
-                            "delta": self.delta}
+                return {"ok": True, "bombs": hex(addr),
+                        "dtype": dtype, "series": vals,
+                        "delta": None}
             p.load_state("_pg")
-            log(f"[percept] anchor try{k}: no candidate")
+            log(f"[percept] anchor strict try{k}: no candidate")
         return {"ok": False}
 
     def _trial(self, base, action):
@@ -166,6 +228,8 @@ class PerceptionGuard:
         if a is None:
             return None
         try:
+            if self.dtypes.get(role) == "u8":
+                return self.p.mem.u8(a)
             return self.p.mem.u16(a)
         except Exception:
             return None
