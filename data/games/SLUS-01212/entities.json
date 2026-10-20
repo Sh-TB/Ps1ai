@@ -20,7 +20,7 @@
   "static_refs": 1144,
   "status": "OBSERVED",
   "detail": "most-referenced global in the boot exe (lui 0x800d + lw -0x6568 pattern); statically used as a pointer to a game-state object (fields +0xB6, +0x13D, +0x28, +0x80, +0xC0 accessed in exe and overlay code)",
-  "runtime_this_boot": "slot value 0x000000A0 constant through Mission-1 entry/settled/run (entity_probe + live_crosscheck) \u2014 NOT a plain pointer during Mission 1 gameplay; either mode-dependent or the root object is relocated; struct-offset hypotheses below remain UNVERIFIED",
+  "runtime_this_boot": "slot value 0x000000A0 constant through Mission-1 entry/settled/run (entity_probe + live_crosscheck) — NOT a plain pointer during Mission 1 gameplay; either mode-dependent or the root object is relocated; struct-offset hypotheses below remain UNVERIFIED",
   "evidence": [
    "work/evidence/crosscheck/crosscheck.jsonl"
   ]
@@ -30,7 +30,7 @@
    "status": "VERIFIED",
    "kind": "u8",
    "runtime_addr_this_boot": "0x800EDCF4",
-   "note": "strict-series live anchor: exactly -1 per separated grenade press, series 10,9,8,7,6 (Issue #2 protocol; RE-VERIFIED live 2026-10-20 in live_crosscheck). Address is boot-dynamic; the OFFSET-based hypothesis (root+0xB6) failed this boot (root slot=0xA0) \u2014 the counter is located by the strict series scan every boot (ps1play.agent.perception.PerceptionGuard.anchor)",
+   "note": "strict-series live anchor: exactly -1 per separated grenade press, series 10,9,8,7,6 (Issue #2 protocol; RE-VERIFIED live 2026-10-20 in live_crosscheck). Address is boot-dynamic; the OFFSET-based hypothesis (root+0xB6) failed this boot (root slot=0xA0) — the counter is located by the strict series scan every boot (ps1play.agent.perception.PerceptionGuard.anchor)",
    "evidence": [
     "work/evidence/crosscheck/crosscheck.jsonl grenade_struct_crosscheck"
    ]
@@ -40,7 +40,7 @@
    "va": "0x800398BC",
    "instruction": "sb $v0, 0xB6($v1) with $v1=[0x800C9A98]",
    "containing_function": "func_80039878 (psxrecomp conf=high, addr_taken)",
-   "note": "structural decode of the live-VERIFIED bombs patch site (800398BE 2400 NOPs this store). The boot-exe store and the live 0xEDCF4 counter may be DIFFERENT objects (root slot=0xA0 at runtime) \u2014 behavioral unlimited-throw equivalence not separately proven"
+   "note": "structural decode of the live-VERIFIED bombs patch site (800398BE 2400 NOPs this store). The boot-exe store and the live 0xEDCF4 counter may be DIFFERENT objects (root slot=0xA0 at runtime) — behavioral unlimited-throw equivalence not separately proven"
   },
   "published_cheat_sites_decode": {
    "status": "TESTED",
@@ -50,7 +50,7 @@
     "8002962A 2400 (time)": "patches lw $s0,0x10($sp) in a function epilogue at 0x80029628 -> corrupts a restore, no timer-store NOP; the 'timer' region 0x800295F8-0x80029630 is a HUD/counter drawing path calling 0x80025104",
     "800475AE 2400 / 80047522 2400 (lives)": "both land in data/invalid-decode regions (no code semantics)",
     "8003273E/64/66 (invuln)": "line 1 = sw $v1,($v0) region; lines 2-3 land in undecodable bytes -> explains the live FAILED verdict",
-    "800398BE 2400 (bombs)": "ONLY site that is a true store-NOP (sb) \u2014 matches its live VERIFIED status"
+    "800398BE 2400 (bombs)": "ONLY site that is a true store-NOP (sb) — matches its live VERIFIED status"
    }
   }
  },
@@ -60,7 +60,7 @@
   "kind": "u16 (low half of u32)",
   "initial_hypothesis": "mission timer decrementing 1/frame",
   "live_verdict": "REFUTED as mission timer: constant 112 during an entire 35k-frame grenade-free route run (route_timed_baseline); decrements 1/frame ONLY during no-input windows (entity_probe timer_hunt)",
-  "reclassification": "idle/attract-mode countdown candidate (decrements without input, freezes on input) \u2014 HEURISTIC role",
+  "reclassification": "idle/attract-mode countdown candidate (decrements without input, freezes on input) — HEURISTIC role",
   "mission_timer_actual": "still UNIDENTIFIED; the 300s time-up remains measured indirectly (Issue #2 route deaths)",
   "evidence": [
    "work/evidence/entity_probe/entity_probe.jsonl timer_hunt",
@@ -69,23 +69,26 @@
  },
  "overlays": {
   "status": "TESTED",
-  "note": "disc overlays contain MIPS code that RUNS during gameplay; the boot exe references \\ENEMY.BIN;1 (0x80010D80), \\MISSION.BIN;1 (0x80010854), \\ST01\\ST01.BIN;1 (0x80010EDC) in a runtime-indexed path table (0x80010428..0x80010EDC; no static refs to individual entries \u2014 dynamic base+index)",
+  "note": "disc overlays contain MIPS code that RUNS during gameplay; the boot exe references \\ENEMY.BIN;1 (0x80010D80), \\MISSION.BIN;1 (0x80010854), \\ST01\\ST01.BIN;1 (0x80010EDC) in a runtime-indexed path table (0x80010428..0x80010EDC; no static refs to individual entries — dynamic base+index)",
   "enemy_bin": {
    "file": "ENEMY.BIN;1 (lba 2758, 115400 bytes)",
-   "code_region": "file[0xD180..~0x1C060] maps to VA 0x800A7800..~0x800B66D4 (immediately after exe text)",
-   "evidence": "964 internal j/jal targets cluster in 0x800A7860..0x800B66D4; coherent disasm at base (jal 0x800A7860; function epilogue/prologue sequence); overlay code reads [0x800C9A98] fields +0x80/+0xC0",
+   "code_region": "file[0xD180..0x1C2C8] maps to VA 0x800A9268..0x800B83B0",
+   "load_base": "0x8009C0E8 (whole file, verbatim)",
+   "evidence": "issue5_probe3 V1: 0 mismatch runs across all 115400 B; V2: code head at base+0xD180; 27-anchor delta map 0x9C0E8 constant",
+   "supersedes": "earlier text-end hypothesis 0x800A7800 (falsified live)",
    "status": "TESTED"
   },
   "mission_bin": {
    "file": "MISSION.BIN;1 (lba 2815, 21252 bytes)",
-   "code_like": "1342 R-type + 172 jal words; calls into exe 0x8001-0x8005 + 0x800F; load base NOT yet derived (pending same method as ENEMY.BIN)",
-   "status": "PENDING"
+   "code_like": "not resident in RAM at mission-1 gameplay (issue5_probe3 V3: 0 hits at 4/5 anchors; 3 scattered hits likely data noise)",
+   "load_base": "UNRESOLVED — functions not indexed (would be address-invalid)",
+   "status": "BLOCKED"
   }
  },
  "vram": {
   "status": "PARTIAL",
   "frontend_view": "core.vram exposes 131072 bytes (not the full 1MB PS1 VRAM) in this core build",
-  "correlation": "sliding exact-match of extracted TIM bodies: 2 registry entries (ART.BAK / ARTG.BIN first 256-byte block \u2014 same content) match 100% at view offset 4490 in BOTH title and Mission-1 VRAM snapshots \u2014 a real, word-level asset-to-runtime correlation for a small common UI element; large stage tiles do NOT appear in this 128KB window (window semantics documented as the limitation)",
+  "correlation": "sliding exact-match of extracted TIM bodies: 2 registry entries (ART.BAK / ARTG.BIN first 256-byte block — same content) match 100% at view offset 4490 in BOTH title and Mission-1 VRAM snapshots — a real, word-level asset-to-runtime correlation for a small common UI element; large stage tiles do NOT appear in this 128KB window (window semantics documented as the limitation)",
   "evidence": [
    "work/evidence/crosscheck/vram_title.png",
    "work/evidence/crosscheck/vram_mission.png",
@@ -129,5 +132,6 @@
    "work/evidence/route_timed_baseline/",
    "work/evidence/route_timed_grenades/"
   ]
- }
+ },
+ "note": "disc overlays contain MIPS code that RUNS during gameplay; the boot exe references \\ENEMY.BIN;1 (0x80010D80), \\MISSION.BIN;1 (0x80010854), \\ST01\\ST01.BIN;1 (0x80010EDC) in a runtime-indexed path table (0x80010428..0x80010EDC; no static refs to individual entries — dynamic base+index)"
 }
