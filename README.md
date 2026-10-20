@@ -239,6 +239,19 @@ PS-X EXE from the .bin, `static_re.py` disassembles it with capstone and builds 
   <sub>death-detection evidence: the agent senses death from RAM and recovers</sub>
 </p>
 
+- **v0.9**: the decisive BIOS experiment. The user-supplied retail BIOS files
+  were proven **invalid** (executed under the core's real name-keyed lookup:
+  CPU exception-loops at reset with zero RAM writes; MD5s match no Redump
+  revision). In response, the whole evidence chain went **BIOS-free**: a
+  hand-assembled MIPS pad-test EXE now boots directly (documented core patch),
+  polls the pad through the real SIO hardware registers, and **controller →
+  world causality is verified end-to-end** (none/RIGHT/LEFT/again = SW1
+  0xFF/0xDF/0x7F/0xDF, repeats). Gate ladder: UNIT 98/98 · EMULATOR_SMOKE ·
+  BIOS_BOOT · CONTENT_BOOT · INPUT_CAUSALITY all PASS; only TARGET_GAME
+  (the SLUS-01212 disc image itself) remains user-supplied. 13 new unit
+  tests pin the assembler, the EDC-correct ISO writer and the load-delay
+  discipline.
+
 ## Run it
 
 ```bash

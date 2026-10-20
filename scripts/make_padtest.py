@@ -6,7 +6,9 @@ Generates PADTEST.EXE (hand-assembled MIPS I, no third-party code):
             loop that fills the screen with GP0(02h):
             RIGHT=red  LEFT=blue  CROSS=green  START=white  none=black
   --simple: blink white/gray forever (exe-boot + GPU proof, no BIOS calls)
-Then packs SYSTEM.CNF + EXE into an ISO9660/MODE2 image via mkpsxiso.
+Then packs SYSTEM.CNF + EXE into an ISO9660/MODE2 image with the
+built-in pure-Python writer (scripts/iso9660_min.py, correct EDC; no
+external tools needed).
 
 Everything is generated from scratch (zero copyrighted content).
 
@@ -17,10 +19,10 @@ Outputs: <work>/padtest.bin + padtest.cue (+ PADTEST.EXE, SYSTEM.CNF)
 """
 import os
 import struct
-import subprocess
 import sys
 
-MKPSXISO = "/tmp/mkpsxiso-root/usr/bin/mkpsxiso"
+sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
+import iso9660_min
 
 R = 0
 A0, A1, A2, A3 = 4, 5, 6, 7
@@ -294,29 +296,17 @@ def _write_and_pack(code, work):
         f.write("TCB = 4\n")
         f.write("EVENT = 10\n")
         f.write("STACK = 801FFF00\n")
-    with open(os.path.join(work, "padtest.xml"), "w") as f:
-        f.write(f'''<iso_project image_name="{work}/padtest.bin" cue_name="{work}/padtest.cue">
-  <track type="data">
-    <identifiers system="PLAYSTATION" volume="PADTEST"
-                 volume_set="PADTEST" publisher="PS1PLAY-SELFTEST"/>
-    <directory_tree>
-      <file name="SYSTEM.CNF" type="data" source="{work}/SYSTEM.CNF"/>
-      <file name="PADTEST.EXE" type="data" source="{work}/PADTEST.EXE"/>
-    </directory_tree>
-  </track>
-</iso_project>
-''')
-    rc = subprocess.call(
-        [MKPSXISO, "-q", "-y", "-c", os.path.join(work, "padtest.cue"),
-         os.path.join(work, "padtest.xml")],
-        stdin=subprocess.DEVNULL)
-    # PS1 data tracks must start at MSF 00:02:00 (BIOS expects PVD at 166)
-    cuep = os.path.join(work, "padtest.cue")
-    with open(cuep, "w") as f:
-        f.write('FILE "padtest.bin" BINARY\n')
-        f.write("  TRACK 01 MODE2/2352\n")
-        f.write("    INDEX 01 00:02:00\n")
-    print("mkpsxiso rc:", rc)
+    # Pure-Python ISO9660 MODE2/2352 writer (correct EDC, no mkpsxiso).
+    # PS1 data tracks start at MSF 00:02:00 (BIOS expects PVD at sector 16
+    # counted from INDEX 01).
+    bin_data, cue = iso9660_min.build_image(
+        [("SYSTEM.CNF", open(os.path.join(work, "SYSTEM.CNF"), "rb").read()),
+         ("PADTEST.EXE", exe)])
+    with open(os.path.join(work, "padtest.bin"), "wb") as f:
+        f.write(bin_data)
+    with open(os.path.join(work, "padtest.cue"), "w") as f:
+        f.write(cue.replace('"image.bin"', '"padtest.bin"'))
+    rc = 0
     for p in ("padtest.bin", "padtest.cue", "PADTEST.EXE"):
         fp = os.path.join(work, p)
         if os.path.exists(fp):
