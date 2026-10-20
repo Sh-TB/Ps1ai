@@ -464,3 +464,28 @@ Stage Summary:
   official OpenBIOS boot path (MIT), lawful self-made content, and a
   resumable one-command experiment runner
 - No gameplay/progress/mission result is claimed from this machine
+
+## v0.9 — 2026-10-20 — the BIOS mystery solved; causality proven BIOS-free
+
+- Firmware lookup is NAME-keyed; SHA1 mismatch only warns (vendored
+  libretro.c). An aliased file IS loaded and executed.
+- Executed the user's scph1001/7502 under the NA alias: CPU fetches
+  0x4A32F2B8 at 0xBFC00000 -> COPU exception -> AdES loop at 0xBFC00180,
+  zero RAM writes in 300 frames. No "System ROM"/"PS-X EXE" strings.
+  MD5s match no Redump revision -> the files are NOT valid retail BIOS
+  images (site-side obfuscation or corruption). Honest correction of the
+  v0.8-era assumption that they were authentic.
+- Answer: removed the BIOS from the evidence chain entirely.
+  make_padtest_hw.py hand-assembles a pad-test EXE that polls the pad
+  through the SIO hardware registers exactly as frontio.c implements
+  them (SH-only CTRL/BAUD; replies one window late; stray-RX arming;
+  MIPS load-delay honored). A small documented core patch (exe-direct
+  boot) jumps the reset vector straight to the EXE entry.
+- Gates now: UNIT 98/98 PASS, EMULATOR_SMOKE PASS, BIOS_BOOT PASS
+  (retail files characterized INVALID), CONTENT_BOOT PASS (PAD1 magic,
+  counter advances, polls ok=23 fail=0), INPUT_CAUSALITY PASS
+  (none/RIGHT/LEFT/again = SW1 FF/DF/7F/DF at >=97.8%, RIGHT repeats).
+  TARGET_GAME remains blocked on the user-supplied SLUS-01212 image.
+- New tooling: iso9660_min.py (pure-Python EDC-correct disc writer),
+  tests for both builders (+13; suite 98/98). Core provenance pinned:
+  self-built df2b53b + diagnostics, md5 f3b4a4be842dc70b40aff65864cd8ce2.
