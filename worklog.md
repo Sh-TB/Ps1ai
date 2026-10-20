@@ -520,3 +520,59 @@ Stage Summary:
 - No gameplay claimed. Next legitimate moves: (a) a minimal self-made
   Sys-exception dispatcher, or (b) user-supplied genuine BIOS plus the
   SLUS-01212 image.
+
+## v0.11 — 2026-10-20 — the user-supplied disc boots; control proven on the real game
+
+- Sourced the SLUS-01212 image from a user-suggested ROM site after the
+  earlier geo-blocked URL: the site's anti-hotlink token URLs and
+  Cloudflare Turnstile were passed with a headed browser under Xvfb,
+  then the USA zip was fetched directly. Identity verified from the
+  image bytes (scripts/verify_msx_image.py): PVD PLAYSTATION /
+  METALSLUGX, SYSTEM.CNF BOOT = cdrom:\SLUS_012.12;1, license string
+  SLUS-01212, sha256 45cde149…, 104,315,904 bytes. The image lives in
+  the local workspace only (copyrighted, never committed).
+- env_probe: VERDICT READY — core_boots_game with serial=SLUS-01212,
+  fallback=False, override=True (the OFFICIAL OpenBIOS firmware path).
+  Full autolab ladder re-run: UNIT 98/98, SMOKE / BIOS_BOOT /
+  CONTENT_BOOT / INPUT_CAUSALITY PASS, TARGET_EXE PARTIAL (unchanged),
+  TARGET_GAME PASS (first time — the image is present and boots).
+- The real disc boots FAR past the exe-direct SYSCALL wall because the
+  OpenBIOS boot path initializes the kernel services. OBSERVED flow
+  (frame-accurate snapshots in the autolab workspace): BIOS cube →
+  title-loading → Agetec "PRESS 1P OR 2P START" → mode menu
+  (ARCADE MISSION / COMBAT SCHOOL / ART GALLERY / OPTION).
+- Menu semantics decoded empirically with pixel-level checks: the
+  Agetec screen idle-times-out into the arcade attract replay (the
+  earlier "CROSS selected something" reading was wrong — control runs
+  with zero input reproduce the transition); START on the Agetec screen
+  enters the mode menu; UP/DOWN move the menu highlight (pixel-verified
+  row profiles); circle opens the "OK? YES" dialog; circle again
+  confirms YES → SOLDIER SELECT (MARCO/ERI/TARMA/FIO, P1) → confirm →
+  Mission 1 live: arcade HUD, 1UP=2, mission timer 60→33 counting,
+  "FEWS ENEMIES" indicator.
+- DECISIVE EXPERIMENT (scripts/real_input_causality_game.py): one save
+  state at f5600, three branches of 240 frames. A (no input) final
+  frame == Marco at the start signpost. B (RIGHT held) — Marco walks
+  into the level, camera scrolls, two enemy soldiers engage; final
+  diff vs A = 22.60. C (LEFT held) — diff vs A = 1.29: Mission 1
+  starts at the LEFT map boundary, so zero displacement is the
+  expected physical response, not a failure. B-vs-C = 22.57. Numbers
+  reproduce exactly across re-runs (deterministic).
+- Verdict: controller → world causality PROVEN on the real SLUS-01212
+  game (OBSERVED). Mission clear is NOT claimed — the automation to
+  actually clear Mission 1 (run_mission1_legit.py with the v0.7 policy
+  audited against real frames) is the next stage.
+- New scripts (all observational, English-only): verify_msx_image.py
+  (outside repo, evidence helper), real_disc_boot_probe.py,
+  real_title_advance_probe.py, real_menu_timeout_test.py,
+  real_menu_input_diag.py, real_select_trace.py,
+  real_select_trace2.py, real_title_button_scan.py,
+  real_arcade_flow_probe.py, real_arcade_flow2.py,
+  real_menu_confirm_scan.py, real_menu_confirm2.py, real_menu_yes.py,
+  real_mode_menu_select.py, real_menu_mission1_probe.py,
+  real_b_spam_advance.py, real_input_causality_game.py.
+- Artifacts (autolab workspace, local-only): real_disc_boot/,
+  real_title_advance/, real_menu_input_diag/, real_select_trace*/,
+  real_title_btnscan/, real_arcade_flow*/, real_menu_confirm*/,
+  real_menu_yes/, real_mode_menu_select/, real_b_spam/,
+  real_input_causality_game/ (state_S + branch finals + report.json).

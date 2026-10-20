@@ -267,6 +267,25 @@ PS-X EXE from the .bin, `static_re.py` disassembles it with capstone and builds 
   INPUT_CAUSALITY PASS; TARGET_GAME still needs the user-supplied
   SLUS-01212 image.
 
+- **v0.11**: the user-supplied SLUS-01212 disc image joins the evidence
+  chain, and the wall falls. Identity verified from the image bytes
+  (`scripts/verify_msx_image.py`): PVD `PLAYSTATION`/`METALSLUGX`,
+  `SYSTEM.CNF` → `BOOT = cdrom:\SLUS_012.12;1`, license string
+  `SLUS-01212` (sha256 `45cde149…`). Booting the real disc through the
+  OFFICIAL OpenBIOS override path makes the kernel services available,
+  so the game runs FAR past the exe-direct SYSCALL wall:
+  title-loading → Agetec "PRESS 1P OR 2P START" → mode menu (cursor
+  moves pixel-verified with UP/DOWN) → `OK? YES` dialog → SOLDIER
+  SELECT → Mission 1 live with a counting timer and the arcade HUD.
+  The decisive experiment `scripts/real_input_causality_game.py` saves
+  one state and branches A/B/C: **RIGHT walks Marco into the level
+  (final-frame diff 22.60 vs no-input; two enemies engage), LEFT is a
+  no-op because Mission 1 starts at the left map boundary, and the two
+  held directions diverge by 22.57 — deterministic across re-runs.**
+  Verdict: controller → world causality is PROVEN on the real game
+  (OBSERVED). Mission clear is still not claimed; the autolab ladder
+  now records `TARGET_GAME_SEGMENT` evidence for Mission 1 start.
+
 ## Run it
 
 ```bash
