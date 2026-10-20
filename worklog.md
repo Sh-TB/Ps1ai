@@ -391,3 +391,76 @@ Stage Summary:
   on exactly two files (disc image + scph5501.bin). The emulator layer
   itself is now verified on this machine (was previously untested here),
   and the active policy timeline is proven chunk-invariant offline
+
+---
+Task ID: 10 (v0.8)
+Agent: main (Z.ai)
+Task: v0.8 — remove the boot blocker: execute the BIOS decision table,
+prove the host input path, build the autolab gate ladder, and label
+every firmware path honestly.
+
+Work Log:
+- Reproduced the v0.7 baseline first: repo HEAD e9b7469, env_probe
+  BLOCKED (game_image + bios missing), 75/75 unit tests green,
+  EMULATOR_SMOKE PASS (Beetle PSX 0.9.44.1 df2b53b)
+- Executed real boot tests instead of string-derived claims (new
+  scripts/bios_probe.py): contentless load fails (unsupported);
+  scph1001.bin and scph7502.bin (both authentic MD5s) LOAD and render
+  600 frames - but the firmware_fallback flag exposed the trap: the
+  core silently replaced them with its EMBEDDED OpenBIOS (log line
+  "Firmware is missing"), so every earlier "booted" cube was OpenBIOS,
+  not the supplied BIOS. skip_bios only patches BIOS+0x6990 (boot flow),
+  it is not a firmware bypass
+- Root-caused the gate in beetle-psx source at the exact commit
+  (df2b53b): firmware_is_present() matches BIOS by NAME list + SHA1 per
+  region (NTSC-U expects scph5501/5503/7003, SHA1 0555C6FA...), then
+  falls back to memcpy of the embedded openbios blob
+- Lawful unblock: extracted the core's own embedded OpenBIOS (MIT,
+  (c) PCSX-Redux, MD5 664ee444f38f6008d0cffc9d23e5c40d, byte-identical
+  to deps/openbios/openbios.bin in the core source) into
+  third_party/openbios/ with LICENSE + PROVENANCE; with
+  beetle_psx_override_bios=openbios + openbios.bin named exactly so,
+  the core loads it through the OFFICIAL firmware path
+  ("Override firmware found" in log) - BIOS_BOOT gate = PASS without
+  any proprietary file
+- Built lawful content: scripts/make_audio_fixture.py (silent CDDA
+  disc) and scripts/make_padtest.py (hand-assembled MIPS pad-test PS-X
+  EXE + SYSTEM.CNF disc via mkpsxiso; header layout taken from the
+  core's own LoadEXE: PC@0x10, TextStart@0x18, TextSize@0x1C, SP@0x30;
+  two header bugs found and fixed along the way: SP accidentally placed
+  at b_size offset (0x28) and a 4-byte layout shift)
+- Probed INPUT_CAUSALITY (scripts/input_causality.py A/B harness +
+  savestate branch divergence + per-frame input_state trace): the host
+  input path is CORRECT (port0/device1/id7 -> 1 during holds, 32 polls
+  per frame; branches byte-identical without input = deterministic);
+  the OpenBIOS shell simply does not consume pad input (0 divergence;
+  1800-frame scan found no exe flash either) -> INPUT_CAUSALITY =
+  BLOCKED on content, not on the host
+- host.py: load_game(None) contentless attempts with core-log tail in
+  the error; api.py: var_overrides passthrough so OpenBIOS-mode runs
+  engage the official override path; env_probe.py: BIOS truth table
+  (RETAIL_OK / OPENBIOS_OK / KNOWN_UNSUPPORTED with the silent-fallback
+  warning for SCPH-1001/7502 hashes) + firmware-path reporting
+- scripts/autolab.py: one-command gate ladder (UNIT -> EMULATOR_SMOKE
+  -> BIOS_BOOT -> CONTENT_BOOT -> INPUT_CAUSALITY -> TARGET_GAME) with
+  JSONL ledger, fingerprint dedup (only PASS/PARTIAL dedup), time
+  budget, and a single highest-value-blocker verdict; executed twice
+  (second run dedups unchanged gates, BLOCKED gates re-run)
+- Executed ladder on this machine: UNIT PASS (85 tests incl. 10 new in
+  tests/test_bios_truth.py), EMULATOR_SMOKE PASS, BIOS_BOOT PASS
+  (official OpenBIOS path), CONTENT_BOOT PARTIAL (mount + TOC + shell
+  render; exe dispatch not reached), INPUT_CAUSALITY BLOCKED (needs
+  pad-interactive content), TARGET_GAME BLOCKED (game_image missing)
+- Re-checked the user-supplied MSX URL once more: still geo-gated
+  (HTTP block page, 396-byte HTML) - never bypassed, never committed
+- All README/worklog/docs content in this commit is English-only
+
+Stage Summary:
+- The "BIOS blocker" is now an EXECUTED decision table: the precise
+  retail-BIOS requirement is scph5501.bin (MD5 490f666e1afb15b7362b406
+  ed1cea246, SHA1 0555c6fa...) - user-supplied SCPH-1001/7502 cannot be
+  loaded by this core - plus the still-missing SLUS-01212 image
+- The machine now has: verified core, verified host input path, an
+  official OpenBIOS boot path (MIT), lawful self-made content, and a
+  resumable one-command experiment runner
+- No gameplay/progress/mission result is claimed from this machine

@@ -1,4 +1,4 @@
-# Source of truth — PS1Play v0.6
+# Source of truth — PS1Play v0.8
 
 Statuses: IMPLEMENTED, TESTED, OBSERVED, PARTIAL, BLOCKED, PENDING,
 SUPERSEDED. Code existing in the repository is not automatically a
@@ -37,4 +37,17 @@ verified feature.
 | Grenade presses are frame-exact (4-frame window, 1 per 300 f) | v0.7 scheduler | poison-chunk test: aligned chunk yields 1 press, v0.6 emitted 60 A-frames | TESTED (UNIT) | live grenade-count vs bombs counter delta |
 | stall thresholds are chunk-denominated and named | `STALL_SHRED_AFTER_CHUNKS`, `STALL_PAUSE_AFTER_CHUNKS` | boundary tests: no shred at 60, shred at 61 chunks | TESTED (UNIT) | tune only from measured live stall data |
 | Beetle PSX 0.9.44.1 loads on the current sandbox | `core/host.py` + `scripts/emulator_smoke.py` | EMULATOR_SMOKE PASS: retro_init ok, env wiring ok, embedded BIOS table = SCPH-55xx/7003 only | OBSERVED (this machine) | load_game with real cue + scph5501 |
-| SCPH-1001/7502 BIOS cannot boot this core | core binary's own embedded BIOS names | `strings` + emulator_smoke: no 1001/7502 in the accepted set | VERIFIED (binary evidence) | obtain scph5501.bin (MD5 490f666e…) |
+| SCPH-1001/7502 BIOS cannot boot this core | core binary's own embedded BIOS names | `strings` + emulator_smoke: no 1001/7502 in the accepted set | SUPERSEDED by v0.8 executable tests | obtain scph5501.bin (MD5 490f666e…) |
+
+## v0.8 additions (executed BIOS decision table + autolab)
+
+| Claim | Source file/function | Current evidence | Status | Next verification |
+|---|---|---|---|---|
+| The core SILENTLY falls back to an embedded OpenBIOS when the region-listed firmware is absent | `libretro.c` (beetle-psx @ df2b53b) `firmware_is_present()` → `memcpy(BIOSROM, openbios, …)`; runtime log `Firmware is missing: %s` | `scripts/bios_probe.py` rows 2–4: SCPH-1001/7502 (authentic MD5s) boot to the OpenBIOS cube with `firmware_fallback=true` | VERIFIED (this machine) | retail runs must pin `firmware_override_found/fallback=false/…` |
+| SCPH-1001/7502 are rejected by name+SHA1 region gate, not by hash crash | `libretro.c` `firmware_is_present()` (NTSC-U list: scph5501/5503/7003, SHA1 `0555C6FA…`) | source inspection + executed boot tests | VERIFIED | — |
+| OpenBIOS boots via the OFFICIAL firmware path, retail-BIOS-free | `third_party/openbios/openbios.bin` (MIT, © PCSX-Redux; MD5 `664ee444…` byte-identical to the core's embedded blob) + `beetle_psx_override_bios=openbios` | bios_probe: `override_found=true`, BOOTED, real frames | TESTED | use for lawful CONTENT_BOOT-style gates |
+| The OpenBIOS shell cannot host INPUT_CAUSALITY | OpenBIOS ROM strings (`SYSTEM.CNF;1`, `No boot file !`) + `scripts/input_causality.py` A/B + `scripts/frame_scan.py` | 1800-frame scan: no pad response, no exe flash; input diffs exactly 0 | OBSERVED | needs pad-interactive content (retail BIOS + game) |
+| The host input path is correct on this machine | `core/host.py` `input_state` callback | per-frame trace: `port0/device1/id7 → 1` during holds, 32 polls/frame; savestate branches byte-identical without input | VERIFIED (host side) | end-to-end causality awaits interactive content |
+| Lawful content fixtures exist and load through the real path | `scripts/make_audio_fixture.py`, `scripts/make_padtest.py` | audio disc + hand-assembled MIPS pad-test EXE/disc; CONTENT_BOOT = PARTIAL (mount + TOC + shell render; exe dispatch not reached) | PARTIAL | fix exe dispatch or obtain retail BIOS + game |
+| One command runs the whole gate ladder unattended | `scripts/autolab.py` | executed: UNIT PASS / EMULATOR_SMOKE PASS / BIOS_BOOT PASS / CONTENT_BOOT PARTIAL / INPUT_CAUSALITY BLOCKED / TARGET_GAME BLOCKED; JSONL ledger + fingerprint dedup (10 tests in `tests/test_bios_truth.py`) | TESTED | run with real artifacts when supplied |
+| Precise remaining blockers | `scripts/env_probe.py` | (1) scph5501.bin MD5 `490f666e…` for retail NTSC-U; (2) SLUS-01212 image (download geo-gated, HTML block page) | BLOCKED | user-supplied local files (never committed) |

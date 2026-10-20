@@ -112,6 +112,79 @@ design. The remaining blockers for a real run are exactly two files
 (`env_probe.py` prints them): the disc image and `scph5501.bin`
 (MD5 `490f666e1afb15b7362b406ed1cea246`).
 
+> **v0.8 correction:** the string-derived claim above was superseded by
+> executable boot tests. The gate is real (name+SHA1 region lists), but
+> the consequence was misread: the core silently boots an embedded
+> OpenBIOS instead of failing. See the v0.8 section for the executed
+> decision table.
+
+## v0.8 — the BIOS decision table, executed (replaces a string-derived claim)
+
+v0.7 stated that this core build "only accepts SCPH-55xx/7003" based on
+strings extracted from the binary. v0.8 replaced that inference with
+**executable boot tests** (`scripts/bios_probe.py`) and found that the
+claim was right about the gate but wrong about the consequence:
+
+> **The core does not reject a foreign BIOS loudly — it silently falls
+> back to an OpenBIOS image embedded in the core binary**
+> (`libretro.c`: `firmware_is_present()` → `memcpy(BIOSROM, openbios, …)`).
+> Every previous "booted" screenshot on this machine — the rotating
+> cube — was the embedded **OpenBIOS shell**, not the supplied BIOS.
+
+The decision table (all rows executed on this machine, evidence in
+`scripts/bios_probe.py` JSON outputs):
+
+| # | Configuration | Firmware actually used | Content | Verdict |
+|---|---|---|---|---|
+| 1 | no content (`retro_load_game(NULL)`) | — | — | unsupported by 0.9.44.1 (load fails) |
+| 2 | `scph1001.bin` (MD5 `4dc4690a…`, authentic) | **embedded OpenBIOS fallback** | self-made audio disc | BIOS **not loaded**; boots anyway (the trap) |
+| 3 | `scph7502.bin` (MD5 `30a25911…`, authentic) | embedded OpenBIOS fallback | self-made audio disc | same trap |
+| 4 | `scph1001.bin` + `skip_bios=enabled` | embedded OpenBIOS fallback | audio disc | `skip_bios` is a boot-flow patch (BIOS+0x6990), not a firmware bypass |
+| 5 | `openbios.bin` (MIT, `664ee444…`) + `override_bios=openbios` | **OpenBIOS via the OFFICIAL firmware path** (`Override firmware found` in log) | audio disc | PASS — lawful retail-BIOS-free boot |
+| 6 | self-made pad-test disc (SYSTEM.CNF → PS-X EXE) | any | our own EXE | executable **dispatch not reached** (shell parses `SYSTEM.CNF;1` per its ROM strings, but no boot within 1800 frames) |
+| 7 | direct `.EXE` content | — | our own EXE | `LoadEXE()` accepts it, but this build never patches PC/SP → the EXE never runs (TextMem is only mapped into the PIO window) |
+
+What was built to make this decidable and repeatable:
+
+* `scripts/bios_probe.py` — one BIOS × one content × one option set →
+  BOOTED / LOADED_NO_RENDER / LOAD_FAILED verdict with hashes, core
+  variables, log tail, screenshot, and the **fallback-vs-official
+  firmware flag** (`firmware_fallback` / `firmware_override_found`).
+* `third_party/openbios/openbios.bin` — the OpenBIOS image (MIT,
+  © PCSX-Redux) byte-identical to the core's own embedded blob
+  (MD5 `664ee444f38f6008d0cffc9d23e5c40d`), with `PROVENANCE.md`.
+  With `beetle_psx_override_bios=openbios` this boots through the
+  official firmware path — no proprietary BIOS required.
+* `scripts/make_audio_fixture.py`, `scripts/make_padtest.py` — lawful,
+  self-generated content: a silent-CDDA disc, and a hand-assembled
+  MIPS pad-test EXE/disc (RIGHT→red, LEFT→blue, ✕→green, START→white).
+* `scripts/input_causality.py` — the INPUT_CAUSALITY A/B harness
+  (baseline vs treatment vs screenshot evidence). Host-side input is
+  **proven correct** on this machine: per-frame `input_state` trace
+  shows `port0/device1/id7 → 1` during holds (32 polls/frame), and
+  savestate branches stay byte-identical when no input is scheduled
+  (determinism). The remaining blocker is content-side only: the
+  OpenBIOS shell does not consume pad input.
+* `scripts/autolab.py` — the one-command gate ladder:
+  `python3 scripts/autolab.py --goal gates --budget-minutes 10` runs
+  UNIT → EMULATOR_SMOKE → BIOS_BOOT → CONTENT_BOOT → INPUT_CAUSALITY →
+  TARGET_GAME, records every experiment to a resumable JSONL ledger
+  with fingerprint dedup, and prints the single highest-value blocker.
+* `env_probe.py` now classifies BIOS files against the core's real
+  gate (`RETAIL_OK` / `OPENBIOS_OK` / `KNOWN_UNSUPPORTED` — flagging
+  the silent-fallback trap for SCPH-1001/7502 by hash) and reports
+  which firmware path the boot smoke actually took.
+* Host fixes: `LibretroCore.load_game(None)` contentless attempts with
+  core-log diagnostics; `PS1Play(..., var_overrides=…)` passthrough for
+  core options.
+
+**Remaining blockers, precisely:** (1) `scph5501.bin`
+(MD5 `490f666e1afb15b7362b406ed1cea246`, SHA1 `0555c6fa…`) for retail
+NTSC-U runs — the supplied SCPH-1001/7502 files cannot be loaded by
+this core; (2) the SLUS-01212 disc image (the known download is
+geo-gated and returns an HTML block page). No gameplay, progress or
+mission-clear result is claimed from this machine.
+
 ## Source-of-truth table (live status of every claim)
 
 | Claim | Evidence today | Status |

@@ -267,11 +267,24 @@ class LibretroCore:
 
     # ---------------- lifecycle ----------------
     def load_game(self, path):
+        """Load a content image (.cue path) or boot contentless (path=None).
+
+        Contentless boot is only attempted when the core advertised
+        E_SET_SUPPORT_NO_GAME; cores that do not support it will fail
+        here with the core's own log tail attached for diagnosis.
+        """
         info = retro_game_info()
-        info.path = os.fsencode(os.path.abspath(path))
+        if path is not None:
+            info.path = os.fsencode(os.path.abspath(path))
+        else:
+            info.path = None
         ok = self.lib.retro_load_game(byref(info))
         if not ok:
-            raise RuntimeError(f"retro_load_game failed: {path}")
+            tail = " | ".join(self.log_history[-6:])
+            what = path if path is not None else "<contentless>"
+            raise RuntimeError(
+                f"retro_load_game failed: {what}"
+                + (f" | core log: {tail}" if tail else ""))
         av = _av_info()
         self.lib.retro_get_system_av_info(byref(av))
         self.av_info = {"w": av.geometry.base_width, "h": av.geometry.base_height,

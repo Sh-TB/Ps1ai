@@ -41,11 +41,15 @@ def _corner_blue(arr):
 class PS1Play:
     def __init__(self, game, core=DEFAULT_CORE, workspace=DEFAULT_WORKSPACE,
                  profile_dir=DEFAULT_PROFILES, profile_name=None,
-                 states_dir=None, journal_path=None, verbose=False):
+                 states_dir=None, journal_path=None, verbose=False,
+                 var_overrides=None):
         self.game = game
         self.core_path = core
         self.workspace = workspace
         self.verbose = verbose
+        # Forwarded to LibretroCore (core options such as
+        # beetle_psx_override_bios); None keeps the defaults.
+        self.var_overrides = var_overrides
         self.system_dir = os.path.join(workspace, "system")
         self.save_dir = os.path.join(workspace, "saves")
         self.states_dir = states_dir or os.path.join(workspace, "states")
@@ -65,7 +69,8 @@ class PS1Play:
         for d in (self.system_dir, self.save_dir, self.states_dir):
             os.makedirs(d, exist_ok=True)
         self.core = LibretroCore(self.core_path, self.system_dir,
-                                 self.save_dir, verbose=self.verbose)
+                                 self.save_dir, verbose=self.verbose,
+                                 var_overrides=self.var_overrides)
         self.core.load_game(self.game)
         self.mem = MemoryView(self.core.ram)
         self.observer = Observer(self.mem)

@@ -36,6 +36,55 @@ BIOS_NAMES = ("scph5501.bin", "scph5500.bin", "scph5502.bin")
 # SCPH-5501 (NTSC-U) — MD5 verified in this repo's dev log (worklog task 2);
 # Beetle PSX additionally pins SHA1 0555c6fa…88e9f30b for NTSC-U BIOS.
 BIOS_MD5_OK = "490f666e1afb15b7362b406ed1cea246"
+BIOS_SHA1_OK = "0555c6fae8906f3f09baf5988f00e55f88e9f30b"
+# BIOS files this core build REJECTS by name+SHA1 region gate (verified
+# against libretro.c firmware_is_present() and by executable boot tests,
+# scripts/bios_probe.py). Providing them looks ready but silently falls
+# back to the core's embedded OpenBIOS — the exact trap this probe
+# exists to flag.
+KNOWN_UNSUPPORTED_BIOS_MD5 = {
+    "4dc4690a277144675bfe5ac5aaf5896d": "SCPH-1001 (NTSC-U retail)",
+    "30a25911fa858048e8adde16590f218a": "SCPH-7502 (PAL retail)",
+}
+OPENBIOS_MD5 = "664ee444f38f6008d0cffc9d23e5c40d"
+
+
+def classify_bios(filename, md5hex):
+    """Pure classifier: what will THIS core build do with a BIOS file?
+
+    Returns (verdict, detail). Verdicts:
+      RETAIL_OK        — accepted by the core's region list for NTSC-U
+      OPENBIOS_OK      — lawful OpenBIOS image (MIT, see third_party/)
+      KNOWN_UNSUPPORTED — boots but SILENTLY falls back to embedded
+                          OpenBIOS (name+SHA1 gate, not a hash crash)
+      UNKNOWN          — not in any verified list; test it explicitly
+                          with scripts/bios_probe.py before trusting it
+    """
+    name = (filename or "").lower()
+    if name == "openbios.bin":
+        if md5hex == OPENBIOS_MD5:
+            return "OPENBIOS_OK", (
+                "open-source BIOS replacement (MIT, PCSX-Redux) — use with "
+                "beetle_psx_override_bios=openbios; its shell cannot drive "
+                "the INPUT_CAUSALITY gate")
+        return "UNKNOWN", "openbios.bin with unexpected md5 — re-verify"
+    if name in ("scph5501.bin", "scph5500.bin", "scph5502.bin"):
+        if name == "scph5501.bin" and md5hex == BIOS_MD5_OK:
+            return "RETAIL_OK", (
+                "SCPH-5501 NTSC-U retail — accepted by the core region "
+                "list; required for SLUS-01212 legit runs")
+        return "UNKNOWN", (
+            f"{name} present but md5 {md5hex} is not the verified NTSC-U "
+            "hash — the core will warn and may misbehave")
+    if md5hex in KNOWN_UNSUPPORTED_BIOS_MD5:
+        label = KNOWN_UNSUPPORTED_BIOS_MD5[md5hex]
+        return "KNOWN_UNSUPPORTED", (
+            f"{label}: this core build rejects it by name+SHA1 region "
+            "gate (libretro.c firmware_is_present); booting will "
+            "SILENTLY FALL BACK to the core's embedded OpenBIOS")
+    return "UNKNOWN", (
+        f"{filename} md5 {md5hex} not in any verified list — run "
+        "scripts/bios_probe.py for an executable boot verdict")
 
 
 def _hashes(path, n=1 << 20):
@@ -116,30 +165,37 @@ def probe(game=DEF_GAME, core=DEF_CORE, workspace=DEF_WORKSPACE):
               f"not found: {core} — build mednafen_psx_libretro.so from "
               f"https://github.com/libretro/beetle-psx-libretro")
 
-    # BIOS (Beetle requires scph5501 for NTSC-U)
+    # BIOS (what the core actually accepts, not what looks plausible)
     sysdir = os.path.join(workspace, "system") if workspace else None
     bios_found = None
     if sysdir and os.path.isdir(sysdir):
-        for name in BIOS_NAMES:
-            bp = os.path.join(sysdir, name)
-            if os.path.exists(bp):
-                bios_found = {"path": bp, "sha1": sha1(bp)}
+        for fn in sorted(os.listdir(sysdir)):
+            if not fn.lower().endswith(".bin"):
+                continue
+            bp = os.path.join(sysdir, fn)
+            md5h, sha1h = _hashes(bp)
+            verdict, detail = classify_bios(fn, md5h)
+            cand = {"path": bp, "file": fn, "md5": md5h, "sha1": sha1h,
+                    "verdict": verdict, "detail": detail}
+            # preference: retail NTSC-U first, then OpenBIOS override path
+            if verdict == "RETAIL_OK":
+                bios_found = cand
                 break
+            if bios_found is None or verdict == "OPENBIOS_OK":
+                bios_found = cand
     if bios_found:
-        md5h, sha1h = _hashes(bios_found["path"])
-        bios_found["md5"] = md5h
-        bios_found["sha1"] = sha1h
-        ok = True
-        detail = f"{bios_found['path']} md5={md5h} sha1={sha1h}"
-        if "5501" in bios_found["path"] and md5h != BIOS_MD5_OK:
-            ok = False
-            detail += (f" (MD5 mismatch — expected {BIOS_MD5_OK}; "
-                       f"Beetle rejects wrong NTSC-U BIOS revisions)")
+        ok = bios_found["verdict"] in ("RETAIL_OK", "OPENBIOS_OK")
+        detail = (f"{bios_found['path']} md5={bios_found['md5']} "
+                  f"-> {bios_found['verdict']}: {bios_found['detail']}")
         check("bios", ok, detail)
+        res["bios"] = {k: bios_found[k] for k in
+                       ("file", "md5", "verdict")}
     else:
         check("bios", False,
-              f"no {'/'.join(BIOS_NAMES)} in {sysdir} — SCPH-5501 "
-              f"required for SLUS-01212 (copyrighted, never committed)")
+              f"no BIOS .bin in {sysdir} — supply scph5501.bin "
+              f"(MD5 {BIOS_MD5_OK}) for retail NTSC-U runs, or use the "
+              "lawful third_party/openbios/openbios.bin (MIT) with "
+              "beetle_psx_override_bios=openbios for OpenBIOS-mode runs")
 
     # workspace writability
     if workspace:
@@ -160,11 +216,24 @@ def probe(game=DEF_GAME, core=DEF_CORE, workspace=DEF_WORKSPACE):
         try:
             from ps1play.api import PS1Play
             kw = {"core": core, "workspace": workspace}
+            # OpenBIOS-mode workspaces must engage the core's BIOS
+            # override, otherwise the same image loads through the
+            # silent fallback path (behaviorally identical, but the
+            # run evidence must say which path was taken).
+            if res.get("bios", {}).get("verdict") == "OPENBIOS_OK":
+                kw["var_overrides"] = {
+                    b"beetle_psx_override_bios": b"openbios"}
             p = PS1Play(game, **kw)
             info = p.boot()
             res["boot_smoke"] = info
+            log_all = "\n".join(getattr(p.core, "log_history", []))
+            res["firmware_fallback"] = "Firmware is missing" in log_all
+            res["firmware_override_found"] = \
+                "Override firmware found" in log_all
             check("core_boots_game", True,
-                  f"{info.get('core')} serial={info.get('serial')}")
+                  f"{info.get('core')} serial={info.get('serial')} "
+                  f"fallback={res['firmware_fallback']} "
+                  f"override={res['firmware_override_found']}")
             p.core.shutdown()
         except Exception as e:                              # noqa: BLE001
             check("core_boots_game", False, f"boot failed: {e}")
