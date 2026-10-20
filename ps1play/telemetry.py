@@ -1,4 +1,5 @@
-"""telemetry.py — ISSUE 4 Phase 3: structured telemetry adapter.
+"""telemetry.py — structured telemetry adapter (Issue #4 Phase 3,
+extended in Issue #5 Priority Refinement).
 
 Every field links to a RAM-discovery record or a reproducible
 experiment; fields without that link are emitted as None (UNKNOWN)
@@ -29,6 +30,17 @@ OBSERVED (one clean experiment, repeat pending):
                0 at fresh spawn, 1 after any action button (2x2 trials);
                sticky semantics confirmed across causality v4 legs.
 
+STATIC_EVIDENCE (source-level chain, live correlation in progress —
+Issue #5 Priority Refinement):
+
+  flags_word   u32le @0x0EE518 — per-player status flag word. Static:
+               61 xrefs in the player-status block (score 0x0EE318 is
+               the same region); OR-bit writes (e.g. 0x8006F058:
+               lw/or/sw) and the HUD draws " GAME OVER" when the word
+               == -1 (0x80071834: lw; bne -1 path skips; site 0x80071850
+               prints string @0x80011580).  Live bit-level meaning per
+               death/continue is NOT yet verified → treat as opaque.
+
 UNKNOWN (no validated interpretation — always None):
 
   lives, continues, hp, player_x/y, facing, enemy/projectile slots,
@@ -36,6 +48,12 @@ UNKNOWN (no validated interpretation — always None):
   a verified flag.  Metal Slug X mission play has NO countdown timer:
   bounded u8/u16/plain/BCD scans found zero strict decrements
   (progress probe v4); 0x0D47D4 stays a HEURISTIC pace sensor.
+
+Issue #5 overlay mapping note: ENEMY.BIN is LIVE-VERIFIED verbatim at
+VA 0x8009C0E8 (probe3 V1: 0 mismatch runs / 115,400 B); the overlay
+does NOT touch the published GS lives/hp addresses — its 387 refs go
+through the player-pointer word 0x800C9A98, which currently reads
+0xA0 in our boot context (a handle, not a raw pointer).
 """
 from __future__ import annotations
 
@@ -60,6 +78,7 @@ ADDR_PAD_MIRROR = 0x0D4948
 ADDR_ACTION_LATCH = 0x095790      # demo-context sticky latch
 ADDR_DEMO_SCROLL = 0x0EB858       # demo-context movement accumulator
 ADDR_PACE_SENSOR = 0x0D47D4       # HEURISTIC: freezes under input
+ADDR_FLAGS_WORD = 0x0EE518        # STATIC_EVIDENCE: ==-1 gates GAME OVER
 
 PROVENANCE = {
     "score": {"addr": hex(ADDR_SCORE), "width": "u32le",
@@ -109,6 +128,17 @@ PROVENANCE = {
                     "grade": "HEURISTIC",
                     "evidence": ["decrements 1/frame ONLY without input "
                                  "(issue3, route_timed); NOT a timer"]},
+    "flags_word": {"addr": hex(ADDR_FLAGS_WORD), "width": "u32le",
+                   "grade": "OBSERVED",
+                   "evidence": ["static: 61 exe xrefs, player-status "
+                                "block; OR-bit writes 0x8006F058..74",
+                                "static: ' GAME OVER' HUD draw gated "
+                                "on the word (0x80071834->0x80071850)",
+                                "live: full-run trace 2026-10-20 — "
+                                "0xFF during active play, 0x1 exactly "
+                                "on the 4 GAME OVER freezes (image "
+                                "c050), each followed by a continue "
+                                "restart (score 0 + grenade refill)"]},
 }
 UNKNOWN_FIELDS = ("lives", "continues", "hp", "player_x", "player_y",
                   "facing", "enemies", "projectiles", "mission_clear",
@@ -147,10 +177,13 @@ class TelemetryAdapter:
     def read_action_latch(self):
         return int(self.p.mem.u8(ADDR_ACTION_LATCH))
 
+    def read_flags_word(self):
+        return int(self.p.mem.u32(ADDR_FLAGS_WORD))
+
     # -- structured snapshot ----------------------------------------
     def snapshot(self, buttons=None, frame=None):
         s = {
-            "schema": "ps1play-telemetry/2",
+            "schema": "ps1play-telemetry/3",
             "frame": frame,
             "buttons": sorted(buttons) if buttons else [],
             "score": self.read_score(),
@@ -160,6 +193,7 @@ class TelemetryAdapter:
             "camera_fx": self.read_camera_fx(),
             "pad_mirror": self.read_pad_mirror(),
             "action_latch": self.read_action_latch(),
+            "flags_word": self.read_flags_word(),
         }
         for f in UNKNOWN_FIELDS:
             s[f] = None            # never guessed
@@ -203,6 +237,17 @@ class TelemetryAdapter:
                 (prev["camera_fx"] - cur["camera_fx"]) > (1 << 20):
             ev.append({"type": "camera_wrap",
                        "grade": "DERIVED_ON_OBSERVED"})
+        if prev.get("flags_word") != cur.get("flags_word") and \
+                cur.get("flags_word") == 0xFFFFFFFF:
+            ev.append({"type": "game_over_flags",
+                       "grade": "DERIVED", "note": "flag word "
+                       "saturated"})
+        if prev.get("flags_word") == 0xFF and \
+                cur.get("flags_word") == 0x1:
+            ev.append({"type": "game_over_screen",
+                       "grade": "OBSERVED",
+                       "note": "0xFF->0x1 = GAME OVER screen "
+                               "(4/4 live correlation, image c050)"})
         return ev
 
     def scroll_gain(self, prev, cur):

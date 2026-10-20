@@ -43,15 +43,30 @@ from game_rebuild_index import (  # noqa: E402
     DiscImage, parse_pvd, walk_disc, scan_global_refs,
 )
 
-CONFIG_VERSION = "overlay-index-1"
+CONFIG_VERSION = "overlay-index-2"
 OVERLAY_MODULES = ("ENEMY.BIN", "MISSION.BIN")
-# code-region file offsets with provenance. ENEMY.BIN 0xD180 comes from
-# Issue #3 (cheat-site structural decode + coherent disasm) and is
-# re-verified here by the containment fit; MISSION.BIN is detected.
+# code-region file offsets + load destinations with provenance.
+# ENEMY.BIN: LIVE-VERIFIED verbatim copy at 0x8009C0E8 (issue5_probe3
+# V1: 0 mismatch runs across all 115,400 bytes; V2: code head at
+# base+0xD180 = 0x800A9268). The static text-end fit (0x800A7800) was
+# FALSIFIED by the live check — live override takes precedence.
+# code_off: refit against the live-fixed destination (containment).
+# MISSION.BIN: not resident at mission-1 gameplay (probe V3, 0 hits at
+# 4/5 anchors) — dest stays unresolved, functions not emitted.
 MODULE_REGISTRY = {
-    "ENEMY.BIN": {"code_off": 0xD180, "code_off_source":
-                  "issue3_structural_decode+containment_refit"},
-    "MISSION.BIN": {"code_off": None, "code_off_source": "detect"},
+    "ENEMY.BIN": {"code_off": 0xD180,
+                  "code_off_source": "issue3_structural_decode"
+                                     "+live_base_refit",
+                  "dest": 0x8009C0E8,
+                  "dest_source": "LIVE verbatim pattern match "
+                                 "(issue5_probe3 V1/V2, 0 mismatch "
+                                 "runs, delta-consistent 27 anchors)",
+                  "status": "TESTED"},
+    "MISSION.BIN": {"code_off": None, "code_off_source": "detect",
+                    "dest": None,
+                    "dest_source": "NOT resident at mission-1 "
+                                   "gameplay (issue5_probe3 V3)",
+                    "status": "NOT_FOUND_IN_RAM"},
 }
 EXE_LO = 0x80010000
 SEARCH_LO, SEARCH_HI = 0x80000000, 0x80200000
@@ -352,10 +367,31 @@ def build(game, out_dir, force=False):
             master["modules"][name] = {"status": "NO_CODE_DETECTED"}
             continue
         wcode = words[code_off // 4:code_end // 4]
-        dest_va0 = None
+        reg_dest = reg_entry.get("dest")
         _sites, tgts = jjal(wcode, 0)          # targets are absolute
         fit = fit_destination(tgts, code_end - code_off, text_end)
-        dest_va0 = fit["dest"]
+        if reg_dest is not None:
+            dest_va0 = reg_dest
+            fit["rule"] = "live_override"
+            fit["live_dest"] = f"0x{reg_dest:08X}"
+            fit["dest_source"] = reg_entry.get("dest_source")
+            fit["status"] = reg_entry.get("status", "TESTED")
+        else:
+            dest_va0 = None
+            master["modules"][name] = {
+                "status": reg_entry.get("status", "UNRESOLVED_DEST"),
+                "file": {"lba": recs[name]["lba"],
+                         "size": recs[name]["size"],
+                         "sha256": sha256(data)},
+                "dest_source": reg_entry.get("dest_source"),
+                "note": "no verified load address; functions not "
+                        "emitted (would be address-invalid)",
+            }
+            print(f"{name}: dest unresolved ({reg_entry.get("dest_source")})"
+                  " — not indexed")
+            continue
+        if dest_va0 < EXE_LO or dest_va0 > 0x80200000:
+            raise SystemExit(f"{name}: implausible dest {dest_va0:#x}")
         prefix = name.split(".")[0].lower()
         funcs = scan_functions(wcode, dest_va0, prefix)
         edges = scan_edges(wcode, dest_va0, text_end, name)

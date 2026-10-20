@@ -1,7 +1,7 @@
 {
  "schema": "ps1play-overlay-index/1",
- "config_version": "overlay-index-1",
- "generated_utc": "2026-10-20T18:01:21Z",
+ "config_version": "overlay-index-2",
+ "generated_utc": "2026-10-20T18:18:18Z",
  "exe_text": {
   "lo": "0x80010000",
   "hi": "0x800A7800",
@@ -20,11 +20,11 @@
     "0xD180",
     "0x1C2C8"
    ],
-   "code_off_source": "issue3_structural_decode+containment_refit",
+   "code_off_source": "issue3_structural_decode+live_base_refit",
    "code_bytes": 61768,
    "mapping": {
     "dest": 2148169728,
-    "rule": "exe_text_end_preferred",
+    "rule": "live_override",
     "internal_targets": 964,
     "total_targets": 1546,
     "candidates": {
@@ -34,20 +34,1079 @@
       "kind": "exe_text_end"
      }
     },
+    "live_dest": "0x8009C0E8",
+    "dest_source": "LIVE verbatim pattern match (issue5_probe3 V1/V2, 0 mismatch runs, delta-consistent 27 anchors)",
+    "status": "TESTED",
     "file_off_at_dest": "0xD180",
     "va_range": [
-     "0x800A7800",
-     "0x800B6948"
+     "0x8009C0E8",
+     "0x800AB230"
     ]
    },
    "counts": {
-    "functions": 602,
+    "functions": 331,
     "edges": 1546,
-    "edges_into_exe": 526,
+    "edges_into_exe": 517,
     "grefs": 1418,
     "strings": 10
    },
    "functions": [
+    {
+     "va": "0x8009C4A4",
+     "size": 56,
+     "name": "enemy_8009C4A4",
+     "confidence": "medium"
+    },
+    {
+     "va": "0x8009C4DC",
+     "size": 68,
+     "name": "enemy_8009C4DC",
+     "confidence": "medium"
+    },
+    {
+     "va": "0x8009C520",
+     "size": 216,
+     "name": "enemy_8009C520",
+     "confidence": "medium"
+    },
+    {
+     "va": "0x8009C5F8",
+     "size": 124,
+     "name": "enemy_8009C5F8",
+     "confidence": "medium"
+    },
+    {
+     "va": "0x8009C674",
+     "size": 56,
+     "name": "enemy_8009C674",
+     "confidence": "medium"
+    },
+    {
+     "va": "0x8009C6AC",
+     "size": 152,
+     "name": "enemy_8009C6AC",
+     "confidence": "medium"
+    },
+    {
+     "va": "0x8009C744",
+     "size": 168,
+     "name": "enemy_8009C744",
+     "confidence": "medium"
+    },
+    {
+     "va": "0x8009C7EC",
+     "size": 352,
+     "name": "enemy_8009C7EC",
+     "confidence": "medium"
+    },
+    {
+     "va": "0x8009C94C",
+     "size": 228,
+     "name": "enemy_8009C94C",
+     "confidence": "medium"
+    },
+    {
+     "va": "0x8009CA30",
+     "size": 620,
+     "name": "enemy_8009CA30",
+     "confidence": "medium"
+    },
+    {
+     "va": "0x8009CC9C",
+     "size": 256,
+     "name": "enemy_8009CC9C",
+     "confidence": "medium"
+    },
+    {
+     "va": "0x8009CD9C",
+     "size": 168,
+     "name": "enemy_8009CD9C",
+     "confidence": "medium"
+    },
+    {
+     "va": "0x8009CE44",
+     "size": 108,
+     "name": "enemy_8009CE44",
+     "confidence": "medium"
+    },
+    {
+     "va": "0x8009CEB0",
+     "size": 288,
+     "name": "enemy_8009CEB0",
+     "confidence": "medium"
+    },
+    {
+     "va": "0x8009CFD0",
+     "size": 316,
+     "name": "enemy_8009CFD0",
+     "confidence": "medium"
+    },
+    {
+     "va": "0x8009D10C",
+     "size": 80,
+     "name": "enemy_8009D10C",
+     "confidence": "medium"
+    },
+    {
+     "va": "0x8009D15C",
+     "size": 64,
+     "name": "enemy_8009D15C",
+     "confidence": "medium"
+    },
+    {
+     "va": "0x8009D19C",
+     "size": 520,
+     "name": "enemy_8009D19C",
+     "confidence": "medium"
+    },
+    {
+     "va": "0x8009D3A4",
+     "size": 432,
+     "name": "enemy_8009D3A4",
+     "confidence": "medium"
+    },
+    {
+     "va": "0x8009D554",
+     "size": 72,
+     "name": "enemy_8009D554",
+     "confidence": "medium"
+    },
+    {
+     "va": "0x8009D59C",
+     "size": 116,
+     "name": "enemy_8009D59C",
+     "confidence": "medium"
+    },
+    {
+     "va": "0x8009D610",
+     "size": 296,
+     "name": "enemy_8009D610",
+     "confidence": "medium"
+    },
+    {
+     "va": "0x8009D738",
+     "size": 108,
+     "name": "enemy_8009D738",
+     "confidence": "medium"
+    },
+    {
+     "va": "0x8009D7A4",
+     "size": 108,
+     "name": "enemy_8009D7A4",
+     "confidence": "medium"
+    },
+    {
+     "va": "0x8009D810",
+     "size": 348,
+     "name": "enemy_8009D810",
+     "confidence": "medium"
+    },
+    {
+     "va": "0x8009D96C",
+     "size": 48,
+     "name": "enemy_8009D96C",
+     "confidence": "medium"
+    },
+    {
+     "va": "0x8009D99C",
+     "size": 40,
+     "name": "enemy_8009D99C",
+     "confidence": "medium"
+    },
+    {
+     "va": "0x8009D9C4",
+     "size": 76,
+     "name": "enemy_8009D9C4",
+     "confidence": "medium"
+    },
+    {
+     "va": "0x8009DA10",
+     "size": 56,
+     "name": "enemy_8009DA10",
+     "confidence": "medium"
+    },
+    {
+     "va": "0x8009DA48",
+     "size": 1564,
+     "name": "enemy_8009DA48",
+     "confidence": "medium"
+    },
+    {
+     "va": "0x8009E064",
+     "size": 56,
+     "name": "enemy_8009E064",
+     "confidence": "medium"
+    },
+    {
+     "va": "0x8009E09C",
+     "size": 44,
+     "name": "enemy_8009E09C",
+     "confidence": "medium"
+    },
+    {
+     "va": "0x8009E0C8",
+     "size": 204,
+     "name": "enemy_8009E0C8",
+     "confidence": "medium"
+    },
+    {
+     "va": "0x8009E194",
+     "size": 444,
+     "name": "enemy_8009E194",
+     "confidence": "medium"
+    },
+    {
+     "va": "0x8009E350",
+     "size": 1628,
+     "name": "enemy_8009E350",
+     "confidence": "medium"
+    },
+    {
+     "va": "0x8009E9AC",
+     "size": 312,
+     "name": "enemy_8009E9AC",
+     "confidence": "medium"
+    },
+    {
+     "va": "0x8009EAE4",
+     "size": 144,
+     "name": "enemy_8009EAE4",
+     "confidence": "medium"
+    },
+    {
+     "va": "0x8009EB74",
+     "size": 100,
+     "name": "enemy_8009EB74",
+     "confidence": "medium"
+    },
+    {
+     "va": "0x8009EBD8",
+     "size": 192,
+     "name": "enemy_8009EBD8",
+     "confidence": "medium"
+    },
+    {
+     "va": "0x8009EC98",
+     "size": 204,
+     "name": "enemy_8009EC98",
+     "confidence": "medium"
+    },
+    {
+     "va": "0x8009ED64",
+     "size": 56,
+     "name": "enemy_8009ED64",
+     "confidence": "medium"
+    },
+    {
+     "va": "0x8009ED9C",
+     "size": 176,
+     "name": "enemy_8009ED9C",
+     "confidence": "medium"
+    },
+    {
+     "va": "0x8009EE4C",
+     "size": 804,
+     "name": "enemy_8009EE4C",
+     "confidence": "medium"
+    },
+    {
+     "va": "0x8009F170",
+     "size": 108,
+     "name": "enemy_8009F170",
+     "confidence": "medium"
+    },
+    {
+     "va": "0x8009F1DC",
+     "size": 296,
+     "name": "enemy_8009F1DC",
+     "confidence": "medium"
+    },
+    {
+     "va": "0x8009F304",
+     "size": 128,
+     "name": "enemy_8009F304",
+     "confidence": "medium"
+    },
+    {
+     "va": "0x8009F384",
+     "size": 272,
+     "name": "enemy_8009F384",
+     "confidence": "medium"
+    },
+    {
+     "va": "0x8009F494",
+     "size": 80,
+     "name": "enemy_8009F494",
+     "confidence": "medium"
+    },
+    {
+     "va": "0x8009F4E4",
+     "size": 356,
+     "name": "enemy_8009F4E4",
+     "confidence": "medium"
+    },
+    {
+     "va": "0x8009F648",
+     "size": 256,
+     "name": "enemy_8009F648",
+     "confidence": "medium"
+    },
+    {
+     "va": "0x8009F748",
+     "size": 948,
+     "name": "enemy_8009F748",
+     "confidence": "medium"
+    },
+    {
+     "va": "0x8009FAFC",
+     "size": 168,
+     "name": "enemy_8009FAFC",
+     "confidence": "medium"
+    },
+    {
+     "va": "0x8009FBA4",
+     "size": 448,
+     "name": "enemy_8009FBA4",
+     "confidence": "medium"
+    },
+    {
+     "va": "0x8009FD64",
+     "size": 104,
+     "name": "enemy_8009FD64",
+     "confidence": "medium"
+    },
+    {
+     "va": "0x8009FDCC",
+     "size": 80,
+     "name": "enemy_8009FDCC",
+     "confidence": "medium"
+    },
+    {
+     "va": "0x8009FE1C",
+     "size": 248,
+     "name": "enemy_8009FE1C",
+     "confidence": "medium"
+    },
+    {
+     "va": "0x8009FF14",
+     "size": 80,
+     "name": "enemy_8009FF14",
+     "confidence": "medium"
+    },
+    {
+     "va": "0x8009FF64",
+     "size": 64,
+     "name": "enemy_8009FF64",
+     "confidence": "medium"
+    },
+    {
+     "va": "0x8009FFA4",
+     "size": 480,
+     "name": "enemy_8009FFA4",
+     "confidence": "medium"
+    },
+    {
+     "va": "0x800A0184",
+     "size": 664,
+     "name": "enemy_800A0184",
+     "confidence": "medium"
+    },
+    {
+     "va": "0x800A041C",
+     "size": 632,
+     "name": "enemy_800A041C",
+     "confidence": "medium"
+    },
+    {
+     "va": "0x800A0694",
+     "size": 188,
+     "name": "enemy_800A0694",
+     "confidence": "medium"
+    },
+    {
+     "va": "0x800A0750",
+     "size": 180,
+     "name": "enemy_800A0750",
+     "confidence": "medium"
+    },
+    {
+     "va": "0x800A0804",
+     "size": 280,
+     "name": "enemy_800A0804",
+     "confidence": "medium"
+    },
+    {
+     "va": "0x800A091C",
+     "size": 104,
+     "name": "enemy_800A091C",
+     "confidence": "medium"
+    },
+    {
+     "va": "0x800A0984",
+     "size": 64,
+     "name": "enemy_800A0984",
+     "confidence": "medium"
+    },
+    {
+     "va": "0x800A09C4",
+     "size": 40,
+     "name": "enemy_800A09C4",
+     "confidence": "medium"
+    },
+    {
+     "va": "0x800A09EC",
+     "size": 196,
+     "name": "enemy_800A09EC",
+     "confidence": "medium"
+    },
+    {
+     "va": "0x800A0AB0",
+     "size": 400,
+     "name": "enemy_800A0AB0",
+     "confidence": "medium"
+    },
+    {
+     "va": "0x800A0C40",
+     "size": 320,
+     "name": "enemy_800A0C40",
+     "confidence": "medium"
+    },
+    {
+     "va": "0x800A0D80",
+     "size": 80,
+     "name": "enemy_800A0D80",
+     "confidence": "medium"
+    },
+    {
+     "va": "0x800A0DD0",
+     "size": 64,
+     "name": "enemy_800A0DD0",
+     "confidence": "medium"
+    },
+    {
+     "va": "0x800A0E10",
+     "size": 208,
+     "name": "enemy_800A0E10",
+     "confidence": "medium"
+    },
+    {
+     "va": "0x800A0EE0",
+     "size": 252,
+     "name": "enemy_800A0EE0",
+     "confidence": "medium"
+    },
+    {
+     "va": "0x800A0FDC",
+     "size": 316,
+     "name": "enemy_800A0FDC",
+     "confidence": "medium"
+    },
+    {
+     "va": "0x800A1118",
+     "size": 268,
+     "name": "enemy_800A1118",
+     "confidence": "medium"
+    },
+    {
+     "va": "0x800A1224",
+     "size": 176,
+     "name": "enemy_800A1224",
+     "confidence": "medium"
+    },
+    {
+     "va": "0x800A12D4",
+     "size": 188,
+     "name": "enemy_800A12D4",
+     "confidence": "medium"
+    },
+    {
+     "va": "0x800A1390",
+     "size": 552,
+     "name": "enemy_800A1390",
+     "confidence": "medium"
+    },
+    {
+     "va": "0x800A15B8",
+     "size": 72,
+     "name": "enemy_800A15B8",
+     "confidence": "medium"
+    },
+    {
+     "va": "0x800A1600",
+     "size": 272,
+     "name": "enemy_800A1600",
+     "confidence": "medium"
+    },
+    {
+     "va": "0x800A1710",
+     "size": 188,
+     "name": "enemy_800A1710",
+     "confidence": "medium"
+    },
+    {
+     "va": "0x800A17CC",
+     "size": 180,
+     "name": "enemy_800A17CC",
+     "confidence": "medium"
+    },
+    {
+     "va": "0x800A1880",
+     "size": 264,
+     "name": "enemy_800A1880",
+     "confidence": "medium"
+    },
+    {
+     "va": "0x800A1988",
+     "size": 260,
+     "name": "enemy_800A1988",
+     "confidence": "medium"
+    },
+    {
+     "va": "0x800A1A8C",
+     "size": 184,
+     "name": "enemy_800A1A8C",
+     "confidence": "medium"
+    },
+    {
+     "va": "0x800A1B44",
+     "size": 172,
+     "name": "enemy_800A1B44",
+     "confidence": "medium"
+    },
+    {
+     "va": "0x800A1BF0",
+     "size": 52,
+     "name": "enemy_800A1BF0",
+     "confidence": "medium"
+    },
+    {
+     "va": "0x800A1C24",
+     "size": 652,
+     "name": "enemy_800A1C24",
+     "confidence": "medium"
+    },
+    {
+     "va": "0x800A1EB0",
+     "size": 64,
+     "name": "enemy_800A1EB0",
+     "confidence": "medium"
+    },
+    {
+     "va": "0x800A1EF0",
+     "size": 104,
+     "name": "enemy_800A1EF0",
+     "confidence": "medium"
+    },
+    {
+     "va": "0x800A1F58",
+     "size": 152,
+     "name": "enemy_800A1F58",
+     "confidence": "medium"
+    },
+    {
+     "va": "0x800A1FF0",
+     "size": 120,
+     "name": "enemy_800A1FF0",
+     "confidence": "medium"
+    },
+    {
+     "va": "0x800A2068",
+     "size": 100,
+     "name": "enemy_800A2068",
+     "confidence": "medium"
+    },
+    {
+     "va": "0x800A20CC",
+     "size": 80,
+     "name": "enemy_800A20CC",
+     "confidence": "medium"
+    },
+    {
+     "va": "0x800A211C",
+     "size": 68,
+     "name": "enemy_800A211C",
+     "confidence": "medium"
+    },
+    {
+     "va": "0x800A2160",
+     "size": 304,
+     "name": "enemy_800A2160",
+     "confidence": "medium"
+    },
+    {
+     "va": "0x800A2290",
+     "size": 272,
+     "name": "enemy_800A2290",
+     "confidence": "medium"
+    },
+    {
+     "va": "0x800A23A0",
+     "size": 216,
+     "name": "enemy_800A23A0",
+     "confidence": "medium"
+    },
+    {
+     "va": "0x800A2478",
+     "size": 188,
+     "name": "enemy_800A2478",
+     "confidence": "medium"
+    },
+    {
+     "va": "0x800A2534",
+     "size": 1092,
+     "name": "enemy_800A2534",
+     "confidence": "medium"
+    },
+    {
+     "va": "0x800A2978",
+     "size": 308,
+     "name": "enemy_800A2978",
+     "confidence": "medium"
+    },
+    {
+     "va": "0x800A2AAC",
+     "size": 2760,
+     "name": "enemy_800A2AAC",
+     "confidence": "medium"
+    },
+    {
+     "va": "0x800A3574",
+     "size": 1760,
+     "name": "enemy_800A3574",
+     "confidence": "medium"
+    },
+    {
+     "va": "0x800A3C54",
+     "size": 360,
+     "name": "enemy_800A3C54",
+     "confidence": "medium"
+    },
+    {
+     "va": "0x800A3DBC",
+     "size": 324,
+     "name": "enemy_800A3DBC",
+     "confidence": "medium"
+    },
+    {
+     "va": "0x800A3F00",
+     "size": 144,
+     "name": "enemy_800A3F00",
+     "confidence": "medium"
+    },
+    {
+     "va": "0x800A3F90",
+     "size": 236,
+     "name": "enemy_800A3F90",
+     "confidence": "medium"
+    },
+    {
+     "va": "0x800A407C",
+     "size": 348,
+     "name": "enemy_800A407C",
+     "confidence": "medium"
+    },
+    {
+     "va": "0x800A41D8",
+     "size": 488,
+     "name": "enemy_800A41D8",
+     "confidence": "medium"
+    },
+    {
+     "va": "0x800A43C0",
+     "size": 196,
+     "name": "enemy_800A43C0",
+     "confidence": "medium"
+    },
+    {
+     "va": "0x800A4484",
+     "size": 136,
+     "name": "enemy_800A4484",
+     "confidence": "medium"
+    },
+    {
+     "va": "0x800A450C",
+     "size": 764,
+     "name": "enemy_800A450C",
+     "confidence": "medium"
+    },
+    {
+     "va": "0x800A4808",
+     "size": 48,
+     "name": "enemy_800A4808",
+     "confidence": "low"
+    },
+    {
+     "va": "0x800A4838",
+     "size": 16,
+     "name": "enemy_800A4838",
+     "confidence": "medium"
+    },
+    {
+     "va": "0x800A4848",
+     "size": 184,
+     "name": "enemy_800A4848",
+     "confidence": "low"
+    },
+    {
+     "va": "0x800A4900",
+     "size": 48,
+     "name": "enemy_800A4900",
+     "confidence": "medium"
+    },
+    {
+     "va": "0x800A4930",
+     "size": 264,
+     "name": "enemy_800A4930",
+     "confidence": "medium"
+    },
+    {
+     "va": "0x800A4A38",
+     "size": 68,
+     "name": "enemy_800A4A38",
+     "confidence": "medium"
+    },
+    {
+     "va": "0x800A4A7C",
+     "size": 84,
+     "name": "enemy_800A4A7C",
+     "confidence": "medium"
+    },
+    {
+     "va": "0x800A4AD0",
+     "size": 76,
+     "name": "enemy_800A4AD0",
+     "confidence": "medium"
+    },
+    {
+     "va": "0x800A4B1C",
+     "size": 392,
+     "name": "enemy_800A4B1C",
+     "confidence": "medium"
+    },
+    {
+     "va": "0x800A4CA4",
+     "size": 180,
+     "name": "enemy_800A4CA4",
+     "confidence": "medium"
+    },
+    {
+     "va": "0x800A4D58",
+     "size": 84,
+     "name": "enemy_800A4D58",
+     "confidence": "medium"
+    },
+    {
+     "va": "0x800A4DAC",
+     "size": 60,
+     "name": "enemy_800A4DAC",
+     "confidence": "medium"
+    },
+    {
+     "va": "0x800A4DE8",
+     "size": 112,
+     "name": "enemy_800A4DE8",
+     "confidence": "medium"
+    },
+    {
+     "va": "0x800A4E58",
+     "size": 112,
+     "name": "enemy_800A4E58",
+     "confidence": "medium"
+    },
+    {
+     "va": "0x800A4EC8",
+     "size": 448,
+     "name": "enemy_800A4EC8",
+     "confidence": "medium"
+    },
+    {
+     "va": "0x800A5088",
+     "size": 64,
+     "name": "enemy_800A5088",
+     "confidence": "medium"
+    },
+    {
+     "va": "0x800A50C8",
+     "size": 40,
+     "name": "enemy_800A50C8",
+     "confidence": "medium"
+    },
+    {
+     "va": "0x800A50F0",
+     "size": 180,
+     "name": "enemy_800A50F0",
+     "confidence": "medium"
+    },
+    {
+     "va": "0x800A51A4",
+     "size": 60,
+     "name": "enemy_800A51A4",
+     "confidence": "medium"
+    },
+    {
+     "va": "0x800A51E0",
+     "size": 128,
+     "name": "enemy_800A51E0",
+     "confidence": "medium"
+    },
+    {
+     "va": "0x800A5260",
+     "size": 84,
+     "name": "enemy_800A5260",
+     "confidence": "medium"
+    },
+    {
+     "va": "0x800A52B4",
+     "size": 236,
+     "name": "enemy_800A52B4",
+     "confidence": "medium"
+    },
+    {
+     "va": "0x800A53A0",
+     "size": 840,
+     "name": "enemy_800A53A0",
+     "confidence": "medium"
+    },
+    {
+     "va": "0x800A56E8",
+     "size": 408,
+     "name": "enemy_800A56E8",
+     "confidence": "medium"
+    },
+    {
+     "va": "0x800A5880",
+     "size": 56,
+     "name": "enemy_800A5880",
+     "confidence": "medium"
+    },
+    {
+     "va": "0x800A58B8",
+     "size": 80,
+     "name": "enemy_800A58B8",
+     "confidence": "medium"
+    },
+    {
+     "va": "0x800A5908",
+     "size": 104,
+     "name": "enemy_800A5908",
+     "confidence": "medium"
+    },
+    {
+     "va": "0x800A5970",
+     "size": 296,
+     "name": "enemy_800A5970",
+     "confidence": "medium"
+    },
+    {
+     "va": "0x800A5A98",
+     "size": 200,
+     "name": "enemy_800A5A98",
+     "confidence": "medium"
+    },
+    {
+     "va": "0x800A5B60",
+     "size": 76,
+     "name": "enemy_800A5B60",
+     "confidence": "medium"
+    },
+    {
+     "va": "0x800A5BAC",
+     "size": 128,
+     "name": "enemy_800A5BAC",
+     "confidence": "medium"
+    },
+    {
+     "va": "0x800A5C2C",
+     "size": 180,
+     "name": "enemy_800A5C2C",
+     "confidence": "low"
+    },
+    {
+     "va": "0x800A5CE0",
+     "size": 120,
+     "name": "enemy_800A5CE0",
+     "confidence": "medium"
+    },
+    {
+     "va": "0x800A5D58",
+     "size": 76,
+     "name": "enemy_800A5D58",
+     "confidence": "medium"
+    },
+    {
+     "va": "0x800A5DA4",
+     "size": 56,
+     "name": "enemy_800A5DA4",
+     "confidence": "medium"
+    },
+    {
+     "va": "0x800A5DDC",
+     "size": 56,
+     "name": "enemy_800A5DDC",
+     "confidence": "low"
+    },
+    {
+     "va": "0x800A5E14",
+     "size": 372,
+     "name": "enemy_800A5E14",
+     "confidence": "low"
+    },
+    {
+     "va": "0x800A5F88",
+     "size": 608,
+     "name": "enemy_800A5F88",
+     "confidence": "medium"
+    },
+    {
+     "va": "0x800A61E8",
+     "size": 120,
+     "name": "enemy_800A61E8",
+     "confidence": "medium"
+    },
+    {
+     "va": "0x800A6260",
+     "size": 96,
+     "name": "enemy_800A6260",
+     "confidence": "medium"
+    },
+    {
+     "va": "0x800A62C0",
+     "size": 212,
+     "name": "enemy_800A62C0",
+     "confidence": "medium"
+    },
+    {
+     "va": "0x800A6394",
+     "size": 288,
+     "name": "enemy_800A6394",
+     "confidence": "medium"
+    },
+    {
+     "va": "0x800A64B4",
+     "size": 216,
+     "name": "enemy_800A64B4",
+     "confidence": "medium"
+    },
+    {
+     "va": "0x800A658C",
+     "size": 216,
+     "name": "enemy_800A658C",
+     "confidence": "medium"
+    },
+    {
+     "va": "0x800A6664",
+     "size": 596,
+     "name": "enemy_800A6664",
+     "confidence": "medium"
+    },
+    {
+     "va": "0x800A68B8",
+     "size": 120,
+     "name": "enemy_800A68B8",
+     "confidence": "medium"
+    },
+    {
+     "va": "0x800A6930",
+     "size": 84,
+     "name": "enemy_800A6930",
+     "confidence": "medium"
+    },
+    {
+     "va": "0x800A6984",
+     "size": 200,
+     "name": "enemy_800A6984",
+     "confidence": "medium"
+    },
+    {
+     "va": "0x800A6A4C",
+     "size": 296,
+     "name": "enemy_800A6A4C",
+     "confidence": "medium"
+    },
+    {
+     "va": "0x800A6B74",
+     "size": 216,
+     "name": "enemy_800A6B74",
+     "confidence": "medium"
+    },
+    {
+     "va": "0x800A6C4C",
+     "size": 88,
+     "name": "enemy_800A6C4C",
+     "confidence": "medium"
+    },
+    {
+     "va": "0x800A6CA4",
+     "size": 116,
+     "name": "enemy_800A6CA4",
+     "confidence": "medium"
+    },
+    {
+     "va": "0x800A6D18",
+     "size": 144,
+     "name": "enemy_800A6D18",
+     "confidence": "medium"
+    },
+    {
+     "va": "0x800A6DA8",
+     "size": 112,
+     "name": "enemy_800A6DA8",
+     "confidence": "medium"
+    },
+    {
+     "va": "0x800A6E18",
+     "size": 76,
+     "name": "enemy_800A6E18",
+     "confidence": "medium"
+    },
+    {
+     "va": "0x800A6E64",
+     "size": 76,
+     "name": "enemy_800A6E64",
+     "confidence": "medium"
+    },
+    {
+     "va": "0x800A6EB0",
+     "size": 768,
+     "name": "enemy_800A6EB0",
+     "confidence": "medium"
+    },
+    {
+     "va": "0x800A71B0",
+     "size": 164,
+     "name": "enemy_800A71B0",
+     "confidence": "medium"
+    },
+    {
+     "va": "0x800A7254",
+     "size": 136,
+     "name": "enemy_800A7254",
+     "confidence": "medium"
+    },
+    {
+     "va": "0x800A72DC",
+     "size": 64,
+     "name": "enemy_800A72DC",
+     "confidence": "medium"
+    },
+    {
+     "va": "0x800A731C",
+     "size": 1016,
+     "name": "enemy_800A731C",
+     "confidence": "medium"
+    },
+    {
+     "va": "0x800A7714",
+     "size": 232,
+     "name": "enemy_800A7714",
+     "confidence": "medium"
+    },
+    {
+     "va": "0x800A77FC",
+     "size": 100,
+     "name": "enemy_800A77FC",
+     "confidence": "medium"
+    },
     {
      "va": "0x800A7860",
      "size": 120,
@@ -56,9 +1115,15 @@
     },
     {
      "va": "0x800A78D8",
-     "size": 124,
+     "size": 52,
      "name": "enemy_800A78D8",
      "confidence": "low"
+    },
+    {
+     "va": "0x800A790C",
+     "size": 72,
+     "name": "enemy_800A790C",
+     "confidence": "medium"
     },
     {
      "va": "0x800A7954",
@@ -68,9 +1133,15 @@
     },
     {
      "va": "0x800A7AC0",
-     "size": 76,
+     "size": 32,
      "name": "enemy_800A7AC0",
      "confidence": "low"
+    },
+    {
+     "va": "0x800A7AE0",
+     "size": 44,
+     "name": "enemy_800A7AE0",
+     "confidence": "medium"
     },
     {
      "va": "0x800A7B0C",
@@ -92,33 +1163,15 @@
     },
     {
      "va": "0x800A7BA4",
-     "size": 24,
+     "size": 132,
      "name": "enemy_800A7BA4",
      "confidence": "low"
     },
     {
-     "va": "0x800A7BBC",
-     "size": 56,
-     "name": "enemy_800A7BBC",
-     "confidence": "medium"
-    },
-    {
-     "va": "0x800A7BF4",
-     "size": 52,
-     "name": "enemy_800A7BF4",
-     "confidence": "medium"
-    },
-    {
      "va": "0x800A7C28",
-     "size": 16,
+     "size": 124,
      "name": "enemy_800A7C28",
      "confidence": "low"
-    },
-    {
-     "va": "0x800A7C38",
-     "size": 108,
-     "name": "enemy_800A7C38",
-     "confidence": "medium"
     },
     {
      "va": "0x800A7CA4",
@@ -128,15 +1181,9 @@
     },
     {
      "va": "0x800A7CDC",
-     "size": 52,
+     "size": 76,
      "name": "enemy_800A7CDC",
      "confidence": "low"
-    },
-    {
-     "va": "0x800A7D10",
-     "size": 24,
-     "name": "enemy_800A7D10",
-     "confidence": "medium"
     },
     {
      "va": "0x800A7D28",
@@ -146,32 +1193,32 @@
     },
     {
      "va": "0x800A7D3C",
-     "size": 80,
+     "size": 100,
      "name": "enemy_800A7D3C",
      "confidence": "low"
     },
     {
-     "va": "0x800A7D8C",
-     "size": 56,
-     "name": "enemy_800A7D8C",
+     "va": "0x800A7DA0",
+     "size": 40,
+     "name": "enemy_800A7DA0",
      "confidence": "medium"
     },
     {
-     "va": "0x800A7DC4",
-     "size": 88,
-     "name": "enemy_800A7DC4",
+     "va": "0x800A7DC8",
+     "size": 84,
+     "name": "enemy_800A7DC8",
      "confidence": "medium"
     },
     {
      "va": "0x800A7E1C",
-     "size": 64,
+     "size": 68,
      "name": "enemy_800A7E1C",
      "confidence": "low"
     },
     {
-     "va": "0x800A7E5C",
-     "size": 44,
-     "name": "enemy_800A7E5C",
+     "va": "0x800A7E60",
+     "size": 40,
+     "name": "enemy_800A7E60",
      "confidence": "medium"
     },
     {
@@ -182,15 +1229,9 @@
     },
     {
      "va": "0x800A7EE4",
-     "size": 32,
+     "size": 52,
      "name": "enemy_800A7EE4",
      "confidence": "low"
-    },
-    {
-     "va": "0x800A7F04",
-     "size": 20,
-     "name": "enemy_800A7F04",
-     "confidence": "medium"
     },
     {
      "va": "0x800A7F18",
@@ -212,27 +1253,15 @@
     },
     {
      "va": "0x800A8060",
-     "size": 4,
+     "size": 196,
      "name": "enemy_800A8060",
      "confidence": "low"
     },
     {
-     "va": "0x800A8064",
-     "size": 192,
-     "name": "enemy_800A8064",
-     "confidence": "medium"
-    },
-    {
      "va": "0x800A8124",
-     "size": 36,
+     "size": 120,
      "name": "enemy_800A8124",
      "confidence": "low"
-    },
-    {
-     "va": "0x800A8148",
-     "size": 84,
-     "name": "enemy_800A8148",
-     "confidence": "medium"
     },
     {
      "va": "0x800A819C",
@@ -254,45 +1283,27 @@
     },
     {
      "va": "0x800A83B0",
-     "size": 4,
+     "size": 44,
      "name": "enemy_800A83B0",
      "confidence": "low"
     },
     {
-     "va": "0x800A83B4",
-     "size": 256,
-     "name": "enemy_800A83B4",
-     "confidence": "medium"
-    },
-    {
-     "va": "0x800A84B4",
-     "size": 28,
-     "name": "enemy_800A84B4",
+     "va": "0x800A83DC",
+     "size": 244,
+     "name": "enemy_800A83DC",
      "confidence": "medium"
     },
     {
      "va": "0x800A84D0",
-     "size": 140,
+     "size": 168,
      "name": "enemy_800A84D0",
      "confidence": "low"
     },
     {
-     "va": "0x800A855C",
-     "size": 28,
-     "name": "enemy_800A855C",
-     "confidence": "medium"
-    },
-    {
      "va": "0x800A8578",
-     "size": 80,
+     "size": 140,
      "name": "enemy_800A8578",
      "confidence": "low"
-    },
-    {
-     "va": "0x800A85C8",
-     "size": 60,
-     "name": "enemy_800A85C8",
-     "confidence": "medium"
     },
     {
      "va": "0x800A8604",
@@ -308,21 +1319,21 @@
     },
     {
      "va": "0x800A869C",
-     "size": 76,
+     "size": 100,
      "name": "enemy_800A869C",
      "confidence": "low"
     },
     {
-     "va": "0x800A86E8",
-     "size": 24,
-     "name": "enemy_800A86E8",
-     "confidence": "medium"
-    },
-    {
      "va": "0x800A8700",
-     "size": 148,
+     "size": 36,
      "name": "enemy_800A8700",
      "confidence": "low"
+    },
+    {
+     "va": "0x800A8724",
+     "size": 112,
+     "name": "enemy_800A8724",
+     "confidence": "medium"
     },
     {
      "va": "0x800A8794",
@@ -332,39 +1343,27 @@
     },
     {
      "va": "0x800A87F8",
-     "size": 44,
+     "size": 56,
      "name": "enemy_800A87F8",
      "confidence": "low"
     },
     {
-     "va": "0x800A8824",
-     "size": 28,
-     "name": "enemy_800A8824",
+     "va": "0x800A8830",
+     "size": 16,
+     "name": "enemy_800A8830",
      "confidence": "medium"
     },
     {
      "va": "0x800A8840",
-     "size": 52,
+     "size": 100,
      "name": "enemy_800A8840",
      "confidence": "low"
     },
     {
-     "va": "0x800A8874",
-     "size": 48,
-     "name": "enemy_800A8874",
-     "confidence": "medium"
-    },
-    {
      "va": "0x800A88A4",
-     "size": 16,
+     "size": 112,
      "name": "enemy_800A88A4",
      "confidence": "low"
-    },
-    {
-     "va": "0x800A88B4",
-     "size": 96,
-     "name": "enemy_800A88B4",
-     "confidence": "medium"
     },
     {
      "va": "0x800A8914",
@@ -392,9 +1391,15 @@
     },
     {
      "va": "0x800A89D8",
-     "size": 88,
+     "size": 48,
      "name": "enemy_800A89D8",
      "confidence": "low"
+    },
+    {
+     "va": "0x800A8A08",
+     "size": 40,
+     "name": "enemy_800A8A08",
+     "confidence": "medium"
     },
     {
      "va": "0x800A8A30",
@@ -404,15 +1409,9 @@
     },
     {
      "va": "0x800A8A78",
-     "size": 68,
+     "size": 80,
      "name": "enemy_800A8A78",
      "confidence": "low"
-    },
-    {
-     "va": "0x800A8ABC",
-     "size": 12,
-     "name": "enemy_800A8ABC",
-     "confidence": "medium"
     },
     {
      "va": "0x800A8AC8",
@@ -422,9 +1421,15 @@
     },
     {
      "va": "0x800A8B08",
-     "size": 108,
+     "size": 4,
      "name": "enemy_800A8B08",
      "confidence": "low"
+    },
+    {
+     "va": "0x800A8B0C",
+     "size": 104,
+     "name": "enemy_800A8B0C",
+     "confidence": "medium"
     },
     {
      "va": "0x800A8B74",
@@ -446,33 +1451,15 @@
     },
     {
      "va": "0x800A8C58",
-     "size": 20,
+     "size": 68,
      "name": "enemy_800A8C58",
      "confidence": "low"
     },
     {
-     "va": "0x800A8C6C",
-     "size": 48,
-     "name": "enemy_800A8C6C",
-     "confidence": "medium"
-    },
-    {
      "va": "0x800A8C9C",
-     "size": 24,
+     "size": 160,
      "name": "enemy_800A8C9C",
      "confidence": "low"
-    },
-    {
-     "va": "0x800A8CB4",
-     "size": 116,
-     "name": "enemy_800A8CB4",
-     "confidence": "medium"
-    },
-    {
-     "va": "0x800A8D28",
-     "size": 20,
-     "name": "enemy_800A8D28",
-     "confidence": "medium"
     },
     {
      "va": "0x800A8D3C",
@@ -488,9 +1475,15 @@
     },
     {
      "va": "0x800A8D8C",
-     "size": 60,
+     "size": 16,
      "name": "enemy_800A8D8C",
      "confidence": "low"
+    },
+    {
+     "va": "0x800A8D9C",
+     "size": 44,
+     "name": "enemy_800A8D9C",
+     "confidence": "medium"
     },
     {
      "va": "0x800A8DC8",
@@ -506,21 +1499,15 @@
     },
     {
      "va": "0x800A8E18",
-     "size": 56,
+     "size": 164,
      "name": "enemy_800A8E18",
-     "confidence": "low"
-    },
-    {
-     "va": "0x800A8E50",
-     "size": 108,
-     "name": "enemy_800A8E50",
-     "confidence": "medium"
+     "confidence": "verified"
     },
     {
      "va": "0x800A8EBC",
      "size": 16,
      "name": "enemy_800A8EBC",
-     "confidence": "verified"
+     "confidence": "low"
     },
     {
      "va": "0x800A8ECC",
@@ -530,15 +1517,9 @@
     },
     {
      "va": "0x800A8F20",
-     "size": 8,
+     "size": 12,
      "name": "enemy_800A8F20",
      "confidence": "low"
-    },
-    {
-     "va": "0x800A8F28",
-     "size": 4,
-     "name": "enemy_800A8F28",
-     "confidence": "medium"
     },
     {
      "va": "0x800A8F2C",
@@ -566,51 +1547,21 @@
     },
     {
      "va": "0x800A901C",
-     "size": 104,
+     "size": 112,
      "name": "enemy_800A901C",
      "confidence": "low"
     },
     {
-     "va": "0x800A9084",
-     "size": 8,
-     "name": "enemy_800A9084",
-     "confidence": "medium"
-    },
-    {
      "va": "0x800A908C",
-     "size": 40,
+     "size": 124,
      "name": "enemy_800A908C",
      "confidence": "low"
     },
     {
-     "va": "0x800A90B4",
-     "size": 40,
-     "name": "enemy_800A90B4",
-     "confidence": "medium"
-    },
-    {
-     "va": "0x800A90DC",
-     "size": 44,
-     "name": "enemy_800A90DC",
-     "confidence": "medium"
-    },
-    {
      "va": "0x800A9108",
-     "size": 32,
+     "size": 188,
      "name": "enemy_800A9108",
      "confidence": "low"
-    },
-    {
-     "va": "0x800A9128",
-     "size": 56,
-     "name": "enemy_800A9128",
-     "confidence": "medium"
-    },
-    {
-     "va": "0x800A9160",
-     "size": 100,
-     "name": "enemy_800A9160",
-     "confidence": "medium"
     },
     {
      "va": "0x800A91C4",
@@ -638,15 +1589,27 @@
     },
     {
      "va": "0x800A942C",
-     "size": 56,
+     "size": 28,
      "name": "enemy_800A942C",
      "confidence": "low"
     },
     {
+     "va": "0x800A9448",
+     "size": 28,
+     "name": "enemy_800A9448",
+     "confidence": "medium"
+    },
+    {
      "va": "0x800A9464",
-     "size": 128,
+     "size": 32,
      "name": "enemy_800A9464",
      "confidence": "low"
+    },
+    {
+     "va": "0x800A9484",
+     "size": 96,
+     "name": "enemy_800A9484",
+     "confidence": "medium"
     },
     {
      "va": "0x800A94E4",
@@ -698,26 +1661,20 @@
     },
     {
      "va": "0x800A9768",
-     "size": 20,
+     "size": 36,
      "name": "enemy_800A9768",
      "confidence": "low"
     },
     {
-     "va": "0x800A977C",
-     "size": 56,
-     "name": "enemy_800A977C",
+     "va": "0x800A978C",
+     "size": 88,
+     "name": "enemy_800A978C",
      "confidence": "medium"
     },
     {
-     "va": "0x800A97B4",
-     "size": 44,
-     "name": "enemy_800A97B4",
-     "confidence": "medium"
-    },
-    {
-     "va": "0x800A97E0",
-     "size": 12,
-     "name": "enemy_800A97E0",
+     "va": "0x800A97E4",
+     "size": 8,
+     "name": "enemy_800A97E4",
      "confidence": "medium"
     },
     {
@@ -728,9 +1685,15 @@
     },
     {
      "va": "0x800A9800",
-     "size": 28,
+     "size": 4,
      "name": "enemy_800A9800",
      "confidence": "low"
+    },
+    {
+     "va": "0x800A9804",
+     "size": 24,
+     "name": "enemy_800A9804",
+     "confidence": "medium"
     },
     {
      "va": "0x800A981C",
@@ -740,27 +1703,27 @@
     },
     {
      "va": "0x800A9894",
-     "size": 24,
+     "size": 180,
      "name": "enemy_800A9894",
      "confidence": "low"
     },
     {
-     "va": "0x800A98AC",
-     "size": 416,
-     "name": "enemy_800A98AC",
+     "va": "0x800A9948",
+     "size": 64,
+     "name": "enemy_800A9948",
+     "confidence": "medium"
+    },
+    {
+     "va": "0x800A9988",
+     "size": 196,
+     "name": "enemy_800A9988",
      "confidence": "medium"
     },
     {
      "va": "0x800A9A4C",
-     "size": 28,
+     "size": 208,
      "name": "enemy_800A9A4C",
      "confidence": "low"
-    },
-    {
-     "va": "0x800A9A68",
-     "size": 180,
-     "name": "enemy_800A9A68",
-     "confidence": "medium"
     },
     {
      "va": "0x800A9B1C",
@@ -770,15 +1733,33 @@
     },
     {
      "va": "0x800A9BCC",
-     "size": 136,
+     "size": 24,
      "name": "enemy_800A9BCC",
      "confidence": "low"
     },
     {
+     "va": "0x800A9BE4",
+     "size": 112,
+     "name": "enemy_800A9BE4",
+     "confidence": "medium"
+    },
+    {
      "va": "0x800A9C54",
-     "size": 436,
+     "size": 152,
      "name": "enemy_800A9C54",
      "confidence": "low"
+    },
+    {
+     "va": "0x800A9CEC",
+     "size": 92,
+     "name": "enemy_800A9CEC",
+     "confidence": "medium"
+    },
+    {
+     "va": "0x800A9D48",
+     "size": 192,
+     "name": "enemy_800A9D48",
+     "confidence": "medium"
     },
     {
      "va": "0x800A9E08",
@@ -824,15 +1805,9 @@
     },
     {
      "va": "0x800AA0B4",
-     "size": 16,
+     "size": 164,
      "name": "enemy_800AA0B4",
      "confidence": "low"
-    },
-    {
-     "va": "0x800AA0C4",
-     "size": 148,
-     "name": "enemy_800AA0C4",
-     "confidence": "medium"
     },
     {
      "va": "0x800AA158",
@@ -842,15 +1817,9 @@
     },
     {
      "va": "0x800AA1B0",
-     "size": 76,
+     "size": 92,
      "name": "enemy_800AA1B0",
      "confidence": "low"
-    },
-    {
-     "va": "0x800AA1FC",
-     "size": 16,
-     "name": "enemy_800AA1FC",
-     "confidence": "medium"
     },
     {
      "va": "0x800AA20C",
@@ -860,33 +1829,21 @@
     },
     {
      "va": "0x800AA21C",
-     "size": 112,
+     "size": 244,
      "name": "enemy_800AA21C",
      "confidence": "low"
     },
     {
-     "va": "0x800AA28C",
-     "size": 100,
-     "name": "enemy_800AA28C",
-     "confidence": "medium"
-    },
-    {
-     "va": "0x800AA2F0",
-     "size": 84,
-     "name": "enemy_800AA2F0",
+     "va": "0x800AA310",
+     "size": 52,
+     "name": "enemy_800AA310",
      "confidence": "medium"
     },
     {
      "va": "0x800AA344",
-     "size": 108,
+     "size": 112,
      "name": "enemy_800AA344",
      "confidence": "low"
-    },
-    {
-     "va": "0x800AA3B0",
-     "size": 4,
-     "name": "enemy_800AA3B0",
-     "confidence": "medium"
     },
     {
      "va": "0x800AA3B4",
@@ -896,21 +1853,9 @@
     },
     {
      "va": "0x800AA3C4",
-     "size": 184,
+     "size": 272,
      "name": "enemy_800AA3C4",
      "confidence": "low"
-    },
-    {
-     "va": "0x800AA47C",
-     "size": 56,
-     "name": "enemy_800AA47C",
-     "confidence": "medium"
-    },
-    {
-     "va": "0x800AA4B4",
-     "size": 32,
-     "name": "enemy_800AA4B4",
-     "confidence": "medium"
     },
     {
      "va": "0x800AA4D4",
@@ -920,14 +1865,14 @@
     },
     {
      "va": "0x800AA524",
-     "size": 64,
+     "size": 336,
      "name": "enemy_800AA524",
      "confidence": "low"
     },
     {
-     "va": "0x800AA564",
-     "size": 276,
-     "name": "enemy_800AA564",
+     "va": "0x800AA674",
+     "size": 4,
+     "name": "enemy_800AA674",
      "confidence": "medium"
     },
     {
@@ -950,44 +1895,38 @@
     },
     {
      "va": "0x800AA788",
-     "size": 256,
+     "size": 288,
      "name": "enemy_800AA788",
      "confidence": "low"
     },
     {
-     "va": "0x800AA888",
-     "size": 32,
-     "name": "enemy_800AA888",
-     "confidence": "medium"
-    },
-    {
      "va": "0x800AA8A8",
-     "size": 76,
+     "size": 88,
      "name": "enemy_800AA8A8",
      "confidence": "low"
     },
     {
-     "va": "0x800AA8F4",
-     "size": 164,
-     "name": "enemy_800AA8F4",
+     "va": "0x800AA900",
+     "size": 124,
+     "name": "enemy_800AA900",
+     "confidence": "medium"
+    },
+    {
+     "va": "0x800AA97C",
+     "size": 28,
+     "name": "enemy_800AA97C",
      "confidence": "medium"
     },
     {
      "va": "0x800AA998",
-     "size": 132,
+     "size": 180,
      "name": "enemy_800AA998",
      "confidence": "low"
     },
     {
-     "va": "0x800AAA1C",
-     "size": 128,
-     "name": "enemy_800AAA1C",
-     "confidence": "medium"
-    },
-    {
-     "va": "0x800AAA9C",
-     "size": 8,
-     "name": "enemy_800AAA9C",
+     "va": "0x800AAA4C",
+     "size": 88,
+     "name": "enemy_800AAA4C",
      "confidence": "medium"
     },
     {
@@ -998,20 +1937,20 @@
     },
     {
      "va": "0x800AAAB4",
-     "size": 248,
+     "size": 212,
      "name": "enemy_800AAAB4",
      "confidence": "low"
     },
     {
-     "va": "0x800AABAC",
-     "size": 80,
-     "name": "enemy_800AABAC",
+     "va": "0x800AAB88",
+     "size": 56,
+     "name": "enemy_800AAB88",
      "confidence": "medium"
     },
     {
-     "va": "0x800AABFC",
-     "size": 104,
-     "name": "enemy_800AABFC",
+     "va": "0x800AABC0",
+     "size": 164,
+     "name": "enemy_800AABC0",
      "confidence": "medium"
     },
     {
@@ -1034,39 +1973,39 @@
     },
     {
      "va": "0x800AAD2C",
-     "size": 52,
+     "size": 248,
      "name": "enemy_800AAD2C",
      "confidence": "low"
     },
     {
-     "va": "0x800AAD60",
-     "size": 196,
-     "name": "enemy_800AAD60",
-     "confidence": "medium"
-    },
-    {
      "va": "0x800AAE24",
-     "size": 60,
+     "size": 144,
      "name": "enemy_800AAE24",
      "confidence": "low"
     },
     {
-     "va": "0x800AAE60",
-     "size": 84,
-     "name": "enemy_800AAE60",
-     "confidence": "medium"
-    },
-    {
      "va": "0x800AAEB4",
-     "size": 340,
+     "size": 140,
      "name": "enemy_800AAEB4",
      "confidence": "low"
     },
     {
+     "va": "0x800AAF40",
+     "size": 200,
+     "name": "enemy_800AAF40",
+     "confidence": "medium"
+    },
+    {
      "va": "0x800AB008",
-     "size": 88,
+     "size": 80,
      "name": "enemy_800AB008",
      "confidence": "low"
+    },
+    {
+     "va": "0x800AB058",
+     "size": 8,
+     "name": "enemy_800AB058",
+     "confidence": "medium"
     },
     {
      "va": "0x800AB060",
@@ -1094,3555 +2033,56 @@
     },
     {
      "va": "0x800AB1FC",
-     "size": 24,
+     "size": 52,
      "name": "enemy_800AB1FC",
      "confidence": "low"
-    },
-    {
-     "va": "0x800AB214",
-     "size": 168,
-     "name": "enemy_800AB214",
-     "confidence": "medium"
-    },
-    {
-     "va": "0x800AB2BC",
-     "size": 20,
-     "name": "enemy_800AB2BC",
-     "confidence": "medium"
-    },
-    {
-     "va": "0x800AB2D0",
-     "size": 340,
-     "name": "enemy_800AB2D0",
-     "confidence": "low"
-    },
-    {
-     "va": "0x800AB424",
-     "size": 80,
-     "name": "enemy_800AB424",
-     "confidence": "low"
-    },
-    {
-     "va": "0x800AB474",
-     "size": 8,
-     "name": "enemy_800AB474",
-     "confidence": "low"
-    },
-    {
-     "va": "0x800AB47C",
-     "size": 104,
-     "name": "enemy_800AB47C",
-     "confidence": "medium"
-    },
-    {
-     "va": "0x800AB4E4",
-     "size": 80,
-     "name": "enemy_800AB4E4",
-     "confidence": "medium"
-    },
-    {
-     "va": "0x800AB534",
-     "size": 76,
-     "name": "enemy_800AB534",
-     "confidence": "medium"
-    },
-    {
-     "va": "0x800AB580",
-     "size": 100,
-     "name": "enemy_800AB580",
-     "confidence": "low"
-    },
-    {
-     "va": "0x800AB5E4",
-     "size": 72,
-     "name": "enemy_800AB5E4",
-     "confidence": "low"
-    },
-    {
-     "va": "0x800AB62C",
-     "size": 80,
-     "name": "enemy_800AB62C",
-     "confidence": "medium"
-    },
-    {
-     "va": "0x800AB67C",
-     "size": 64,
-     "name": "enemy_800AB67C",
-     "confidence": "medium"
-    },
-    {
-     "va": "0x800AB6BC",
-     "size": 64,
-     "name": "enemy_800AB6BC",
-     "confidence": "medium"
-    },
-    {
-     "va": "0x800AB6FC",
-     "size": 208,
-     "name": "enemy_800AB6FC",
-     "confidence": "low"
-    },
-    {
-     "va": "0x800AB7CC",
-     "size": 180,
-     "name": "enemy_800AB7CC",
-     "confidence": "low"
-    },
-    {
-     "va": "0x800AB880",
-     "size": 16,
-     "name": "enemy_800AB880",
-     "confidence": "low"
-    },
-    {
-     "va": "0x800AB890",
-     "size": 12,
-     "name": "enemy_800AB890",
-     "confidence": "low"
-    },
-    {
-     "va": "0x800AB89C",
-     "size": 84,
-     "name": "enemy_800AB89C",
-     "confidence": "medium"
-    },
-    {
-     "va": "0x800AB8F0",
-     "size": 124,
-     "name": "enemy_800AB8F0",
-     "confidence": "low"
-    },
-    {
-     "va": "0x800AB96C",
-     "size": 92,
-     "name": "enemy_800AB96C",
-     "confidence": "low"
-    },
-    {
-     "va": "0x800AB9C8",
-     "size": 104,
-     "name": "enemy_800AB9C8",
-     "confidence": "low"
-    },
-    {
-     "va": "0x800ABA30",
-     "size": 144,
-     "name": "enemy_800ABA30",
-     "confidence": "low"
-    },
-    {
-     "va": "0x800ABAC0",
-     "size": 116,
-     "name": "enemy_800ABAC0",
-     "confidence": "low"
-    },
-    {
-     "va": "0x800ABB34",
-     "size": 92,
-     "name": "enemy_800ABB34",
-     "confidence": "medium"
-    },
-    {
-     "va": "0x800ABB90",
-     "size": 80,
-     "name": "enemy_800ABB90",
-     "confidence": "low"
-    },
-    {
-     "va": "0x800ABBE0",
-     "size": 72,
-     "name": "enemy_800ABBE0",
-     "confidence": "low"
-    },
-    {
-     "va": "0x800ABC28",
-     "size": 100,
-     "name": "enemy_800ABC28",
-     "confidence": "low"
-    },
-    {
-     "va": "0x800ABC8C",
-     "size": 288,
-     "name": "enemy_800ABC8C",
-     "confidence": "low"
-    },
-    {
-     "va": "0x800ABDAC",
-     "size": 28,
-     "name": "enemy_800ABDAC",
-     "confidence": "medium"
-    },
-    {
-     "va": "0x800ABDC8",
-     "size": 128,
-     "name": "enemy_800ABDC8",
-     "confidence": "low"
-    },
-    {
-     "va": "0x800ABE48",
-     "size": 32,
-     "name": "enemy_800ABE48",
-     "confidence": "low"
-    },
-    {
-     "va": "0x800ABE68",
-     "size": 108,
-     "name": "enemy_800ABE68",
-     "confidence": "medium"
-    },
-    {
-     "va": "0x800ABED4",
-     "size": 72,
-     "name": "enemy_800ABED4",
-     "confidence": "low"
-    },
-    {
-     "va": "0x800ABF1C",
-     "size": 4,
-     "name": "enemy_800ABF1C",
-     "confidence": "medium"
-    },
-    {
-     "va": "0x800ABF20",
-     "size": 100,
-     "name": "enemy_800ABF20",
-     "confidence": "low"
-    },
-    {
-     "va": "0x800ABF84",
-     "size": 104,
-     "name": "enemy_800ABF84",
-     "confidence": "low"
-    },
-    {
-     "va": "0x800ABFEC",
-     "size": 72,
-     "name": "enemy_800ABFEC",
-     "confidence": "low"
-    },
-    {
-     "va": "0x800AC034",
-     "size": 12,
-     "name": "enemy_800AC034",
-     "confidence": "medium"
-    },
-    {
-     "va": "0x800AC040",
-     "size": 92,
-     "name": "enemy_800AC040",
-     "confidence": "low"
-    },
-    {
-     "va": "0x800AC09C",
-     "size": 64,
-     "name": "enemy_800AC09C",
-     "confidence": "medium"
-    },
-    {
-     "va": "0x800AC0DC",
-     "size": 40,
-     "name": "enemy_800AC0DC",
-     "confidence": "medium"
-    },
-    {
-     "va": "0x800AC104",
-     "size": 124,
-     "name": "enemy_800AC104",
-     "confidence": "medium"
-    },
-    {
-     "va": "0x800AC180",
-     "size": 72,
-     "name": "enemy_800AC180",
-     "confidence": "low"
-    },
-    {
-     "va": "0x800AC1C8",
-     "size": 60,
-     "name": "enemy_800AC1C8",
-     "confidence": "medium"
-    },
-    {
-     "va": "0x800AC204",
-     "size": 140,
-     "name": "enemy_800AC204",
-     "confidence": "low"
-    },
-    {
-     "va": "0x800AC290",
-     "size": 188,
-     "name": "enemy_800AC290",
-     "confidence": "low"
-    },
-    {
-     "va": "0x800AC34C",
-     "size": 12,
-     "name": "enemy_800AC34C",
-     "confidence": "low"
-    },
-    {
-     "va": "0x800AC358",
-     "size": 64,
-     "name": "enemy_800AC358",
-     "confidence": "medium"
-    },
-    {
-     "va": "0x800AC398",
-     "size": 28,
-     "name": "enemy_800AC398",
-     "confidence": "low"
-    },
-    {
-     "va": "0x800AC3B4",
-     "size": 76,
-     "name": "enemy_800AC3B4",
-     "confidence": "low"
-    },
-    {
-     "va": "0x800AC400",
-     "size": 152,
-     "name": "enemy_800AC400",
-     "confidence": "low"
-    },
-    {
-     "va": "0x800AC498",
-     "size": 20,
-     "name": "enemy_800AC498",
-     "confidence": "medium"
-    },
-    {
-     "va": "0x800AC4AC",
-     "size": 60,
-     "name": "enemy_800AC4AC",
-     "confidence": "low"
-    },
-    {
-     "va": "0x800AC4E8",
-     "size": 32,
-     "name": "enemy_800AC4E8",
-     "confidence": "medium"
-    },
-    {
-     "va": "0x800AC508",
-     "size": 32,
-     "name": "enemy_800AC508",
-     "confidence": "low"
-    },
-    {
-     "va": "0x800AC528",
-     "size": 100,
-     "name": "enemy_800AC528",
-     "confidence": "medium"
-    },
-    {
-     "va": "0x800AC58C",
-     "size": 108,
-     "name": "enemy_800AC58C",
-     "confidence": "low"
-    },
-    {
-     "va": "0x800AC5F8",
-     "size": 20,
-     "name": "enemy_800AC5F8",
-     "confidence": "medium"
-    },
-    {
-     "va": "0x800AC60C",
-     "size": 184,
-     "name": "enemy_800AC60C",
-     "confidence": "low"
-    },
-    {
-     "va": "0x800AC6C4",
-     "size": 48,
-     "name": "enemy_800AC6C4",
-     "confidence": "low"
-    },
-    {
-     "va": "0x800AC6F4",
-     "size": 64,
-     "name": "enemy_800AC6F4",
-     "confidence": "medium"
-    },
-    {
-     "va": "0x800AC734",
-     "size": 52,
-     "name": "enemy_800AC734",
-     "confidence": "low"
-    },
-    {
-     "va": "0x800AC768",
-     "size": 116,
-     "name": "enemy_800AC768",
-     "confidence": "low"
-    },
-    {
-     "va": "0x800AC7DC",
-     "size": 84,
-     "name": "enemy_800AC7DC",
-     "confidence": "low"
-    },
-    {
-     "va": "0x800AC830",
-     "size": 92,
-     "name": "enemy_800AC830",
-     "confidence": "medium"
-    },
-    {
-     "va": "0x800AC88C",
-     "size": 176,
-     "name": "enemy_800AC88C",
-     "confidence": "low"
-    },
-    {
-     "va": "0x800AC93C",
-     "size": 4,
-     "name": "enemy_800AC93C",
-     "confidence": "medium"
-    },
-    {
-     "va": "0x800AC940",
-     "size": 172,
-     "name": "enemy_800AC940",
-     "confidence": "low"
-    },
-    {
-     "va": "0x800AC9EC",
-     "size": 68,
-     "name": "enemy_800AC9EC",
-     "confidence": "medium"
-    },
-    {
-     "va": "0x800ACA30",
-     "size": 16,
-     "name": "enemy_800ACA30",
-     "confidence": "low"
-    },
-    {
-     "va": "0x800ACA40",
-     "size": 104,
-     "name": "enemy_800ACA40",
-     "confidence": "low"
-    },
-    {
-     "va": "0x800ACAA8",
-     "size": 16,
-     "name": "enemy_800ACAA8",
-     "confidence": "medium"
-    },
-    {
-     "va": "0x800ACAB8",
-     "size": 100,
-     "name": "enemy_800ACAB8",
-     "confidence": "low"
-    },
-    {
-     "va": "0x800ACB1C",
-     "size": 72,
-     "name": "enemy_800ACB1C",
-     "confidence": "low"
-    },
-    {
-     "va": "0x800ACB64",
-     "size": 288,
-     "name": "enemy_800ACB64",
-     "confidence": "low"
-    },
-    {
-     "va": "0x800ACC84",
-     "size": 76,
-     "name": "enemy_800ACC84",
-     "confidence": "low"
-    },
-    {
-     "va": "0x800ACCD0",
-     "size": 16,
-     "name": "enemy_800ACCD0",
-     "confidence": "medium"
-    },
-    {
-     "va": "0x800ACCE0",
-     "size": 56,
-     "name": "enemy_800ACCE0",
-     "confidence": "low"
-    },
-    {
-     "va": "0x800ACD18",
-     "size": 216,
-     "name": "enemy_800ACD18",
-     "confidence": "medium"
-    },
-    {
-     "va": "0x800ACDF0",
-     "size": 56,
-     "name": "enemy_800ACDF0",
-     "confidence": "low"
-    },
-    {
-     "va": "0x800ACE28",
-     "size": 160,
-     "name": "enemy_800ACE28",
-     "confidence": "medium"
-    },
-    {
-     "va": "0x800ACEC8",
-     "size": 28,
-     "name": "enemy_800ACEC8",
-     "confidence": "low"
-    },
-    {
-     "va": "0x800ACEE4",
-     "size": 160,
-     "name": "enemy_800ACEE4",
-     "confidence": "medium"
-    },
-    {
-     "va": "0x800ACF84",
-     "size": 20,
-     "name": "enemy_800ACF84",
-     "confidence": "low"
-    },
-    {
-     "va": "0x800ACF98",
-     "size": 200,
-     "name": "enemy_800ACF98",
-     "confidence": "medium"
-    },
-    {
-     "va": "0x800AD060",
-     "size": 20,
-     "name": "enemy_800AD060",
-     "confidence": "low"
-    },
-    {
-     "va": "0x800AD074",
-     "size": 44,
-     "name": "enemy_800AD074",
-     "confidence": "low"
-    },
-    {
-     "va": "0x800AD0A0",
-     "size": 128,
-     "name": "enemy_800AD0A0",
-     "confidence": "medium"
-    },
-    {
-     "va": "0x800AD120",
-     "size": 84,
-     "name": "enemy_800AD120",
-     "confidence": "low"
-    },
-    {
-     "va": "0x800AD174",
-     "size": 48,
-     "name": "enemy_800AD174",
-     "confidence": "low"
-    },
-    {
-     "va": "0x800AD1A4",
-     "size": 172,
-     "name": "enemy_800AD1A4",
-     "confidence": "medium"
-    },
-    {
-     "va": "0x800AD250",
-     "size": 12,
-     "name": "enemy_800AD250",
-     "confidence": "low"
-    },
-    {
-     "va": "0x800AD25C",
-     "size": 60,
-     "name": "enemy_800AD25C",
-     "confidence": "medium"
-    },
-    {
-     "va": "0x800AD298",
-     "size": 112,
-     "name": "enemy_800AD298",
-     "confidence": "low"
-    },
-    {
-     "va": "0x800AD308",
-     "size": 52,
-     "name": "enemy_800AD308",
-     "confidence": "medium"
-    },
-    {
-     "va": "0x800AD33C",
-     "size": 56,
-     "name": "enemy_800AD33C",
-     "confidence": "medium"
-    },
-    {
-     "va": "0x800AD374",
-     "size": 88,
-     "name": "enemy_800AD374",
-     "confidence": "low"
-    },
-    {
-     "va": "0x800AD3CC",
-     "size": 200,
-     "name": "enemy_800AD3CC",
-     "confidence": "low"
-    },
-    {
-     "va": "0x800AD494",
-     "size": 128,
-     "name": "enemy_800AD494",
-     "confidence": "low"
-    },
-    {
-     "va": "0x800AD514",
-     "size": 80,
-     "name": "enemy_800AD514",
-     "confidence": "low"
-    },
-    {
-     "va": "0x800AD564",
-     "size": 100,
-     "name": "enemy_800AD564",
-     "confidence": "low"
-    },
-    {
-     "va": "0x800AD5C8",
-     "size": 52,
-     "name": "enemy_800AD5C8",
-     "confidence": "medium"
-    },
-    {
-     "va": "0x800AD5FC",
-     "size": 12,
-     "name": "enemy_800AD5FC",
-     "confidence": "low"
-    },
-    {
-     "va": "0x800AD608",
-     "size": 104,
-     "name": "enemy_800AD608",
-     "confidence": "medium"
-    },
-    {
-     "va": "0x800AD670",
-     "size": 108,
-     "name": "enemy_800AD670",
-     "confidence": "medium"
-    },
-    {
-     "va": "0x800AD6DC",
-     "size": 44,
-     "name": "enemy_800AD6DC",
-     "confidence": "low"
-    },
-    {
-     "va": "0x800AD708",
-     "size": 68,
-     "name": "enemy_800AD708",
-     "confidence": "medium"
-    },
-    {
-     "va": "0x800AD74C",
-     "size": 52,
-     "name": "enemy_800AD74C",
-     "confidence": "low"
-    },
-    {
-     "va": "0x800AD780",
-     "size": 100,
-     "name": "enemy_800AD780",
-     "confidence": "medium"
-    },
-    {
-     "va": "0x800AD7E4",
-     "size": 80,
-     "name": "enemy_800AD7E4",
-     "confidence": "medium"
-    },
-    {
-     "va": "0x800AD834",
-     "size": 68,
-     "name": "enemy_800AD834",
-     "confidence": "medium"
-    },
-    {
-     "va": "0x800AD878",
-     "size": 108,
-     "name": "enemy_800AD878",
-     "confidence": "medium"
-    },
-    {
-     "va": "0x800AD8E4",
-     "size": 128,
-     "name": "enemy_800AD8E4",
-     "confidence": "low"
-    },
-    {
-     "va": "0x800AD964",
-     "size": 68,
-     "name": "enemy_800AD964",
-     "confidence": "low"
-    },
-    {
-     "va": "0x800AD9A8",
-     "size": 272,
-     "name": "enemy_800AD9A8",
-     "confidence": "medium"
-    },
-    {
-     "va": "0x800ADAB8",
-     "size": 12,
-     "name": "enemy_800ADAB8",
-     "confidence": "medium"
-    },
-    {
-     "va": "0x800ADAC4",
-     "size": 132,
-     "name": "enemy_800ADAC4",
-     "confidence": "low"
-    },
-    {
-     "va": "0x800ADB48",
-     "size": 72,
-     "name": "enemy_800ADB48",
-     "confidence": "low"
-    },
-    {
-     "va": "0x800ADB90",
-     "size": 108,
-     "name": "enemy_800ADB90",
-     "confidence": "medium"
-    },
-    {
-     "va": "0x800ADBFC",
-     "size": 80,
-     "name": "enemy_800ADBFC",
-     "confidence": "low"
-    },
-    {
-     "va": "0x800ADC4C",
-     "size": 36,
-     "name": "enemy_800ADC4C",
-     "confidence": "medium"
-    },
-    {
-     "va": "0x800ADC70",
-     "size": 28,
-     "name": "enemy_800ADC70",
-     "confidence": "low"
-    },
-    {
-     "va": "0x800ADC8C",
-     "size": 92,
-     "name": "enemy_800ADC8C",
-     "confidence": "low"
-    },
-    {
-     "va": "0x800ADCE8",
-     "size": 76,
-     "name": "enemy_800ADCE8",
-     "confidence": "low"
-    },
-    {
-     "va": "0x800ADD34",
-     "size": 20,
-     "name": "enemy_800ADD34",
-     "confidence": "low"
-    },
-    {
-     "va": "0x800ADD48",
-     "size": 20,
-     "name": "enemy_800ADD48",
-     "confidence": "low"
-    },
-    {
-     "va": "0x800ADD5C",
-     "size": 64,
-     "name": "enemy_800ADD5C",
-     "confidence": "low"
-    },
-    {
-     "va": "0x800ADD9C",
-     "size": 376,
-     "name": "enemy_800ADD9C",
-     "confidence": "low"
-    },
-    {
-     "va": "0x800ADF14",
-     "size": 380,
-     "name": "enemy_800ADF14",
-     "confidence": "low"
-    },
-    {
-     "va": "0x800AE090",
-     "size": 40,
-     "name": "enemy_800AE090",
-     "confidence": "medium"
-    },
-    {
-     "va": "0x800AE0B8",
-     "size": 60,
-     "name": "enemy_800AE0B8",
-     "confidence": "low"
-    },
-    {
-     "va": "0x800AE0F4",
-     "size": 60,
-     "name": "enemy_800AE0F4",
-     "confidence": "low"
-    },
-    {
-     "va": "0x800AE130",
-     "size": 60,
-     "name": "enemy_800AE130",
-     "confidence": "low"
-    },
-    {
-     "va": "0x800AE16C",
-     "size": 60,
-     "name": "enemy_800AE16C",
-     "confidence": "low"
-    },
-    {
-     "va": "0x800AE1A8",
-     "size": 28,
-     "name": "enemy_800AE1A8",
-     "confidence": "low"
-    },
-    {
-     "va": "0x800AE1C4",
-     "size": 92,
-     "name": "enemy_800AE1C4",
-     "confidence": "medium"
-    },
-    {
-     "va": "0x800AE220",
-     "size": 244,
-     "name": "enemy_800AE220",
-     "confidence": "low"
-    },
-    {
-     "va": "0x800AE314",
-     "size": 200,
-     "name": "enemy_800AE314",
-     "confidence": "low"
-    },
-    {
-     "va": "0x800AE3DC",
-     "size": 160,
-     "name": "enemy_800AE3DC",
-     "confidence": "low"
-    },
-    {
-     "va": "0x800AE47C",
-     "size": 68,
-     "name": "enemy_800AE47C",
-     "confidence": "low"
-    },
-    {
-     "va": "0x800AE4C0",
-     "size": 124,
-     "name": "enemy_800AE4C0",
-     "confidence": "low"
-    },
-    {
-     "va": "0x800AE53C",
-     "size": 16,
-     "name": "enemy_800AE53C",
-     "confidence": "low"
-    },
-    {
-     "va": "0x800AE54C",
-     "size": 108,
-     "name": "enemy_800AE54C",
-     "confidence": "low"
-    },
-    {
-     "va": "0x800AE5B8",
-     "size": 124,
-     "name": "enemy_800AE5B8",
-     "confidence": "low"
-    },
-    {
-     "va": "0x800AE634",
-     "size": 28,
-     "name": "enemy_800AE634",
-     "confidence": "low"
-    },
-    {
-     "va": "0x800AE650",
-     "size": 100,
-     "name": "enemy_800AE650",
-     "confidence": "low"
-    },
-    {
-     "va": "0x800AE6B4",
-     "size": 16,
-     "name": "enemy_800AE6B4",
-     "confidence": "low"
-    },
-    {
-     "va": "0x800AE6C4",
-     "size": 112,
-     "name": "enemy_800AE6C4",
-     "confidence": "low"
-    },
-    {
-     "va": "0x800AE734",
-     "size": 64,
-     "name": "enemy_800AE734",
-     "confidence": "low"
-    },
-    {
-     "va": "0x800AE774",
-     "size": 24,
-     "name": "enemy_800AE774",
-     "confidence": "low"
-    },
-    {
-     "va": "0x800AE78C",
-     "size": 8,
-     "name": "enemy_800AE78C",
-     "confidence": "low"
-    },
-    {
-     "va": "0x800AE794",
-     "size": 56,
-     "name": "enemy_800AE794",
-     "confidence": "low"
-    },
-    {
-     "va": "0x800AE7CC",
-     "size": 84,
-     "name": "enemy_800AE7CC",
-     "confidence": "low"
-    },
-    {
-     "va": "0x800AE820",
-     "size": 120,
-     "name": "enemy_800AE820",
-     "confidence": "low"
-    },
-    {
-     "va": "0x800AE898",
-     "size": 116,
-     "name": "enemy_800AE898",
-     "confidence": "low"
-    },
-    {
-     "va": "0x800AE90C",
-     "size": 16,
-     "name": "enemy_800AE90C",
-     "confidence": "low"
-    },
-    {
-     "va": "0x800AE91C",
-     "size": 52,
-     "name": "enemy_800AE91C",
-     "confidence": "low"
-    },
-    {
-     "va": "0x800AE950",
-     "size": 156,
-     "name": "enemy_800AE950",
-     "confidence": "low"
-    },
-    {
-     "va": "0x800AE9EC",
-     "size": 40,
-     "name": "enemy_800AE9EC",
-     "confidence": "low"
-    },
-    {
-     "va": "0x800AEA14",
-     "size": 120,
-     "name": "enemy_800AEA14",
-     "confidence": "low"
-    },
-    {
-     "va": "0x800AEA8C",
-     "size": 16,
-     "name": "enemy_800AEA8C",
-     "confidence": "low"
-    },
-    {
-     "va": "0x800AEA9C",
-     "size": 108,
-     "name": "enemy_800AEA9C",
-     "confidence": "low"
-    },
-    {
-     "va": "0x800AEB08",
-     "size": 16,
-     "name": "enemy_800AEB08",
-     "confidence": "low"
-    },
-    {
-     "va": "0x800AEB18",
-     "size": 372,
-     "name": "enemy_800AEB18",
-     "confidence": "low"
-    },
-    {
-     "va": "0x800AEC8C",
-     "size": 172,
-     "name": "enemy_800AEC8C",
-     "confidence": "medium"
-    },
-    {
-     "va": "0x800AED38",
-     "size": 8,
-     "name": "enemy_800AED38",
-     "confidence": "low"
-    },
-    {
-     "va": "0x800AED40",
-     "size": 24,
-     "name": "enemy_800AED40",
-     "confidence": "low"
-    },
-    {
-     "va": "0x800AED58",
-     "size": 104,
-     "name": "enemy_800AED58",
-     "confidence": "low"
-    },
-    {
-     "va": "0x800AEDC0",
-     "size": 72,
-     "name": "enemy_800AEDC0",
-     "confidence": "low"
-    },
-    {
-     "va": "0x800AEE08",
-     "size": 136,
-     "name": "enemy_800AEE08",
-     "confidence": "low"
-    },
-    {
-     "va": "0x800AEE90",
-     "size": 48,
-     "name": "enemy_800AEE90",
-     "confidence": "low"
-    },
-    {
-     "va": "0x800AEEC0",
-     "size": 112,
-     "name": "enemy_800AEEC0",
-     "confidence": "low"
-    },
-    {
-     "va": "0x800AEF30",
-     "size": 124,
-     "name": "enemy_800AEF30",
-     "confidence": "low"
-    },
-    {
-     "va": "0x800AEFAC",
-     "size": 4,
-     "name": "enemy_800AEFAC",
-     "confidence": "low"
-    },
-    {
-     "va": "0x800AEFB0",
-     "size": 16,
-     "name": "enemy_800AEFB0",
-     "confidence": "low"
-    },
-    {
-     "va": "0x800AEFC0",
-     "size": 52,
-     "name": "enemy_800AEFC0",
-     "confidence": "low"
-    },
-    {
-     "va": "0x800AEFF4",
-     "size": 24,
-     "name": "enemy_800AEFF4",
-     "confidence": "low"
-    },
-    {
-     "va": "0x800AF00C",
-     "size": 68,
-     "name": "enemy_800AF00C",
-     "confidence": "low"
-    },
-    {
-     "va": "0x800AF050",
-     "size": 16,
-     "name": "enemy_800AF050",
-     "confidence": "low"
-    },
-    {
-     "va": "0x800AF060",
-     "size": 68,
-     "name": "enemy_800AF060",
-     "confidence": "low"
-    },
-    {
-     "va": "0x800AF0A4",
-     "size": 96,
-     "name": "enemy_800AF0A4",
-     "confidence": "low"
-    },
-    {
-     "va": "0x800AF104",
-     "size": 48,
-     "name": "enemy_800AF104",
-     "confidence": "low"
-    },
-    {
-     "va": "0x800AF134",
-     "size": 124,
-     "name": "enemy_800AF134",
-     "confidence": "low"
-    },
-    {
-     "va": "0x800AF1B0",
-     "size": 68,
-     "name": "enemy_800AF1B0",
-     "confidence": "low"
-    },
-    {
-     "va": "0x800AF1F4",
-     "size": 16,
-     "name": "enemy_800AF1F4",
-     "confidence": "low"
-    },
-    {
-     "va": "0x800AF204",
-     "size": 360,
-     "name": "enemy_800AF204",
-     "confidence": "low"
-    },
-    {
-     "va": "0x800AF36C",
-     "size": 44,
-     "name": "enemy_800AF36C",
-     "confidence": "medium"
-    },
-    {
-     "va": "0x800AF398",
-     "size": 112,
-     "name": "enemy_800AF398",
-     "confidence": "low"
-    },
-    {
-     "va": "0x800AF408",
-     "size": 204,
-     "name": "enemy_800AF408",
-     "confidence": "low"
-    },
-    {
-     "va": "0x800AF4D4",
-     "size": 124,
-     "name": "enemy_800AF4D4",
-     "confidence": "medium"
-    },
-    {
-     "va": "0x800AF550",
-     "size": 164,
-     "name": "enemy_800AF550",
-     "confidence": "low"
-    },
-    {
-     "va": "0x800AF5F4",
-     "size": 36,
-     "name": "enemy_800AF5F4",
-     "confidence": "low"
-    },
-    {
-     "va": "0x800AF618",
-     "size": 144,
-     "name": "enemy_800AF618",
-     "confidence": "medium"
-    },
-    {
-     "va": "0x800AF6A8",
-     "size": 8,
-     "name": "enemy_800AF6A8",
-     "confidence": "medium"
-    },
-    {
-     "va": "0x800AF6B0",
-     "size": 184,
-     "name": "enemy_800AF6B0",
-     "confidence": "low"
-    },
-    {
-     "va": "0x800AF768",
-     "size": 44,
-     "name": "enemy_800AF768",
-     "confidence": "low"
-    },
-    {
-     "va": "0x800AF794",
-     "size": 92,
-     "name": "enemy_800AF794",
-     "confidence": "medium"
-    },
-    {
-     "va": "0x800AF7F0",
-     "size": 16,
-     "name": "enemy_800AF7F0",
-     "confidence": "low"
-    },
-    {
-     "va": "0x800AF800",
-     "size": 204,
-     "name": "enemy_800AF800",
-     "confidence": "low"
-    },
-    {
-     "va": "0x800AF8CC",
-     "size": 36,
-     "name": "enemy_800AF8CC",
-     "confidence": "low"
-    },
-    {
-     "va": "0x800AF8F0",
-     "size": 280,
-     "name": "enemy_800AF8F0",
-     "confidence": "medium"
-    },
-    {
-     "va": "0x800AFA08",
-     "size": 16,
-     "name": "enemy_800AFA08",
-     "confidence": "low"
-    },
-    {
-     "va": "0x800AFA18",
-     "size": 192,
-     "name": "enemy_800AFA18",
-     "confidence": "low"
-    },
-    {
-     "va": "0x800AFAD8",
-     "size": 196,
-     "name": "enemy_800AFAD8",
-     "confidence": "medium"
-    },
-    {
-     "va": "0x800AFB9C",
-     "size": 4,
-     "name": "enemy_800AFB9C",
-     "confidence": "medium"
-    },
-    {
-     "va": "0x800AFBA0",
-     "size": 16,
-     "name": "enemy_800AFBA0",
-     "confidence": "low"
-    },
-    {
-     "va": "0x800AFBB0",
-     "size": 56,
-     "name": "enemy_800AFBB0",
-     "confidence": "low"
-    },
-    {
-     "va": "0x800AFBE8",
-     "size": 60,
-     "name": "enemy_800AFBE8",
-     "confidence": "low"
-    },
-    {
-     "va": "0x800AFC24",
-     "size": 20,
-     "name": "enemy_800AFC24",
-     "confidence": "medium"
-    },
-    {
-     "va": "0x800AFC38",
-     "size": 88,
-     "name": "enemy_800AFC38",
-     "confidence": "low"
-    },
-    {
-     "va": "0x800AFC90",
-     "size": 16,
-     "name": "enemy_800AFC90",
-     "confidence": "low"
-    },
-    {
-     "va": "0x800AFCA0",
-     "size": 240,
-     "name": "enemy_800AFCA0",
-     "confidence": "low"
-    },
-    {
-     "va": "0x800AFD90",
-     "size": 56,
-     "name": "enemy_800AFD90",
-     "confidence": "low"
-    },
-    {
-     "va": "0x800AFDC8",
-     "size": 140,
-     "name": "enemy_800AFDC8",
-     "confidence": "low"
-    },
-    {
-     "va": "0x800AFE54",
-     "size": 136,
-     "name": "enemy_800AFE54",
-     "confidence": "low"
-    },
-    {
-     "va": "0x800AFEDC",
-     "size": 116,
-     "name": "enemy_800AFEDC",
-     "confidence": "low"
-    },
-    {
-     "va": "0x800AFF50",
-     "size": 192,
-     "name": "enemy_800AFF50",
-     "confidence": "medium"
-    },
-    {
-     "va": "0x800B0010",
-     "size": 8,
-     "name": "enemy_800B0010",
-     "confidence": "low"
-    },
-    {
-     "va": "0x800B0018",
-     "size": 48,
-     "name": "enemy_800B0018",
-     "confidence": "medium"
-    },
-    {
-     "va": "0x800B0048",
-     "size": 140,
-     "name": "enemy_800B0048",
-     "confidence": "medium"
-    },
-    {
-     "va": "0x800B00D4",
-     "size": 124,
-     "name": "enemy_800B00D4",
-     "confidence": "low"
-    },
-    {
-     "va": "0x800B0150",
-     "size": 56,
-     "name": "enemy_800B0150",
-     "confidence": "medium"
-    },
-    {
-     "va": "0x800B0188",
-     "size": 12,
-     "name": "enemy_800B0188",
-     "confidence": "low"
-    },
-    {
-     "va": "0x800B0194",
-     "size": 84,
-     "name": "enemy_800B0194",
-     "confidence": "medium"
-    },
-    {
-     "va": "0x800B01E8",
-     "size": 76,
-     "name": "enemy_800B01E8",
-     "confidence": "medium"
-    },
-    {
-     "va": "0x800B0234",
-     "size": 84,
-     "name": "enemy_800B0234",
-     "confidence": "medium"
-    },
-    {
-     "va": "0x800B0288",
-     "size": 268,
-     "name": "enemy_800B0288",
-     "confidence": "low"
-    },
-    {
-     "va": "0x800B0394",
-     "size": 8,
-     "name": "enemy_800B0394",
-     "confidence": "low"
-    },
-    {
-     "va": "0x800B039C",
-     "size": 32,
-     "name": "enemy_800B039C",
-     "confidence": "low"
-    },
-    {
-     "va": "0x800B03BC",
-     "size": 44,
-     "name": "enemy_800B03BC",
-     "confidence": "medium"
-    },
-    {
-     "va": "0x800B03E8",
-     "size": 136,
-     "name": "enemy_800B03E8",
-     "confidence": "low"
-    },
-    {
-     "va": "0x800B0470",
-     "size": 80,
-     "name": "enemy_800B0470",
-     "confidence": "medium"
-    },
-    {
-     "va": "0x800B04C0",
-     "size": 4,
-     "name": "enemy_800B04C0",
-     "confidence": "low"
-    },
-    {
-     "va": "0x800B04C4",
-     "size": 60,
-     "name": "enemy_800B04C4",
-     "confidence": "medium"
-    },
-    {
-     "va": "0x800B0500",
-     "size": 112,
-     "name": "enemy_800B0500",
-     "confidence": "medium"
-    },
-    {
-     "va": "0x800B0570",
-     "size": 36,
-     "name": "enemy_800B0570",
-     "confidence": "medium"
-    },
-    {
-     "va": "0x800B0594",
-     "size": 76,
-     "name": "enemy_800B0594",
-     "confidence": "low"
-    },
-    {
-     "va": "0x800B05E0",
-     "size": 212,
-     "name": "enemy_800B05E0",
-     "confidence": "medium"
-    },
-    {
-     "va": "0x800B06B4",
-     "size": 216,
-     "name": "enemy_800B06B4",
-     "confidence": "low"
-    },
-    {
-     "va": "0x800B078C",
-     "size": 20,
-     "name": "enemy_800B078C",
-     "confidence": "low"
-    },
-    {
-     "va": "0x800B07A0",
-     "size": 64,
-     "name": "enemy_800B07A0",
-     "confidence": "medium"
-    },
-    {
-     "va": "0x800B07E0",
-     "size": 40,
-     "name": "enemy_800B07E0",
-     "confidence": "medium"
-    },
-    {
-     "va": "0x800B0808",
-     "size": 92,
-     "name": "enemy_800B0808",
-     "confidence": "medium"
-    },
-    {
-     "va": "0x800B0864",
-     "size": 88,
-     "name": "enemy_800B0864",
-     "confidence": "low"
-    },
-    {
-     "va": "0x800B08BC",
-     "size": 60,
-     "name": "enemy_800B08BC",
-     "confidence": "medium"
-    },
-    {
-     "va": "0x800B08F8",
-     "size": 128,
-     "name": "enemy_800B08F8",
-     "confidence": "medium"
-    },
-    {
-     "va": "0x800B0978",
-     "size": 16,
-     "name": "enemy_800B0978",
-     "confidence": "medium"
-    },
-    {
-     "va": "0x800B0988",
-     "size": 68,
-     "name": "enemy_800B0988",
-     "confidence": "low"
-    },
-    {
-     "va": "0x800B09CC",
-     "size": 136,
-     "name": "enemy_800B09CC",
-     "confidence": "medium"
-    },
-    {
-     "va": "0x800B0A54",
-     "size": 100,
-     "name": "enemy_800B0A54",
-     "confidence": "low"
-    },
-    {
-     "va": "0x800B0AB8",
-     "size": 100,
-     "name": "enemy_800B0AB8",
-     "confidence": "medium"
-    },
-    {
-     "va": "0x800B0B1C",
-     "size": 296,
-     "name": "enemy_800B0B1C",
-     "confidence": "low"
-    },
-    {
-     "va": "0x800B0C44",
-     "size": 216,
-     "name": "enemy_800B0C44",
-     "confidence": "low"
-    },
-    {
-     "va": "0x800B0D1C",
-     "size": 204,
-     "name": "enemy_800B0D1C",
-     "confidence": "low"
-    },
-    {
-     "va": "0x800B0DE8",
-     "size": 24,
-     "name": "enemy_800B0DE8",
-     "confidence": "low"
-    },
-    {
-     "va": "0x800B0E00",
-     "size": 60,
-     "name": "enemy_800B0E00",
-     "confidence": "medium"
-    },
-    {
-     "va": "0x800B0E3C",
-     "size": 60,
-     "name": "enemy_800B0E3C",
-     "confidence": "low"
-    },
-    {
-     "va": "0x800B0E78",
-     "size": 264,
-     "name": "enemy_800B0E78",
-     "confidence": "low"
-    },
-    {
-     "va": "0x800B0F80",
-     "size": 24,
-     "name": "enemy_800B0F80",
-     "confidence": "low"
-    },
-    {
-     "va": "0x800B0F98",
-     "size": 56,
-     "name": "enemy_800B0F98",
-     "confidence": "medium"
-    },
-    {
-     "va": "0x800B0FD0",
-     "size": 80,
-     "name": "enemy_800B0FD0",
-     "confidence": "medium"
-    },
-    {
-     "va": "0x800B1020",
-     "size": 104,
-     "name": "enemy_800B1020",
-     "confidence": "medium"
-    },
-    {
-     "va": "0x800B1088",
-     "size": 200,
-     "name": "enemy_800B1088",
-     "confidence": "medium"
-    },
-    {
-     "va": "0x800B1150",
-     "size": 96,
-     "name": "enemy_800B1150",
-     "confidence": "low"
-    },
-    {
-     "va": "0x800B11B0",
-     "size": 188,
-     "name": "enemy_800B11B0",
-     "confidence": "medium"
-    },
-    {
-     "va": "0x800B126C",
-     "size": 12,
-     "name": "enemy_800B126C",
-     "confidence": "low"
-    },
-    {
-     "va": "0x800B1278",
-     "size": 68,
-     "name": "enemy_800B1278",
-     "confidence": "medium"
-    },
-    {
-     "va": "0x800B12BC",
-     "size": 8,
-     "name": "enemy_800B12BC",
-     "confidence": "low"
-    },
-    {
-     "va": "0x800B12C4",
-     "size": 88,
-     "name": "enemy_800B12C4",
-     "confidence": "medium"
-    },
-    {
-     "va": "0x800B131C",
-     "size": 132,
-     "name": "enemy_800B131C",
-     "confidence": "low"
-    },
-    {
-     "va": "0x800B13A0",
-     "size": 16,
-     "name": "enemy_800B13A0",
-     "confidence": "low"
-    },
-    {
-     "va": "0x800B13B0",
-     "size": 72,
-     "name": "enemy_800B13B0",
-     "confidence": "low"
-    },
-    {
-     "va": "0x800B13F8",
-     "size": 80,
-     "name": "enemy_800B13F8",
-     "confidence": "medium"
-    },
-    {
-     "va": "0x800B1448",
-     "size": 40,
-     "name": "enemy_800B1448",
-     "confidence": "low"
-    },
-    {
-     "va": "0x800B1470",
-     "size": 76,
-     "name": "enemy_800B1470",
-     "confidence": "medium"
-    },
-    {
-     "va": "0x800B14BC",
-     "size": 64,
-     "name": "enemy_800B14BC",
-     "confidence": "medium"
-    },
-    {
-     "va": "0x800B14FC",
-     "size": 188,
-     "name": "enemy_800B14FC",
-     "confidence": "low"
-    },
-    {
-     "va": "0x800B15B8",
-     "size": 112,
-     "name": "enemy_800B15B8",
-     "confidence": "low"
-    },
-    {
-     "va": "0x800B1628",
-     "size": 76,
-     "name": "enemy_800B1628",
-     "confidence": "low"
-    },
-    {
-     "va": "0x800B1674",
-     "size": 44,
-     "name": "enemy_800B1674",
-     "confidence": "low"
-    },
-    {
-     "va": "0x800B16A0",
-     "size": 20,
-     "name": "enemy_800B16A0",
-     "confidence": "medium"
-    },
-    {
-     "va": "0x800B16B4",
-     "size": 232,
-     "name": "enemy_800B16B4",
-     "confidence": "low"
-    },
-    {
-     "va": "0x800B179C",
-     "size": 272,
-     "name": "enemy_800B179C",
-     "confidence": "low"
-    },
-    {
-     "va": "0x800B18AC",
-     "size": 84,
-     "name": "enemy_800B18AC",
-     "confidence": "low"
-    },
-    {
-     "va": "0x800B1900",
-     "size": 120,
-     "name": "enemy_800B1900",
-     "confidence": "medium"
-    },
-    {
-     "va": "0x800B1978",
-     "size": 28,
-     "name": "enemy_800B1978",
-     "confidence": "medium"
-    },
-    {
-     "va": "0x800B1994",
-     "size": 68,
-     "name": "enemy_800B1994",
-     "confidence": "low"
-    },
-    {
-     "va": "0x800B19D8",
-     "size": 116,
-     "name": "enemy_800B19D8",
-     "confidence": "medium"
-    },
-    {
-     "va": "0x800B1A4C",
-     "size": 96,
-     "name": "enemy_800B1A4C",
-     "confidence": "low"
-    },
-    {
-     "va": "0x800B1AAC",
-     "size": 136,
-     "name": "enemy_800B1AAC",
-     "confidence": "medium"
-    },
-    {
-     "va": "0x800B1B34",
-     "size": 24,
-     "name": "enemy_800B1B34",
-     "confidence": "low"
-    },
-    {
-     "va": "0x800B1B4C",
-     "size": 16,
-     "name": "enemy_800B1B4C",
-     "confidence": "low"
-    },
-    {
-     "va": "0x800B1B5C",
-     "size": 112,
-     "name": "enemy_800B1B5C",
-     "confidence": "low"
-    },
-    {
-     "va": "0x800B1BCC",
-     "size": 108,
-     "name": "enemy_800B1BCC",
-     "confidence": "medium"
-    },
-    {
-     "va": "0x800B1C38",
-     "size": 108,
-     "name": "enemy_800B1C38",
-     "confidence": "low"
-    },
-    {
-     "va": "0x800B1CA4",
-     "size": 216,
-     "name": "enemy_800B1CA4",
-     "confidence": "medium"
-    },
-    {
-     "va": "0x800B1D7C",
-     "size": 44,
-     "name": "enemy_800B1D7C",
-     "confidence": "medium"
-    },
-    {
-     "va": "0x800B1DA8",
-     "size": 192,
-     "name": "enemy_800B1DA8",
-     "confidence": "low"
-    },
-    {
-     "va": "0x800B1E68",
-     "size": 68,
-     "name": "enemy_800B1E68",
-     "confidence": "low"
-    },
-    {
-     "va": "0x800B1EAC",
-     "size": 256,
-     "name": "enemy_800B1EAC",
-     "confidence": "low"
-    },
-    {
-     "va": "0x800B1FAC",
-     "size": 16,
-     "name": "enemy_800B1FAC",
-     "confidence": "low"
-    },
-    {
-     "va": "0x800B1FBC",
-     "size": 20,
-     "name": "enemy_800B1FBC",
-     "confidence": "low"
-    },
-    {
-     "va": "0x800B1FD0",
-     "size": 120,
-     "name": "enemy_800B1FD0",
-     "confidence": "medium"
-    },
-    {
-     "va": "0x800B2048",
-     "size": 84,
-     "name": "enemy_800B2048",
-     "confidence": "medium"
-    },
-    {
-     "va": "0x800B209C",
-     "size": 60,
-     "name": "enemy_800B209C",
-     "confidence": "medium"
-    },
-    {
-     "va": "0x800B20D8",
-     "size": 68,
-     "name": "enemy_800B20D8",
-     "confidence": "low"
-    },
-    {
-     "va": "0x800B211C",
-     "size": 72,
-     "name": "enemy_800B211C",
-     "confidence": "low"
-    },
-    {
-     "va": "0x800B2164",
-     "size": 296,
-     "name": "enemy_800B2164",
-     "confidence": "medium"
-    },
-    {
-     "va": "0x800B228C",
-     "size": 216,
-     "name": "enemy_800B228C",
-     "confidence": "medium"
-    },
-    {
-     "va": "0x800B2364",
-     "size": 64,
-     "name": "enemy_800B2364",
-     "confidence": "verified"
-    },
-    {
-     "va": "0x800B23A4",
-     "size": 24,
-     "name": "enemy_800B23A4",
-     "confidence": "low"
-    },
-    {
-     "va": "0x800B23BC",
-     "size": 116,
-     "name": "enemy_800B23BC",
-     "confidence": "medium"
-    },
-    {
-     "va": "0x800B2430",
-     "size": 116,
-     "name": "enemy_800B2430",
-     "confidence": "medium"
-    },
-    {
-     "va": "0x800B24A4",
-     "size": 28,
-     "name": "enemy_800B24A4",
-     "confidence": "low"
-    },
-    {
-     "va": "0x800B24C0",
-     "size": 52,
-     "name": "enemy_800B24C0",
-     "confidence": "medium"
-    },
-    {
-     "va": "0x800B24F4",
-     "size": 52,
-     "name": "enemy_800B24F4",
-     "confidence": "low"
-    },
-    {
-     "va": "0x800B2528",
-     "size": 8,
-     "name": "enemy_800B2528",
-     "confidence": "low"
-    },
-    {
-     "va": "0x800B2530",
-     "size": 64,
-     "name": "enemy_800B2530",
-     "confidence": "medium"
-    },
-    {
-     "va": "0x800B2570",
-     "size": 12,
-     "name": "enemy_800B2570",
-     "confidence": "low"
-    },
-    {
-     "va": "0x800B257C",
-     "size": 76,
-     "name": "enemy_800B257C",
-     "confidence": "medium"
-    },
-    {
-     "va": "0x800B25C8",
-     "size": 156,
-     "name": "enemy_800B25C8",
-     "confidence": "medium"
-    },
-    {
-     "va": "0x800B2664",
-     "size": 16,
-     "name": "enemy_800B2664",
-     "confidence": "low"
-    },
-    {
-     "va": "0x800B2674",
-     "size": 212,
-     "name": "enemy_800B2674",
-     "confidence": "low"
-    },
-    {
-     "va": "0x800B2748",
-     "size": 260,
-     "name": "enemy_800B2748",
-     "confidence": "low"
-    },
-    {
-     "va": "0x800B284C",
-     "size": 124,
-     "name": "enemy_800B284C",
-     "confidence": "low"
-    },
-    {
-     "va": "0x800B28C8",
-     "size": 64,
-     "name": "enemy_800B28C8",
-     "confidence": "medium"
-    },
-    {
-     "va": "0x800B2908",
-     "size": 100,
-     "name": "enemy_800B2908",
-     "confidence": "low"
-    },
-    {
-     "va": "0x800B296C",
-     "size": 136,
-     "name": "enemy_800B296C",
-     "confidence": "medium"
-    },
-    {
-     "va": "0x800B29F4",
-     "size": 44,
-     "name": "enemy_800B29F4",
-     "confidence": "medium"
-    },
-    {
-     "va": "0x800B2A20",
-     "size": 20,
-     "name": "enemy_800B2A20",
-     "confidence": "low"
-    },
-    {
-     "va": "0x800B2A34",
-     "size": 248,
-     "name": "enemy_800B2A34",
-     "confidence": "medium"
-    },
-    {
-     "va": "0x800B2B2C",
-     "size": 84,
-     "name": "enemy_800B2B2C",
-     "confidence": "low"
-    },
-    {
-     "va": "0x800B2B80",
-     "size": 236,
-     "name": "enemy_800B2B80",
-     "confidence": "low"
-    },
-    {
-     "va": "0x800B2C6C",
-     "size": 448,
-     "name": "enemy_800B2C6C",
-     "confidence": "low"
-    },
-    {
-     "va": "0x800B2E2C",
-     "size": 232,
-     "name": "enemy_800B2E2C",
-     "confidence": "medium"
-    },
-    {
-     "va": "0x800B2F14",
-     "size": 272,
-     "name": "enemy_800B2F14",
-     "confidence": "medium"
-    },
-    {
-     "va": "0x800B3024",
-     "size": 12,
-     "name": "enemy_800B3024",
-     "confidence": "medium"
-    },
-    {
-     "va": "0x800B3030",
-     "size": 40,
-     "name": "enemy_800B3030",
-     "confidence": "low"
-    },
-    {
-     "va": "0x800B3058",
-     "size": 100,
-     "name": "enemy_800B3058",
-     "confidence": "low"
-    },
-    {
-     "va": "0x800B30BC",
-     "size": 92,
-     "name": "enemy_800B30BC",
-     "confidence": "low"
-    },
-    {
-     "va": "0x800B3118",
-     "size": 184,
-     "name": "enemy_800B3118",
-     "confidence": "low"
-    },
-    {
-     "va": "0x800B31D0",
-     "size": 40,
-     "name": "enemy_800B31D0",
-     "confidence": "low"
-    },
-    {
-     "va": "0x800B31F8",
-     "size": 108,
-     "name": "enemy_800B31F8",
-     "confidence": "medium"
-    },
-    {
-     "va": "0x800B3264",
-     "size": 60,
-     "name": "enemy_800B3264",
-     "confidence": "low"
-    },
-    {
-     "va": "0x800B32A0",
-     "size": 456,
-     "name": "enemy_800B32A0",
-     "confidence": "low"
-    },
-    {
-     "va": "0x800B3468",
-     "size": 80,
-     "name": "enemy_800B3468",
-     "confidence": "low"
-    },
-    {
-     "va": "0x800B34B8",
-     "size": 40,
-     "name": "enemy_800B34B8",
-     "confidence": "medium"
-    },
-    {
-     "va": "0x800B34E0",
-     "size": 100,
-     "name": "enemy_800B34E0",
-     "confidence": "medium"
-    },
-    {
-     "va": "0x800B3544",
-     "size": 52,
-     "name": "enemy_800B3544",
-     "confidence": "low"
-    },
-    {
-     "va": "0x800B3578",
-     "size": 140,
-     "name": "enemy_800B3578",
-     "confidence": "medium"
-    },
-    {
-     "va": "0x800B3604",
-     "size": 112,
-     "name": "enemy_800B3604",
-     "confidence": "low"
-    },
-    {
-     "va": "0x800B3674",
-     "size": 60,
-     "name": "enemy_800B3674",
-     "confidence": "low"
-    },
-    {
-     "va": "0x800B36B0",
-     "size": 20,
-     "name": "enemy_800B36B0",
-     "confidence": "low"
-    },
-    {
-     "va": "0x800B36C4",
-     "size": 96,
-     "name": "enemy_800B36C4",
-     "confidence": "low"
-    },
-    {
-     "va": "0x800B3724",
-     "size": 24,
-     "name": "enemy_800B3724",
-     "confidence": "low"
-    },
-    {
-     "va": "0x800B373C",
-     "size": 80,
-     "name": "enemy_800B373C",
-     "confidence": "low"
-    },
-    {
-     "va": "0x800B378C",
-     "size": 64,
-     "name": "enemy_800B378C",
-     "confidence": "low"
-    },
-    {
-     "va": "0x800B37CC",
-     "size": 92,
-     "name": "enemy_800B37CC",
-     "confidence": "low"
-    },
-    {
-     "va": "0x800B3828",
-     "size": 172,
-     "name": "enemy_800B3828",
-     "confidence": "low"
-    },
-    {
-     "va": "0x800B38D4",
-     "size": 16,
-     "name": "enemy_800B38D4",
-     "confidence": "low"
-    },
-    {
-     "va": "0x800B38E4",
-     "size": 44,
-     "name": "enemy_800B38E4",
-     "confidence": "low"
-    },
-    {
-     "va": "0x800B3910",
-     "size": 80,
-     "name": "enemy_800B3910",
-     "confidence": "low"
-    },
-    {
-     "va": "0x800B3960",
-     "size": 8,
-     "name": "enemy_800B3960",
-     "confidence": "low"
-    },
-    {
-     "va": "0x800B3968",
-     "size": 124,
-     "name": "enemy_800B3968",
-     "confidence": "low"
-    },
-    {
-     "va": "0x800B39E4",
-     "size": 144,
-     "name": "enemy_800B39E4",
-     "confidence": "low"
-    },
-    {
-     "va": "0x800B3A74",
-     "size": 36,
-     "name": "enemy_800B3A74",
-     "confidence": "low"
-    },
-    {
-     "va": "0x800B3A98",
-     "size": 84,
-     "name": "enemy_800B3A98",
-     "confidence": "low"
-    },
-    {
-     "va": "0x800B3AEC",
-     "size": 8,
-     "name": "enemy_800B3AEC",
-     "confidence": "low"
-    },
-    {
-     "va": "0x800B3AF4",
-     "size": 208,
-     "name": "enemy_800B3AF4",
-     "confidence": "medium"
-    },
-    {
-     "va": "0x800B3BC4",
-     "size": 64,
-     "name": "enemy_800B3BC4",
-     "confidence": "low"
-    },
-    {
-     "va": "0x800B3C04",
-     "size": 172,
-     "name": "enemy_800B3C04",
-     "confidence": "low"
-    },
-    {
-     "va": "0x800B3CB0",
-     "size": 104,
-     "name": "enemy_800B3CB0",
-     "confidence": "low"
-    },
-    {
-     "va": "0x800B3D18",
-     "size": 168,
-     "name": "enemy_800B3D18",
-     "confidence": "low"
-    },
-    {
-     "va": "0x800B3DC0",
-     "size": 16,
-     "name": "enemy_800B3DC0",
-     "confidence": "low"
-    },
-    {
-     "va": "0x800B3DD0",
-     "size": 72,
-     "name": "enemy_800B3DD0",
-     "confidence": "low"
-    },
-    {
-     "va": "0x800B3E18",
-     "size": 36,
-     "name": "enemy_800B3E18",
-     "confidence": "low"
-    },
-    {
-     "va": "0x800B3E3C",
-     "size": 132,
-     "name": "enemy_800B3E3C",
-     "confidence": "medium"
-    },
-    {
-     "va": "0x800B3EC0",
-     "size": 16,
-     "name": "enemy_800B3EC0",
-     "confidence": "low"
-    },
-    {
-     "va": "0x800B3ED0",
-     "size": 72,
-     "name": "enemy_800B3ED0",
-     "confidence": "low"
-    },
-    {
-     "va": "0x800B3F18",
-     "size": 48,
-     "name": "enemy_800B3F18",
-     "confidence": "low"
-    },
-    {
-     "va": "0x800B3F48",
-     "size": 120,
-     "name": "enemy_800B3F48",
-     "confidence": "medium"
-    },
-    {
-     "va": "0x800B3FC0",
-     "size": 16,
-     "name": "enemy_800B3FC0",
-     "confidence": "low"
-    },
-    {
-     "va": "0x800B3FD0",
-     "size": 84,
-     "name": "enemy_800B3FD0",
-     "confidence": "low"
-    },
-    {
-     "va": "0x800B4024",
-     "size": 252,
-     "name": "enemy_800B4024",
-     "confidence": "low"
-    },
-    {
-     "va": "0x800B4120",
-     "size": 80,
-     "name": "enemy_800B4120",
-     "confidence": "medium"
-    },
-    {
-     "va": "0x800B4170",
-     "size": 16,
-     "name": "enemy_800B4170",
-     "confidence": "low"
-    },
-    {
-     "va": "0x800B4180",
-     "size": 108,
-     "name": "enemy_800B4180",
-     "confidence": "low"
-    },
-    {
-     "va": "0x800B41EC",
-     "size": 16,
-     "name": "enemy_800B41EC",
-     "confidence": "low"
-    },
-    {
-     "va": "0x800B41FC",
-     "size": 40,
-     "name": "enemy_800B41FC",
-     "confidence": "low"
-    },
-    {
-     "va": "0x800B4224",
-     "size": 152,
-     "name": "enemy_800B4224",
-     "confidence": "medium"
-    },
-    {
-     "va": "0x800B42BC",
-     "size": 84,
-     "name": "enemy_800B42BC",
-     "confidence": "low"
-    },
-    {
-     "va": "0x800B4310",
-     "size": 64,
-     "name": "enemy_800B4310",
-     "confidence": "low"
-    },
-    {
-     "va": "0x800B4350",
-     "size": 168,
-     "name": "enemy_800B4350",
-     "confidence": "low"
-    },
-    {
-     "va": "0x800B43F8",
-     "size": 16,
-     "name": "enemy_800B43F8",
-     "confidence": "low"
-    },
-    {
-     "va": "0x800B4408",
-     "size": 56,
-     "name": "enemy_800B4408",
-     "confidence": "low"
-    },
-    {
-     "va": "0x800B4440",
-     "size": 116,
-     "name": "enemy_800B4440",
-     "confidence": "low"
-    },
-    {
-     "va": "0x800B44B4",
-     "size": 108,
-     "name": "enemy_800B44B4",
-     "confidence": "medium"
-    },
-    {
-     "va": "0x800B4520",
-     "size": 16,
-     "name": "enemy_800B4520",
-     "confidence": "low"
-    },
-    {
-     "va": "0x800B4530",
-     "size": 100,
-     "name": "enemy_800B4530",
-     "confidence": "verified"
-    },
-    {
-     "va": "0x800B4594",
-     "size": 188,
-     "name": "enemy_800B4594",
-     "confidence": "low"
-    },
-    {
-     "va": "0x800B4650",
-     "size": 96,
-     "name": "enemy_800B4650",
-     "confidence": "low"
-    },
-    {
-     "va": "0x800B46B0",
-     "size": 168,
-     "name": "enemy_800B46B0",
-     "confidence": "low"
-    },
-    {
-     "va": "0x800B4758",
-     "size": 104,
-     "name": "enemy_800B4758",
-     "confidence": "low"
-    },
-    {
-     "va": "0x800B47C0",
-     "size": 180,
-     "name": "enemy_800B47C0",
-     "confidence": "low"
-    },
-    {
-     "va": "0x800B4874",
-     "size": 580,
-     "name": "enemy_800B4874",
-     "confidence": "low"
-    },
-    {
-     "va": "0x800B4AB8",
-     "size": 16,
-     "name": "enemy_800B4AB8",
-     "confidence": "low"
-    },
-    {
-     "va": "0x800B4AC8",
-     "size": 152,
-     "name": "enemy_800B4AC8",
-     "confidence": "low"
-    },
-    {
-     "va": "0x800B4B60",
-     "size": 60,
-     "name": "enemy_800B4B60",
-     "confidence": "medium"
-    },
-    {
-     "va": "0x800B4B9C",
-     "size": 776,
-     "name": "enemy_800B4B9C",
-     "confidence": "medium"
-    },
-    {
-     "va": "0x800B4EA4",
-     "size": 88,
-     "name": "enemy_800B4EA4",
-     "confidence": "medium"
-    },
-    {
-     "va": "0x800B4EFC",
-     "size": 32,
-     "name": "enemy_800B4EFC",
-     "confidence": "medium"
-    },
-    {
-     "va": "0x800B4F1C",
-     "size": 324,
-     "name": "enemy_800B4F1C",
-     "confidence": "medium"
-    },
-    {
-     "va": "0x800B5060",
-     "size": 64,
-     "name": "enemy_800B5060",
-     "confidence": "medium"
-    },
-    {
-     "va": "0x800B50A0",
-     "size": 604,
-     "name": "enemy_800B50A0",
-     "confidence": "medium"
-    },
-    {
-     "va": "0x800B52FC",
-     "size": 264,
-     "name": "enemy_800B52FC",
-     "confidence": "medium"
-    },
-    {
-     "va": "0x800B5404",
-     "size": 92,
-     "name": "enemy_800B5404",
-     "confidence": "medium"
-    },
-    {
-     "va": "0x800B5460",
-     "size": 1480,
-     "name": "enemy_800B5460",
-     "confidence": "medium"
-    },
-    {
-     "va": "0x800B5A28",
-     "size": 868,
-     "name": "enemy_800B5A28",
-     "confidence": "medium"
-    },
-    {
-     "va": "0x800B5D8C",
-     "size": 652,
-     "name": "enemy_800B5D8C",
-     "confidence": "medium"
-    },
-    {
-     "va": "0x800B6018",
-     "size": 124,
-     "name": "enemy_800B6018",
-     "confidence": "medium"
-    },
-    {
-     "va": "0x800B6094",
-     "size": 208,
-     "name": "enemy_800B6094",
-     "confidence": "medium"
-    },
-    {
-     "va": "0x800B6164",
-     "size": 316,
-     "name": "enemy_800B6164",
-     "confidence": "medium"
-    },
-    {
-     "va": "0x800B62A0",
-     "size": 56,
-     "name": "enemy_800B62A0",
-     "confidence": "medium"
-    },
-    {
-     "va": "0x800B62D8",
-     "size": 896,
-     "name": "enemy_800B62D8",
-     "confidence": "medium"
-    },
-    {
-     "va": "0x800B6658",
-     "size": 124,
-     "name": "enemy_800B6658",
-     "confidence": "medium"
-    },
-    {
-     "va": "0x800B66D4",
-     "size": 156,
-     "name": "enemy_800B66D4",
-     "confidence": "low"
-    },
-    {
-     "va": "0x800B6770",
-     "size": 472,
-     "name": "enemy_800B6770",
-     "confidence": "medium"
     }
    ],
    "strings": [
     [
-     "0x800A820A",
+     "0x8009CAF2",
      "I%#r+}noV"
     ],
     [
-     "0x800AB927",
+     "0x800A020F",
      "^nYdqoM"
     ],
     [
-     "0x800B0C29",
+     "0x800A5511",
      "e&qt<L"
     ],
     [
-     "0x800B1E0B",
+     "0x800A66F3",
      "7Fa_smY"
     ],
     [
-     "0x800B1E97",
+     "0x800A677F",
      "6.!394"
     ],
     [
-     "0x800B3126",
+     "0x800A7A0E",
      "&[G&TZj&"
     ],
     [
-     "0x800B316A",
+     "0x800A7A52",
      "'t%(ne)"
     ],
     [
-     "0x800B3A26",
+     "0x800A830E",
      "5}8=c_"
     ],
     [
-     "0x800B4334",
+     "0x800A8C1C",
      ":x{S-3m=@("
     ],
     [
-     "0x800B5632",
+     "0x800A9F1A",
      " ,6$z("
     ]
    ]
   },
   "MISSION.BIN": {
-   "status": "INDEXED",
-   "file": {
-    "lba": 2815,
-    "size": 21252,
-    "sha256": "06d0fd1ee1d137efd81e75e8decd22ce7dbf7bca7089079f031dd1346c416f95"
-   },
-   "code_region_file_off": [
-    "0x0",
-    "0x5304"
-   ],
-   "code_off_source": "detect",
-   "code_bytes": 21252,
-   "mapping": {
-    "dest": 2148521492,
-    "rule": "densest_window",
-    "internal_targets": 62,
-    "total_targets": 307,
-    "candidates": {
-     "800fd614": {
-      "dest": "0x800FD614",
-      "internal_targets": 62,
-      "kind": "densest_window"
-     },
-     "800a7800": {
-      "dest": "0x800A7800",
-      "internal_targets": 0,
-      "kind": "exe_text_end"
-     }
-    },
-    "file_off_at_dest": "0x0",
-    "va_range": [
-     "0x800FD614",
-     "0x80102918"
-    ]
-   },
-   "counts": {
-    "functions": 52,
-    "edges": 307,
-    "edges_into_exe": 133,
-    "grefs": 215,
-    "strings": 145
-   },
-   "functions": [
-    {
-     "va": "0x800FD614",
-     "size": 304,
-     "name": "mission_800FD614",
-     "confidence": "low"
-    },
-    {
-     "va": "0x800FD744",
-     "size": 24,
-     "name": "mission_800FD744",
-     "confidence": "low"
-    },
-    {
-     "va": "0x800FD75C",
-     "size": 132,
-     "name": "mission_800FD75C",
-     "confidence": "low"
-    },
-    {
-     "va": "0x800FD7E0",
-     "size": 12,
-     "name": "mission_800FD7E0",
-     "confidence": "low"
-    },
-    {
-     "va": "0x800FD7EC",
-     "size": 28,
-     "name": "mission_800FD7EC",
-     "confidence": "low"
-    },
-    {
-     "va": "0x800FD808",
-     "size": 24,
-     "name": "mission_800FD808",
-     "confidence": "low"
-    },
-    {
-     "va": "0x800FD820",
-     "size": 16,
-     "name": "mission_800FD820",
-     "confidence": "low"
-    },
-    {
-     "va": "0x800FD830",
-     "size": 340,
-     "name": "mission_800FD830",
-     "confidence": "low"
-    },
-    {
-     "va": "0x800FD984",
-     "size": 104,
-     "name": "mission_800FD984",
-     "confidence": "low"
-    },
-    {
-     "va": "0x800FD9EC",
-     "size": 144,
-     "name": "mission_800FD9EC",
-     "confidence": "low"
-    },
-    {
-     "va": "0x800FDA7C",
-     "size": 268,
-     "name": "mission_800FDA7C",
-     "confidence": "low"
-    },
-    {
-     "va": "0x800FDB88",
-     "size": 420,
-     "name": "mission_800FDB88",
-     "confidence": "low"
-    },
-    {
-     "va": "0x800FDD2C",
-     "size": 204,
-     "name": "mission_800FDD2C",
-     "confidence": "low"
-    },
-    {
-     "va": "0x800FDDF8",
-     "size": 424,
-     "name": "mission_800FDDF8",
-     "confidence": "low"
-    },
-    {
-     "va": "0x800FDFA0",
-     "size": 148,
-     "name": "mission_800FDFA0",
-     "confidence": "low"
-    },
-    {
-     "va": "0x800FE034",
-     "size": 196,
-     "name": "mission_800FE034",
-     "confidence": "low"
-    },
-    {
-     "va": "0x800FE0F8",
-     "size": 304,
-     "name": "mission_800FE0F8",
-     "confidence": "low"
-    },
-    {
-     "va": "0x800FE228",
-     "size": 244,
-     "name": "mission_800FE228",
-     "confidence": "low"
-    },
-    {
-     "va": "0x800FE31C",
-     "size": 424,
-     "name": "mission_800FE31C",
-     "confidence": "low"
-    },
-    {
-     "va": "0x800FE4C4",
-     "size": 276,
-     "name": "mission_800FE4C4",
-     "confidence": "low"
-    },
-    {
-     "va": "0x800FE5D8",
-     "size": 48,
-     "name": "mission_800FE5D8",
-     "confidence": "low"
-    },
-    {
-     "va": "0x800FE608",
-     "size": 16,
-     "name": "mission_800FE608",
-     "confidence": "low"
-    },
-    {
-     "va": "0x800FE618",
-     "size": 124,
-     "name": "mission_800FE618",
-     "confidence": "low"
-    },
-    {
-     "va": "0x800FE694",
-     "size": 288,
-     "name": "mission_800FE694",
-     "confidence": "low"
-    },
-    {
-     "va": "0x800FE7B4",
-     "size": 20,
-     "name": "mission_800FE7B4",
-     "confidence": "low"
-    },
-    {
-     "va": "0x800FE7C8",
-     "size": 76,
-     "name": "mission_800FE7C8",
-     "confidence": "low"
-    },
-    {
-     "va": "0x800FE814",
-     "size": 96,
-     "name": "mission_800FE814",
-     "confidence": "low"
-    },
-    {
-     "va": "0x800FE874",
-     "size": 544,
-     "name": "mission_800FE874",
-     "confidence": "low"
-    },
-    {
-     "va": "0x800FEA94",
-     "size": 72,
-     "name": "mission_800FEA94",
-     "confidence": "low"
-    },
-    {
-     "va": "0x800FEADC",
-     "size": 332,
-     "name": "mission_800FEADC",
-     "confidence": "low"
-    },
-    {
-     "va": "0x800FEC28",
-     "size": 64,
-     "name": "mission_800FEC28",
-     "confidence": "low"
-    },
-    {
-     "va": "0x800FEC68",
-     "size": 132,
-     "name": "mission_800FEC68",
-     "confidence": "low"
-    },
-    {
-     "va": "0x800FECEC",
-     "size": 396,
-     "name": "mission_800FECEC",
-     "confidence": "low"
-    },
-    {
-     "va": "0x800FEE78",
-     "size": 12,
-     "name": "mission_800FEE78",
-     "confidence": "low"
-    },
-    {
-     "va": "0x800FEE84",
-     "size": 144,
-     "name": "mission_800FEE84",
-     "confidence": "low"
-    },
-    {
-     "va": "0x800FEF14",
-     "size": 324,
-     "name": "mission_800FEF14",
-     "confidence": "low"
-    },
-    {
-     "va": "0x800FF058",
-     "size": 16,
-     "name": "mission_800FF058",
-     "confidence": "low"
-    },
-    {
-     "va": "0x800FF068",
-     "size": 712,
-     "name": "mission_800FF068",
-     "confidence": "low"
-    },
-    {
-     "va": "0x800FF330",
-     "size": 6312,
-     "name": "mission_800FF330",
-     "confidence": "low"
-    },
-    {
-     "va": "0x80100BD8",
-     "size": 1272,
-     "name": "mission_80100BD8",
-     "confidence": "medium"
-    },
-    {
-     "va": "0x801010D0",
-     "size": 1872,
-     "name": "mission_801010D0",
-     "confidence": "medium"
-    },
-    {
-     "va": "0x80101820",
-     "size": 88,
-     "name": "mission_80101820",
-     "confidence": "medium"
-    },
-    {
-     "va": "0x80101878",
-     "size": 1244,
-     "name": "mission_80101878",
-     "confidence": "medium"
-    },
-    {
-     "va": "0x80101D54",
-     "size": 56,
-     "name": "mission_80101D54",
-     "confidence": "medium"
-    },
-    {
-     "va": "0x80101D8C",
-     "size": 188,
-     "name": "mission_80101D8C",
-     "confidence": "medium"
-    },
-    {
-     "va": "0x80101E48",
-     "size": 912,
-     "name": "mission_80101E48",
-     "confidence": "medium"
-    },
-    {
-     "va": "0x801021D8",
-     "size": 72,
-     "name": "mission_801021D8",
-     "confidence": "medium"
-    },
-    {
-     "va": "0x80102220",
-     "size": 152,
-     "name": "mission_80102220",
-     "confidence": "medium"
-    },
-    {
-     "va": "0x801022B8",
-     "size": 136,
-     "name": "mission_801022B8",
-     "confidence": "medium"
-    },
-    {
-     "va": "0x80102340",
-     "size": 72,
-     "name": "mission_80102340",
-     "confidence": "medium"
-    },
-    {
-     "va": "0x80102388",
-     "size": 584,
-     "name": "mission_80102388",
-     "confidence": "medium"
-    },
-    {
-     "va": "0x801025D0",
-     "size": 840,
-     "name": "mission_801025D0",
-     "confidence": "medium"
-    }
-   ],
-   "strings": [
-    [
-     "0x800FD76F",
-     "(\"\"\"\"\""
-    ],
-    [
-     "0x800FD77B",
-     "\"\"\"\"\"\"\""
-    ],
-    [
-     "0x800FD795",
-     "\"\"\"\"\"\"\""
-    ],
-    [
-     "0x800FD7A9",
-     "\"\"\"\"\"\"\"\"\""
-    ],
-    [
-     "0x800FD7DD",
-     "(\"\"\"\"\""
-    ],
-    [
-     "0x800FD7EC",
-     "(\"wwwww'"
-    ],
-    [
-     "0x800FD7F9",
-     "rwwwwww'"
-    ],
-    [
-     "0x800FD812",
-     "\"wwwwwww\""
-    ],
-    [
-     "0x800FD827",
-     "rwwwwwwww"
-    ],
-    [
-     "0x800FD85A",
-     "(rwwwww'"
-    ],
-    [
-     "0x800FD86A",
-     "\"wwwwwww'"
-    ],
-    [
-     "0x800FD877",
-     "rwwwwwww'"
-    ],
-    [
-     "0x800FD890",
-     "rwwwwwwww"
-    ],
-    [
-     "0x800FD8A5",
-     "rwwwwwwww"
-    ],
-    [
-     "0x800FD8D8",
-     "rwwwwwww'"
-    ],
-    [
-     "0x800FD8E8",
-     "rvvvvvvvv"
-    ],
-    [
-     "0x800FD8F5",
-     "rvvvvvvvv"
-    ],
-    [
-     "0x800FD923",
-     "bgggggggg"
-    ],
-    [
-     "0x800FDB41",
-     "RV&\"\"\"\"RV"
-    ],
-    [
-     "0x800FDBBF",
-     "beUUUUUee"
-    ],
-    [
-     "0x800FDBE9",
-     "RU%\"\"\"\"UU"
-    ],
-    [
-     "0x800FDC3D",
-     "RUUUUUUUU"
-    ],
-    [
-     "0x800FDC4A",
-     "(U%\"\"\"RUU"
-    ],
-    [
-     "0x800FDC67",
-     "RUUUUUUUU"
-    ],
-    [
-     "0x800FDCBB",
-     "RUUUUUUUU"
-    ],
-    [
-     "0x800FDCE5",
-     "RTTTTTTT"
-    ],
-    [
-     "0x800FDD2D",
-     "(EE%EE"
-    ],
-    [
-     "0x800FDD63",
-     "BEEEEEE"
-    ],
-    [
-     "0x800FE07E",
-     "244\"\"\"244"
-    ],
-    [
-     "0x800FE097",
-     "24$\"\"\"\"\"\""
-    ],
-    [
-     "0x800FE0FC",
-     "233333333"
-    ],
-    [
-     "0x800FE115",
-     "233333333"
-    ],
-    [
-     "0x800FE122",
-     "23#\"\"\"\"33"
-    ],
-    [
-     "0x800FE16A",
-     "233\"\"\"333"
-    ],
-    [
-     "0x800FE17A",
-     "(3333333"
-    ],
-    [
-     "0x800FE193",
-     "233333333"
-    ],
-    [
-     "0x800FE1A0",
-     "233333333"
-    ],
-    [
-     "0x800FE1E8",
-     "(3333333"
-    ],
-    [
-     "0x800FE1F9",
-     "(33333"
-    ],
-    [
-     "0x800FE211",
-     "233333333"
-    ],
-    [
-     "0x800FE21F",
-     "2333333"
-    ],
-    [
-     "0x800FE267",
-     "(33333"
-    ],
-    [
-     "0x800FE4ED",
-     "(\"\"\"\"\""
-    ],
-    [
-     "0x800FE4F9",
-     "(\"\"\"\"\"\"\"\"\""
-    ],
-    [
-     "0x800FE52B",
-     "\"\"\"\"\"\"\"\"\""
-    ],
-    [
-     "0x800FE56A",
-     "(\"wwwww'"
-    ],
-    [
-     "0x800FE577",
-     "(wwwwwwwww"
-    ],
-    [
-     "0x800FE5A9",
-     "rwwwwwwww"
-    ],
-    [
-     "0x800FE5BF",
-     "(\"\"\"\"\"\""
-    ],
-    [
-     "0x800FE5CB",
-     "\"\"\"\"\"\"\"\"\"\""
-    ],
-    [
-     "0x800FE5E8",
-     "\"wwwwwww'"
-    ],
-    [
-     "0x800FE5F5",
-     "(wwwwwwwww"
-    ],
-    [
-     "0x800FE627",
-     "rwwwwwwww"
-    ],
-    [
-     "0x800FE63C",
-     "(rwwwwww'"
-    ],
-    [
-     "0x800FE649",
-     "rwwwwwwwww"
-    ],
-    [
-     "0x800FE659",
-     "(rwww'"
-    ],
-    [
-     "0x800FE6A5",
-     "bgggggggg"
-    ],
-    [
-     "0x800FE6BA",
-     "(wwwwwwww"
-    ],
-    [
-     "0x800FE6C7",
-     "rwwwwwwwww"
-    ],
-    [
-     "0x800FE6D7",
-     "rwwwww'"
-    ],
-    [
-     "0x800FE884",
-     "(ggggggg"
-    ],
-    [
-     "0x800FEA19",
-     "(ee\"\"\"\"\""
-    ],
-    [
-     "0x800FEA4B",
-     "be%\"\"\"\""
-    ],
-    [
-     "0x800FEA97",
-     "(UUUUUUU%"
-    ],
-    [
-     "0x800FEAC9",
-     "RUUUUUU"
-    ],
-    [
-     "0x800FEB47",
-     "RUUUUUU"
-    ],
-    [
-     "0x800FEB5D",
-     "RU\"\"\"\"RU"
-    ],
-    [
-     "0x800FEBC5",
-     "BEEEEEE"
-    ],
-    [
-     "0x800FEBDA",
-     "(UUUUUUUU"
-    ],
-    [
-     "0x800FEC36",
-     "(TT\"\"\"\"RT"
-    ],
-    [
-     "0x800FECB4",
-     "(DDDDDDDD"
-    ],
-    [
-     "0x800FED32",
-     "\"DDDDDDDD$"
-    ],
-    [
-     "0x800FEDA1",
-     "(44$\"\"\"24$"
-    ],
-    [
-     "0x800FEE1F",
-     "(CCCCCCCCC"
-    ],
-    [
-     "0x800FEE79",
-     "(33\"\"\"\"\"\"\""
-    ],
-    [
-     "0x800FEE88",
-     "23#\"\"\"233"
-    ],
-    [
-     "0x800FEE9D",
-     "(333333333"
-    ],
-    [
-     "0x800FEEEA",
-     "(CC#\"BCC"
-    ],
-    [
-     "0x800FEEF7",
-     "(333333333"
-    ],
-    [
-     "0x800FEF06",
-     "(3333333"
-    ],
-    [
-     "0x800FEF4C",
-     "(33\"\"\"\"23"
-    ],
-    [
-     "0x800FEF69",
-     "3333333"
-    ],
-    [
-     "0x800FEF75",
-     "(333333333"
-    ],
-    [
-     "0x800FEF85",
-     "(33333"
-    ],
-    [
-     "0x800FEFCA",
-     "(33333333"
-    ],
-    [
-     "0x800FEFE7",
-     "833333"
-    ],
-    [
-     "0x800FF049",
-     "(333333"
-    ],
-    [
-     "0x800FF108",
-     "z>kRPW"
-    ],
-    [
-     "0x800FF39B",
-     "\"\"\"\"\"\""
-    ],
-    [
-     "0x800FF3A8",
-     "\"\"\"\"\"\"\""
-    ],
-    [
-     "0x800FF3C5",
-     "(\"\"\"\"\""
-    ],
-    [
-     "0x800FF3D3",
-     "(\"\"\"\"\""
-    ],
-    [
-     "0x800FF3DF",
-     "\"\"\"\"\"\"\"\"\""
-    ],
-    [
-     "0x800FF418",
-     "\"rwwwww\""
-    ],
-    [
-     "0x800FF426",
-     "rwwwwww'"
-    ],
-    [
-     "0x800FF442",
-     "(\"wwwww'"
-    ],
-    [
-     "0x800FF450",
-     "(\"wwwww'"
-    ],
-    [
-     "0x800FF45D",
-     "rwwwwwwww"
-    ],
-    [
-     "0x800FF495",
-     "(rwwwwwww"
-    ],
-    [
-     "0x800FF4A4",
-     "rwwwwwww'"
-    ],
-    [
-     "0x800FF4C0",
-     "\"wwwwwww'"
-    ],
-    [
-     "0x800FF4CE",
-     "\"wwwwwww'"
-    ],
-    [
-     "0x800FF4DB",
-     "rwwwwwwww"
-    ],
-    [
-     "0x800FF513",
-     "(gggggggg"
-    ],
-    [
-     "0x800FF522",
-     "rvvvvvvvv"
-    ],
-    [
-     "0x800FF53E",
-     "bgggggggg"
-    ],
-    [
-     "0x800FF559",
-     "bgggggggg"
-    ],
-    [
-     "0x800FF789",
-     "(eee\"\""
-    ],
-    [
-     "0x800FF798",
-     "RV&\"\"\"\"VV"
-    ],
-    [
-     "0x800FF7CF",
-     "be%\"\"\"\""
-    ],
-    [
-     "0x800FF808",
-     "RUUUU\"\""
-    ],
-    [
-     "0x800FF816",
-     "RUUUUUUU"
-    ],
-    [
-     "0x800FF824",
-     "RUUU%\"UUUU"
-    ],
-    [
-     "0x800FF83F",
-     "(UU(\"\"\"\""
-    ],
-    [
-     "0x800FF84D",
-     "RUUUUUU"
-    ],
-    [
-     "0x800FF887",
-     "RUUUUU\""
-    ],
-    [
-     "0x800FF894",
-     "RUUUUUU"
-    ],
-    [
-     "0x800FF8A5",
-     "RUUU(UU"
-    ],
-    [
-     "0x800FF8BD",
-     "(UU\"UUUU%"
-    ],
-    [
-     "0x800FF8CB",
-     "RUUUUUU"
-    ],
-    [
-     "0x800FF912",
-     "RTTTTTT$"
-    ],
-    [
-     "0x800FF923",
-     "BEEE(EE"
-    ],
-    [
-     "0x800FF949",
-     "BEEEEEE"
-    ],
-    [
-     "0x800FFCA9",
-     "(CC\"\"\"\"CC"
-    ],
-    [
-     "0x800FFCD4",
-     "BCC\"\"\"BCC"
-    ],
-    [
-     "0x800FFCEF",
-     "BC#\"\"\"\"\"\""
-    ],
-    [
-     "0x800FFD27",
-     "(33333333"
-    ],
-    [
-     "0x800FFD52",
-     "233333333"
-    ],
-    [
-     "0x800FFD60",
-     "23#\"\"\"\"33"
-    ],
-    [
-     "0x800FFD6D",
-     "233333333"
-    ],
-    [
-     "0x800FFDA6",
-     "23333333"
-    ],
-    [
-     "0x800FFDD0",
-     "(3333333"
-    ],
-    [
-     "0x800FFDDE",
-     "(3333333"
-    ],
-    [
-     "0x800FFDEB",
-     "233333333"
-    ],
-    [
-     "0x800FFE25",
-     "233333"
-    ],
-    [
-     "0x800FFE4F",
-     "(33333"
-    ],
-    [
-     "0x800FFE5D",
-     "(33333"
-    ],
-    [
-     "0x800FFE69",
-     "233333333"
-    ],
-    [
-     "0x80100AF0",
-     "MISSION"
-    ],
-    [
-     "0x80100AF8",
-     " IS    "
-    ],
-    [
-     "0x80100B00",
-     "  OVER "
-    ],
-    [
-     "0x80100B08",
-     "SCORE "
-    ],
-    [
-     "0x80100C73",
-     ",QzVLL"
-    ],
-    [
-     "0x80101237",
-     "<X@c$<"
-    ],
-    [
-     "0x80101F43",
-     "3S_,{\""
-    ]
-   ]
+   "status": "NOT_FOUND_IN_RAM"
   }
  }
 }
