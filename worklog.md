@@ -489,3 +489,34 @@ Stage Summary:
 - New tooling: iso9660_min.py (pure-Python EDC-correct disc writer),
   tests for both builders (+13; suite 98/98). Core provenance pinned:
   self-built df2b53b + diagnostics, md5 f3b4a4be842dc70b40aff65864cd8ce2.
+
+## v0.10 — 2026-10-20 — the real game binary joins the evidence chain
+
+- Fresh facts: both "Metal Slug X" .7z files on disk are 396-byte
+  "Service Unavailable" HTML block pages (no download ever produced a
+  game; the source site still blocks this sandbox IP). User BIOS files
+  re-hashed: unchanged, still invalid. Repo HEAD 9b5a005 verified
+  local == remote before work started.
+- exe-direct boot upgraded to v2 (vendored libretro.c): jumps to the
+  header ENTRY (v1 jumped to TextStart — only correct for synthetic
+  payloads), initializes SP from header 0x30 (default 0x801FFFF0),
+  NOP-fills every read-after-write gap, and pre-composes the boot log
+  line (the logshim sink drops varargs).
+- New scripts/target_exe_probe.py boots the repository's own
+  SLUS_012.12 main EXE BIOS-free and disc-free, strictly observational
+  (memory/VRAM diffs + core logs only; a 2048-byte padding rule
+  compensates the header's t_size counting the full file).
+- Finding: the real game DISPATCHES — stack use (357 B), 14.2 KB of
+  low-RAM tables, 75.9 KB of text self-modification within 60 frames —
+  then dies deterministically on SYSCALL at 0x800300A0 (no kernel
+  service dispatcher); the OpenBIOS BEV handler itself AdES-loops on
+  the inherited registers at 0xBFC0018C. First exception: RI executing
+  ASCII data at 0x00010000.
+- autolab: new TARGET_EXE gate (PARTIAL) between INPUT_CAUSALITY and
+  TARGET_GAME; runtime-gate fingerprints now pin the core sha1.
+  Final ladder on core c0207b04e007d90c03e20c4bdfb19bf5: UNIT 98/98,
+  SMOKE / BIOS_BOOT / CONTENT_BOOT / INPUT_CAUSALITY PASS, TARGET_EXE
+  PARTIAL, TARGET_GAME BLOCKED (only the disc image is missing).
+- No gameplay claimed. Next legitimate moves: (a) a minimal self-made
+  Sys-exception dispatcher, or (b) user-supplied genuine BIOS plus the
+  SLUS-01212 image.

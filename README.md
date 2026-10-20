@@ -251,6 +251,21 @@ PS-X EXE from the .bin, `static_re.py` disassembles it with capstone and builds 
   (the SLUS-01212 disc image itself) remains user-supplied. 13 new unit
   tests pin the assembler, the EDC-correct ISO writer and the load-delay
   discipline.
+- **v0.10**: the real game binary enters the evidence chain. The
+  exe-direct boot patch is upgraded to **v2** (jump to the header ENTRY
+  instead of the text base; SP initialized from the header; NOP-filled
+  hazards) and a new `scripts/target_exe_probe.py` boots the
+  repository's own `SLUS_012.12` main EXE — BIOS-free, disc-free,
+  strictly observational. Result: **the real game dispatches** (stack
+  use, 14 KB of low-RAM tables, 75 KB of text self-modification within
+  60 frames) and then hits a precisely identified wall: **SYSCALL at
+  0x800300A0** — the BIOS kernel service dispatcher is the next
+  dependency, and the OpenBIOS BEV handler itself faults on the
+  inherited registers. A new autolab gate `TARGET_EXE` records this as
+  PARTIAL; gameplay is not claimed. Full ladder re-run on the pinned
+  v2 core (`c0207b04…`): UNIT 98/98 · SMOKE · BIOS_BOOT · CONTENT_BOOT ·
+  INPUT_CAUSALITY PASS; TARGET_GAME still needs the user-supplied
+  SLUS-01212 image.
 
 ## Run it
 

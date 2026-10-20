@@ -215,7 +215,8 @@ def gate_bios_boot(lab, core, workspace):
         "— supply a genuine dump (scph5501.bin MD5 490f666e…) only for "
         "TARGET_GAME",
         [sys.executable, "scripts/retail_bios_experiment.py"],
-        {"tool": "retail_bios_experiment v2"}, fn)
+        {"tool": "retail_bios_experiment v2",
+         "core_sha1": sha1_file(core) if os.path.exists(core) else None}, fn)
 
 
 def gate_content_boot(lab, core, workspace):
@@ -242,7 +243,8 @@ def gate_content_boot(lab, core, workspace):
         "zero BIOS dependency",
         "if FAIL: inspect bios_experiment_result.json stage_a/stage_b",
         [sys.executable, "scripts/retail_bios_experiment.py"],
-        {"tool": "retail_bios_experiment v2"}, fn)
+        {"tool": "retail_bios_experiment v2",
+         "core_sha1": sha1_file(core) if os.path.exists(core) else None}, fn)
 
 
 def gate_input_causality(lab, core, workspace):
@@ -269,7 +271,45 @@ def gate_input_causality(lab, core, workspace):
         "if BLOCKED: check frontio SIO protocol assumptions in "
         "make_padtest_hw.py against the running core",
         [sys.executable, "scripts/retail_bios_experiment.py"],
-        {"tool": "retail_bios_experiment v2"}, fn)
+        {"tool": "retail_bios_experiment v2",
+         "core_sha1": sha1_file(core) if os.path.exists(core) else None}, fn)
+
+
+TARGET_EXE_PROBE = os.path.join(_REPO, "scripts", "target_exe_probe.py")
+
+
+def gate_target_exe(lab, core, workspace):
+    """Boot the repository's own SLUS_012.12 main EXE, BIOS-free, and
+    report how far the real binary gets (strictly observational)."""
+    def fn():
+        rc, j = _run_json([sys.executable, TARGET_EXE_PROBE,
+                           "--core", core, "--json"], 600)
+        verdict = j.get("verdict")
+        boot = j.get("boot_log", "")
+        wall = j.get("wall", "")
+        if verdict == "DISPATCHED":
+            return "PARTIAL", (
+                "real SLUS_012.12 main EXE dispatches through the "
+                "BIOS-free exe-direct v2 path (stack use + low-RAM "
+                f"tables + text self-modification observed); wall: {wall} "
+                "— kernel services (syscall) are the next dependency; "
+                "gameplay NOT claimed", {"verdict": verdict,
+                                         "boot": boot, "wall": wall})
+        if verdict == "NO_DISPATCH":
+            return "BLOCKED", f"no dispatch: {wall}", {
+                "verdict": verdict, "boot": boot}
+        return "FAIL", j.get("error", f"probe verdict={verdict}"), {
+            "exit": rc}
+    return lab.run(
+        "TARGET_EXE",
+        "the real game main binary executes on the BIOS-free chain far "
+        "enough to expose its next dependency",
+        "if the wall is syscall/kernel: a minimal Sys-exception "
+        "dispatcher (self-made) or a genuine retail BIOS is required; "
+        "full gameplay still requires the user-supplied SLUS-01212 "
+        "disc image", [sys.executable, "scripts/target_exe_probe.py"],
+        {"tool": "target_exe_probe v1",
+         "core_sha1": sha1_file(core) if os.path.exists(core) else None}, fn)
 
 
 def gate_target_game(lab, game, core, workspace):
@@ -322,6 +362,7 @@ def main():
         executed.append(gate_bios_boot(lab, a.core, a.workspace))
         executed.append(gate_content_boot(lab, a.core, a.workspace))
         executed.append(gate_input_causality(lab, a.core, a.workspace))
+        executed.append(gate_target_exe(lab, a.core, a.workspace))
         executed.append(gate_target_game(lab, a.game, a.core, a.workspace))
     else:  # mission1-progress
         executed.append(gate_target_game(lab, a.game, a.core, a.workspace))
