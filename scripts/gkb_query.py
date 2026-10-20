@@ -68,6 +68,67 @@ def assets_workspace():
     return None
 
 
+def overlay_index():
+    """Overlay index: workspace full index first, committed summary
+    fallback. Both are module-tagged; regions never mix."""
+    for d in WORKSPACE_CANDIDATES:
+        p = os.path.join(d, "overlay_index.json")
+        if os.path.exists(p):
+            with open(p) as f:
+                return json.load(f), "workspace"
+    p = os.path.join(DATA, "overlay_index.json")
+    if os.path.exists(p):
+        with open(p) as f:
+            return json.load(f), "committed"
+    return None, None
+
+
+def _va(x):
+    try:
+        return int(x, 0)
+    except (TypeError, ValueError):
+        return None
+
+
+def query_overlay(args):
+    ov, src = overlay_index()
+    if ov is None:
+        print("overlay index not found (run scripts/overlay_index.py)")
+        return
+    print(f"== overlay index [{src}] config={ov.get('config_version')}")
+    for name, m in sorted(ov["modules"].items()):
+        if m.get("status") != "INDEXED":
+            print(f"{name}: {m.get('status')}")
+            continue
+        mp = m["mapping"]
+        print(f"{name}: {m['code_region_file_off'][0]}.."
+              f"{m['code_region_file_off'][1]} -> "
+              f"{mp['va_range'][0]}..{mp['va_range'][1]} "
+              f"[{mp['rule']}] {m['counts']}")
+    want = _va(args.overlay_function_at)
+    if want is not None:
+        for name, m in sorted(ov["modules"].items()):
+            for f in m.get("functions") or []:
+                if _va(f["va"]) <= want < _va(f["va"]) + f["size"]:
+                    print(f"  {name} {f['va']} +{f['size']:#x} "
+                          f"{f['name']} [{f['confidence']}] "
+                          f"({','.join(f['evidence'])})")
+    want = _va(args.overlay_refs)
+    if want is not None:
+        rad = args.radius
+        for name, m in sorted(ov["modules"].items()):
+            hits = [g for g in m.get("grefs") or []
+                    if abs(_va(g["va"]) - want) <= rad]
+            for g in hits[:24]:
+                print(f"  {name} gref {g['va']} @ pc {g['pc']} "
+                      f"{g['kind']} [{g['region']}]")
+            callees = sorted({e["dst"] for e in m.get("edges") or []
+                              if e["src"] and want <= int(e["src"], 16)
+                              < want + 0x200})
+            if callees:
+                print(f"  {name} callees near: {callees[:10]}")
+
+
 def status_of(e):
     return e.get("status") or e.get("confidence") or "UNKNOWN"
 
@@ -92,6 +153,11 @@ def main():
     g.add_argument("--radius", type=lambda x: int(x, 0), default=0x100)
     g.add_argument("--string", default=None)
     g.add_argument("--timer", action="store_true")
+    g.add_argument("--overlay-function-at", default=None,
+                   help="which overlay function contains this VA")
+    g.add_argument("--overlay-refs", default=None,
+                   help="overlay grefs/callees near this VA")
+    g.add_argument("--overlay-stats", action="store_true")
     g.add_argument("--stats", action="store_true")
     args = ap.parse_args()
 
@@ -100,6 +166,15 @@ def main():
     ch = load("cheats.json") or {}
     ws = load_workspace()
     areg = assets_workspace()
+
+    if args.overlay_stats or args.overlay_function_at or args.overlay_refs:
+        query_overlay(args)
+        if not (args.grenade_logic or args.projectile_candidates
+                or args.map_after or args.unverified or args.function_at
+                or args.refs or args.refs_near or args.string
+                or args.timer or args.stats):
+            return
+        print()
 
     if args.grenade_logic:
         gi = ((ent.get("player") or {}).get("grenade_inventory") or {})

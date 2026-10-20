@@ -15,8 +15,8 @@ Usage:
 
 Resolution order for the exe: --exe > extract via --game (cue/bin) >
 <repo>/ps1play/re/SLUS_012.12 (gitignored owner-local copy if present).
-The image-derived exe is preferred: the legacy in-repo copy is truncated
-by its final 2048 bytes.
+The image-derived exe is preferred; the in-repo copy is checked against
+its own header (classify_exe_copy) instead of assuming a defect.
 """
 from __future__ import annotations
 
@@ -178,6 +178,22 @@ def globals_in(window):
     return found
 
 
+def classify_exe_copy(raw: bytes) -> str:
+    """Evidence-based copy state: compare actual size with the PS-X EXE
+    header's own declared image size (0x800 + t_size). Replaces the old
+    hardcoded 'truncated 2048 bytes' claim, which went stale when the
+    owner-local copy was restored to the canonical 622,592 bytes."""
+    if len(raw) < 0x800 or raw[:8] != b"PS-X EXE":
+        return "invalid"
+    t_size = struct.unpack_from("<I", raw, 0x1C)[0]
+    expected = 0x800 + t_size
+    if len(raw) < expected:
+        return f"truncated (have {len(raw)}, header declares {expected})"
+    if len(raw) > expected:
+        return f"oversized (have {len(raw)}, header declares {expected})"
+    return "full"
+
+
 def main():
     ap = argparse.ArgumentParser(description=__doc__)
     ap.add_argument("--exe", default=None,
@@ -201,9 +217,12 @@ def main():
     elif os.path.exists(LEGACY_EXE):
         raw = open(LEGACY_EXE, "rb").read()
         origin = LEGACY_EXE
-        print(f"NOTE: using legacy in-repo exe ({len(raw)} B) — "
-              "this copy is missing its final 2048 bytes; prefer "
-              "--game/--exe")
+        state = classify_exe_copy(raw)
+        print(f"NOTE: using in-repo exe ({len(raw)} B, state: {state}) — "
+              "prefer --game/--exe for the image-derived copy")
+        if state != "full":
+            print("WARNING: this copy is NOT canonical; results may "
+                  "differ from the disc-verified index")
     else:
         raise SystemExit("no exe source: pass --exe or --game")
 
