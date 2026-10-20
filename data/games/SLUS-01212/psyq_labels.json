@@ -1,0 +1,155 @@
+{
+ "schema": "ps1play-psyq-labels/1",
+ "generated_utc": "2026-10-20T17:30:24Z",
+ "exe_sha256": "1508b53216cc20dad8c1354e7702dae2940c34e7b2adeffb00337ab6659e0f35",
+ "t_addr": "0x80010000",
+ "t_size": 620544,
+ "signatures_total": 3463,
+ "functions_scanned": 4915,
+ "stats": {
+  "matched": 5,
+  "ambiguous": 4,
+  "skipped": 0
+ },
+ "library_counts": {
+  "libcd": 3,
+  "libgpu": 1,
+  "libapi": 1
+ },
+ "labels": [
+  {
+   "va": "0x8007D490",
+   "size": 40,
+   "name": "ambiguous:def_cbread@v2|def_cbready@v2|def_cbsync@v2",
+   "library": "libcd",
+   "match_mode": "masked",
+   "hash": "a8f63714a3334a20",
+   "candidates": [
+    "def_cbread@v2",
+    "def_cbready@v2",
+    "def_cbsync@v2"
+   ],
+   "confidence": "ambiguous(3)",
+   "source": "ps1recomp@ab4f0e0 psyq_signatures.toml (hash-identification, no content)"
+  },
+  {
+   "va": "0x80080D64",
+   "size": 48,
+   "name": "CdDataCallback@v3",
+   "library": "libcd",
+   "match_mode": "masked",
+   "hash": "c810c25b17c6f067",
+   "candidates": [
+    "CdDataCallback@v3"
+   ],
+   "confidence": "matched",
+   "source": "ps1recomp@ab4f0e0 psyq_signatures.toml (hash-identification, no content)"
+  },
+  {
+   "va": "0x80085424",
+   "size": 48,
+   "name": "CdDataCallback@v3",
+   "library": "libcd",
+   "match_mode": "masked",
+   "hash": "c810c25b17c6f067",
+   "candidates": [
+    "CdDataCallback@v3"
+   ],
+   "confidence": "matched",
+   "source": "ps1recomp@ab4f0e0 psyq_signatures.toml (hash-identification, no content)"
+  },
+  {
+   "va": "0x80085454",
+   "size": 48,
+   "name": "CdDataCallback@v3",
+   "library": "libcd",
+   "match_mode": "masked",
+   "hash": "c810c25b17c6f067",
+   "candidates": [
+    "CdDataCallback@v3"
+   ],
+   "confidence": "matched",
+   "source": "ps1recomp@ab4f0e0 psyq_signatures.toml (hash-identification, no content)"
+  },
+  {
+   "va": "0x80085484",
+   "size": 32,
+   "name": "ambiguous:CdDataSync|CdFlush|CdReadSync|CdReady",
+   "library": "",
+   "match_mode": "masked",
+   "hash": "43f20be7a8d281c6",
+   "candidates": [
+    "CdDataSync",
+    "CdFlush",
+    "CdReadSync",
+    "CdReady",
+    "CdSync",
+    "GsSetProjection",
+    "PadStop",
+    "SendPAD"
+   ],
+   "confidence": "ambiguous(9)",
+   "source": "ps1recomp@ab4f0e0 psyq_signatures.toml (hash-identification, no content)"
+  },
+  {
+   "va": "0x800854E4",
+   "size": 32,
+   "name": "ambiguous:CdGetSector2|CdGetSector@v2",
+   "library": "libcd",
+   "match_mode": "masked",
+   "hash": "6bb9af6c88c880f6",
+   "candidates": [
+    "CdGetSector2",
+    "CdGetSector@v2"
+   ],
+   "confidence": "ambiguous(2)",
+   "source": "ps1recomp@ab4f0e0 psyq_signatures.toml (hash-identification, no content)"
+  },
+  {
+   "va": "0x8008AB14",
+   "size": 52,
+   "name": "set_alarm",
+   "library": "libgpu",
+   "match_mode": "masked",
+   "hash": "719153d7f355a191",
+   "candidates": [
+    "set_alarm"
+   ],
+   "confidence": "matched",
+   "source": "ps1recomp@ab4f0e0 psyq_signatures.toml (hash-identification, no content)"
+  },
+  {
+   "va": "0x8008DE50",
+   "size": 32,
+   "name": "ambiguous:CdDataSync|CdFlush|CdReadSync|CdReady",
+   "library": "",
+   "match_mode": "masked",
+   "hash": "43f20be7a8d281c6",
+   "candidates": [
+    "CdDataSync",
+    "CdFlush",
+    "CdReadSync",
+    "CdReady",
+    "CdSync",
+    "GsSetProjection",
+    "PadStop",
+    "SendPAD"
+   ],
+   "confidence": "ambiguous(9)",
+   "source": "ps1recomp@ab4f0e0 psyq_signatures.toml (hash-identification, no content)"
+  },
+  {
+   "va": "0x800902A0",
+   "size": 48,
+   "name": "StartPAD@v4",
+   "library": "libapi",
+   "match_mode": "masked",
+   "hash": "ed031e7905ab9d75",
+   "candidates": [
+    "StartPAD@v4"
+   ],
+   "confidence": "matched",
+   "source": "ps1recomp@ab4f0e0 psyq_signatures.toml (hash-identification, no content)"
+  }
+ ]
+}

@@ -832,3 +832,10 @@ tests green, clean worktree.
   highest-value experiment: derive MISSION.BIN's load base the same way
   ENEMY.BIN's was derived, then xref the live grenade counter
   (0xEDCF4-region) inside the OVERLAY to anchor the player struct.
+
+## Issue #5 — MASTER TASK (source-first RE) — Phase 0 + Phase 1 executed
+
+- Phase 0 (P0-1..P0-10): baseline posted to the issue; canonical disc EXE verified (622,592 B, sha256 1508b532…, text 620,544 B @0x80010000, text_sha256 7daee616…); 4 stale local EXE copies had unknown provenance (89% payload differs) and were replaced by the canonical file; KB index proven disc-derived (built directly from the .bin); tests 223/223; Mission 1 NOT CLEARED (unchanged).
+- Phase 1 (P1-1..P1-9): 7 external repos audited (external_audit/); both Metal-Slug-X-Recomp forks target the SAME user disc (MD5 37d9e117…); tools implemented and run: scripts/psyq_hash_match.py (relocation-tolerant Psy-Q hash identification per PS1Recomp recipe) -> data/games/SLUS-01212/psyq_labels.json (5 matched: CdDataCallback@v3 x3, libapi, libgpu; 4 ambiguous); scripts/merge_external_re.py -> psxrecomp_external.json (7,720 edges, 5,501 refs, 261 classified indirect sites, 4 widescreen sites, 1,640 seeds; metadata-only, source-tagged).
+- Tests: 232/232 green (9 new: MIPS immediate masking, relocation tolerance, EXE loader, merge counts/tags).
+- Blockers recorded: Ghidra not installed (Java 21 present), cmake absent (blocks pcsx-redux/ps1recomp builds), ENEMY.BIN overlay @0x800A7800 still not indexed (top Phase 2 target).
