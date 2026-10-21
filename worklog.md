@@ -839,3 +839,20 @@ tests green, clean worktree.
 - Phase 1 (P1-1..P1-9): 7 external repos audited (external_audit/); both Metal-Slug-X-Recomp forks target the SAME user disc (MD5 37d9e117…); tools implemented and run: scripts/psyq_hash_match.py (relocation-tolerant Psy-Q hash identification per PS1Recomp recipe) -> data/games/SLUS-01212/psyq_labels.json (5 matched: CdDataCallback@v3 x3, libapi, libgpu; 4 ambiguous); scripts/merge_external_re.py -> psxrecomp_external.json (7,720 edges, 5,501 refs, 261 classified indirect sites, 4 widescreen sites, 1,640 seeds; metadata-only, source-tagged).
 - Tests: 232/232 green (9 new: MIPS immediate masking, relocation tolerance, EXE loader, merge counts/tags).
 - Blockers recorded: Ghidra not installed (Java 21 present), cmake absent (blocks pcsx-redux/ps1recomp builds), ENEMY.BIN overlay @0x800A7800 still not indexed (top Phase 2 target).
+
+---
+
+## Issue 5 addendum batch (2026-10-21) — commit 2375a34
+
+Evidence-driven RAM map + recon. Honest registry corrections: hp_freeze
+FAILED (false positive), invuln_blink FAILED (village helicopter-bomb
+kill bypasses it), lives_mirror FAILED (mirror word). The published
+GS codes for lives/ammo/time/invuln are structurally invalid on this
+revision (only the bombs sb-NOP is sound). The first Mission-1 failure
+is now localized to the village armored-truck + follower-helicopter
+encounter (~f2100-2900): no policy variant survives it; the exact kill
+function is the remaining blocker. Recon/recovery stack (visual churn
+death detection + recover_full with menu B-select) achieved 27/27
+disclosed recoveries and an 869-chunk pass. Tests 259/259. Mission 1
+remains UNCLEARED — no claim made. Full report: issue #5 comment
+6306014579.
