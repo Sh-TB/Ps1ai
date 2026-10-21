@@ -51,9 +51,12 @@ from ps1play.agent.perception import PerceptionGuard      # noqa: E402
 from ps1play.agent.route import RoutePolicy               # noqa: E402
 from mission import ensure_mission                        # noqa: E402
 from issue4_controller import boot                        # noqa: E402
+from run_mission1_legit import recover_v2                 # noqa: E402
 from validate_inv2 import PAIR, FLAGS, read_flags, freeze_test  # noqa
 
 IFRAME = 0xCA30C            # u16 damage-window word (partial gate)
+PER_LIFE = 0xCA2E0          # u16 per-life accumulator: RESETS ON DEATH
+                            # (Issue #3 anchor) — the death sensor
 BOMBS_PATCH = "800398BE 2400"
 CHUNK = 60
 
@@ -75,12 +78,17 @@ def parse_args(argv=None):
     ap.add_argument("--chunks", type=int, default=500)
     ap.add_argument("--minutes", type=float, default=40.0)
     ap.add_argument("--tag", default="inv1")
+    ap.add_argument("--resume", default=None,
+                    help="evidence dir of the run to resume (loads "
+                         "cp_deep + runstate.json; no re-anchoring)")
     ap.add_argument("--evidence-dir", default=None)
     a = ap.parse_args(argv)
     if not a.opt_in:
         ap.error("--opt-in required: this run uses VERIFIED cheats and "
                  "is never reportable as a no-cheat clear")
-    if a.evidence_dir is None:
+    if a.resume:
+        a.evidence_dir = a.resume
+    elif a.evidence_dir is None:
         base = labconfig.resolve_path("evidence_dir") or os.path.join(
             _REPO, "evidence_local")
         a.evidence_dir = os.path.join(
@@ -111,106 +119,205 @@ def confirm_pair(p, danger_f=480):
     return codrops, traj
 
 
+def _save_runstate(rs_path, chunk, total, hp_pair, max_score, hits,
+                   deaths, stop, pit_mode=False):
+    with open(rs_path, "w") as f:
+        json.dump({"chunk": chunk, "chunks_target": total,
+                   "hp_pair": hp_pair, "max_score": max_score,
+                   "hits": hits[-80:], "deaths_unexpected": deaths,
+                   "stop": stop, "pit_mode": pit_mode,
+                   "t": time.strftime("%Y-%m-%d %H:%M:%S")},
+                  f, indent=1)
+
+
+def run_segment_frames(p, session, segs, pit_mode):
+    """Execute policy segments per-frame with GS tick. In pit_mode the
+    advance is overridden with a hazard cadence: RIGHT held, B tap
+    every 30f for 8f (water channels kill instantly and HP-freeze
+    cannot help), plus UP+Y anti-air bursts every 45f (the village
+    flyer/helicopter drones hover above)."""
+    for s in segs:
+        btns = set(s["btns"] or set()) or None
+        n = s["frames"]
+        if pit_mode:
+            base = ({"RIGHT"} | (btns or set())) if btns else {"RIGHT"}
+            for i in range(n):
+                b = set(base)
+                if (i % 30) < 8:
+                    b.add("B")
+                if (i % 45) < 12:
+                    b |= {"UP", "Y"}
+                p.core.run_frame()
+                p.core.set_buttons(b)
+                session.gs.tick()
+            p.core.set_buttons(set())
+        else:
+            for _ in range(n):
+                p.core.run_frame()
+                session.gs.tick()
+
+
 def main():
     args = parse_args()
     os.makedirs(args.evidence_dir, exist_ok=True)
     t0 = time.time()
     budget_s = args.minutes * 60.0
+    rs_path = os.path.join(args.evidence_dir, "runstate.json")
+    trace = JsonlTrace(os.path.join(args.evidence_dir, "trace.jsonl"))
 
     p, fwmode = boot()
-    g = ensure_mission(p, tries=6, log=_log, want_hp_cands=False)
-    if not g.get("in_mission"):
-        sys.exit("!! mission gate failed")
-    _log("in mission")
 
-    trace = JsonlTrace(os.path.join(args.evidence_dir, "trace.jsonl"))
-    trace.write({"type": "run_start", "label": args.tag,
-                 "profile": CHEAT_ASSISTED, "opt_in": True,
-                 "game": p.game, "core": p.core_path,
-                 "t": time.strftime("%Y-%m-%d %H:%M:%S")})
+    if args.resume:
+        rs = json.load(open(rs_path))
+        trace.write({"type": "resume", "from_chunk": rs["chunk"],
+                     "hp_pair": rs["hp_pair"], "disclosed": True})
+        _log(f"resume from chunk {rs['chunk']} pair {rs['hp_pair']}")
+        p.load_state("cp_deep")
+        g = ensure_mission(p, tries=4, log=_log, want_hp_cands=False)
+        if not g.get("in_mission") or read_flags(p) != 0xFF:
+            sys.exit("!! cp_deep reload did not reach gameplay")
+        f6, fe = rs["hp_pair"]
+        codes = [GSCode(f"8{PAIR[0]:07X} {f6 & 0xFFFF:04X}"),
+                 GSCode(f"8{PAIR[1]:07X} {fe & 0xFFFF:04X}"),
+                 GSCode(BOMBS_PATCH)]
+        session = CheatSession(p, CHEAT_ASSISTED, opt_in=True)
+        session.enable("invuln_explore", codes)
+        for _ in range(2):
+            p.core.run_frame()
+            session.gs.tick()
+        trace.write({"type": "cheats_enabled", "codes":
+                     [c.raw for c in codes], "hp_pair": [f6, fe],
+                     "disclosed": True, "note": "resumed lineage"})
+        start_chunk = rs["chunk"] + 1
+        total_chunks = max(rs.get("chunks_target", 0),
+                           start_chunk + 150)   # each resume extends
+        c = start_chunk - 1
+        max_score = rs.get("max_score", 0)
+        hits = rs.get("hits", [])
+        deaths = 0            # per-segment stop counter (history in trace)
+        sensor_deaths = rs.get("sensor_deaths", 0)
+        clean_streak = 0
+        pit_mode = rs.get("pit_mode", True)
+        dead_recently = 0
+        static_streak = 0
+        pl_death_ref = int(p.mem.u16(PER_LIFE))
+        ladder = 0
+        stalled_streak = 0
+        stop = None
+        policy = RoutePolicy(allow_grenades=True, jump_enabled=True)
+        tel = TelemetryAdapter(p)
+        prev = tel.snapshot(buttons=[], frame=p.core.frames_run)
+        churn_prev = p.mem.snapshot()
+    else:
+        g = ensure_mission(p, tries=6, log=_log, want_hp_cands=False)
+        if not g.get("in_mission"):
+            sys.exit("!! mission gate failed")
+        _log("in mission")
+        trace.write({"type": "run_start", "label": args.tag,
+                     "profile": CHEAT_ASSISTED, "opt_in": True,
+                     "game": p.game, "core": p.core_path,
+                     "t": time.strftime("%Y-%m-%d %H:%M:%S")})
 
-    # ---- anchors (each its own event test) ----
-    session = CheatSession(p, CHEAT_ASSISTED, opt_in=True)
-    guard = PerceptionGuard(p)
-    anch = guard.anchor(log=_log)
-    if not anch.get("ok"):
-        sys.exit("!! bombs anchor failed")
-    trace.write({"type": "anchor", "role": "bombs",
-                 "addr": hex(guard.addrs["bombs"]),
-                 "series": anch.get("series")})
-    p.save_state("cb")
+    # ---- anchors (each its own event test) — fresh runs only ----
+    if not args.resume:
+        session = CheatSession(p, CHEAT_ASSISTED, opt_in=True)
+        guard = PerceptionGuard(p)
+        anch = guard.anchor(log=_log)
+        if not anch.get("ok"):
+            sys.exit("!! bombs anchor failed")
+        trace.write({"type": "anchor", "role": "bombs",
+                     "addr": hex(guard.addrs["bombs"]),
+                     "series": anch.get("series")})
+        p.save_state("cb")
 
     v0 = (int(p.mem.u16(PAIR[0])), int(p.mem.u16(PAIR[1])))
-    if v0[0] < 50 or v0[1] < 50:
-        sys.exit(f"!! pair words look wrong at cb: {v0}")
-    _log("confirming HP pair co-drop on hits (no cheats) ...")
-    codrops, traj = confirm_pair(p)
-    trace.write({"type": "anchor", "role": "hp_pair",
-                 "pair": [hex(a) for a in PAIR], "codrops": codrops,
-                 "traj_head": traj[:10], "traj_tail": traj[-10:]})
-    if codrops < 3:
-        sys.exit(f"!! HP pair co-drop not reproduced this boot "
-                 f"(codrops={codrops}) — refusing to freeze")
-    _log(f"pair co-drop confirmed ({codrops}x); running freeze trial ...")
-    trial, trial_ok = freeze_test(p, session, list(PAIR), tag="pair")
-    trace.write({"type": "freeze_trial", "role": "hp_pair",
-                 "ok": trial_ok,
-                 "control": {k: trial["control"][k]
-                             for k in ("held", "alive", "pair0", "pair1")},
-                 "treatment": {k: trial["treatment"][k]
-                               for k in ("held", "alive", "pair0",
-                                         "pair1", "codes")}})
-    if not trial_ok:
-        sys.exit("!! pair freeze trial failed (control/treatment) — "
-                 "refusing exploration with unverified freeze")
-    _log("freeze trial PASSED (control damaged, treatment held+alive)")
+    codrops = 0
+    traj = []
+    trial = trial_ok = None
+    if not args.resume:
+        if v0[0] < 50 or v0[1] < 50:
+            sys.exit(f"!! pair words look wrong at cb: {v0}")
+        _log("confirming HP pair co-drop on hits (no cheats) ...")
+        codrops, traj = confirm_pair(p)
+        trace.write({"type": "anchor", "role": "hp_pair",
+                     "pair": [hex(a) for a in PAIR], "codrops": codrops,
+                     "traj_head": traj[:10], "traj_tail": traj[-10:]})
+        if codrops < 3:
+            sys.exit(f"!! HP pair co-drop not reproduced this boot "
+                     f"(codrops={codrops}) — refusing to freeze")
+        _log(f"pair co-drop confirmed ({codrops}x); freeze trial ...")
+        trial, trial_ok = freeze_test(p, session, list(PAIR), tag="pair")
+        trace.write({"type": "freeze_trial", "role": "hp_pair",
+                     "ok": trial_ok,
+                     "control": {k: trial["control"][k]
+                                 for k in ("held", "alive",
+                                           "pair0", "pair1")},
+                     "treatment": {k: trial["treatment"][k]
+                                   for k in ("held", "alive", "pair0",
+                                             "pair1", "codes")}})
+        if not trial_ok:
+            sys.exit("!! pair freeze trial failed (control/treatment) — "
+                     "refusing exploration with unverified freeze")
+        _log("freeze trial PASSED (control damaged, treatment held+alive)")
 
-    # ---- engage cheats from the clean cb state ----
-    p.load_state("cb")
-    p.core.run(10, set())
-    f6 = int(p.mem.u16(PAIR[0]))
-    fe = int(p.mem.u16(PAIR[1]))
-    codes = [GSCode(f"8{PAIR[0]:07X} {f6 & 0xFFFF:04X}"),
-             GSCode(f"8{PAIR[1]:07X} {fe & 0xFFFF:04X}"),
-             GSCode(BOMBS_PATCH)]
-    session.enable("invuln_explore", codes)
-    for _ in range(2):                       # hardware-GS pre-engage
-        p.core.run_frame()
-        session.gs.tick()
-    trace.write({"type": "cheats_enabled", "codes": [c.raw for c in codes],
-                 "hp_pair": [f6, fe], "disclosed": True,
-                 "note": "exploration-only; never a no-cheat clear"})
-    _log(f"cheats ON: pair {f6}/{fe} frozen + bombs patch")
+    # ---- engage cheats from the clean cb state (fresh runs only) ----
+    if not args.resume:
+        p.load_state("cb")
+        p.core.run(10, set())
+        f6 = int(p.mem.u16(PAIR[0]))
+        fe = int(p.mem.u16(PAIR[1]))
+        codes = [GSCode(f"8{PAIR[0]:07X} {f6 & 0xFFFF:04X}"),
+                 GSCode(f"8{PAIR[1]:07X} {fe & 0xFFFF:04X}"),
+                 GSCode(BOMBS_PATCH)]
+        session.enable("invuln_explore", codes)
+        for _ in range(2):                   # hardware-GS pre-engage
+            p.core.run_frame()
+            session.gs.tick()
+        trace.write({"type": "cheats_enabled",
+                     "codes": [c.raw for c in codes],
+                     "hp_pair": [f6, fe], "disclosed": True,
+                     "note": "exploration-only; never a no-cheat clear"})
+        _log(f"cheats ON: pair {f6}/{fe} frozen + bombs patch")
 
     # ---- exploration loop ----
-    tel = TelemetryAdapter(p)
-    policy = RoutePolicy(allow_grenades=True, jump_enabled=True)
-    prev = tel.snapshot(buttons=[], frame=p.core.frames_run)
-    max_score = prev["score"]
-    ladder = 0
-    stalled_streak = 0
-    hits = []
-    deaths = 0
-    stop = None
-    c = -1
-    p.save_state("cp_deep")
-    churn_prev = p.mem.snapshot()
-    for c in range(args.chunks):
+    if not args.resume:
+        tel = TelemetryAdapter(p)
+        policy = RoutePolicy(allow_grenades=True, jump_enabled=True)
+        prev = tel.snapshot(buttons=[], frame=p.core.frames_run)
+        max_score = prev["score"]
+        ladder = 0
+        stalled_streak = 0
+        hits = []
+        deaths = 0
+        sensor_deaths = 0
+        clean_streak = 0
+        pit_mode = bool(getattr(args, "pit_mode", False))
+        dead_recently = 0
+        static_streak = 0
+        pl_death_ref = int(p.mem.u16(PER_LIFE))
+        stop = None
+        start_chunk = 0
+        c = start_chunk - 1
+        total_chunks = args.chunks
+        p.save_state("cp_safe")
+        p.save_state("cp_deep")
+        churn_prev = p.mem.snapshot()
+        _save_runstate(rs_path, start_chunk, total_chunks, [f6, fe],
+                       max_score, hits, deaths, stop, pit_mode)
+    for c in range(start_chunk, total_chunks):
         if stop:
             break
         if time.time() - t0 > budget_s - 90:
             stop = "BUDGET_TIME"
             break
         # per-frame run + per-frame GS tick (hardware-faithful)
-        for s in policy.decide(CHUNK, None):
-            btns = set(s["btns"] or set()) or None
-            for _ in range(s["frames"]):
-                p.core.run_frame()
-                session.gs.tick()
+        run_segment_frames(p, session, policy.decide(CHUNK, None),
+                           pit_mode)
         cur = tel.snapshot(buttons=[], frame=p.core.frames_run)
         churn = int(np.count_nonzero(p.mem.snapshot() != churn_prev))
         churn_prev = p.mem.snapshot()
         ifr = int(p.mem.u16(IFRAME))
+        pl_now = int(p.mem.u16(PER_LIFE))
         pair_now = (int(p.mem.u16(PAIR[0])), int(p.mem.u16(PAIR[1])))
         cheats_active = pair_now == (f6, fe)
         max_score = max(max_score, cur["score"])
@@ -223,9 +330,54 @@ def main():
                          "score": cur["score"]})
             if len(hits) % 5 == 1:
                 shot(p, args.evidence_dir, f"hit_c{c:03d}.png")
+        # ---- death sensor: per-life accumulator reset ----
+        # (per_life resets on death per Issue #3; under HP-freeze there
+        # is no damage, so a reset is a REAL death — counted for
+        # disclosure and pit-avoidance, NOT as a fatal stop)
+        death_now = (pl_death_ref - pl_now) > 30 or (
+            pl_now < 30 and pl_death_ref > 100)
+        if death_now:
+            sensor_deaths += 1
+            pit_mode = True
+            dead_recently = 10
+            clean_streak = 0
+            static_streak = 0
+            trace.write({"type": "death_detected", "chunk": c,
+                         "attempt": sensor_deaths,
+                         "sensor": "per_life_reset",
+                         "per_life": [pl_death_ref, pl_now],
+                         "pit_mode": True, "disclosed": True})
+        else:
+            clean_streak += 1
+            if clean_streak > 40 and pit_mode:
+                pit_mode = False
+                trace.write({"type": "pit_mode_off", "chunk": c,
+                             "clean_streak": clean_streak})
+        pl_death_ref = pl_now
+        # ---- CONTINUE-countdown rescue: static screen + flags 255
+        #      = countdown overlay (game over with 0 lives shows it
+        #      BEFORE the flags flip); START accepts the continue ----
+        if death_now or (cur["flags_word"] == 0xFF and churn < 60):
+            static_streak = static_streak + 1 if churn < 60 else 0
+        else:
+            static_streak = 0
+        if static_streak >= 4:
+            trace.write({"type": "continue_rescue", "chunk": c,
+                         "static_streak": static_streak,
+                         "action": "START tap", "disclosed": True})
+            p.core.run(8, {"START"})
+            for _ in range(8):
+                p.core.run_frame()
+                session.gs.tick()
+            static_streak = 0
+            prev = tel.snapshot(buttons=[], frame=p.core.frames_run)
+        if dead_recently > 0:
+            dead_recently -= 1
         trace.write({"type": "chunk", "chunk": c, "telemetry": cur,
                      "iframe": ifr, "hp_pair": list(pair_now),
-                     "cheats_active": cheats_active, "churn": churn,
+                     "per_life": pl_now, "cheats_active": cheats_active,
+                     "churn": churn, "pit_mode": pit_mode,
+                     "sensor_deaths": sensor_deaths,
                      "policy_stats": dict(policy.stats)})
         if not cheats_active:
             stop = "STOP_CHEAT_LOST"
@@ -270,37 +422,80 @@ def main():
                 session.gs.tick()
             prev = tel.snapshot(buttons=[], frame=p.core.frames_run)
             continue
-        # ---- death safety net (should not fire with freeze ON) ----
+        # ---- death safety net ----
+        # pit_mode engages after ANY death: instant-death hazards (water
+        # channels / pits) bypass HP entirely, so the freeze cannot stop
+        # them — only jumping does. Instant-death signature = death with
+        # no recent i-frame hits (hits list tail).
         if cur["flags_word"] != 0xFF:
             deaths += 1
+            recent_hits = [h for h in hits[-10:]
+                           if h["chunk"] >= c - 12]
+            sig = ("damage" if recent_hits else "instant_pit")
+            pit_mode = True
             trace.write({"type": "death_unexpected", "chunk": c,
-                         "attempt": deaths, "disclosed": True})
-            if deaths > 3:
+                         "attempt": deaths, "signature": sig,
+                         "disclosed": True})
+            if deaths > 6:
                 stop = "STOP_DEAD_LOOP"
                 break
-            from run_mission1_legit import recover_v2
+            # 1) in-place recovery
             recover_v2(p, log=_log)
             g = ensure_mission(p, tries=4, log=_log, want_hp_cands=False)
             if g.get("in_mission") and read_flags(p) == 0xFF:
                 prev = tel.snapshot(buttons=[], frame=p.core.frames_run)
                 continue
-            try:
-                p.load_state("cp_deep")
-                ensure_mission(p, tries=3, log=_log, want_hp_cands=False)
+            # 2) bounded CONTINUE accept (disclosed; the SLUS port sits
+            #    on CONTINUE? countdown after GAME OVER)
+            okc = False
+            for i in range(10):
+                p.core.run(130, set())
+                for btn in ({"START"}, {"Y"}):
+                    p.core.run(8, btn)
+                    p.core.run(100, set())
+                    for _ in range(2):
+                        p.core.run_frame()
+                        session.gs.tick()
+                    if read_flags(p) == 0xFF:
+                        okc = True
+                        break
+                if okc:
+                    break
+            trace.write({"type": "continue_attempt", "chunk": c,
+                         "accepted": okc, "disclosed": True})
+            if okc:
                 prev = tel.snapshot(buttons=[], frame=p.core.frames_run)
-                trace.write({"type": "checkpoint_reload", "chunk": c})
                 continue
-            except Exception as e:                        # noqa: BLE001
+            # 3) checkpoint reload (deep, then safe)
+            reloaded = False
+            for st in ("cp_deep", "cp_safe"):
+                try:
+                    p.load_state(st)
+                    g = ensure_mission(p, tries=3, log=_log,
+                                       want_hp_cands=False)
+                    if read_flags(p) == 0xFF:
+                        trace.write({"type": "checkpoint_reload",
+                                     "chunk": c, "state": st})
+                        reloaded = True
+                        break
+                except Exception as e:                    # noqa: BLE001
+                    trace.write({"type": "checkpoint_reload_failed",
+                                 "chunk": c, "state": st,
+                                 "err": repr(e)[:120]})
+            if not reloaded:
                 stop = "STOP_RECOVER_FAILED"
-                trace.write({"type": "stop", "chunk": c, "reason": stop,
-                             "err": repr(e)[:150]})
+                trace.write({"type": "stop", "chunk": c, "reason": stop})
                 break
+            prev = tel.snapshot(buttons=[], frame=p.core.frames_run)
+            continue
         # ---- checkpoints + progress shots ----
-        if c % 40 == 39:
+        if c % 40 == 39 and dead_recently == 0:
             try:
                 p.save_state("cp_deep")
+                _save_runstate(rs_path, c, total_chunks, [f6, fe],
+                               max_score, hits, deaths, stop, pit_mode)
                 trace.write({"type": "checkpoint_saved", "chunk": c,
-                             "state": "cp_deep"})
+                             "state": "cp_deep", "pit_mode": pit_mode})
             except Exception as e:                        # noqa: BLE001
                 trace.write({"type": "checkpoint_save_failed",
                              "chunk": c, "err": repr(e)[:150]})
