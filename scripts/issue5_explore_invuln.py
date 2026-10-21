@@ -60,9 +60,32 @@ PER_LIFE = 0xCA2E0          # u16 per-life accumulator: RESETS ON DEATH
 BOMBS_PATCH = "800398BE 2400"
 CHUNK = 60
 
+# pit cadence periods (issue #5 cont. §2: phases derive from a GLOBAL
+# frame counter, so the action schedule is chunk-partition independent)
+PIT_B_PERIOD = 30           # B tap window every 30f (jump channels)
+PIT_B_LEN = 8
+PIT_AA_PERIOD = 45          # UP+Y anti-air burst every 45f
+PIT_AA_LEN = 12
+
 
 def _log(*a):
     print("[explore-inv]", *a, file=sys.stderr, flush=True)
+
+
+def gs_run(p, session, frames, buttons, phase=0):
+    """Run `frames` with buttons SET BEFORE the first frame (the pad
+    LATCHES until changed) and the GameShark engine ticked after EVERY
+    frame (hardware cadence). Returns the advanced global phase.
+
+    This is the ONLY sanctioned way to run frames in this runner:
+    a freeze must never silently stop — not inside stall ladders,
+    continue rescues, recovery windows, or after checkpoint reloads
+    (issue #5 continuation §2)."""
+    p.core.set_buttons(set(buttons) if buttons else set())
+    for i in range(frames):
+        p.core.run_frame()
+        session.gs.tick()
+    return phase + frames
 
 
 def shot(p, outdir, name):
@@ -130,31 +153,41 @@ def _save_runstate(rs_path, chunk, total, hp_pair, max_score, hits,
                   f, indent=1)
 
 
-def run_segment_frames(p, session, segs, pit_mode):
-    """Execute policy segments per-frame with GS tick. In pit_mode the
-    advance is overridden with a hazard cadence: RIGHT held, B tap
-    every 30f for 8f (water channels kill instantly and HP-freeze
-    cannot help), plus UP+Y anti-air bursts every 45f (the village
-    flyer/helicopter drones hover above)."""
+def run_segment_frames(p, session, segs, pit_mode, phase=0):
+    """Execute policy segments per-frame with GS tick. Returns the
+    advanced global phase.
+
+    In pit_mode the advance is overridden with a hazard cadence derived
+    from the GLOBAL phase (not the per-segment index — chunk
+    partitioning must not change the schedule): RIGHT held, B tap
+    (PIT_B_LEN/PIT_B_PERIOD, water channels kill instantly and HP-freeze
+    cannot help), plus UP+Y anti-air bursts (PIT_AA_LEN/PIT_AA_PERIOD;
+    the village flyer/helicopter drones hover above).
+
+    In BOTH branches the segment's buttons are actually APPLIED (the
+    pad latches; the previous version computed `btns` and never set
+    them in the non-pit branch — the player stood still) and the GS
+    engine ticks every single frame."""
     for s in segs:
-        btns = set(s["btns"] or set()) or None
+        btns = set(s["btns"] or set())
         n = s["frames"]
         if pit_mode:
-            base = ({"RIGHT"} | (btns or set())) if btns else {"RIGHT"}
+            base = ({"RIGHT"} | btns) if btns else {"RIGHT"}
             for i in range(n):
+                g = phase + i
                 b = set(base)
-                if (i % 30) < 8:
+                if (g % PIT_B_PERIOD) < PIT_B_LEN:
                     b.add("B")
-                if (i % 45) < 12:
+                if (g % PIT_AA_PERIOD) < PIT_AA_LEN:
                     b |= {"UP", "Y"}
-                p.core.run_frame()
                 p.core.set_buttons(b)
-                session.gs.tick()
-            p.core.set_buttons(set())
-        else:
-            for _ in range(n):
                 p.core.run_frame()
                 session.gs.tick()
+            phase += n
+        else:
+            phase = gs_run(p, session, n, btns, phase)
+    p.core.set_buttons(set())
+    return phase
 
 
 def main():
@@ -173,6 +206,8 @@ def main():
                      "hp_pair": rs["hp_pair"], "disclosed": True})
         _log(f"resume from chunk {rs['chunk']} pair {rs['hp_pair']}")
         p.load_state("cp_deep")
+        # gate before cheats re-engage: no freeze is active yet, so no
+        # GS tick is needed here (codes are re-enabled below)
         g = ensure_mission(p, tries=4, log=_log, want_hp_cands=False)
         if not g.get("in_mission") or read_flags(p) != 0xFF:
             sys.exit("!! cp_deep reload did not reach gameplay")
@@ -304,15 +339,17 @@ def main():
         churn_prev = p.mem.snapshot()
         _save_runstate(rs_path, start_chunk, total_chunks, [f6, fe],
                        max_score, hits, deaths, stop, pit_mode)
+    phase = 0                     # GLOBAL frame phase (partition-indep.)
     for c in range(start_chunk, total_chunks):
         if stop:
             break
         if time.time() - t0 > budget_s - 90:
             stop = "BUDGET_TIME"
             break
-        # per-frame run + per-frame GS tick (hardware-faithful)
-        run_segment_frames(p, session, policy.decide(CHUNK, None),
-                           pit_mode)
+        # per-frame run + per-frame GS tick (hardware-faithful); the
+        # global phase keeps pit cadence stable across chunk boundaries
+        phase = run_segment_frames(p, session, policy.decide(CHUNK, None),
+                                   pit_mode, phase)
         cur = tel.snapshot(buttons=[], frame=p.core.frames_run)
         churn = int(np.count_nonzero(p.mem.snapshot() != churn_prev))
         churn_prev = p.mem.snapshot()
@@ -365,10 +402,8 @@ def main():
             trace.write({"type": "continue_rescue", "chunk": c,
                          "static_streak": static_streak,
                          "action": "START tap", "disclosed": True})
-            p.core.run(8, {"START"})
-            for _ in range(8):
-                p.core.run_frame()
-                session.gs.tick()
+            phase = gs_run(p, session, 8, {"START"}, phase)
+            phase = gs_run(p, session, 8, set(), phase)
             static_streak = 0
             prev = tel.snapshot(buttons=[], frame=p.core.frames_run)
         if dead_recently > 0:
@@ -394,32 +429,32 @@ def main():
             stalled_streak = 0
             if ladder == 1:
                 trace.write({"type": "stall_l1_jump", "chunk": c})
-                p.core.run(20, {"RIGHT"})
-                p.core.run(40, {"RIGHT", "B"})
+                phase = gs_run(p, session, 20, {"RIGHT"}, phase)
+                phase = gs_run(p, session, 40, {"RIGHT", "B"}, phase)
             elif ladder == 2:
                 trace.write({"type": "stall_l2_grenade", "chunk": c,
                              "grenades": cur["grenades"]})
-                p.core.run(8, set())
-                p.core.run(30, {"A"})
-                p.core.run(30, {"RIGHT", "Y"})
+                phase = gs_run(p, session, 8, set(), phase)
+                phase = gs_run(p, session, 30, {"A"}, phase)
+                phase = gs_run(p, session, 30, {"RIGHT", "Y"}, phase)
             elif ladder == 3:
                 trace.write({"type": "stall_l3_unstick", "chunk": c})
-                p.core.run(60, {"LEFT", "Y"})
-                p.core.run(120, {"RIGHT", "Y"})
+                phase = gs_run(p, session, 60, {"LEFT", "Y"}, phase)
+                phase = gs_run(p, session, 120, {"RIGHT", "Y"}, phase)
             elif ladder in (4, 5):
                 # anti-air: the helicopter boss flies above — UP+Y burst
                 trace.write({"type": "stall_antiair", "chunk": c,
                              "level": ladder})
-                p.core.run(90 if ladder == 4 else 180, {"UP", "Y"})
-                p.core.run(60, {"RIGHT", "Y"})
+                phase = gs_run(p, session,
+                               90 if ladder == 4 else 180, {"UP", "Y"},
+                               phase)
+                phase = gs_run(p, session, 60, {"RIGHT", "Y"}, phase)
             else:
                 stop = f"STOP_STALLED chunk={c}"
                 trace.write({"type": "stop", "chunk": c, "reason": stop,
                              "telemetry": cur})
                 break
-            for _ in range(30):              # keep GS alive in ladders
-                p.core.run_frame()
-                session.gs.tick()
+            phase = gs_run(p, session, 30, set(), phase)   # GS alive
             prev = tel.snapshot(buttons=[], frame=p.core.frames_run)
             continue
         # ---- death safety net ----
@@ -439,9 +474,10 @@ def main():
             if deaths > 6:
                 stop = "STOP_DEAD_LOOP"
                 break
-            # 1) in-place recovery
-            recover_v2(p, log=_log)
-            g = ensure_mission(p, tries=4, log=_log, want_hp_cands=False)
+            # 1) in-place recovery (GS tick threaded: freeze survives)
+            recover_v2(p, log=_log, tick=session.gs.tick)
+            g = ensure_mission(p, tries=4, log=_log, want_hp_cands=False,
+                               tick=session.gs.tick)
             if g.get("in_mission") and read_flags(p) == 0xFF:
                 prev = tel.snapshot(buttons=[], frame=p.core.frames_run)
                 continue
@@ -449,13 +485,10 @@ def main():
             #    on CONTINUE? countdown after GAME OVER)
             okc = False
             for i in range(10):
-                p.core.run(130, set())
+                phase = gs_run(p, session, 130, set(), phase)
                 for btn in ({"START"}, {"Y"}):
-                    p.core.run(8, btn)
-                    p.core.run(100, set())
-                    for _ in range(2):
-                        p.core.run_frame()
-                        session.gs.tick()
+                    phase = gs_run(p, session, 8, btn, phase)
+                    phase = gs_run(p, session, 100, set(), phase)
                     if read_flags(p) == 0xFF:
                         okc = True
                         break
@@ -466,13 +499,19 @@ def main():
             if okc:
                 prev = tel.snapshot(buttons=[], frame=p.core.frames_run)
                 continue
-            # 3) checkpoint reload (deep, then safe)
+            # 3) checkpoint reload (deep, then safe) — re-engage the
+            #    freeze immediately: a savestate load restores RAM and
+            #    silently un-pokes every code until the next tick
             reloaded = False
             for st in ("cp_deep", "cp_safe"):
                 try:
                     p.load_state(st)
+                    for _ in range(2):       # hardware-GS pre-engage
+                        p.core.run_frame()
+                        session.gs.tick()
                     g = ensure_mission(p, tries=3, log=_log,
-                                       want_hp_cands=False)
+                                       want_hp_cands=False,
+                                       tick=session.gs.tick)
                     if read_flags(p) == 0xFF:
                         trace.write({"type": "checkpoint_reload",
                                      "chunk": c, "state": st})

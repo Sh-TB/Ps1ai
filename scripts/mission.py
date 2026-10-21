@@ -41,7 +41,23 @@ def png(p, name, out_dir="/tmp/gate"):
 import os                                              # noqa: E402
 
 
-def responsive(p, reps=1):
+def _run(p, frames, buttons, tick=None):
+    """Run `frames`, ticking the GameShark engine after EVERY frame when
+    a tick callable is supplied (hardware-GS cadence). With tick=None
+    the behavior is exactly p.core.run() — legit callers are unaffected.
+    This closes the 'freeze silently stops inside shared helpers' gap
+    (issue #5 continuation §2): every frame-running path used by a
+    cheat-assisted run must keep the per-frame GS cadence alive."""
+    if tick is None:
+        p.core.run(frames, buttons)
+        return
+    p.core.set_buttons(set(buttons))
+    for _ in range(frames):
+        p.core.run_frame()
+        tick()
+
+
+def responsive(p, reps=1, tick=None):
     """THE definitive in-control test, three independent signals:
 
     1. PAD MIRROR (static RE: 0x0D4948 tracks injected D-pad bits during
@@ -55,47 +71,48 @@ def responsive(p, reps=1):
        the demo also churns 200k+, so churn alone cannot reject it).
 
     alive = pad toggles AND world churns AND nobody else presses keys."""
-    p.core.run(6, set())
+    _run(p, 6, set(), tick)
     self_play = False
     for _ in range(3):
-        p.core.run(10, set())
+        _run(p, 10, set(), tick)
         if p.mem.u16(0x0D4948) != 0:
             self_play = True
     w0 = p.mem.u16(0x0D4948)
-    p.core.run(8, {"RIGHT"})
+    _run(p, 8, {"RIGHT"}, tick)
     w1 = p.mem.u16(0x0D4948)
-    p.core.run(6, set())
+    _run(p, 6, set(), tick)
     w2 = p.mem.u16(0x0D4948)
     p._advance()
     pad_ok = (w1 & 0x20) and not (w2 & 0x20) and not (w0 & 0x20)
     s0 = p.mem.snapshot()
-    p.core.run(60, {"RIGHT", "Y"})
+    _run(p, 60, {"RIGHT", "Y"}, tick)
     churn = int(np.count_nonzero(s0 != p.mem.snapshot()))
     p._advance()
     return bool(pad_ok and churn > 900 and not self_play), \
         (int(w1), churn)
 
 
-def recover(p, log=print):
+def recover(p, log=print, tick=None):
     """Human recovery from continue/pause screens — MINIMAL:
     ONE START (continue/unpause) + brief settle. The gate's own
     run-window provides movement; blind warmup just gets the player
-    killed again (mission 1 opening is lethal to idlers)."""
-    p.core.run(15, {"START"})
-    p.core.run(90, set())
+    killed again (mission 1 opening is lethal to idlers).
+    tick: optional per-frame GS tick so freezes survive recovery."""
+    _run(p, 15, {"START"}, tick)
+    _run(p, 90, set(), tick)
     p._advance()
     log("[gate] recovery: single START + settle")
 
 
-def alive_probe(p):
+def alive_probe(p, tick=None):
     """HP-band decayers (for calibration, NOT as the gate)."""
     p.save_state("_em")
-    p.core.run(300, set())
+    _run(p, 300, set(), tick)
     p._advance()
     scan = MemScan(p.mem)
     scan.reset()
     scan.between("u16", 90, 215)
-    p.core.run(360, set())
+    _run(p, 360, set(), tick)
     p._advance()
     scan.dec("u16")
     idx = np.flatnonzero(scan.masks["u16"])
@@ -104,21 +121,24 @@ def alive_probe(p):
     return cands
 
 
-def ensure_mission(p, tries=6, log=print, want_hp_cands=True):
-    """Guarantee real input control; recover from any dead screen."""
+def ensure_mission(p, tries=6, log=print, want_hp_cands=True, tick=None):
+    """Guarantee real input control; recover from any dead screen.
+    tick: optional per-frame GS tick threaded into responsive/recover
+    so an active freeze keeps its hardware cadence inside the gate."""
     evidence = []
     for k in range(tries):
-        ok, (i1, r) = responsive(p)
+        ok, (i1, r) = responsive(p, tick=tick)
         png(p, f"gate_{k}_{'in' if ok else 'out'}.png")
         evidence.append({"try": k, "idle": i1, "run": r, "in": ok})
         log(f"[gate] try{k}: idle={i1} run={r} -> "
             f"{'IN MISSION' if ok else 'dead screen'}")
         if ok:
-            hp_cands = alive_probe(p) if want_hp_cands else []
+            hp_cands = (alive_probe(p, tick=tick)
+                        if want_hp_cands else [])
             return {"in_mission": True, "idle": i1, "run": r,
                     "hp_cands": len(hp_cands), "hp_cand_addrs":
                         [hex(a) for a in hp_cands[:8]], "evidence": evidence}
-        recover(p, log=log)
+        recover(p, log=log, tick=tick)
     return {"in_mission": False, "evidence": evidence}
 
 

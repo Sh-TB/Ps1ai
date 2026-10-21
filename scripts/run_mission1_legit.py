@@ -520,13 +520,25 @@ def responsive_live(p):
     return alive, (int(w1), churn)
 
 
-def recover_v2(p, log=log):
+def recover_v2(p, log=log, tick=None):
     """Adaptive START taps: tap, then CHECK with the FULL alive test
     (pad mirror + churn + self-play guard) — the attract demo churns
-    200k+ so a churn-only check accepts it (v15 lesson)."""
+    200k+ so a churn-only check accepts it (v15 lesson).
+    tick: optional per-frame GS tick so an active freeze keeps its
+    hardware cadence during recovery frames (issue #5 cont. §2)."""
     for _ in range(4):
-        p.core.run(6, {"START"})
-        p.core.run(75, set())
+        if tick is None:
+            p.core.run(6, {"START"})
+            p.core.run(75, set())
+        else:
+            p.core.set_buttons({"START"})
+            for _f in range(6):
+                p.core.run_frame()
+                tick()
+            p.core.set_buttons(set())
+            for _f in range(75):
+                p.core.run_frame()
+                tick()
         ok, _ = responsive_live(p)
         if ok:
             log("[gate] recovery v2: back in control")
