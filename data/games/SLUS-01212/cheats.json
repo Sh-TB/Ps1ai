@@ -9,7 +9,7 @@
    "known_conflicts": "none recorded",
    "mechanism": "instruction patch (upper half 0x2400 -> addiu const-load replacing a conditional branch)",
    "name": "ammo",
-   "observation": "default pistol ammo is natively infinite on this revision (published cluster reads 0xFF); only special-weapon pickups have a draining counter — full-map traversal does not require the ammo patch (bombs + blink suffice)",
+   "observation": "default pistol ammo is natively infinite on this revision (published cluster reads 0xFF); only special-weapon pickups have a draining counter \u2014 full-map traversal does not require the ammo patch (bombs + blink suffice)",
    "region_applicability": "SLUS-01212 NTSC-U only (arcade/Saturn/JP/PAL codes are not interchangeable)",
    "required_infrastructure": "headless libretro host + GameShark per-frame tick (ps1play.agent.gameshark)",
    "source_inspected": "2026-10-20",
@@ -35,7 +35,7 @@
    "known_conflicts": "none recorded",
    "mechanism": "instruction patch (upper half 0x2400)",
    "name": "bombs",
-   "observation": "VERIFIED and used as the traversal cheat (freeze at the live strict-series anchor, 300EDCF4 000A family); the published instruction patch 800398BE 2400 = sb $v0,0xB6($a1) NOP — the only structurally-sound published code (analyze_patch_sites.py: ammo patches a JAL, time/lives patch lw $sp-loads, invuln codes corrupt JAL/GTE words) | 2026-10-22 patch_ab: branch_plausible=False on that boot flow (pre_hi=0x62, patch NOT engaged) — boot-flow/revision sensitive; the u8 grenade-anchor strict series remains the reliable bombs method",
+   "observation": "VERIFIED and used as the traversal cheat (freeze at the live strict-series anchor, 300EDCF4 000A family); the published instruction patch 800398BE 2400 = sb $v0,0xB6($a1) NOP \u2014 the only structurally-sound published code (analyze_patch_sites.py: ammo patches a JAL, time/lives patch lw $sp-loads, invuln codes corrupt JAL/GTE words) | 2026-10-22 patch_ab: branch_plausible=False on that boot flow (pre_hi=0x62, patch NOT engaged) \u2014 boot-flow/revision sensitive; the u8 grenade-anchor strict series remains the reliable bombs method",
    "region_applicability": "SLUS-01212 NTSC-U only",
    "required_infrastructure": "headless libretro host + GameShark tick; live bombs counter via PerceptionGuard grenade A-diff anchor",
    "source_inspected": "2026-10-20",
@@ -61,7 +61,7 @@
     }
    ],
    "known_conflicts": "never enable together with the bombs patch verdict unless both independently verified",
-   "mechanism": "derived freeze at live-anchored address (PerceptionGuard grenade A-diff anchor, verified -1 x2 in the same boot); NOT a published address — the player cluster is dynamically placed per boot",
+   "mechanism": "derived freeze at live-anchored address (PerceptionGuard grenade A-diff anchor, verified -1 x2 in the same boot); NOT a published address \u2014 the player cluster is dynamically placed per boot",
    "name": "bombs_freeze",
    "observation": "published instruction patch 800398BE 2400 is validated separately; the freeze is the fallback when/where patches do not apply",
    "region_applicability": "SLUS-01212 NTSC-U, this boot flow",
@@ -90,19 +90,69 @@
      "code": "800CA2FE 0090",
      "note": "player died 4x in issue5_recon_recon1 with the word frozen at 0x90 (flags 0xFF->1 at chunks 32/65/103/138); the word sits in the per-life 0xCA2E0 cluster, not a lethal gate",
      "t": "2026-10-21 00:26:48",
-     "verdict": "false positive — SUPERSEDED by invuln_blink"
+     "verdict": "false positive \u2014 SUPERSEDED by invuln_blink"
     }
    ],
    "known_conflicts": "never combine with the lives death-verification protocol (an invulnerable player cannot die)",
    "mechanism": "derived freeze at live-anchored HP address (find_player_hp: freeze test + survival in the same window); the published 3-line invuln patch FAILED live on this boot (see invuln verdict)",
    "name": "hp_freeze",
-   "observation": "this is the exploration-profile survival cheat; a cheat-assisted run is never reported as a no-cheat clear | 2026-10-21: superseded by hp_pair_freeze (0xCABE4 reads constant 136 on the new boot; find_player_hp judging flaw identified: responsive() runs ~44 unpoked frames before v1 read, invalidating freeze tests for game-refreshed words — see validate_inv2.py docstring)",
+   "observation": "this is the exploration-profile survival cheat; a cheat-assisted run is never reported as a no-cheat clear | 2026-10-21: superseded by hp_pair_freeze (0xCABE4 reads constant 136 on the new boot; find_player_hp judging flaw identified: responsive() runs ~44 unpoked frames before v1 read, invalidating freeze tests for game-refreshed words \u2014 see validate_inv2.py docstring)",
    "region_applicability": "SLUS-01212 NTSC-U, this boot flow",
    "required_infrastructure": "headless libretro host + GameShark tick + live HP anchor derivation each run",
    "source_inspected": "2026-10-20",
    "source_url": "derived in-project (perception.find_player_hp freeze-verified anchor)",
    "status": "FAILED",
    "updated": "2026-10-21 00:26:48"
+  },
+  "hp_freeze_inrun": {
+   "codes": [
+    "<derived at run time: live A/B candidate freeze>"
+   ],
+   "effect": "Player-HP freeze anchored by an in-run A/B death-differential",
+   "evidence": [
+    {
+     "accepted_this_boot": "0xcad08w2=64 (inv16/inv19)",
+     "caveat": "calm-phase false positives possible; CROSS-VALIDATION: validate_inv2.py VERIFIED hp_pair 0xCA2F6/0xCA2FE and this runner's inv10 A/B independently selected 0xCA2F6; 0xCABE4 falsified as boot-universal (inv8 A/B: identical death timeline with and without its freeze)",
+     "protocol": "continuous real-play loop + fine-grained u16/u8 min-tracker; candidates frozen one-by-one on the LIVE loop; 6-chunk death-free window accepts (inv15..inv19, 2026-10-22)"
+    }
+   ],
+   "mechanism": "per-frame data freeze (GameShark engine)",
+   "name": "hp_freeze_inrun",
+   "observation": "accepted in the accepting boot window but not reproduced across boots; SUPERSEDED for exploration runs by hp_pair_freeze (VERIFIED, scripts/issue5_explore_invuln.py)",
+   "region_applicability": "SLUS-01212 NTSC-U, this boot flow",
+   "required_infrastructure": "headless libretro host + GS tick + death oracle (score -30 / flags)",
+   "source_inspected": "2026-10-22",
+   "source_url": "derived in-project (scripts/issue5_invincible_explore.py live A/B)",
+   "status": "TESTED",
+   "updated": "2026-10-22"
+  },
+  "hp_pair_freeze": {
+   "codes": [
+    "<derived per boot: 8<live_f6> <val_f6>, 8<live_fe> <val_fe> (u16 x2)",
+    "800CA2F6 0083 + 800CA2FE 0085 (2026-10-21 boot)"
+   ],
+   "effect": "TRUE invincibility: per-frame freeze of BOTH authoritative player-HP words; damage never lands (long-window control lost 16 HP while treatment held exact value); player survives sustained enemy contact",
+   "evidence": [
+    {
+     "addr": "0xca2f6/0xca2fe",
+     "code": "800CA2F6 0083 + 800CA2FE 0085",
+     "dtype": "u16 pair",
+     "note": "hit-event RAM diff: both words drop on EVERY hit (131->120 / 133->120, converge equal); freeze trial: treatment held=True alive=True pair_clean=True while no-freeze control pair dropped 144->128 over the same 900f window (control alive, damaged); scripts/validate_inv2.py (cheatval_20261021_054729)",
+     "protocol": "hit-diff intersect x3 hits -> freeze control/treatment -> 900f long falsifier",
+     "t": "2026-10-21 05:47",
+     "works": true
+    }
+   ],
+   "known_conflicts": "supersedes single-word hp_freeze (0xCABE4, 2026-10-20 boot \u2014 that address reads constant 136 on the 2026-10-21 boot and is NOT the live HP); never combine with lives-death verification",
+   "mechanism": "derived freeze at live-anchored HP pair (hit-diff: the only words that (a) drop on every hit, (b) freeze-stick under per-frame GS tick => authoritative, not HUD copies)",
+   "name": "hp_pair_freeze",
+   "observation": "THE working invincibility method for exploration runs; pair addresses must be re-derived each boot via the bounded hit-diff scan (scripts/validate_inv2.py find_hit_events); treat as exploration-only, never part of a no-cheat clear claim",
+   "region_applicability": "SLUS-01212 NTSC-U, this boot flow",
+   "required_infrastructure": "headless libretro host + GameShark tick + hit-diff pair derivation each run",
+   "source_inspected": "2026-10-21",
+   "source_url": "derived in-project (hit-diff + freeze-stick method)",
+   "status": "VERIFIED",
+   "updated": "2026-10-21 05:55:00"
   },
   "invuln": {
    "codes": [
@@ -127,21 +177,21 @@
    "required_infrastructure": "live HP slot (0..200, damage events) + GameShark tick",
    "source_inspected": "2026-10-20",
    "source_url": "https://gamehacking.org/game/89284",
-   "status": "FAILED",
-   "updated": "2026-10-21 05:55:00",
    "sources_2026_10_21": [
     "https://gamehacking.org/game/89284 (retail set, Invincible 3-line)",
     "https://cheatcc.com/articles/metal-slug-x-cheats-codes-cheat-codes-for-playstation-psx-psx-codes (alt set: 80047522 lives, 800CA30C 0068 Invisible P1, 800EE290 score)",
     "https://almarsguides.com/retro/walkthroughs/ps1/games/metalslugx/codebreaker (retail set = gamehacking)",
     "https://almarsguides.com/retro/walkthroughs/ps1/games/metalslugx/codebreaker/beta (beta set matches CheatCC addresses)"
-   ]
+   ],
+   "status": "FAILED",
+   "updated": "2026-10-21 05:55:00"
   },
   "invuln_blink": {
    "codes": [
     "<derived per boot: 300EF13F 00<high blink value>",
     "300EF13F 0020 (this boot family, freeze value 32)"
    ],
-   "effect": "TRUE invincibility: per-frame freeze of the post-respawn invulnerability (blink) timer u8; the player becomes unhittable — walked into live enemy contact for 900 frames with zero deaths while the baseline dies deterministically (~c35 village)",
+   "effect": "TRUE invincibility: per-frame freeze of the post-respawn invulnerability (blink) timer u8; the player becomes unhittable \u2014 walked into live enemy contact for 900 frames with zero deaths while the baseline dies deterministically (~c35 village)",
    "evidence": [
     {
      "addr": "0xef13f",
@@ -208,11 +258,45 @@
    "source_url": "https://etherealgames.com/ps1/m/metal-slug-x/gameshark-codes/",
    "status": "BLOCKED"
   },
+  "lives_freeze_strict_series": {
+   "codes": [
+    "<derived at run time: strict -1-per-death series, segmented at continues>"
+   ],
+   "effect": "Infinite lives via per-frame freeze of the lives counter",
+   "evidence": [
+    {
+     "candidates_frozen": [
+      "0x87a78w2 (=POW static)",
+      "0x958d4w2",
+      "0xca944w2",
+      "0xca984w2",
+      "0xca9b8w2",
+      "0xca9bew2",
+      "0xcacdcw2",
+      "0xcb0c0w2",
+      "0xcb14cw2",
+      "0xcb1f4w2"
+     ],
+     "protocol": "strict -1-per-death series across death-boundary snapshots, intersected across continue segments (issue5_invincible_explore inv17..inv19, 2026-10-22)",
+     "result": "freezing ALL 10 strict candidates did NOT prevent the third-death GAME OVER (inv19) \u2014 the lives state is NOT a simple -1 word at death-snapshot boundaries; consistent with validate_lives.py (published lives patches revision-mismatched)",
+     "works": false
+    }
+   ],
+   "mechanism": "per-frame data freeze at strict-series candidates",
+   "name": "lives_freeze_strict_series",
+   "observation": "NEGATIVE RESULT; next probes: snapshot during the death animation, lives as bit-field, 1UP HUD-render path",
+   "region_applicability": "SLUS-01212 NTSC-U, this boot flow",
+   "required_infrastructure": "headless libretro host + GS tick + death oracle (score -30 / flags)",
+   "source_inspected": "2026-10-22",
+   "source_url": "derived in-project (scripts/issue5_invincible_explore.py strict-series scan)",
+   "status": "FAILED",
+   "updated": "2026-10-22"
+  },
   "lives_mirror": {
    "codes": [
     "<derived: 300CB225 00<high> (this boot family)>"
    ],
-   "effect": "candidate lives freeze at u8 0xCB225 — REJECTED: freezing it did not gate game-over (end frame = TITLE screen); the word is a mirror/HUD shadow",
+   "effect": "candidate lives freeze at u8 0xCB225 \u2014 REJECTED: freezing it did not gate game-over (end frame = TITLE screen); the word is a mirror/HUD shadow",
    "evidence": [
     {
      "note": "issue5_lives2_l2: freeze test recorded 3 respawn-like score events but the run still fell through to the title; verdict was initially recorded as TESTED and is corrected here to FAILED",
@@ -235,6 +319,26 @@
    "source_inspected": "2026-10-21",
    "source_url": "derived in-project (issue5_livesprobe2.py)",
    "status": "FAILED"
+  },
+  "nokana_midboss": {
+   "codes": [
+    "<not-a-code: encounter-blocker record, no GS lines>"
+   ],
+   "effect": "cross the Mission-1 Iron Nokana mid-boss arena (camera lock at unwrapped cam ~2303)",
+   "evidence": [
+    {
+     "note": "boss_hunt/position_sweep/hop_freeze/nokana/nokana_kill/nokana_pointblank/nokana_cab/timer_freeze: 40 grenade+antiair cycles, point-blank crouch/stand fire, roof position, cab position, timer frozen \u2014 entity slots 14(247)/17(223)/18(160)/5(254) NEVER take damage; only soldier slots cycle. Web research (arcadequartermaster/fandom/steam): MSX M1 mid-boss = Iron Nokana heavy truck (replaces MS1 Harrier). Boss HP likely OUTSIDE the 0x14C-stride entity table or phase-gated",
+     "t": "2026-10-21 19:20-19:45"
+    }
+   ],
+   "name": "nokana_midboss",
+   "name_effect_note": "registry entry records the \u00a76 blocker status; it is not an applicable code",
+   "observation": "survival through the arena PROVEN (inv20: 500 chunks, 0 HP loss, A/B-verified freeze); crossing BLOCKED on boss-HP discovery",
+   "region_applicability": "SLUS-01212 NTSC-U only",
+   "required_infrastructure": "headless libretro host + VERIFIED hp_pair_freeze",
+   "source_url": "https://www.arcadequartermaster.com/mslug1_bosses.html",
+   "status": "BLOCKED",
+   "updated": "2026-10-21"
   },
   "time": {
    "codes": [
@@ -260,89 +364,24 @@
    "status": "BLOCKED",
    "updated": "2026-10-20 08:54:50"
   },
-  "hp_pair_freeze": {
+  "timer_freeze": {
    "codes": [
-    "<derived per boot: 8<live_f6> <val_f6>, 8<live_fe> <val_fe> (u16 x2)",
-    "800CA2F6 0083 + 800CA2FE 0085 (2026-10-21 boot)"
+    "<derived per boot: 3 strict-series down-count words 0xCAD9A/0xCB032/0xCBBDE frozen at 38>"
    ],
-   "effect": "TRUE invincibility: per-frame freeze of BOTH authoritative player-HP words; damage never lands (long-window control lost 16 HP while treatment held exact value); player survives sustained enemy contact",
+   "effect": "stop mission-timer expiry (third death path: timer-out kills despite HP freeze)",
    "evidence": [
     {
-     "addr": "0xca2f6/0xca2fe",
-     "code": "800CA2F6 0083 + 800CA2FE 0085",
-     "dtype": "u16 pair",
-     "note": "hit-event RAM diff: both words drop on EVERY hit (131->120 / 133->120, converge equal); freeze trial: treatment held=True alive=True pair_clean=True while no-freeze control pair dropped 144->128 over the same 900f window (control alive, damaged); scripts/validate_inv2.py (cheatval_20261021_054729)",
-     "protocol": "hit-diff intersect x3 hits -> freeze control/treatment -> 900f long falsifier",
-     "t": "2026-10-21 05:47",
-     "works": true
+     "note": "strict-series converged to 3 words frozen at 38, verify held 600f, BUT the continue/title sequence still occurred later \u2014 the frozen words are copies or the death came from another path; real timer word NOT confirmed",
+     "t": "2026-10-21 19:41 (timer_freeze run)"
     }
    ],
-   "known_conflicts": "supersedes single-word hp_freeze (0xCABE4, 2026-10-20 boot — that address reads constant 136 on the 2026-10-21 boot and is NOT the live HP); never combine with lives-death verification",
-   "mechanism": "derived freeze at live-anchored HP pair (hit-diff: the only words that (a) drop on every hit, (b) freeze-stick under per-frame GS tick => authoritative, not HUD copies)",
-   "name": "hp_pair_freeze",
-   "observation": "THE working invincibility method for exploration runs; pair addresses must be re-derived each boot via the bounded hit-diff scan (scripts/validate_inv2.py find_hit_events); treat as exploration-only, never part of a no-cheat clear claim",
-   "region_applicability": "SLUS-01212 NTSC-U, this boot flow",
-   "required_infrastructure": "headless libretro host + GameShark tick + hit-diff pair derivation each run",
-   "source_inspected": "2026-10-21",
-   "source_url": "derived in-project (hit-diff + freeze-stick method)",
-   "status": "VERIFIED",
-   "updated": "2026-10-21 05:55:00"
-  },
-  "lives_freeze_strict_series": {
-   "codes": [
-    "<derived at run time: strict -1-per-death series, segmented at continues>"
-   ],
-   "effect": "Infinite lives via per-frame freeze of the lives counter",
-   "evidence": [
-    {
-     "protocol": "strict -1-per-death series across death-boundary snapshots, intersected across continue segments (issue5_invincible_explore inv17..inv19, 2026-10-22)",
-     "candidates_frozen": [
-      "0x87a78w2 (=POW static)",
-      "0x958d4w2",
-      "0xca944w2",
-      "0xca984w2",
-      "0xca9b8w2",
-      "0xca9bew2",
-      "0xcacdcw2",
-      "0xcb0c0w2",
-      "0xcb14cw2",
-      "0xcb1f4w2"
-     ],
-     "result": "freezing ALL 10 strict candidates did NOT prevent the third-death GAME OVER (inv19) — the lives state is NOT a simple -1 word at death-snapshot boundaries; consistent with validate_lives.py (published lives patches revision-mismatched)",
-     "works": false
-    }
-   ],
-   "mechanism": "per-frame data freeze at strict-series candidates",
-   "name": "lives_freeze_strict_series",
-   "observation": "NEGATIVE RESULT; next probes: snapshot during the death animation, lives as bit-field, 1UP HUD-render path",
-   "region_applicability": "SLUS-01212 NTSC-U, this boot flow",
-   "required_infrastructure": "headless libretro host + GS tick + death oracle (score -30 / flags)",
-   "source_url": "derived in-project (scripts/issue5_invincible_explore.py strict-series scan)",
-   "source_inspected": "2026-10-22",
+   "name": "timer_freeze",
+   "observation": "timer expiry IS a death path (CONTINUE? 8 screen captured at nokana_cab cycle 7 with HP frozen). Next: scan during a HEALTHY timer (value >1000) rather than at 38; the 0x5xx-region candidates from the cab run (0x552/0x556/0x57e/0x592/0x670..) unexplored",
+   "region_applicability": "SLUS-01212 NTSC-U only",
+   "required_infrastructure": "headless libretro host + GameShark per-frame tick",
+   "source_url": "https://gamehacking.org/game/89284",
    "status": "FAILED",
-   "updated": "2026-10-22"
-  },
-  "hp_freeze_inrun": {
-   "codes": [
-    "<derived at run time: live A/B candidate freeze>"
-   ],
-   "effect": "Player-HP freeze anchored by an in-run A/B death-differential",
-   "evidence": [
-    {
-     "protocol": "continuous real-play loop + fine-grained u16/u8 min-tracker; candidates frozen one-by-one on the LIVE loop; 6-chunk death-free window accepts (inv15..inv19, 2026-10-22)",
-     "accepted_this_boot": "0xcad08w2=64 (inv16/inv19)",
-     "caveat": "calm-phase false positives possible; CROSS-VALIDATION: validate_inv2.py VERIFIED hp_pair 0xCA2F6/0xCA2FE and this runner's inv10 A/B independently selected 0xCA2F6; 0xCABE4 falsified as boot-universal (inv8 A/B: identical death timeline with and without its freeze)"
-    }
-   ],
-   "mechanism": "per-frame data freeze (GameShark engine)",
-   "name": "hp_freeze_inrun",
-   "observation": "accepted in the accepting boot window but not reproduced across boots; SUPERSEDED for exploration runs by hp_pair_freeze (VERIFIED, scripts/issue5_explore_invuln.py)",
-   "region_applicability": "SLUS-01212 NTSC-U, this boot flow",
-   "required_infrastructure": "headless libretro host + GS tick + death oracle (score -30 / flags)",
-   "source_url": "derived in-project (scripts/issue5_invincible_explore.py live A/B)",
-   "source_inspected": "2026-10-22",
-   "status": "TESTED",
-   "updated": "2026-10-22"
+   "updated": "2026-10-21"
   }
  },
  "game": {

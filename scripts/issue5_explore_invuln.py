@@ -370,9 +370,14 @@ def main():
         # ---- death sensor: per-life accumulator reset ----
         # (per_life resets on death per Issue #3; under HP-freeze there
         # is no damage, so a reset is a REAL death — counted for
-        # disclosure and pit-avoidance, NOT as a fatal stop)
-        death_now = (pl_death_ref - pl_now) > 30 or (
-            pl_now < 30 and pl_death_ref > 100)
+        # disclosure and pit-avoidance, NOT as a fatal stop.
+        # The accumulator is u8 and WRAPS: a forward advance of +90
+        # reads as 212->46 — the raw-diff sensor false-fired 8x in
+        # inv20. Unwrap before judging: delta = (now-ref)&0xFF signed.)
+        _d = (pl_now - pl_death_ref) & 0xFF
+        if _d >= 128:
+            _d -= 256
+        death_now = _d < -30
         if death_now:
             sensor_deaths += 1
             pit_mode = True
@@ -419,14 +424,25 @@ def main():
             trace.write({"type": "stop", "chunk": c, "reason": stop,
                          "telemetry": cur})
             break
-        # ---- stall ladder (movement evidence: churn/score/camera) ----
+        # ---- stall ladder (movement evidence: camera gain is the
+        # PRIMARY signal — the truck/helicopter barrier LOCKS the camera
+        # while encounter churn stays high, so churn/score masks the
+        # stall; cam_gain <= 0 across chunks is the reliable lock
+        # signature; issue inv20: 450 chunks stuck at cam 2303 with
+        # churn 1300-1900 and no ladder fire) ----
         cam_gain = cur["camera_fx"] - prev["camera_fx"]
         score_gain = cur["score"] - prev["score"]
-        stalled = churn < 250 and score_gain <= 0 and cam_gain <= 0
+        cam_locked = cam_gain == 0
+        cam_locked_streak = getattr(main, "_cam_lock_streak", 0)
+        cam_locked_streak = cam_locked_streak + 1 if cam_locked else 0
+        main._cam_lock_streak = cam_locked_streak
+        stalled = (cam_locked_streak >= 4) or (
+            churn < 250 and score_gain <= 0 and cam_gain <= 0)
         stalled_streak = 0 if not stalled else stalled_streak + 1
-        if stalled_streak >= 8:
+        if stalled_streak >= 4:
             ladder += 1
             stalled_streak = 0
+            main._cam_lock_streak = 0
             if ladder == 1:
                 trace.write({"type": "stall_l1_jump", "chunk": c})
                 phase = gs_run(p, session, 20, {"RIGHT"}, phase)
@@ -441,15 +457,24 @@ def main():
                 trace.write({"type": "stall_l3_unstick", "chunk": c})
                 phase = gs_run(p, session, 60, {"LEFT", "Y"}, phase)
                 phase = gs_run(p, session, 120, {"RIGHT", "Y"}, phase)
-            elif ladder in (4, 5):
+            elif ladder in (4, 5, 7, 8):
                 # anti-air: the helicopter boss flies above — UP+Y burst
                 trace.write({"type": "stall_antiair", "chunk": c,
                              "level": ladder})
                 phase = gs_run(p, session,
-                               90 if ladder == 4 else 180, {"UP", "Y"},
-                               phase)
+                               90 if ladder in (4, 7) else 180,
+                               {"UP", "Y"}, phase)
                 phase = gs_run(p, session, 60, {"RIGHT", "Y"}, phase)
-            else:
+            elif ladder in (6, 9):
+                # heavy grenade volley at the armored truck
+                trace.write({"type": "stall_grenade_volley", "chunk": c,
+                             "level": ladder,
+                             "grenades": cur["grenades"]})
+                for _g in range(3):
+                    phase = gs_run(p, session, 10, {"UP"}, phase)
+                    phase = gs_run(p, session, 24, {"A"}, phase)
+                    phase = gs_run(p, session, 60, {"RIGHT", "Y"}, phase)
+            elif ladder >= 10:
                 stop = f"STOP_STALLED chunk={c}"
                 trace.write({"type": "stop", "chunk": c, "reason": stop,
                              "telemetry": cur})
