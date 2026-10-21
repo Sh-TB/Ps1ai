@@ -856,3 +856,14 @@ death detection + recover_full with menu B-select) achieved 27/27
 disclosed recoveries and an 869-chunk pass. Tests 259/259. Mission 1
 remains UNCLEARED — no claim made. Full report: issue #5 comment
 6306014579.
+
+## Issue #5 continuation (2026-10-21) — §1-§8 executed
+
+- §1: hp_pair verdict artifact missing from workspace + canonical runner never run -> pair re-proven from scratch (not assumed).
+- §2: two runner bugs fixed (segment buttons never applied in non-pit branch; GS tick missing in ladders/rescues/recovery/checkpoint-reload); global pit phase; u8-wrap-safe death sensor; 13 cadence regression tests.
+- §3: decisive A/B PASS x2 (ab1 400f, ab2 3600f): control 56 damage events + 1 death @g2293 vs freeze arms 0/0 held (B1=B2), telemetry arm agrees; pair co-drop re-confirmed 31x per boot. Scripts: issue5_ab_invuln.py.
+- §4: entity table VERIFIED (base 0x800CA268, stride 0x14C, HP +0x8E spawn 0xA0; entity[0].HP == 0x800CA2F6 live word; entity[1].HP == 0x800CA442); damage-entry enemy_800A41D8; flags writers; 3 death paths (HP / pit / TIMER EXPIRY). Scripts: issue5_deathpath.py + consol; KB death_path.json + entities.json.
+- §5: hp_pair_freeze = survival tier (A/B-proven); timer_freeze FAILED honestly (3 candidate words held but real timer word unconfirmed).
+- §6: barrier = Iron Nokana mid-boss (web-verified identity); camera-lock 2303 + mission timer; survival through arena proven (inv20 500 chunks); crossing BLOCKED — slots 14/17/18/5 immune to all tested weapons/positions; 8 probe scripts; stall ladder rebuilt on camera-lock signal.
+- §7: re_evidence_adapter.py + tests (status-tagged contract).
+- §8: 289/289 tests; report on Issue #5 (comment 6325015114); commits b256b17, 0aa758d.
