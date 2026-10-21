@@ -10,13 +10,44 @@ Everything is data + small hooks; the universal core does the rest.
 import os
 import re
 
+from .contract import (KNOWN_OPS, PluginCapabilities,  # noqa: F401
+                       UnsupportedCapabilityError, CONTRACT_VERSION)
+
 
 class GamePlugin:
     ID = "generic"
     SERIALS = ()
+    BOOT_EXE_NAMES = ()             # identity fallback for homebrew discs
+    PLUGIN_CONTRACT = CONTRACT_VERSION
 
     def __init__(self, profile):
         self.profile = profile          # dict, persisted per game
+
+    # ---------- capability negotiation (contract v1) ----------
+    # Subclasses opt IN to optional hooks by listing them here; the core
+    # calls require(op) before using an optional hook, so an unsupported
+    # operation is an explicit error, never a wrong answer.
+    OPTIONAL_OPS = ()
+
+    def capabilities(self):
+        ops = {"boot_script", "features", "policy", "infer_state"}
+        ops |= {o for o in self.OPTIONAL_OPS if o in KNOWN_OPS}
+        for name in ("mission_ready",):
+            if callable(getattr(self, name, None)) and \
+                    getattr(type(self), name) is not GamePlugin.__dict__.get(name):
+                ops.add(name)
+        return PluginCapabilities(
+            game_id=self.ID, serials=tuple(self.SERIALS),
+            boot_exe_names=tuple(getattr(self, "BOOT_EXE_NAMES", ())),
+            contract_version=getattr(self, "PLUGIN_CONTRACT", CONTRACT_VERSION),
+            ops=frozenset(ops))
+
+    def require(self, op):
+        """Explicit capability gate — raises instead of pretending."""
+        if not self.capabilities().supports(op):
+            raise UnsupportedCapabilityError(
+                f"plugin {self.ID!r} does not support op {op!r}")
+        return True
 
     # ---------- hooks ----------
     def boot_script(self):
@@ -237,7 +268,56 @@ class MetalSlugXPlugin(GamePlugin):
         return "unknown"
 
 
-PLUGIN_CLASSES = [MetalSlugXPlugin, GenericPlugin]
+class TetradePlugin(GamePlugin):
+    """Tetrade (MIT homebrew, Logan Campbell) — second-game vertical slice.
+
+    Exists to prove the plugin contract: a second game must work through
+    the shared core WITHOUT touching core implementation code. Semantics
+    are minimal by design: boot, prove input causality, survive a menu.
+    """
+    ID = "tetrade"
+    BOOT_EXE_NAMES = ("tetrade.exe",)
+    OPTIONAL_OPS = ("detectors",)
+
+    def __init__(self, profile):
+        super().__init__(profile)
+        self._beat = 0
+
+    def boot_script(self):
+        # Homebrew boots in seconds: settle, then a few START/X taps to
+        # pass any 'press start' / mode-select screen. Over-tapping is
+        # harmless in a menu-driven puzzle game.
+        steps = [{"op": "wait", "frames": 180}]
+        for _ in range(6):
+            steps.append({"op": "tap", "btns": "START", "frames": 12,
+                          "every": 90})
+        steps.append({"op": "wait", "frames": 180})
+        return steps
+
+    def features(self, mem, obs):
+        return {"changed_bytes": obs.get("changed_bytes")}
+
+    def policy(self, ctx):
+        # Deterministic play beat: nudge, drop, rotate — exercises the
+        # full pad without needing game-specific RAM knowledge.
+        c = ctx["chunk"]
+        self._beat = (self._beat + 1) % 3
+        if self._beat == 0:
+            return [{"frames": min(20, c), "btns": {"RIGHT"}},
+                    {"frames": max(0, c - 20), "btns": set()}]
+        if self._beat == 1:
+            return [{"frames": min(12, c), "btns": {"X"}},
+                    {"frames": max(0, c - 12), "btns": set()}]
+        return [{"frames": min(30, c), "btns": {"DOWN"}},
+                {"frames": max(0, c - 30), "btns": set()}]
+
+    def infer_state(self, obs, feat):
+        if obs.get("changed_bytes", 0) > 16:
+            return "gameplay"
+        return "unknown"
+
+
+PLUGIN_CLASSES = [MetalSlugXPlugin, TetradePlugin, GenericPlugin]
 
 
 def parse_serial(cue_path):
@@ -267,9 +347,47 @@ def parse_serial(cue_path):
     return s[:4] + "-" + s[5:].replace(".", "")
 
 
-def detect_plugin(serial):
+def read_boot_exe(cue_path):
+    """Return the lowercase BOOT=cdrom:<exe> name from the disc image.
+
+    Homebrew discs carry no SLUS_/SLPM_ serial, so SYSTEM.CNF's BOOT line
+    is the identity fallback. Handles MODE2/2352 (user data at offset 24
+    per 2352-byte sector) and plain 2048-byte images.
+    """
+    bin_path = None
+    try:
+        with open(cue_path, "r", errors="replace") as f:
+            for line in f:
+                if line.strip().upper().startswith("FILE"):
+                    bin_path = line.split('"')[1]
+                    break
+    except OSError:
+        return None
+    path = os.path.join(os.path.dirname(cue_path), bin_path) \
+        if bin_path else cue_path
+    if not os.path.exists(path):
+        return None
+    try:
+        with open(path, "rb") as f:
+            raw = f.read(256 * 1024)
+    except OSError:
+        return None
+    m = re.search(rb"BOOT\s*=\s*cdrom:\\?([^\r\n;]+?);?[0-9]*\s*\r?\n",
+                  raw, re.IGNORECASE)
+    if not m:
+        m = re.search(rb"BOOT\s*=\s*cdrom:\\?([^\r\n;]+)", raw,
+                      re.IGNORECASE)
+    return m.group(1).decode(errors="replace").strip().lower() if m else None
+
+
+def detect_plugin(serial, cue_path=None):
     for cls in PLUGIN_CLASSES:
         if serial and serial in cls.SERIALS:
             return cls
+    if cue_path:
+        boot = read_boot_exe(cue_path)
+        for cls in PLUGIN_CLASSES:
+            if boot and boot in tuple(getattr(cls, "BOOT_EXE_NAMES", ())):
+                return cls
     return GenericPlugin
 

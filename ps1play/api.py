@@ -102,7 +102,7 @@ class PS1Play:
         self.states = StateManager(self.states_dir)
         self.disc = DiscoverySession(self.core, self.mem)
         serial = parse_serial(self.game)
-        cls = detect_plugin(serial)
+        cls = detect_plugin(serial, self.game)
         self.profile = self._load_profile()
         self.profile.setdefault("serial", serial)
         self.profile.setdefault("plugin", cls.ID)

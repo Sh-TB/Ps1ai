@@ -1,0 +1,65 @@
+{
+  "description": "PS1 homebrew candidates for plugin-lab validation (Issue #6). Binaries are NOT stored in VCS: fetch with scripts/fetch_homebrew.py and verify SHA-256. Only permissively licensed games are accepted.",
+  "accepted": [
+    {
+      "id": "tetrade",
+      "plugin": "TetradePlugin",
+      "source": "https://github.com/Logan-Campbell/Tetrade",
+      "license": "MIT",
+      "license_file": "LICENSE",
+      "revision": "release v1.0",
+      "artifacts": [
+        {
+          "name": "TETRADE_PSX.bin",
+          "url": "https://github.com/Logan-Campbell/Tetrade/releases/download/v1.0/TETRADE_PSX.bin",
+          "bytes": 3196368,
+          "sha256": "2f41feba2023cbdcd9c1c3d4cfc3d8d1a7f1a2de0afea2e7a050b84640d6eaf8"
+        },
+        {
+          "name": "tetrade.cue",
+          "url": null,
+          "note": "generated locally: FILE/TRACK MODE2/2352 INDEX 00:00:00",
+          "bytes": 74
+        }
+      ],
+      "boot_exe": "tetrade.exe",
+      "exe_t_addr": "0x80010000",
+      "exe_t_size": "0x9b000",
+      "status": "BOOTED+DETERMINISTIC (input causality BLOCKED by OpenBIOS kernel pad path — see Issue #6)"
+    }
+  ],
+  "rejected": [
+    {
+      "id": "nortis",
+      "source": "https://github.com/jbreckmckye/nortis",
+      "reason": "no LICENSE file anywhere in repo — redistribution rights unverified",
+      "status": "REPLACED"
+    },
+    {
+      "id": "buttonmasher",
+      "source": "https://github.com/OfficialMoonlit/ButtonMasher",
+      "reason": "no license; broken standalone build (Windows-only 2012 PSXSDK toolchain)",
+      "status": "REPLACED"
+    },
+    {
+      "id": "rps-ps1-v1",
+      "source": "https://github.com/OfficialMoonlit/RPS-PS1-v1",
+      "reason": "no license; broken standalone build; no releases",
+      "status": "REPLACED"
+    }
+  ],
+  "candidates_pending": [
+    {
+      "id": "hello_pong",
+      "source": "https://github.com/marconvcm/ps1_dev",
+      "license": "MIT",
+      "note": "buildable via PSn00bSDK Docker make build; no prebuilt artifact; verify pad API before expecting input causality (same OpenBIOS risk as Tetrade)"
+    },
+    {
+      "id": "psx-minecraft",
+      "source": "https://github.com/EngineersBox/PSX-Minecraft",
+      "license": "MIT",
+      "note": "prebuilt release with standalone PS-X EXE (184320B); verify pad API used before integration"
+    }
+  ]
+}
