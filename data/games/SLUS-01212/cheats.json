@@ -61,7 +61,7 @@
     }
    ],
    "known_conflicts": "never enable together with the bombs patch verdict unless both independently verified",
-   "mechanism": "derived freeze at live-anchored address (PerceptionGuard grenade A-diff anchor, verified -1 x2 in the same boot); NOT a published address \u2014 the player cluster is dynamically placed per boot",
+   "mechanism": "derived freeze at live-anchored address (PerceptionGuard grenade A-diff anchor, verified -1 x2 in the same boot); NOT a published address — the player cluster is dynamically placed per boot",
    "name": "bombs_freeze",
    "observation": "published instruction patch 800398BE 2400 is validated separately; the freeze is the fallback when/where patches do not apply",
    "region_applicability": "SLUS-01212 NTSC-U, this boot flow",
@@ -96,7 +96,7 @@
    "known_conflicts": "never combine with the lives death-verification protocol (an invulnerable player cannot die)",
    "mechanism": "derived freeze at live-anchored HP address (find_player_hp: freeze test + survival in the same window); the published 3-line invuln patch FAILED live on this boot (see invuln verdict)",
    "name": "hp_freeze",
-   "observation": "this is the exploration-profile survival cheat; a cheat-assisted run is never reported as a no-cheat clear",
+   "observation": "this is the exploration-profile survival cheat; a cheat-assisted run is never reported as a no-cheat clear | 2026-10-21: superseded by hp_pair_freeze (0xCABE4 reads constant 136 on the new boot; find_player_hp judging flaw identified: responsive() runs ~44 unpoked frames before v1 read, invalidating freeze tests for game-refreshed words — see validate_inv2.py docstring)",
    "region_applicability": "SLUS-01212 NTSC-U, this boot flow",
    "required_infrastructure": "headless libretro host + GameShark tick + live HP anchor derivation each run",
    "source_inspected": "2026-10-20",
@@ -122,13 +122,19 @@
    "known_conflicts": "never combine with the lives verification run (an invulnerable player cannot die for the lives test)",
    "mechanism": "3-line instruction patch: 0x2400 branch-replacement + 0x00C8 (=200 decimal) constant + 0x2405 constant-load; all in the damage/HP routine (code segment, boot-independent)",
    "name": "invuln",
-   "observation": "LIVE VERDICT (2026-10-20, cheatval): with all three lines enabled and ticked every frame, HP still drained to 0 during the same idle window where the baseline died - the published 3-line invulnerability patch does NOT protect this boot; the derived hp_freeze is the working survival method",
+   "observation": "LIVE VERDICT (2026-10-20, cheatval): with all three lines enabled and ticked every frame, HP still drained to 0 during the same idle window where the baseline died - the published 3-line invulnerability patch does NOT protect this boot; the derived hp_freeze is the working survival method | ADDENDUM 2026-10-21: the separate published DATA code 800CA30C 0068 ('Invisible P1', CheatCC/Almar-beta set) was tested live (validate_iframe.py): freezing it REDUCES damage taken per window (pair delta -11/-13 -> -3/-5) but does NOT close the damage gate => 0xCA30C is a damage-related window word (partial), not full invulnerability; the 3-line instruction patch remains FAILED (lines 2-3 land on non-code bytes on our retail EXE => revision mismatch)",
    "region_applicability": "SLUS-01212 NTSC-U only",
    "required_infrastructure": "live HP slot (0..200, damage events) + GameShark tick",
    "source_inspected": "2026-10-20",
    "source_url": "https://gamehacking.org/game/89284",
    "status": "FAILED",
-   "updated": "2026-10-20 08:55:04"
+   "updated": "2026-10-21 05:55:00",
+   "sources_2026_10_21": [
+    "https://gamehacking.org/game/89284 (retail set, Invincible 3-line)",
+    "https://cheatcc.com/articles/metal-slug-x-cheats-codes-cheat-codes-for-playstation-psx-psx-codes (alt set: 80047522 lives, 800CA30C 0068 Invisible P1, 800EE290 score)",
+    "https://almarsguides.com/retro/walkthroughs/ps1/games/metalslugx/codebreaker (retail set = gamehacking)",
+    "https://almarsguides.com/retro/walkthroughs/ps1/games/metalslugx/codebreaker/beta (beta set matches CheatCC addresses)"
+   ]
   },
   "invuln_blink": {
    "codes": [
@@ -253,6 +259,34 @@
    "source_url": "https://gamehacking.org/game/89284",
    "status": "BLOCKED",
    "updated": "2026-10-20 08:54:50"
+  },
+  "hp_pair_freeze": {
+   "codes": [
+    "<derived per boot: 8<live_f6> <val_f6>, 8<live_fe> <val_fe> (u16 x2)",
+    "800CA2F6 0083 + 800CA2FE 0085 (2026-10-21 boot)"
+   ],
+   "effect": "TRUE invincibility: per-frame freeze of BOTH authoritative player-HP words; damage never lands (long-window control lost 16 HP while treatment held exact value); player survives sustained enemy contact",
+   "evidence": [
+    {
+     "addr": "0xca2f6/0xca2fe",
+     "code": "800CA2F6 0083 + 800CA2FE 0085",
+     "dtype": "u16 pair",
+     "note": "hit-event RAM diff: both words drop on EVERY hit (131->120 / 133->120, converge equal); freeze trial: treatment held=True alive=True pair_clean=True while no-freeze control pair dropped 144->128 over the same 900f window (control alive, damaged); scripts/validate_inv2.py (cheatval_20261021_054729)",
+     "protocol": "hit-diff intersect x3 hits -> freeze control/treatment -> 900f long falsifier",
+     "t": "2026-10-21 05:47",
+     "works": true
+    }
+   ],
+   "known_conflicts": "supersedes single-word hp_freeze (0xCABE4, 2026-10-20 boot — that address reads constant 136 on the 2026-10-21 boot and is NOT the live HP); never combine with lives-death verification",
+   "mechanism": "derived freeze at live-anchored HP pair (hit-diff: the only words that (a) drop on every hit, (b) freeze-stick under per-frame GS tick => authoritative, not HUD copies)",
+   "name": "hp_pair_freeze",
+   "observation": "THE working invincibility method for exploration runs; pair addresses must be re-derived each boot via the bounded hit-diff scan (scripts/validate_inv2.py find_hit_events); treat as exploration-only, never part of a no-cheat clear claim",
+   "region_applicability": "SLUS-01212 NTSC-U, this boot flow",
+   "required_infrastructure": "headless libretro host + GameShark tick + hit-diff pair derivation each run",
+   "source_inspected": "2026-10-21",
+   "source_url": "derived in-project (hit-diff + freeze-stick method)",
+   "status": "VERIFIED",
+   "updated": "2026-10-21 05:55:00"
   }
  },
  "game": {
