@@ -9,7 +9,7 @@
    "known_conflicts": "none recorded",
    "mechanism": "instruction patch (upper half 0x2400 -> addiu const-load replacing a conditional branch)",
    "name": "ammo",
-   "observation": "no event-verified ammo slot on this boot (published 0x2DCD8 reads 0xFF; starting pistol has no observable counter); needs a special-weapon pickup + shot-decrement scan",
+   "observation": "default pistol ammo is natively infinite on this revision (published cluster reads 0xFF); only special-weapon pickups have a draining counter \u2014 full-map traversal does not require the ammo patch (bombs + blink suffice)",
    "region_applicability": "SLUS-01212 NTSC-U only (arcade/Saturn/JP/PAL codes are not interchangeable)",
    "required_infrastructure": "headless libretro host + GameShark per-frame tick (ps1play.agent.gameshark)",
    "source_inspected": "2026-10-20",
@@ -35,7 +35,7 @@
    "known_conflicts": "none recorded",
    "mechanism": "instruction patch (upper half 0x2400)",
    "name": "bombs",
-   "observation": "published instruction patch NOPs the sb (store-byte) at 0x800398BC (structural analysis: scripts/analyze_patch_sites.py); VERIFIED against the real u8 counter with the patch pre-engaged like hardware GS",
+   "observation": "VERIFIED and used as the traversal cheat (freeze at the live strict-series anchor, 300EDCF4 000A family); the published instruction patch 800398BE 2400 = sb $v0,0xB6($a1) NOP \u2014 the only structurally-sound published code (analyze_patch_sites.py: ammo patches a JAL, time/lives patch lw $sp-loads, invuln codes corrupt JAL/GTE words)",
    "region_applicability": "SLUS-01212 NTSC-U only",
    "required_infrastructure": "headless libretro host + GameShark tick; live bombs counter via PerceptionGuard grenade A-diff anchor",
    "source_inspected": "2026-10-20",
@@ -75,7 +75,7 @@
    "codes": [
     "<derived at run time: 8<live_hp_addr> <current_value>"
    ],
-   "effect": "Survival method: per-frame DATA freeze of the freeze-verified player HP slot (damage never lands; player survives where the baseline dies)",
+   "effect": "SUPERSEDED: was believed to be player HP freeze; not the lethal-damage gate (see evidence)",
    "evidence": [
     {
      "addr": "0xcabe4",
@@ -84,6 +84,13 @@
      "protocol": "baseline/treatment/disable/repeat (scripts/validate_cheats.py)",
      "t": "2026-10-20 09:05",
      "works": true
+    },
+    {
+     "addr": "0xca2fe",
+     "code": "800CA2FE 0090",
+     "note": "player died 4x in issue5_recon_recon1 with the word frozen at 0x90 (flags 0xFF->1 at chunks 32/65/103/138); the word sits in the per-life 0xCA2E0 cluster, not a lethal gate",
+     "t": "2026-10-21 00:26:48",
+     "verdict": "false positive \u2014 SUPERSEDED by invuln_blink"
     }
    ],
    "known_conflicts": "never combine with the lives death-verification protocol (an invulnerable player cannot die)",
@@ -94,8 +101,8 @@
    "required_infrastructure": "headless libretro host + GameShark tick + live HP anchor derivation each run",
    "source_inspected": "2026-10-20",
    "source_url": "derived in-project (perception.find_player_hp freeze-verified anchor)",
-   "status": "VERIFIED",
-   "updated": "2026-10-20 09:01:47"
+   "status": "FAILED",
+   "updated": "2026-10-21 00:26:48"
   },
   "invuln": {
    "codes": [
@@ -122,6 +129,46 @@
    "source_url": "https://gamehacking.org/game/89284",
    "status": "FAILED",
    "updated": "2026-10-20 08:55:04"
+  },
+  "invuln_blink": {
+   "codes": [
+    "<derived per boot: 300EF13F 00<high blink value>",
+    "300EF13F 0020 (this boot family, freeze value 32)"
+   ],
+   "effect": "TRUE invincibility: per-frame freeze of the post-respawn invulnerability (blink) timer u8; the player becomes unhittable \u2014 walked into live enemy contact for 900 frames with zero deaths while the baseline dies deterministically (~c35 village)",
+   "evidence": [
+    {
+     "addr": "0xef13f",
+     "dtype": "u8",
+     "note": "address stable across this session's boots (0xEDCF4 grenade anchor equally stable); per-boot re-derivation is kept as safety",
+     "protocol": "sample -> reload(savestate) -> resample -> freeze -> 900-frame enemy-contact walk",
+     "series": [
+      32,
+      24,
+      17,
+      10,
+      2,
+      0,
+      0
+     ],
+     "t": "2026-10-21 (run issue5_blink_b2)",
+     "verdict": "INVULN_VERIFIED"
+    },
+    {
+     "addr": "0xef13f",
+     "note": "issue5_deathprobe d1/d2/d3 + frameprobe f1/f2: player died at the village with 0xEF13F frozen at 0x20; killer = tall vertical explosion (follower-helicopter bomb, f2 f002092.png). The b2 900f freeze test was shorter than the ~2100f baseline death window -> unsound verification. Status VERIFIED -> FAILED.",
+     "t": "2026-10-21 01:46:26",
+     "verdict": "REJECTED as invincibility"
+    }
+   ],
+   "mechanism": "data freeze of the game's own invulnerability timer; discovery: 5-frame-cadence sampling at mission-start control handover, countdown series [32,24,17,10,2,0,...] reproduced across savestate reload, then freeze-test vs live enemies",
+   "name": "invuln_blink",
+   "region_applicability": "SLUS-01212 NTSC-U, this boot flow",
+   "required_infrastructure": "headless libretro host + GameShark tick; 5f-cadence countdown sampling at mission start",
+   "source_inspected": "2026-10-21",
+   "source_url": "derived in-project (issue5_blink2.py)",
+   "status": "FAILED",
+   "updated": "2026-10-21 01:46:26"
   },
   "lives": {
    "codes": [
@@ -154,6 +201,34 @@
    "source_inspected": "2026-10-20",
    "source_url": "https://etherealgames.com/ps1/m/metal-slug-x/gameshark-codes/",
    "status": "BLOCKED"
+  },
+  "lives_mirror": {
+   "codes": [
+    "<derived: 300CB225 00<high> (this boot family)>"
+   ],
+   "effect": "candidate lives freeze at u8 0xCB225 \u2014 REJECTED: freezing it did not gate game-over (end frame = TITLE screen); the word is a mirror/HUD shadow",
+   "evidence": [
+    {
+     "note": "issue5_lives2_l2: freeze test recorded 3 respawn-like score events but the run still fell through to the title; verdict was initially recorded as TESTED and is corrected here to FAILED",
+     "series": [
+      2,
+      2,
+      2,
+      2,
+      1,
+      1,
+      0,
+      0
+     ],
+     "t": "2026-10-21"
+    }
+   ],
+   "mechanism": "data freeze candidate from 30f-series scan",
+   "name": "lives_mirror",
+   "region_applicability": "SLUS-01212 NTSC-U",
+   "source_inspected": "2026-10-21",
+   "source_url": "derived in-project (issue5_livesprobe2.py)",
+   "status": "FAILED"
   },
   "time": {
    "codes": [
@@ -196,5 +271,5 @@
  "mechanism": "Per-frame RAM patch applied by ps1play.agent.gameshark.GameShark over the live libretro SYSTEM_RAM view (hardware GameShark/PAR cadence). LIVE BOOT FACTS (2026-10-20, Beetle PSX 0.9.44.1 df2b53b, OpenBIOS): (1) the PUBLISHED data addresses (0x398B4 bombs, 0x2DCD8 ammo, 0x32764 hp, 0x475A8 lives, 0x295F8 timer) ALL read 0xFF in this boot - the player-state area is dynamically placed, so published DATA addresses do not apply here; (2) the REAL grenade inventory is a u8 found by the strict 4-press series scan (scripts/scan_bombs_strict.py: -1 per separated throw, bounded, idle-stable, reproduced) - series 10,9,8,7,6 at 0xEDCF4 in this boot; (3) the earlier '-1 x2' live anchor at 0xCAF9C was an animation/scratch impostor (series jumps 4->84->74; scripts/diag_bombs_anchor.py) - all addresses and statuses derived from it were retracted; (4) the player HP slot is anchored behaviorally (perception.find_player_hp: freeze the word -> the player survives the window where the baseline dies).",
  "notes": "A code is VERIFIED only by the live baseline/treatment/disable/repeat protocol (scripts/validate_cheats.py) against an EVENT-VERIFIED counter. Derived freeze codes are re-derived from fresh anchors every run (never copied across boots). CANDIDATE codes never drive CHEAT_ASSISTED_EXPLORATION.",
  "schema": "ps1play-cheat-registry/1",
- "updated": "2026-10-20 09:23:01"
+ "updated": "2026-10-21 01:46:26"
 }
