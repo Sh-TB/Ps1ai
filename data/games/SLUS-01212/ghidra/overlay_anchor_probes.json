@@ -1,0 +1,23 @@
+{
+ "damage_entry_0x800A41D8": {
+  "entry": "800a41d8", 
+  "callers_in": [], 
+  "function": "FUN_800a41d8", 
+  "callees_out": []
+ }, 
+ "dispatch_0x800A87F8": {
+  "entry": "800a87f8", 
+  "callers_in": [
+   "8009fafc", 
+   "8009fcb4", 
+   "8009fdcc", 
+   "8009f170", 
+   "8009edec", 
+   "800a0ab0", 
+   "8009f304", 
+   "8009f494"
+  ], 
+  "function": "FUN_800a87f8", 
+  "callees_out": []
+ }
+}

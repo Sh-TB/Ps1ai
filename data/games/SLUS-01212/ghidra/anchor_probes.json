@@ -1,0 +1,15 @@
+{
+ "spawn_writer_0x8002DB48": {
+  "entry": "8002db48", 
+  "function": "FUN_8002db48", 
+  "callers": [
+   "80030a9c"
+  ]
+ }, 
+ "damage_entry_0x800A41D8": {
+  "function": null
+ }, 
+ "dispatch_0x800A87F8": {
+  "function": null
+ }
+}
