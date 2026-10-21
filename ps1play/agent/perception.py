@@ -23,6 +23,10 @@ PAD_P1 = 0x0D4948
 SCORE = 0x0EE318
 POW = 0x087A78
 
+# mission-init may reset the leftover demo score ~150 frames into a
+# fresh mission — that reset is NOT a death (inv5 false-pulse lesson)
+HP_WARMUP = 150
+
 PAD_BITS = {"RIGHT": 0x0020, "LEFT": 0x0080, "UP": 0x0010,
             "DOWN": 0x0040, "START": 0x0008}   # verified empirically
 
@@ -39,6 +43,7 @@ class PerceptionGuard:
         # verification: a role is VERIFIED only after its own event test.
         self.verification = {}
         self.invalidations = []
+        self.hp_tier = None
 
     # ---------------- observation contract (v0.6 §5) ----------------
     def _set_role(self, role, addr, status, method, frame=None,
@@ -255,46 +260,146 @@ class PerceptionGuard:
         return self.p.mem.u32(SCORE)
 
     # ---------------- player hp: freeze-verified anchor ----------------
-    def find_player_hp(self, log=print, max_cands=4, window=480):
-        """THE safe way to get the Invincible address.
-        1) from a fresh spawn, stand still: hp-band words that DROP are
-           hp-like (player got stabbed)
-        2) freeze each dropper; the one whose value CANNOT drop while the
-           player SURVIVES the same window is the player's own hp.
-        Only that address is safe to freeze long-term."""
+    @staticmethod
+    def _in_play(p):
+        """flags_word u32@0x0EE518: 0xFF=active play, 0x1=menus/GAME
+        OVER (issue-5 evidence, 4/4). Cheap death/alive oracle."""
+        return int(p.mem.u32(0x0EE518)) & 0xFF == 0xFF
+
+    # per-life score u32@0x0EE318 (VERIFIED static; the accumulator
+    # RESETS on checkpoint respawn — inv2 trace: 220->8 with flags
+    # still 0xff).  A drop beyond DEATH_DROP is therefore a respawn
+    # (a life lost) even while flags stay 0xFF.
+    SCORE_ADDR = 0x0EE318
+    DEATH_DROP = 30
+    @classmethod
+    def _death_pulse(cls, p, last_max):
+        """Return (died, new_max).  Died = lives-death oracle that
+        sees checkpoint respawns (score collapse) AND game over
+        (flags 0x1)."""
+        if not cls._in_play(p):
+            return True, last_max
+        s = int(p.mem.u32(cls.SCORE_ADDR))
+        if s < last_max - cls.DEATH_DROP:
+            return True, last_max
+        return False, max(last_max, s)
+
+    def hp_candidates(self, log=print, window=2400, max_cands=6,
+                      advance=None):
+        """Stationary-burst baseline; returns the min-tracking dropper
+        list (band 80..210), prioritized by proximity to the last
+        freeze-VERIFIED player-HP placement (0xCABE4), plus whether
+        the baseline lost a life at all (the death-differential
+        discriminator only exists when it did)."""
         p = self.p
-        from mission import responsive
+
+        def _btns(i):
+            if advance is not None:
+                return advance(i)
+            # active baseline: grenade-relevant damage (Y bursts) plus
+            # short RIGHT taps — NEVER a long idle (the SLUS port pulls
+            # the attract demo over real play on idle; ctxchk evidence)
+            if i % 120 < 40:
+                return {"Y"}
+            if i % 90 < 6:
+                return {"RIGHT"}
+            return set()
+
+        # warm-up: the mission-init may reset the leftover demo score
+        # in the first ~150 frames — that is NOT a death (inv5 lesson)
+        WARMUP = HP_WARMUP
         p.save_state("hpbase")
-        s0 = p.mem.snapshot()
-        p.core.run(window, set())
+        a0 = p.mem.ram[:0x1FC000].view("<u2").astype(np.int32)
+        minv = a0.copy()
+        died = False
+        f = 0
+        smax = int(p.mem.u32(self.SCORE_ADDR))
+        while f < window:
+            p.core.set_buttons(_btns(f))
+            p.core.run_frame()
+            f += 1
+            if f > WARMUP:
+                died, smax = self._death_pulse(p, smax)
+            if died:
+                break
+            if f % 6 == 0:
+                cur = p.mem.ram[:0x1FC000].view("<u2").astype(np.int32)
+                np.minimum(minv, cur, out=minv)
         p._advance()
-        s1 = p.mem.snapshot()
-        a0 = s0[:0x1FC000].view("<u2").astype(np.int32)
-        a1 = s1[:0x1FC000].view("<u2").astype(np.int32)
-        band = ((a0 >= 80) & (a0 <= 210) & (a1 < a0))
-        cands = [int(w) * 2 for w in np.flatnonzero(band)][:max_cands]
-        log(f"[percept] hp-like droppers: {[hex(a) for a in cands]}")
+        band = ((a0 >= 80) & (a0 <= 210) & (minv < a0 - 5))
+        cands = [int(w) * 2 for w in np.flatnonzero(band)]
+        cands.sort(key=lambda a: abs(a - 0xCABE4))
+        cands = cands[:max_cands]
+        log(f"[percept] hp baseline: died={died} frames={f} "
+            f"droppers={[hex(a) for a in cands]}")
+        if not cands:
+            p.load_state("hpbase")
+        return {"cands": cands, "died": died, "frames": f,
+                "restored": not cands}
+
+    def find_player_hp(self, log=print, max_cands=6, window=2400,
+                       advance=None):
+        """Player-HP anchor with a two-tier honesty contract.
+
+        Tier 1 (death differential, strongest): while the baseline
+        loses a life, freeze each candidate through horizon =
+        death_frame + 600; the candidate with NO life loss is the
+        player HP (proven in this boot).
+        Tier 2 (dropper-top + prior verification, used ONLY when the
+        baseline never loses a life — the opening enemies are too
+        slow to kill an idle/bursting Marco, inv6 evidence): the top
+        dropper near the previously-VERIFIED 0xCABE4 placement is
+        returned; its protective effect is then confirmed in-run by
+        the exploration death rate (see issue5_invincible_explore),
+        and any life loss during exploration counts AGAINST it."""
+        p = self.p
+        base = self.hp_candidates(log=log, window=window,
+                                  max_cands=max_cands, advance=advance)
+        cands, died, f = (base["cands"], base["died"],
+                          base["frames"])
         if not cands:
             return None
+        if not died:
+            # Tier 2: no death happened, no differential available.
+            # The top dropper (prior-VERIFIED region) is returned for
+            # in-run protection confirmation; never claimed as proven.
+            addr = cands[0]
+            p.load_state("hpbase")
+            self.addrs["hp"] = addr
+            self.hp_tier = "tier2_dropper_top"
+            self.hp_scale = 200 if p.mem.u16(addr) > 150 else 100
+            log(f"[percept] hp TIER2 dropper-top @ {addr:#x} "
+                "(baseline lost no life; protection must be confirmed "
+                "by in-run death rate)")
+            return addr
+        p.load_state("hpbase")
+        horizon = f + 600
         for addr in cands:
             p.load_state("hpbase")
             v0 = p.mem.u16(addr)
-            # freeze WITHOUT the engine (direct per-frame poke)
-            p.core.set_buttons(set())
-            alive = True
-            for _ in range(window):
+            survived = True
+            smax = int(p.mem.u32(self.SCORE_ADDR))
+            for i in range(horizon):
+                p.core.set_buttons(
+                    advance(i) if advance is not None else
+                    ({"Y"} if i % 120 < 40 else
+                     ({"RIGHT"} if i % 90 < 6 else set())))
                 p.core.run_frame()
                 p.mem.ram[addr:addr + 2] = (v0 & 0xFF, (v0 >> 8) & 0xFF)
-            p._advance()
-            ok, _ = responsive(p)
-            v1 = p.mem.u16(addr)
-            log(f"[percept] hp freeze test {addr:#x}: {v0}->{v1} "
-                f"alive={ok}")
-            if v1 == v0 and ok:
+                if i > HP_WARMUP:
+                    d, smax = self._death_pulse(p, smax)
+                    if d:
+                        survived = False
+                        break
+            log(f"[percept] hp freeze test {addr:#x}: survived="
+                f"{survived} horizon={horizon} "
+                f"(baseline died at {f})")
+            if survived:
                 self.addrs["hp"] = addr
+                self.hp_tier = "tier1_death_differential"
                 self.hp_scale = 200 if v0 > 150 else 100
                 log(f"[percept] PLAYER HP confirmed @ {addr:#x} "
-                    f"(full={v0})")
+                    f"(frozen full={v0}; death-differential survival)")
                 p.load_state("hpbase")
                 return addr
         p.load_state("hpbase")
