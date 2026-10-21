@@ -47,3 +47,16 @@ button byte ever flips FF→F7 under any held button. OpenBIOS source
 `0x41/0x23` (high-level path), and low-level `readPad` aborts on tight IRQ
 timeouts. Retail-pad games (MSX) unaffected. Classified: **shared
 backend/BIOS compatibility defect**, protected by an xfail regression test.
+
+**Cross-backend reproduction (`TESTED` 2026-10-22):** the same Tetrade disc
+under PCSX-Redux (which ships its own OpenBIOS build) with Lua
+`PCSX.SIO0.slots[1].pads[1].setOverride(BTN.START)` held for two 300-frame
+windows still shows no real padbuff (`SCAN held300f/held2_300f`: only
+coincidental `00 04 xx xx` data bytes, btn values stable across press
+phases — not `0xFFF7`). The defect is therefore **in the OpenBIOS kernel
+low-level pad path itself (vs emulated SIO ACK timing), reproduced across
+two independent emulators** (beetle 0.9.44.1 AND PCSX-Redux HEAD).
+PCdrv-era/retail pad reading (MSX) is unaffected in both. Candidate future
+fixes: OpenBIOS-side timing patch, or a plugin-declared compatibility patch
+(patched-copy policy: local-only, never redistributed), or retail-BIOS
+runners where legally available.

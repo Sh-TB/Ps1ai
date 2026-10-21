@@ -162,16 +162,17 @@ def test_real_tetrade_boots_through_core(tmp_path):
                     reason="Tetrade release artifact not downloaded")
 @pytest.mark.xfail(reason=(
     "BLOCKED — shared backend/BIOS compatibility defect, root-caused "
-    "2026-10-22: beetle-psx 0.9.44.1 + OpenBIOS never completes a "
-    "low-level kernel pad poll for this PSn00bSDK game. Evidence: no "
-    "padbuff state (unfilled ff ff.., success 00 41 ff ff, aborted "
-    "ff 41..) exists anywhere in 2MB RAM after 600+ frames; no button "
-    "byte ever flips FF->F7 under any held button; OpenBIOS "
-    "openbios/sio0/pad.c alterUserPadData only copies data for pad IDs "
-    "0x41/0x23 and driver.c readPad aborts on tight IRQ timeouts; "
-    "Tetrade input.c requires pad->stat==0 && type in {0x4,0x5,0x7}. "
-    "Retail-pad games (MSX) are unaffected. Do NOT treat as a Tetrade "
-    "or plugin defect."),
+    "2026-10-22 and REPRODUCED ACROSS TWO BACKENDS: beetle-psx 0.9.44.1 "
+    "+ OpenBIOS never completes a low-level kernel pad poll for this "
+    "PSn00bSDK game (no padbuff state in ANY form after 600+ frames; no "
+    "button byte ever flips FF->F7); the same disc under PCSX-Redux HEAD "
+    "(its own OpenBIOS build) with Lua pad setOverride(BTN.START) held "
+    "300f x2 also shows no real padbuff. OpenBIOS openbios/sio0/pad.c "
+    "alterUserPadData only copies data for pad IDs 0x41/0x23 and "
+    "driver.c readPad aborts on tight IRQ timeouts; Tetrade input.c "
+    "requires pad->stat==0 && type in {0x4,0x5,0x7}. Retail-pad games "
+    "(MSX) unaffected in both backends. Do NOT treat as a Tetrade or "
+    "plugin defect."),
     strict=False)
 def test_real_tetrade_input_causality_divergence(tmp_path):
     """Causal input proof by divergence from one identical origin state:
