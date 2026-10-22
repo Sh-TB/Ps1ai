@@ -903,3 +903,24 @@ remains UNCLEARED — no claim made. Full report: issue #5 comment
 - >=50-wagon acceptance NOT met (honest): town truck/chopper camera gate + 300s timer + continue timing + attract-slide reset; each framed.
 - v1a/v1b bit-identical determinism evidence. `docs/wagon_run_issue7.md`; commit `a565b23`.
 - T8/T9 BLOCKED_BY_ENVIRONMENT (PCSX-Redux prebuilt gone; no cmake). T10 manifest sha256 re-verified OK.
+
+## 2026-10-22 — Issue #8: FIRST COMPLETE GAME (Tetrade full playthrough)
+- Learned the game source-first (MIT main.c): menu confirm = CROSS||START
+  (libretro B — the earlier X/TRIANGLE failure explained), scoring
+  (200xlevel, level starts 0), game-over -> CONTINUE? -> CIRCLE refuses.
+- RAM struct localized by INPUT CAUSALITY: whole-RAM u32 diff around a
+  LEFT hold isolates tetrimino.x; base = x-868 (source layout, sizes
+  verified live: matrix 800 B, Tetrimino 92 B, next[14]). Base 0x1FECA0;
+  gravity/x/rot/counters each verified independently.
+- TetradePlayPlugin (contract v1, zero core edits) + pure engine
+  agent/tetris_ai.py; closed-loop stateless re-plan per chunk, per-cell
+  2-frame taps, SRS-stuck fallback, pre-drop type==-1 guard (runner),
+  sanity gates for mid-lock transient reads.
+- FULL RUN: 40 pieces, 11 singles verified per-increment, score 0->218
+  (hard-drop +2/cell, HUD cross-checked 70<->70), level-up reached,
+  natural game over, CONTINUE refused, loop closed. 2 runs bit-identical.
+- Honest opens: score deterministic dips at some clears (232->2, lines
+  preserved) — release binary may differ from master source; marked
+  UNKNOWN (W3-6). Restore-from-checkpoint proven (run_entry).
+- Suite: 334 passed + 1 xfailed (13 new offline tests). Evidence local
+  (emu/games_homebrew/evidence/tplay_*); only plugin/docs/tests committed.

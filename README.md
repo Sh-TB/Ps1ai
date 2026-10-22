@@ -260,6 +260,23 @@ Issue #1 (MASTER MISSION v0.12) executed end to end:
 - **Tests 98 -> 136** (`test_config_contract.py`,
   `test_autolab_progress.py`); no copyrighted content committed.
 
+## First complete game — Tetrade full playthrough (Issue #8)
+
+The plugin architecture's first COMPLETE game loop, played end-to-end
+through the shared core with zero core edits and zero RAM writes:
+
+**boot → title → menu → Marathon → 40 pieces placed → 11 line clears
+(verified per-increment in RAM) → natural game over → CONTINUE refused →
+back at the menu.** Two full runs bit-identical (determinism), 23 s wall
+each (~4.7× realtime), suite 334 passed + 1 xfailed.
+
+- How the game was LEARNED and how it RUNS: `docs/tetrade_playthrough.md`
+- Pure offline engine: `ps1play/agent/tetris_ai.py` (evaluator, rotations)
+- Plugin (contract v1): `ps1play/plugins/tetrade_play.py`
+- Calibration (RAM struct localization by input causality):
+  `scripts/tetrade_calib.py`
+- Runner: `scripts/run_tetrade_playthrough.py`
+
 ## Source-of-truth table (live status of every claim)
 
 | Claim | Evidence today | Status |

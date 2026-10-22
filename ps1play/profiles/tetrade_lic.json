@@ -1,0 +1,61 @@
+{
+ "serial": null,
+ "plugin": "tetrade",
+ "discovered": {
+  "struct_base": {
+   "addr": 2092192,
+   "provenance": "SOURCE_DERIVED (main.c layout, MIT Logan-Campbell/Tetrade) + LIVE_VERIFIED by input causality (tetrade_calib.py)"
+  },
+  "fields": {
+   "matrix": 2092192,
+   "tet_type": 2092992,
+   "tet_shape": 2092996,
+   "tet_x": 2093060,
+   "tet_y": 2093064,
+   "tet_held": 2093068,
+   "tet_rot": 2093072,
+   "next_count": 2093084,
+   "next0_type": 2093088,
+   "hold_type": 2094376,
+   "score": 2094468,
+   "single": 2094472,
+   "double": 2094476,
+   "triple": 2094480,
+   "tetra": 2094484,
+   "move_cd": 2094488,
+   "set_time": 2094492,
+   "level": 2094496,
+   "ghost_y": 2094500,
+   "game_over": 2094504,
+   "paused": 2094508
+  },
+  "probes": {
+   "left_probe": {
+    "x0": 2,
+    "x1": 1,
+    "moved": true
+   },
+   "right_probe": {
+    "x1": 1,
+    "x2": 1,
+    "moved": false
+   },
+   "rotate_probe": {
+    "shape_changed": true,
+    "rot_before": 0,
+    "rot_after": 1
+   },
+   "harddrop_probe": {
+    "score_pre": 0,
+    "score_post": 0,
+    "score_increased": false,
+    "type_changed": true
+   },
+   "softdrop_probe": {
+    "score_pre": 0,
+    "score_post": 0
+   }
+  }
+ },
+ "updated": "2026-10-22 10:20:33"
+}

@@ -414,7 +414,11 @@ class PowerPlayTriviaPlugin(GamePlugin):
         return "unknown"
 
 
-PLUGIN_CLASSES = [MetalSlugXPlugin, TetradePlugin, PowerPlayTriviaPlugin,
+from .tetrade_play import TetradePlayPlugin  # noqa: E402 (circular-free)
+
+
+PLUGIN_CLASSES = [MetalSlugXPlugin, TetradePlugin, TetradePlayPlugin,
+                  PowerPlayTriviaPlugin,
                   GenericPlugin]
 
 
