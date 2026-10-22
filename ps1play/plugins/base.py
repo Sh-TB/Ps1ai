@@ -317,7 +317,105 @@ class TetradePlugin(GamePlugin):
         return "unknown"
 
 
-PLUGIN_CLASSES = [MetalSlugXPlugin, TetradePlugin, GenericPlugin]
+class PowerPlayTriviaPlugin(GamePlugin):
+    """Power Play — Sports Trivia (SLUS-01445): turn-based quiz, the
+    cheapest full-game loop there is. Menu flow (verified frame-exact):
+    title(START) -> SELECT A SPORT(x, ALL) -> SELECT A GAME(x, Tournament)
+    -> HOW MANY PLAYERS(x, 1) -> controller check(x Continue)
+    -> name entry(square adds 'A' x3, x Accept) -> icon select(x)
+    -> quiz: question -> x locks answer -> feedback -> next question.
+    Round/score screens are passed with x / START on stall."""
+    ID = "power_play_trivia"
+    SERIALS = ("SLUS-01445",)
+
+    ANSWER_PERIOD = 450      # frames between answer taps (7.5 s, human pace)
+    MENU_STALL_START = 1800  # static screen this long -> press START
+
+    def __init__(self, profile):
+        super().__init__(profile)
+        self._answer_cd = 0      # frames until next answer tap
+        self.answers = 0
+        self.starts = 0
+
+    def boot_script(self):
+        cached = self.profile.get("boot_script")
+        if cached:
+            return cached
+
+        def tap(btns, gap):
+            # press + EXPLICIT release + idle gap. core.run() keeps the
+            # last button set held when called with buttons=None, so a
+            # bare tap op would turn into a long hold (verified bug).
+            return [{"op": "tap", "btns": btns, "frames": 15},
+                    {"op": "tap", "btns": "", "frames": 1},
+                    {"op": "wait", "frames": max(0, gap - 16)}]
+
+        steps = [{"op": "wait", "frames": 1800}]           # title
+        steps += tap("START", 700)                          # title -> sport
+        steps += tap("B", 900)                              # sport: ALL
+        steps += tap("B", 900)                              # game: tournament
+        steps += tap("B", 900)                              # players: 1
+        steps += tap("B", 900)                              # controller check
+        for _ in range(3):                                  # name 'AAA'
+            steps += tap("SQ", 415)
+        steps += tap("B", 1500)                             # name accept
+        steps += tap("B", 1500)                             # icon accept
+        steps += [{"op": "wait", "frames": 600}]            # Q1 fade-in
+        return steps
+
+    def features(self, mem, obs):
+        # bucketed activity doubles as the watched value so AgentLoop's
+        # stall counter freezes exactly when the screen is static
+        cb = obs.get("changed_bytes") or 0
+        return {"changed_bytes": cb,
+                "x": cb // 100,
+                "answers": self.answers}
+
+    def policy(self, ctx):
+        """Quiz rhythm: read the question, tap x to lock, wait out the
+        feedback. A STATIC screen (changed_bytes tiny) gets START — that
+        covers round-results / trophy screens where x does nothing.
+        The orchestrator re-enters from the title via boot_script()."""
+        c = ctx["chunk"]
+        changed = (ctx.get("obs") or {}).get("changed_bytes") or 0
+        static = changed < 500
+        segs = []
+        left = c
+        if static:
+            # results / round-over screens: START advances them
+            self.starts += 1
+            k = min(15, left)
+            segs.append({"frames": k, "btns": {"START"}})
+            left -= k
+            if left > 0:
+                segs.append({"frames": left, "btns": set()})
+            return segs
+        if self._answer_cd > 0:
+            k = min(self._answer_cd, left)
+            segs.append({"frames": k, "btns": set()})
+            self._answer_cd -= k
+            left -= k
+        if left <= 0:
+            return segs
+        # answer now (lock the highlighted choice like a human slamming x)
+        self._answer_cd = self.ANSWER_PERIOD
+        self.answers += 1
+        k = min(15, left)
+        segs.append({"frames": k, "btns": {"B"}})
+        left -= k
+        if left > 0:
+            segs.append({"frames": left, "btns": set()})
+        return segs
+
+    def infer_state(self, obs, feat):
+        cb = obs.get("changed_bytes", 0) or 0
+        if cb > 20000:
+            return "quiz_active"
+        return "unknown"
+
+
+PLUGIN_CLASSES = [MetalSlugXPlugin, TetradePlugin, PowerPlayTriviaPlugin,
+                  GenericPlugin]
 
 
 def parse_serial(cue_path):
