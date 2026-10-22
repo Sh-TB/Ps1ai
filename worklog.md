@@ -961,3 +961,13 @@ remains UNCLEARED — no claim made. Full report: issue #5 comment
   G3 mid pass, G5 mosque->truck->clamp push 9MB, G6 clamp arrival with the
   chopper over the CONTINUE screen); uguu.se mirror links in the Issue #5
   comment; catbox/litterbox blocked from this sandbox.
+
+## 2026-10-23 — Issue #5 session 3: user gameplay feedback → CombatPolicy v6 (instrumented, before/after)
+- User watched the session-2 GIFs and reported 5 defects: pass-through without kills, jeep behind, no turn-back after map end, fixed-RIGHT facing, chopper overhead.
+- Probe 0 (`scripts/probe0_addresses.py`): slot0 = player (X u32 fixed @0xCA2E0 walks both directions; HP slot0+0x8E); enemy HP window 1..600 (352 armored vehicle; >=32768 signed transients excluded); 40-slot scan; unarmed walk = score 0 + damage + enemies BEHIND (x 770-812 vs player 838) — user report reproduced live.
+- Instrumented A/B (`scripts/gif_run2_capture.py`, --policy route|combat; per-chunk entity scan JSONL + death geometry): baseline 100 chunks = 4 real deaths ALL at the clamp with rear enemies (dx -54..-93) + 62 clamp chunks holding RIGHT, never turning → D2/D3 CONFIRMED with live data.
+- Policy iterations v1→v6 (each evidence-gated, 17 offline tests in tests/test_combat_policy.py): v3 engage-everything = 13 deaths (standing still is death); v4 mid-run rear engagement = walking into the pursuit pack (the death pattern); v6 final = run-through backbone + point-blank front reflex (<=45px) + DERIVED stage-end (player X stalls while RIGHT held — no map constants) → defensive rear-clear (stand + LEFT fire + UP alternation + rain hops + grenades + escalation walk-back 180/300/450).
+- Combat v6 150 chunks: 0 mid-run deaths, ALL deaths at the clamp, clamp rear-clear kills score 5901 (vs baseline 5000 incidental), faces pressing threat (D4 fixed). Honest limits: clamp battle remains lethal for both policies (the section-completion gate from session 2 is still the open root blocker); UP-fire vs chopper UNVERIFIED at chunk granularity; restart-loop tax disclosed (8 vs 21 loop deaths).
+- Evidence: 4 GIFs built (scripts/build_combat_gifs.py) + uguu.se mirrors + full report on Issue #5 (issuecomment-6352736966); analysis JSON at evidence/combat_before_after.json (local).
+- Side workstream (Task 2-b subagent): Nortis full play-test (boot/menu/in-game OBSERVED-CAUSAL controls via savestate-twin A/B; 35,270 frames) + PSX-Minecraft re-probe (boots; attract-loop trigger UNKNOWN; clean negative pad proof; DWARF-sourced control map UNVERIFIED live). Local only: emu/games_homebrew/evidence/{nortis,psxmc}_play1/ + scratch/{nortis,psxmc}_play_report.json.
+- Commit: combat policy + tests + scripts + 4 GIFs; suite 374 passed + 1 xfailed.
