@@ -49,6 +49,7 @@ from ps1play.agent.cheatprof import (                     # noqa: E402
 from ps1play.agent.gameshark import GSCode                # noqa: E402
 from ps1play.agent.perception import PerceptionGuard      # noqa: E402
 from ps1play.agent.route import RoutePolicy               # noqa: E402
+from ps1play.agent.wagon import WagonSensor               # noqa: E402
 from mission import ensure_mission                        # noqa: E402
 from issue4_controller import boot                        # noqa: E402
 from run_mission1_legit import recover_v2                 # noqa: E402
@@ -98,6 +99,9 @@ def parse_args(argv=None):
     ap = argparse.ArgumentParser(description=__doc__.splitlines()[0])
     ap.add_argument("--opt-in", action="store_true",
                     help="explicit consent for CHEAT_ASSISTED_EXPLORATION")
+    ap.add_argument("--wagon", action="store_true",
+                    help="enable the Issue-7 wagon sensor (entity-table "
+                         "lifecycle counting; observational only)")
     ap.add_argument("--chunks", type=int, default=500)
     ap.add_argument("--minutes", type=float, default=40.0)
     ap.add_argument("--tag", default="inv1")
@@ -243,6 +247,7 @@ def main():
         tel = TelemetryAdapter(p)
         prev = tel.snapshot(buttons=[], frame=p.core.frames_run)
         churn_prev = p.mem.snapshot()
+        wagon = None                             # no sensor on resume
     else:
         g = ensure_mission(p, tries=6, log=_log, want_hp_cands=False)
         if not g.get("in_mission"):
@@ -339,6 +344,9 @@ def main():
         churn_prev = p.mem.snapshot()
         _save_runstate(rs_path, start_chunk, total_chunks, [f6, fe],
                        max_score, hits, deaths, stop, pit_mode)
+        wagon = (WagonSensor(p.mem.ram, every=10)
+                 if getattr(args, "wagon", False) else None)
+        wagon_png = 0
     phase = 0                     # GLOBAL frame phase (partition-indep.)
     for c in range(start_chunk, total_chunks):
         if stop:
@@ -361,6 +369,13 @@ def main():
         evs = tel.events(prev, cur)
         for e in evs:
             trace.write({"type": "event", "chunk": c, **e})
+        if wagon is not None:                    # Issue-7 wagon sensor
+            for ev in wagon.poll(p.core.frames_run):
+                if ev["type"] == "spawn" and wagon_png < 80:
+                    shot(p, args.evidence_dir,
+                         f"wspawn_{ev['slot']:02d}_{ev['fp']}"
+                         f"_{p.core.frames_run:06d}.png")
+                    wagon_png += 1
         if ifr > 0:
             hits.append({"chunk": c, "iframe": ifr,
                          "camera_fx": cur["camera_fx"],
@@ -585,6 +600,14 @@ def main():
     trace.write({"type": "run_end", **report})
     with open(os.path.join(args.evidence_dir, "report.json"), "w") as f:
         json.dump(report, f, indent=1, default=str)
+    if wagon is not None:
+        report["wagon"] = wagon.summary()
+        with open(os.path.join(args.evidence_dir, "report.json"),
+                  "w") as f:
+            json.dump(report, f, indent=1, default=str)
+        with open(os.path.join(args.evidence_dir,
+                               "wagon_events.json"), "w") as f:
+            json.dump(wagon.spawns + wagon.despawns, f)
     shot(p, args.evidence_dir, "final.png")
     session.disable_all()
     _log("report:", os.path.join(args.evidence_dir, "report.json"))
