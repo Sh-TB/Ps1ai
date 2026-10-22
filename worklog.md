@@ -867,3 +867,31 @@ remains UNCLEARED — no claim made. Full report: issue #5 comment
 - §6: barrier = Iron Nokana mid-boss (web-verified identity); camera-lock 2303 + mission timer; survival through arena proven (inv20 500 chunks); crossing BLOCKED — slots 14/17/18/5 immune to all tested weapons/positions; 8 probe scripts; stall ladder rebuilt on camera-lock signal.
 - §7: re_evidence_adapter.py + tests (status-tagged contract).
 - §8: 289/289 tests; report on Issue #5 (comment 6325015114); commits b256b17, 0aa758d.
+
+## 2026-10-22 — Issue #6: 5-game round + boot-gate root cause (session 3)
+
+- Fresh probe of all 5 candidates + replacement (GitHub API, evidence recorded):
+  Tetrade MIT release v1.0 (sha256 verified 2f41feba...), Nortis NO license
+  (88 files, 0 license files; release.zip exists, local test only), ButtonMasher
+  + RPS no license & no releases (re-verified), hello_pong MIT but Actions
+  artifact gated (HTTP 401, token lacks Actions:read), PSX-Minecraft MIT
+  prebuilt release downloaded (695,797 B, sha256 45b076ca...).
+- ROOT CAUSE (decisive A/B): unpatched homebrew discs boot-loop inside the
+  OpenBIOS shello CDChecker (license sectors empty) — identical cube loop and
+  bit-identical timelines across 3 different discs; game EXE never in RAM.
+  Copying the 16 license sectors from the user's own MSX disc into LOCAL
+  copies unblocks all: Tetrade/Nortis/PSXMC boot to real screens.
+- Pad path VINDICATED on beetle: padbuff fills (00 41 ff ff @ 0xBB120/0xBB142),
+  buttons deliver (libretro X -> 0xEFFF TRIANGLE per beetle mapping; START ->
+  0xFFF7). The earlier "OpenBIOS kernel pad defect" is SUPERSEDED as a
+  misdiagnosis; PCSX-Redux scan stale pending re-test.
+- A6 proven for Tetrade through the shared core: title -> START -> menu ->
+  CROSS -> Marathon gameplay -> piece moves (screenshots + diffs 21.75/0.62/0.54).
+- PSX-Minecraft: BOOTED (world render, HUD) + INPUT_RESPONSIVE (cross/left
+  deltas 49.8/54.4) => second accepted game. Nortis: boots + responds but
+  license-blocked for integration (local evidence only, binary never committed).
+- One-boot-per-process constraint reconfirmed (in-process 2nd boot returns
+  stale/global state; the lic-causality test therefore runs in a subprocess).
+- New: scripts/make_homebrew_lic.py, manifest v2 (accepted: tetrade, psx-minecraft),
+  docs addendum 2, xfail reason rewritten honestly (SUPERSEDED), new subprocess
+  test. Suite: 315 passed + 1 xfailed.

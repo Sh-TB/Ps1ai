@@ -1,5 +1,6 @@
 {
-  "description": "PS1 homebrew candidates for plugin-lab validation (Issue #6). Binaries are NOT stored in VCS: fetch with scripts/fetch_homebrew.py and verify SHA-256. Only permissively licensed games are accepted.",
+  "description": "PS1 homebrew candidates for plugin-lab validation (Issue #6). Binaries are NOT stored in VCS: fetch with scripts/fetch_homebrew.py and verify SHA-256. Only permissively licensed games are accepted. Boot gate: unpatched homebrew discs boot-loop inside the OpenBIOS shell (license-sector requirement) — produce local license-patched images with scripts/make_homebrew_lic.py using the user's own retail disc; patched images are local-only and never committed.",
+  "boot_gate_finding": "2026-10-22 OBSERVED: without license sectors (0..15) the OpenBIOS shello CDChecker loops forever (identical cube animation across Tetrade/Nortis/PSXMC; game EXE never reaches RAM, ~72KB nonzero). Copying the 16 license sectors from the user's own MSX disc into a LOCAL copy unblocks boot for all three (RAM 72KB->555KB, game strings/EXE load, padbuff fills with 00 41 ff ff, buttons deliver). This SUPERSEDES the earlier 'OpenBIOS kernel pad defect' diagnosis on the beetle backend: padbuff absence was a symptom of the game never running, not a pad-path defect. PCSX-Redux-side observation is stale pending re-test under the same fix.",
   "accepted": [
     {
       "id": "tetrade",
@@ -25,26 +26,51 @@
       "boot_exe": "tetrade.exe",
       "exe_t_addr": "0x80010000",
       "exe_t_size": "0x9b000",
-      "status": "BOOTED+DETERMINISTIC (input causality BLOCKED by OpenBIOS kernel pad path — see Issue #6)"
+      "status": "ACCEPTED+TESTED 2026-10-22: BOOTED, INPUT_RESPONSIVE (START title->menu; padbuff 00 41 ff ff at 0xBB120/0xBB142), STATE_CHANGE_CONFIRMED, GAMEPLAY_CONFIRMED (CROSS -> Marathon mode, piece moves with LEFT/RIGHT) through the shared beetle core + OpenBIOS with the LOCAL license-patched image. Unpatched release disc boot-loops (see boot_gate_finding)."
+    },
+    {
+      "id": "psx-minecraft",
+      "plugin": "GenericPlugin (dedicated plugin pending)",
+      "source": "https://github.com/EngineersBox/PSX-Minecraft",
+      "license": "MIT",
+      "license_file": "LICENSE",
+      "revision": "release infdev_2025_04_18",
+      "artifacts": [
+        {
+          "name": "infdev_release_2025_04_18T04_35_17_.tar.gz",
+          "url": "https://github.com/EngineersBox/PSX-Minecraft/releases/download/infdev_2025_04_18/infdev_release_2025_04_18T04_35_17_.tar.gz",
+          "bytes": 695797,
+          "sha256": "45b076caa2bc6e3bab38d22add3056ad8efe2460a28e9d129d1e89cb2ab0dd74"
+        },
+        {
+          "name": "PSXMC.bin",
+          "url": null,
+          "note": "extracted from the release tar; 329280 bytes; BOOT=cdrom:\\PSXMC.exe",
+          "bytes": 329280
+        }
+      ],
+      "boot_exe": "PSXMC.exe",
+      "status": "ACCEPTED+TESTED 2026-10-22: BOOTED to world render (PSXMC INFDEV HUD, terrain, hotbar, hearts) through the shared core + OpenBIOS with the LOCAL license-patched image; INPUT_RESPONSIVE (cross/left produce large world/camera deltas 49.8/54.4 mean-abs-diff); STATE_CHANGE_CONFIRMED. padbuff ok41=2. Second input-causality-positive game (A6)."
     }
   ],
   "rejected": [
     {
       "id": "nortis",
       "source": "https://github.com/jbreckmckye/nortis",
-      "reason": "no LICENSE file anywhere in repo — redistribution rights unverified",
-      "status": "REPLACED"
+      "reason": "no LICENSE file anywhere in repo (re-verified 2026-10-22 via API: 88 files scanned, 0 license files; README contains no project license statement) — redistribution rights unverified; integration blocked",
+      "status": "REPLACED",
+      "local_test_evidence": "LOCAL-ONLY boot+input test 2026-10-22 (license-patched image, binary never committed): BOOTED to NOTRIS title, START -> gameplay HUD (PLAY NOTRIS!, score/lines/controls, falling tetromino, next-piece preview updates). The game itself works through the shared core; only the license blocks acceptance."
     },
     {
       "id": "buttonmasher",
       "source": "https://github.com/OfficialMoonlit/ButtonMasher",
-      "reason": "no license; broken standalone build (Windows-only 2012 PSXSDK toolchain)",
+      "reason": "no license; no releases (re-verified 2026-10-22 via API); source-only build requires the Windows-only 2012 PSXSDK toolchain — not buildable in this CPU-only sandbox",
       "status": "REPLACED"
     },
     {
       "id": "rps-ps1-v1",
       "source": "https://github.com/OfficialMoonlit/RPS-PS1-v1",
-      "reason": "no license; broken standalone build; no releases",
+      "reason": "no license; no releases (re-verified 2026-10-22 via API); same broken toolchain dependency",
       "status": "REPLACED"
     }
   ],
@@ -53,13 +79,7 @@
       "id": "hello_pong",
       "source": "https://github.com/marconvcm/ps1_dev",
       "license": "MIT",
-      "note": "buildable via PSn00bSDK Docker make build; no prebuilt artifact; verify pad API before expecting input causality (same OpenBIOS risk as Tetrade)"
-    },
-    {
-      "id": "psx-minecraft",
-      "source": "https://github.com/EngineersBox/PSX-Minecraft",
-      "license": "MIT",
-      "note": "prebuilt release with standalone PS-X EXE (184320B); verify pad API used before integration"
+      "note": "2026-10-22: GitHub Actions run 34011353452 (Build PS1 Game) SUCCEEDED, but artifact download requires Actions:read which the fine-grained token lacks (HTTP 401 on /actions/artifacts). Source build needs Docker+PSn00bSDK (no Docker in sandbox). Pad API is InitPAD/StartPAD (BIOS path) — same boot-gate caveat applies. PENDING: fetch artifact with an Actions:read token, then license-patch and run the standard input protocol."
     }
   ]
 }

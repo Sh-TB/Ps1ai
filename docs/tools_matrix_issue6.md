@@ -60,3 +60,39 @@ PCdrv-era/retail pad reading (MSX) is unaffected in both. Candidate future
 fixes: OpenBIOS-side timing patch, or a plugin-declared compatibility patch
 (patched-copy policy: local-only, never redistributed), or retail-BIOS
 runners where legally available.
+
+---
+
+## Addendum 2 (2026-10-22) — boot gate SUPERSEDES the pad-defect diagnosis
+
+**Root cause found (OBSERVED, decisive A/B):** every "no padbuff / no button
+flip" negative above was produced by a game that had never actually run.
+Unpatched homebrew discs (Tetrade, Nortis, PSXMC) **boot-loop inside the
+OpenBIOS shello CDChecker**: identical cube animation and bit-identical frame
+timelines across three different discs, game EXE never reaches RAM (~72 KB
+nonzero after 900+ frames). Copying the 16 license sectors (0..15) from the
+user's own retail disc into a LOCAL copy of each homebrew image unblocks all
+of them (RAM 72 KB -> 555 KB; game loads; title screens render).
+
+**With the game actually running, the beetle+OpenBIOS pad path works:**
+- padbuff fills: `00 41 ff ff` at 0xBB120 / 0xBB142 (Tetrade's own buffers)
+- buttons deliver: held libretro X -> btn word `ff ef` = `0xEFFF` = TRIANGLE
+  (beetle mapping: RETRO X -> PSX TRIANGLE); START -> `f7 ff` = `0xFFF7`
+- full input causality chain proven for Tetrade: START -> title -> menu,
+  CROSS -> Marathon gameplay, piece responds to LEFT/RIGHT (visual diffs
+  21.75 / 0.62 / 0.54; screenshots in the Issue #6 report)
+- PSXMC (MIT) and Nortis (license-blocked) also boot and respond to input
+  after the same local patch
+
+Status changes:
+- `SUPERSEDED`: "OpenBIOS kernel low-level pad defect on beetle" — the
+  padbuff absence was a boot-gate symptom, not a pad-path defect.
+- `STALE, PENDING re-test`: the PCSX-Redux-side scan (game ran there, yet no
+  padbuff) — re-test under the license fix before drawing conclusions.
+- `IMPLEMENTED`: scripts/make_homebrew_lic.py (local-only patched images;
+  never committed) + tests/test_plugins_contract.py::test_real_tetrade_lic_
+  input_causality (subprocess-isolated: beetle holds global emulator state,
+  one clean boot per process).
+
+Practical rule for the lab: **one beetle boot per process**; boot-gated
+discs must be license-patched locally before any input-causality claim.

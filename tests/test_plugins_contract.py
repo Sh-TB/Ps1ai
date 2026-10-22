@@ -4,6 +4,8 @@ P2-1/P2-2/P3-7: a plugin must declare its supported operations, and a
 second game must be selectable WITHOUT any core modification.
 """
 import os
+import sys
+import textwrap
 
 import pytest
 
@@ -161,24 +163,21 @@ def test_real_tetrade_boots_through_core(tmp_path):
 @pytest.mark.skipif(not os.path.exists(TETRADE_CUE),
                     reason="Tetrade release artifact not downloaded")
 @pytest.mark.xfail(reason=(
-    "BLOCKED — shared backend/BIOS compatibility defect, root-caused "
-    "2026-10-22 and REPRODUCED ACROSS TWO BACKENDS: beetle-psx 0.9.44.1 "
-    "+ OpenBIOS never completes a low-level kernel pad poll for this "
-    "PSn00bSDK game (no padbuff state in ANY form after 600+ frames; no "
-    "button byte ever flips FF->F7); the same disc under PCSX-Redux HEAD "
-    "(its own OpenBIOS build) with Lua pad setOverride(BTN.START) held "
-    "300f x2 also shows no real padbuff. OpenBIOS openbios/sio0/pad.c "
-    "alterUserPadData only copies data for pad IDs 0x41/0x23 and "
-    "driver.c readPad aborts on tight IRQ timeouts; Tetrade input.c "
-    "requires pad->stat==0 && type in {0x4,0x5,0x7}. Retail-pad games "
-    "(MSX) unaffected in both backends. Do NOT treat as a Tetrade or "
-    "plugin defect."),
+    "SUPERSEDED diagnosis, kept as an honest record 2026-10-22: the "
+    "original 'OpenBIOS kernel pad defect' claim was a MISDIAGNOSIS. "
+    "Root cause of every negative below: the unpatched homebrew disc "
+    "boot-loops inside the OpenBIOS shello CDChecker (license sectors "
+    "0..15 empty) so the game EXE never ran and padbuff was never even "
+    "ALLOCATED. With license sectors (local-only patched image) the same "
+    "core+BIOS fills padbuff (00 41 ff ff at 0xBB120/0xBB142) and "
+    "delivers buttons (held libretro X -> btn word 0xEFFF = TRIANGLE, "
+    "i.e. beetle's mapping works). Kept xfail because the UNPATCHED "
+    "release disc still cannot boot; see make_homebrew_lic.py."),
     strict=False)
 def test_real_tetrade_input_causality_divergence(tmp_path):
     """Causal input proof by divergence from one identical origin state:
-    branch A (no input) vs branch B (RIGHT). Currently BLOCKED by the
-    OpenBIOS kernel pad path — kept as the regression gate for when a
-    working BIOS/backend is configured."""
+    branch A (no input) vs branch B (RIGHT). BLOCKED only for the
+    unpatched release disc (boot gate, see xfail reason)."""
     import numpy as np
     from ps1play.api import PS1Play
     p = PS1Play(TETRADE_CUE, workspace=str(tmp_path / "ws"))
@@ -192,3 +191,47 @@ def test_real_tetrade_input_causality_divergence(tmp_path):
     snap_b = p.mem.snapshot()
     p.core.close() if hasattr(p.core, "close") else None
     assert int(np.count_nonzero(snap_a != snap_b)) > 0
+
+
+# ---------------- real Tetrade with LOCAL license-patched image --------------
+
+TETRADE_LIC_CUE = "/home/z/my-project/emu/games_homebrew/patched/tetrade_lic.cue"
+REPO_ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+
+
+@pytest.mark.skipif(not os.path.exists(TETRADE_LIC_CUE),
+                    reason="license-patched local Tetrade image not present "
+                           "(scripts/make_homebrew_lic.py)")
+def test_real_tetrade_lic_input_causality(tmp_path):
+    """A6 proof on the properly-booted game (2026-10-22): padbuff fills and
+    input causes real state divergence from one identical origin state.
+
+    Runs in a SUBPROCESS: beetle keeps global emulator state, so a second
+    in-process boot never yields a clean core (recorded in the #5 worklog);
+    pytest may already have booted a core in this process."""
+    import subprocess
+    code = textwrap.dedent("""
+        import sys
+        sys.path.insert(0, %r)
+        import numpy as np
+        from ps1play.api import PS1Play
+        p = PS1Play(%r, workspace=%r)
+        p.boot()
+        p.core.run(1200, set())
+        snap = bytes(p.mem.snapshot())
+        ok = snap.count(b"\\x00\\x41\\xff\\xff")
+        assert ok >= 1, f"padbuff not filled: {{ok}}"
+        p.save_state("origin")
+        p.core.run(90, set())
+        snap_a = bytes(p.mem.snapshot())
+        p.load_state("origin")
+        p.core.run(90, {"RIGHT"})
+        snap_b = bytes(p.mem.snapshot())
+        changed = sum(1 for a, b in zip(snap_a, snap_b) if a != b)
+        assert changed > 0, "input caused no divergence"
+        print("LIC_CAUSALITY_OK", ok, changed)
+    """) % (REPO_ROOT, TETRADE_LIC_CUE, str(tmp_path / "ws"))
+    r = subprocess.run([sys.executable, "-c", code], capture_output=True,
+                       text=True, timeout=180)
+    assert r.returncode == 0, f"subprocess failed:\n{r.stdout}\n{r.stderr}"
+    assert "LIC_CAUSALITY_OK" in r.stdout
