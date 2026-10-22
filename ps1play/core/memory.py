@@ -55,11 +55,14 @@ class MemoryView:
         return int(self.ram[addr])
 
     def u16(self, addr):
-        return int(self.ram[addr] | (self.ram[addr + 1] << 8))
+        # int() casts BEFORE shifting: numpy uint8 << 8 wraps to 0,
+        # which silently truncated every u16 read to its low byte.
+        return int(self.ram[addr]) | (int(self.ram[addr + 1]) << 8)
 
     def u32(self, addr):
-        return int(self.ram[addr] | (self.ram[addr + 1] << 8)
-                   | (self.ram[addr + 2] << 16) | (self.ram[addr + 3] << 24))
+        return (int(self.ram[addr]) | (int(self.ram[addr + 1]) << 8)
+                | (int(self.ram[addr + 2]) << 16)
+                | (int(self.ram[addr + 3]) << 24))
 
     def hexdump(self, addr, n=32, width=16):
         rows = []
