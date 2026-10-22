@@ -936,3 +936,28 @@ remains UNCLEARED — no claim made. Full report: issue #5 comment
 - ROOT CAUSE OF THE "GATE" ITSELF: MemoryView.u16/u32 truncated every read to the low byte (numpy uint8 << 8 wraps to 0). The historical "prog/camera word 0..224 scale, locked at 139" = camera_px & 0xFF; telemetry camera_x (u32>>16) was ALWAYS 0. The camera follows the player the whole time (37.5 -> 1163.9 px verified frame-by-frame via byte reads).
 - FIX: int() casts before the shifts in MemoryView.u16/u32 + tests/test_memory_widths.py (5 tests incl. the camera fixed-point case). Suite: 357 passed + 1 xfailed; no pre-existing test encoded the truncated behavior.
 - NOT RESOLVED: the village-section completion condition that lifts the ~988px camera clamp. Single highest-value next experiment: with the FIXED u32 reader, diff the camera-adjacent globals (0xD4938/0xD4970/0xD4974/0xD4A1C + the ROOT chain) between a clamped walk and a pre-clamp walk to find the LIMIT variable's writer, then satisfy/dislodge it (or freeze it EXPLORATION-side as a gate probe, disclosed).
+
+## 2026-10-23 — Recorded gameplay GIF evidence (user request: "upload a gameplay GIF")
+- New capture tooling: scripts/gif_run_capture.py (v1 legit loop + stride frame
+  capture + read-only hp-pair telemetry), scripts/gif_story_run.py (3-phase
+  story: A legit / B disclosed-freeze reach / C mosque lob + unfrozen traverse),
+  scripts/build_run_gifs.py + build_final_gifs.py (ffmpeg palette GIFs).
+- Environment findings: background processes are reaped between tool calls
+  (setsid/nohup do not survive) -> segmented foreground runs with savestate
+  resume; 1UP=0 corpse states pass flag checks but fail the input-response
+  probe (camera sentinel 0xFFDA/0xFFFF); the hp-pair freeze also appears to
+  hold the camera word (slot-0 X keeps moving, camera stalls) - position
+  reads switched to slot-0/camera cross-checks.
+- Phase A (legit, no assists): 210 chunks, 13 deaths, 5 disclosed continues,
+  max_score 4300, max camera 1163px (the village-end clamp); soldiers,
+  the armored truck and the hovering chopper engaged on camera.
+- Phase BC (disclosed hp-freeze for the reach/lob only): freeze-walk to the
+  mosque window, grenade volley (+200/+100/+500 kills on camera), then the
+  UNFROZEN walk 660 -> 1163px past the parked truck to the section clamp,
+  reproduced 4x with 0 continue taps. The +800 score signature fired but the
+  mortar rain did NOT go quiet in this session (rain-kill reproduction
+  UNRESOLVED; session-2 remains the only rain-quiet evidence).
+- Deliverables: 5 GIFs in docs/gif_evidence/ (G1 legit start, G2 clamp fight,
+  G3 mid pass, G5 mosque->truck->clamp push 9MB, G6 clamp arrival with the
+  chopper over the CONTINUE screen); uguu.se mirror links in the Issue #5
+  comment; catbox/litterbox blocked from this sandbox.
