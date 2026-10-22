@@ -895,3 +895,11 @@ remains UNCLEARED — no claim made. Full report: issue #5 comment
 - New: scripts/make_homebrew_lic.py, manifest v2 (accepted: tetrade, psx-minecraft),
   docs addendum 2, xfail reason rewritten honestly (SUPERSEDED), new subprocess
   test. Suite: 315 passed + 1 xfailed.
+
+---
+## 2026-10-22 — Issue #7 batch (wagon sensor + live runs)
+- Sensor `ps1play/agent/wagon.py` (entity-table lifecycle, slot dumps) + 6 tests; suite 321+1xfail.
+- Live: 7 runs, ~9,400 spawn events; TRAIN YARD reached live (v1a c650 photo, no-cheat).
+- >=50-wagon acceptance NOT met (honest): town truck/chopper camera gate + 300s timer + continue timing + attract-slide reset; each framed.
+- v1a/v1b bit-identical determinism evidence. `docs/wagon_run_issue7.md`; commit `a565b23`.
+- T8/T9 BLOCKED_BY_ENVIRONMENT (PCSX-Redux prebuilt gone; no cmake). T10 manifest sha256 re-verified OK.
