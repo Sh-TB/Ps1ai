@@ -24,10 +24,11 @@ from ps1play.api import PS1Play                              # noqa: E402
 from ps1play.agent.gameshark import GameShark                # noqa: E402
 from ps1play.agent.perception import PerceptionGuard         # noqa: E402
 from ps1play.agent.worldmodel import WorldModel              # noqa: E402
+from ps1play.agent.msx_scene import MsxSceneAdapter          # noqa: E402
 from ps1play.agent.policy import SemanticPolicy              # noqa: E402
 from mission import ensure_mission, recover, idle_churn, responsive  # noqa: E402
 
-GAME = "/home/z/my-project/ps1-test/emu/games/Metal Slug X (USA).cue"
+GAME = "/home/z/my-project/emu/game/Metal Slug X (USA).cue"
 EVID = "/home/z/my-project/download/ps1play_v3_semantic"
 OUT = os.path.join(EVID, "semantic_report2.json")
 os.makedirs(EVID, exist_ok=True)
@@ -149,6 +150,7 @@ if not guard.valid():
 # ====================================================================
 # 5) SEMANTIC PLAY — Mission 1
 # ====================================================================
+msx_adapter = MsxSceneAdapter(wm)   # CANONICAL scene adapter
 policy = SemanticPolicy()
 evc = defaultdict(int)
 tel = []
@@ -183,11 +185,8 @@ for i in range(CHUNKS):
     for e in events:
         evc[e] += 1
 
-    # ---- scene (zero tokens) ------------------------------------------
-    scene = wm.read_world(p.core)
-    scene["threat"] = wm.threat(scene)
-    scene["nearest_enemy"] = wm.nearest(scene, "enemies")
-    scene["n_enemies"] = len(scene.get("enemies", []))
+    # ---- scene (canonical MSX adapter — no inline glue) ----------------
+    scene = msx_adapter.build(wm.read_world(p.core), p.core.frames_run)
     scene["nearest_health"] = wm.nearest(scene, "health")
     scene["nearest_item"] = wm.nearest(scene, "items")
 

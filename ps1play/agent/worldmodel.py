@@ -279,7 +279,10 @@ class WorldModel:
             if s.last is not None:
                 v = ax - s.last
             s.last = ax
-            ent = {"dx": dx, "dy": ay - py, "x": ax, "y": ay, "vx": v}
+            ent = {"dx": dx, "dy": ay - py, "x": ax, "y": ay, "vx": v,
+                   "slot": s.base}   # generic slot identity (additive;
+                                     # consumed by the MSX scene adapter
+                                     # for cross-frame y tracking)
             if s.cls == "enemy":
                 out["enemies"].append(ent)
             elif s.cls == "bullet":

@@ -88,12 +88,25 @@ class MetalSlugXPlugin(GamePlugin):
     ID = "metal_slug_x"
     SERIALS = ("SLUS-01212", "SLPM-8724", "SLPM-8608")
 
+    # Issue #5 follow-up Phase 7: bounded encounter budget. Combat
+    # branches return before the advance branch, so a fight that never
+    # resolves consumes the whole mission timer. The policy now tracks
+    # chunks with actors nearby but NO verified x progress; past the
+    # budget it plays ONE bounded advance window (walk right with the
+    # normal fire rhythm) and then resumes combat. Objectives are never
+    # abandoned — the window only breaks the infinite repetition.
+    ENCOUNTER_BUDGET_FRAMES = 1800     # 30 s of no verified progress
+    ADVANCE_WINDOW_FRAMES = 300        # 5 s forced advance per cycle
+
     def __init__(self, profile):
         super().__init__(profile)
         self.prev_feat = None
         self._recover = 0        # defensive frames after death/hit
         self._hop_cd = 0         # cooldown for casual hops
         self._burst = 0          # fire-burst phase (human tap-fire rhythm)
+        self._last_x = None      # encounter-budget progress tracker
+        self._no_progress = 0    # frames with actors near but no x gain
+        self._advance_left = 0   # remaining forced-advance frames
         self.deaths = 0
         self.hits = 0
 
@@ -196,6 +209,30 @@ class MetalSlugXPlugin(GamePlugin):
         bombs = feat.get("bombs")
         actors = feat.get("actors_near") or 0
         segs = []
+
+        # ---- Phase 7: encounter budget bookkeeping -----------------
+        x = feat.get("x")
+        if x is not None:
+            if self._last_x is not None and x == self._last_x:
+                self._no_progress += c
+            else:
+                self._no_progress = 0
+            self._last_x = x
+        if self._no_progress > self.ENCOUNTER_BUDGET_FRAMES and \
+                self._advance_left <= 0:
+            self._advance_left = self.ADVANCE_WINDOW_FRAMES
+        if self._advance_left > 0:
+            # bounded advance window: walk right with the normal fire
+            # rhythm (verified progress, not elapsed frames, ends it —
+            # any x movement resets the no-progress counter above)
+            self._advance_left = max(0, self._advance_left - c)
+            if self._advance_left <= 0:
+                self._no_progress = 0
+            ctx["stall_reset"] = True
+            k = min(16, c)
+            self._hop_cd = 240
+            return [{"frames": k, "btns": {"RIGHT", "B"}},
+                    {"frames": max(0, c - k), "btns": {"RIGHT", "Y"}}]
 
         # ---- 1) death: continue screen / respawn ----
         if "death" in ev or lives == 0 or hp == 0:
