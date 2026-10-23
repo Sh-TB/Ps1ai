@@ -1033,3 +1033,37 @@ remains UNCLEARED — no claim made. Full report: issue #5 comment
   first-death endpoint, per-chunk scan+stats JSONL). Evidence local:
   evidence/gif2_combat_live{2,3,4}/ + evidence/heli_ladder/
   {report_policy_pass1.json, policy_pass1/trace.jsonl, pat_02/07*}.
+
+## 2026-10-23 — Coder-2 final batch: reproducible rear_check live series + four-category report (commit 8ff8482)
+
+- The one owed item from the live batch ("reproducible live series still
+  owed") executed: `scripts/msx_ckpt_policy_pass.py` re-ran the identical
+  policy-driven `chopper_ckpt` pass three more times (`policy_pass2/3/4`).
+- Result: **4/4 identical rear_check firings** across four independent
+  emulator boots — chunk 25, slot 14 armored truck (x 1126.5, dx −37.5,
+  hp 254, h 64), ONE `B+LEFT+Y` turn+fire chunk, backbone resumed; every
+  pass died at chunk 26 (one-shot −291 truck ram at px 1164). D2
+  direction correction: live-OBSERVED → **live-TESTED**.
+- Honest disclosure (from the same traces): the fired Y-burst did NOT
+  change the truck's hp (254→254 in all 4 passes) — forward fire does
+  not kill armor from that geometry; the grenade `clamp_clear` path
+  stays the proven kill mechanism. D2 kill follow-through remains
+  **PARTIAL**; corridor/clamp lethality (D6/D7) unchanged.
+- hello_pong re-verified via API: **0 releases exist** (CI publishes on
+  tags only, none pushed) and Docker is absent from the sandbox —
+  `docs/simple_games_ranking.md` entry demoted PENDING → BLOCKED.
+  Category-2/3/4 (enemy-bearing homebrew) gap stands.
+- Deliverable 7 written: `docs/final_report_coder2.md` — the mission
+  consolidated into the four required categories (fixed+unit-tested /
+  real-emulator-verified / partially verified / still blocked+why) plus
+  the acceptance-criteria scorecard (6/6 MET with honest carve-outs)
+  and the deliverable index. `docs/defect_ledger.md` D2 row + batch
+  labels updated accordingly.
+- Issue #5 comment posted: issuecomment-6359569916 (series table,
+  disclosure, matrix update, final-report pointer).
+- gh_api POST gotcha fixed in the new posting script: `req()` defaults
+  to method="GET" — an omitted method silently turns the comment POST
+  into a collection GET (HTTP 200, list body, nothing posted).
+- Suite re-verified before the series: 384 passed + 1 xfailed.
+  Evidence local: `evidence/heli_ladder/policy_pass{1..4}/`. Pushed
+  b283b19..8ff8482 (API-verified remote main = 8ff8482).
