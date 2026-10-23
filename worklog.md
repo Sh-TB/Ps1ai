@@ -1067,3 +1067,60 @@ remains UNCLEARED — no claim made. Full report: issue #5 comment
 - Suite re-verified before the series: 384 passed + 1 xfailed.
   Evidence local: `evidence/heli_ladder/policy_pass{1..4}/`. Pushed
   b283b19..8ff8482 (API-verified remote main = 8ff8482).
+
+## 2026-10-24 — D7 pin forensics: the scroll clamp is a state machine, not a constant (doc clamp_pin_forensics.md)
+
+- Environment note: the sandbox reset again before this session (local
+  repo rolled back to 6b97fbe, all savestates + local evidence trees
+  lost). Restored via fetch+reset to origin/main (b406a16); capstone
+  reinstalled; suite re-verified 384+1xfail. All previous local
+  evidence (heli_ladder, gif2_*, policy_pass*) is gone locally — the
+  committed docs/comments remain the record. This session regenerated
+  the clamp-region evidence + a NEW clamp0 savestate (pin arrival).
+- The declared session-2 experiment executed (msx_clamp_globals_diff.py,
+  clampdiff1/2/3): full-RAM snapshots at pre-clamp (px 715), pin
+  arrival (px 1163), pinned(+480f), per-10f word trajectories, numpy
+  pin-boundary classification.
+- F1: NO camera stall at 988 exists in this boot path — the scroll
+  struct word 0xEB598 FOLLOWS the player (player−2.5..+1) and pins at
+  0x048BFFFF = 1163.99998 exactly. The historical "988/992" figures
+  are the CHECKPOINT RESPAWN px (992) + the truck pin — a
+  long-standing number mystery resolved as respawn geometry.
+- F2: 0xEB598 is a render-side COPY struct (copy sites 0x80022894 /
+  0x80022A38 / 0x80023138 / 0x80023324 / 0x800233AC write it from a
+  source struct; +4/+8/+0xC fields, flags u16 @+0x38, state @+0x5C).
+  EXE scan ground truth established: the .full text is PLAIN
+  LITTLE-ENDIAN (byteswap hypothesis tested and rejected via the sane
+  entry prologue at pc0 0x80082A44); capstone skipdata required; the
+  ROOT-chain VA 0x80012814 is a POINTER TABLE (0x8007C38C ×7), not
+  code.
+- F3: pin state machine visible in RAM — at pin arrival player-struct
+  function pointers flip (0xCA268: 0x80034ddc→0x80032d28; 0xCA2A0:
+  0x800b860c→0x800b83e0, overlay/heap) and a state word 10→1 (0xCA2A4).
+- F4/F5: NO limit constant in RAM (0 hits for 0x048C0000/0x048BFFFF/
+  0x048B0000; u16 1164 exactly one hit @0x8DBF8 = REUSED runtime data
+  — the file has a `sw` instruction there). The disclosed poke test
+  (1164→2000 + neighbour + no-poke controls, all from clamp0) is
+  NEGATIVE: all three arms stayed pinned at 1163.
+- F6: clean 3-arm pin matrix from clamp0 (per-frame, death-episode
+  accounting): P_pure pin stable 20 chunks; L_leftwalk (to 1100)
+  no-op; R_respawn = 119 death episodes — death at the clamp respawns
+  at 992 INSIDE the truck kill zone -> instant re-death loop
+  (resolves b283b19's "walk_right dies truck-pinned at 992").
+- F7: the disclosed hp-freeze does NOT protect against one-shots
+  (truck −291 lands after the freeze write in-frame): the deep-left
+  arm died at the truck despite freeze+hop. Policy design consequence:
+  vs one-shot threats only distance/timing helps.
+- F8: the messy mosque-gate arms' max_px 1483/1486 spikes are NOT
+  traversal evidence (no sustained >=1180 run; a corridor death
+  appears to have triggered a FULL MISSION RESTART — score reset 0,
+  px ~120, gren 10). No traversal claim made.
+- F9 (D6): the +800&0x20 mosque-kill signature REPRODUCED cleanly
+  (score_delta exactly 800, one volley campaign from clamp0); post-kill
+  faller poll = 0 (single poll — sustained quiet measurement still
+  owed). Ledger D6 BLOCKED -> PARTIAL.
+- Ledger D7 row + docs/clamp_pin_forensics.md written with all ten
+  findings and the three named next experiments (trace the flipped
+  handlers 0x80032d28/0x800b83e0 + camera-copy source struct;
+  truck-phase-aware deep-left retry; clean mission-restart probe).
+  Suite untouched (384+1xfail, no core/policy changes this session).
