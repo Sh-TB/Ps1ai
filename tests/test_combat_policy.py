@@ -142,6 +142,22 @@ def test_clamp_detection_and_clear():
     assert pol.mode == "clamp_clear"
 
 
+def test_clamp_upfire_never_static():
+    """heli-ladder pattern 07 (Issue #5): static UP-fire at the clamp
+    is a death pattern — the sword pack kills the standing firer.
+    Every up-fire segment must also MOVE (w2 protocol B: UP+LEFT+Y)."""
+    pol = CombatPolicy()
+    pol.observe(1160.0, 0.5, True)
+    pol.observe(1161.0, 1.0, True)
+    pol.decide(60, 1161.0, [], grenades=0)   # enter clamp_clear
+    for chunk in range(12):                  # cover both phases
+        segs = pol.decide(60, 1161.0, [], grenades=0)
+        for s in segs:
+            if "UP" in s["btns"]:
+                assert "LEFT" in s["btns"], \
+                    f"static up-fire segment emitted: {s['btns']}"
+
+
 def test_clamp_resets_on_progress():
     pol = CombatPolicy()
     pol.observe(1160.0, 0.5, True)

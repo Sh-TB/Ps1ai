@@ -280,9 +280,14 @@ class CombatPolicy:
                 elif phase == 0:
                     btns = ({"LEFT", "Y"} if burst else {"LEFT"})
                 else:
-                    # UP-aim fire at the rain-source/chopper zone
-                    # (w2_chopper_hp protocol-B; kills are MEASURED)
-                    btns = ({"UP", "Y"} if burst else {"UP"})
+                    # UP-aim fire at the rain-source/chopper zone.
+                    # w2_chopper_hp protocol B is UP+LEFT+Y SUSTAINED
+                    # (MOVING); heli-ladder pattern 07 proved the
+                    # STATIC variant is a death pattern (sword pack
+                    # kills the standing firer, 0 source kills in
+                    # 1037f) — never emit a static up-fire segment.
+                    btns = ({"UP", "LEFT", "Y"} if burst
+                            else {"UP", "LEFT"})
                 if hop_now:
                     btns.add("B")
                 if grenades > 2 and self.fc % GRENADE_PERIOD == 0:

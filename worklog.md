@@ -971,3 +971,13 @@ remains UNCLEARED — no claim made. Full report: issue #5 comment
 - Evidence: 4 GIFs built (scripts/build_combat_gifs.py) + uguu.se mirrors + full report on Issue #5 (issuecomment-6352736966); analysis JSON at evidence/combat_before_after.json (local).
 - Side workstream (Task 2-b subagent): Nortis full play-test (boot/menu/in-game OBSERVED-CAUSAL controls via savestate-twin A/B; 35,270 frames) + PSX-Minecraft re-probe (boots; attract-loop trigger UNKNOWN; clean negative pad proof; DWARF-sourced control map UNVERIFIED live). Local only: emu/games_homebrew/evidence/{nortis,psxmc}_play1/ + scratch/{nortis,psxmc}_play_report.json.
 - Commit: combat policy + tests + scripts + 4 GIFs; suite 374 passed + 1 xfailed.
+
+## Helicopter/mortar-rain survival ladder — 10 patterns from one checkpoint (user directive)
+
+- Web research first: arcadequartermaster (kill the red Masknell leader -> squadron collapses), Antstream (R-Shobu drops bombs, fast+deadly), fandom (mosque minaret launchers), r/metalslug (keep moving).
+- Checkpoint `chopper_ckpt` built at px 810.3 via the disclosed hp-freeze reach (gif_story_run.phase_b verbatim); all 10 patterns ran UNFROZEN, first-death endpoint, per-frame JSONL + GIF each.
+- Result 10/10 web-prediction matches: stand-in-corridor died f286 (shell blast), hold-RIGHT was the ONLY survivor (810->1164, HP regen 139->291), patrol/zigzag/hop/idle-at-wall all died (truck ram one-shots at the clamp, VISUAL truck-on-player), static up-fire died to the sword pack (0 source kills), lob/retreat died to melee, PRONE identical to standing (same shell, same frame).
+- Shell mechanics from the live slot trace: drop h128->64 in ONE frame (no warning window), then ground-creep LEFT 973->925 decelerating, hp 352->101 decay then armed saturation, kill radius ~<=27px.
+- Fix applied from the evidence: CombatPolicy clamp_clear up-fire no longer static ({UP,LEFT,Y}/{UP,LEFT} = w2 protocol B) + test_clamp_upfire_never_static; suite 375 passed + 1 xfailed.
+- Cross-boot note: px/enemy trajectories bit-stable; HP word drifts ~3 points (chip-tick timing) — HP A/B caveat.
+- Artifacts: evidence/heli_ladder/ (JSONL/reports/10 GIFs), docs/heli_ladder.md, docs/gif_evidence/heli_ladder/ (5 curated), scripts msx_helicopter_ladder.py / msx_rain_slot_trace.py / msx_heli_summary.py / curate_heli_gifs.py.
