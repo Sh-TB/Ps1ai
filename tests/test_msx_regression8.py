@@ -15,9 +15,11 @@ Mission case -> test map:
     invalidates stale observations
 
 Pure-logic: no emulator, no RAM. The scan schema is
-ps1play-combat-scan/1 (combat.py): entries carry
-{"slot","x_px","dx_px","hp","kind"} with kind in
-{"enemy","projectile_air"}. Evidence sources cited per case.
+ps1play-combat-scan/1 rev 2 (combat.py): entries carry
+{"slot","x_px","dx_px","hp","h","kind"} with kind in
+{"enemy","projectile_air"} — the RAW height label; the policy
+additionally verifies the FALLING trajectory across sightings before
+dodging (D8). Evidence sources cited per case.
 
 ABSENT OBSERVATION IS NOT SAFETY: every case asserts the agent keeps
 producing movement segments — standing still in the open is the
@@ -194,8 +196,12 @@ def test_case6_target_lost_releases_lock():
 # CASE 7 — falling projectile (identity + trajectory verified: height
 # word @+0x7E > ground contact 64, session-2 decode + heli-ladder
 # trace): NEVER an engage target, and within dodge radius it triggers
-# an immediate hop. The run-through backbone continues (movement is
-# life); no enemy belief is formed from the projectile.
+# an immediate hop. D8 rev: trajectory verification needs TWO
+# consecutive sightings of the same slot with the height DECREASING
+# (the rain signature at chunk granularity) — a single raw label is
+# not enough (live slot 7 false positive). The run-through backbone
+# continues (movement is life); no enemy belief is formed from the
+# projectile.
 def test_case7_falling_shell_dodged_not_faced():
     mem = FakeMem({9: (int(1010 * 65536), 92, 120),      # falling: h=120
                    1: (int(1300 * 65536), 90, 64)})      # far ground foe
@@ -208,14 +214,67 @@ def test_case7_falling_shell_dodged_not_faced():
     segs = pol.decide(60, 1000.0, shell, grenades=0, hp=100)
     assert pol.mode == "advance"                     # not "engage"
     assert pol.stats["engage"] == 0
-    assert "B" in _btns(segs)                        # dodge hop fired
+    # FIRST sighting: falling not yet verifiable -> no dodge hop
+    assert "B" not in _btns(segs)
+    assert pol.stats["proj_dodge"] == 0
+    assert pol.stats["proj_unverified"] >= 1
+    # SECOND sighting, height DECREASED (verified falling): hop fires
+    shell2 = [{"slot": 9, "x_px": 1005.0, "dx_px": 5.0, "hp": 60,
+               "h": 90, "kind": "projectile_air"}]
+    segs2 = pol.decide(60, 1000.0, shell2, grenades=0, hp=100)
+    assert pol.mode == "advance"
+    assert "B" in _btns(segs2)                       # dodge hop fired
     assert pol.stats["proj_dodge"] >= 1
     # ground enemies are NOT dodged: h==64 stays "enemy"
     assert GROUND_HEIGHT == 64
     ground = [e for e in out if e["slot"] == 1]
     pol2 = CombatPolicy()
-    segs2 = pol2.decide(60, 1000.0, ground, grenades=0, hp=100)
+    segs2b = pol2.decide(60, 1000.0, ground, grenades=0, hp=100)
     assert pol2.stats["proj_dodge"] == 0
+
+
+# CASE 7b (D8, live-confirmed in combat_live2) — a STATIC elevated
+# object (live: slot 7 at x=264.0, height AND hp constant for 16
+# chunks = elevated scenery) carries the raw "projectile_air" label
+# but its trajectory never verifies: the policy must NOT burn dodge
+# hops on it, must not engage it, and must keep advancing. A RISING
+# height is equally unverified. (Unknown objects stay unknown — the
+# symmetric half of mission case 5.)
+def test_case7b_static_elevated_object_never_dodged():
+    pol = CombatPolicy()
+    static = [{"slot": 7, "x_px": 264.0, "dx_px": 5.0, "hp": 264,
+               "h": 200, "kind": "projectile_air"}]
+    for i in range(6):                               # 6 constant sightings
+        segs = pol.decide(60, 1000.0, static, grenades=0, hp=100)
+        # any B must be the backbone's own cadence hop (stats[jump]),
+        # never a projectile dodge (stats[proj_dodge] stays 0)
+        if "B" in _btns(segs):
+            assert pol.stats["jump"] >= 1, \
+                f"unexplained hop on static object, chunk {i}"
+        assert pol.stats["proj_dodge"] == 0
+        assert pol.mode == "advance"
+        assert "RIGHT" in _btns(segs)                # backbone continues
+    assert pol.stats["proj_unverified"] >= 6
+    assert pol.stats["engage"] == 0                  # never a target
+    # rising height: also unverified
+    pol2 = CombatPolicy()
+    rising = [{"slot": 7, "x_px": 264.0, "dx_px": 5.0, "hp": 264,
+               "h": 100, "kind": "projectile_air"}]
+    pol2.decide(60, 1000.0, rising, grenades=0, hp=100)
+    rising2 = [{"slot": 7, "x_px": 264.0, "dx_px": 5.0, "hp": 264,
+                "h": 140, "kind": "projectile_air"}]
+    segs3 = pol2.decide(60, 1000.0, rising2, grenades=0, hp=100)
+    assert "B" not in _btns(segs3)
+    assert pol2.stats["proj_dodge"] == 0
+    # respawn invalidation clears the height memory too (case 8 x D8)
+    pol.observe(1000.0, 0.0, True)                   # anchor observation
+    pol.decide(60, 1000.0,
+               [{"slot": 9, "x_px": 1010.0, "dx_px": 10.0, "hp": 92,
+                 "h": 120, "kind": "projectile_air"}], grenades=0)
+    assert pol.prev_h == {9: 120}
+    pol.observe(200.0, -800.0, True)                 # teleport
+    assert pol.stats["stale_reset"] == 1
+    assert pol.prev_h == {}
 
 
 # CASE 8 — player death / respawn / segment change invalidates stale

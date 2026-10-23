@@ -989,3 +989,47 @@ remains UNCLEARED — no claim made. Full report: issue #5 comment
 - Deliverable docs: docs/defect_ledger.md (D1-D7 behavioural + H1-H5 historical, labeled CONFIRMED/TESTED/OBSERVED/PARTIAL/BLOCKED/SUPERSEDED, each with instrument source, root cause, minimal fix, repro test) and docs/simple_games_ranking.md (Tetrade #1 full playthrough / PSXMC #2 booted+responsive / Nortis #3 license-blocked local-only / hello_pong #4 artifact-gated / ButtonMasher+RPS rejected; capability categories 2-4 gap stated: no enemy-bearing homebrew found yet).
 - Suite 375+1xfail -> 383+1xfail (8 new, 0 regressions). Issue #5 report posted (comment 6356989515). Pushed afaee9b..c422606.
 - NEXT (declared, not claimed): one live instrumented run --policy combat + a chopper_ckpt ladder pass reading stats[rear_check]/stats[proj_dodge] from the JSONL; only then rear_check/proj-dodge move offline-TESTED -> live-TESTED. D6 (rain-quiet) and D7 (scroll clamp) remain open independent blockers.
+
+## 2026-10-23 — Live A/B batch: D8 projectile-FP + D9 death-accounting fixed; rear_check fired live (policy_pass1 chunk 25)
+
+- Declared live experiment executed: 3 full instrumented `--policy combat`
+  runs (combat_live2/3/4, 70/66/134 chunks) + the rebuilt `chopper_ckpt`
+  (px 810.3, 10 grenades) + the FIRST policy-driven checkpoint pass.
+- D8 CONFIRMED live in combat_live2: slot 7 (x=264.0, height AND hp
+  constant for 16 chunks = elevated scenery) was labelled projectile_air
+  and the policy burned 33 dodge hops, many in the empty early village.
+- D8 fix: two-stage classification — scan rev 2 carries the raw height
+  `h`; the policy dodges a slot only when its height DECREASES across
+  sightings (rain signature at chunk granularity, FALL_MAX_PER_CHUNK);
+  static/rising/first-sighting = unverified (never engaged, never
+  dodged, stats[proj_unverified]); height memory cleared on stale
+  invalidation. live4: 24 verified dodges, 0 static-object hops, 367
+  honest unverified flags. Test case7 rewritten to the two-sighting
+  contract + new case7b; suite 383+1xfail -> 384+1xfail.
+- D9 CONFIRMED live: corpse chunks (px sentinel 0.0, hp 0) of ONE death
+  were counted as new deaths (live2 deaths 31-34; the 1UP=0 corpse
+  passes the flags/gate checks). Fix: death-episode guard in
+  gif_run2_capture (count the episode start only; exit requires
+  in_mission + flags + hp>0 + sane px). live4: 13 deaths = 13 real
+  episodes over 134 chunks (max score 5400, best combat run yet).
+- rear_check (mission case 2) fired LIVE for the first time:
+  policy_pass1 chunk 25 — after clamp_clear released, a rear ground
+  enemy (slot 14, dx -38, h 64) persisted -> ONE bounded turn+fire
+  chunk (LEFT tap + LEFT-facing Y + dodge B), then the backbone
+  resumed. Labeled live-OBSERVED (one firing); a reproducible live
+  series is still owed. proj_dodge live in the corridor with
+  fall_near 1-2 (verified fallers only); stale_reset 15/11/37 per run
+  (case 8 live).
+- Checkpoint-phase variance DISCOVERED (honest negative): the rebuilt
+  chopper_ckpt has the same px (810.3) but a different corridor script
+  phase — the old ladder's only survivor (walk_right) now dies pinned
+  at the truck wall (px 992, 31 damage events); wall_upfire dies too.
+  px-matched savestates do NOT guarantee script-phase-matched
+  outcomes; the ladder's 10/10 predictions are checkpoint-phase-
+  dependent (consistent with the D6 boot-to-boot variance).
+- Corridor lethality unchanged (D6/D7 open): 13 real deaths per combat
+  run concentrate at px 992-1164 (truck 992 / clamp 1164).
+- New: scripts/msx_ckpt_policy_pass.py (policy-driven checkpoint pass,
+  first-death endpoint, per-chunk scan+stats JSONL). Evidence local:
+  evidence/gif2_combat_live{2,3,4}/ + evidence/heli_ladder/
+  {report_policy_pass1.json, policy_pass1/trace.jsonl, pat_02/07*}.

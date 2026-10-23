@@ -34,12 +34,23 @@ table slots whose HEIGHT word u16 @slot+0x7E accelerates down to the
 ground-contact value 64 (observed drop h128->64 in 1 frame; X stays
 fixed-point px @+0x78). Their HP field is a PHASE/FUSE tag
 (194/92/73/42 in flight; 352->101 fuse decay armed) — NOT enemy HP.
-Rule: slot height > GROUND_HEIGHT = "projectile_air" -> never an
-engage target; a near airborne shell triggers an immediate hop.
-Disclosed limit: the ARMED GROUND-CREEP phase (h==64, creeping,
-fuse-decay HP) is height-indistinguishable from a ground entity and
-is NOT classified — the hop cadence + corridor movement remain the
-only defenses there (heli-ladder patterns 1/2/10).
+Rule (two-stage, D8): scan_entities labels a slot "projectile_air"
+from the RAW height word alone; the POLICY additionally verifies the
+FALLING trajectory (height decreasing between consecutive sightings
+of the same slot) before treating it as a dodgable projectile.
+Live evidence (combat_live2, chunk 0-30): a STATIC elevated object
+(slot 7 at x=264.0, height and hp constant for 16 chunks — elevated
+scenery) was labelled projectile_air and burned 33 dodge hops, many
+in the early village where no shell exists. A static/rising/first-
+sighting airborne slot is now an UNVERIFIED airborne object: never
+engaged, never dodged, counted in stats["proj_unverified"].
+Disclosed limits: (a) a 1-frame-fall shell (h128->64, heli-ladder) is
+gone before falling can be confirmed — the hop cadence + corridor
+movement remain the real defense there; (b) a paradropping SOLDIER
+also matches the falling signature mid-air and is dodged, not faced,
+until it lands (h==64 -> enemy, engaged); (c) the ARMED GROUND-CREEP
+phase (h==64, creeping, fuse-decay HP) is height-indistinguishable
+from a ground entity and is NOT classified.
 
 MID-RUN REAR CHECK (mission case 2: enemy behind -> TURN, engage,
 RESUME): instrumented A/B (session 3) proved walking back into the
@@ -57,12 +68,15 @@ player-X jump larger than RESPAWN_JUMP_PX (normal walking covers
 change -> all wall/escalation/engage/pursuer state is stale and is
 reset before the next decision.
 
-SCENE/SCAN CONTRACT (ps1play-combat-scan/1):
-  scan_entities() returns a list of {"slot","x_px","dx_px","hp",
-  "kind"} for live enemies + airborne projectiles of the PLAYER only
-  (slot 0 excluded), sorted by |dx|. kind: "enemy" | "projectile_air".
-  The policy is a pure function of the scan + counters (unit-testable
-  offline, no emulator).
+SCENE/SCAN CONTRACT (ps1play-combat-scan/1, rev 2 — D8):
+  scan_entities() returns a list of {"slot","x_px","dx_px","hp","h",
+  "kind"} for live enemies + elevated slots of the PLAYER only
+  (slot 0 excluded), sorted by |dx|. kind: "enemy" | "projectile_air"
+  is the RAW height-word label (h > GROUND_HEIGHT); "h" carries the
+  height so the policy can verify the FALLING trajectory across
+  consecutive scans before dodging. The policy decision is a pure
+  function of the scan stream + counters (unit-testable offline, no
+  emulator).
 """
 from __future__ import annotations
 
@@ -105,6 +119,9 @@ RESPAWN_JUMP_PX = 300        # px jump that invalidates stale state
                              # escalation test's synthetic fast walk
                              # peaks at ~161px/chunk; real respawn/
                              # continue reloads jump 300+px)
+FALL_MAX_PER_CHUNK = 1200    # max height drop per 60f chunk still a
+                             # fall (rain signature 1..20/f x 60f;
+                             # anything larger = slot redefinition)
 
 # ---- cadence (RoutePolicy-compatible) --------------------------------
 FIRE_ON, FIRE_OFF = 8, 6
@@ -146,7 +163,7 @@ are dropped — absence from this list means NOT OBSERVED, never
             continue
         h = int(mem.u16(base + 0x7E))
         out.append({"slot": s, "x_px": round(x_px, 1),
-                    "dx_px": round(dx, 1), "hp": hp,
+                    "dx_px": round(dx, 1), "hp": hp, "h": h,
                     "kind": ("projectile_air" if h > GROUND_HEIGHT
                              else "enemy")})
     out.sort(key=lambda e: abs(e["dx_px"]))
@@ -176,11 +193,13 @@ class CombatPolicy:
         self.rear_slot = None
         self.rear_streak = 0
         self._rear_t = 0
+        self.prev_h = {}               # slot -> height at last sighting
         self.stats = {"engage": 0, "clamp_clear": 0, "advance": 0,
                       "grenade": 0, "jump": 0, "rear_engage": 0,
                       "front_engage": 0, "dodge": 0,
                       "budget_walkthrough": 0, "rear_check": 0,
-                      "proj_dodge": 0, "stale_reset": 0}
+                      "proj_dodge": 0, "proj_unverified": 0,
+                      "stale_reset": 0}
 
     # ----------------------------------------------------------------
     def _invalidate_stale(self):
@@ -195,6 +214,7 @@ class CombatPolicy:
         self.engage_streak = 0
         self.rear_slot = None
         self.rear_streak = 0
+        self.prev_h = {}               # height memory is stale too (D8)
         self.stats["stale_reset"] += 1
 
     # ----------------------------------------------------------------
@@ -255,7 +275,29 @@ class CombatPolicy:
         cands = sorted(enemies or [], key=lambda e: abs(e["dx_px"]))
         foes = [e for e in cands if e.get("kind", "enemy") == "enemy"]
         airs = [e for e in cands if e.get("kind", "enemy") != "enemy"]
-        proj_dodge = any(abs(e["dx_px"]) <= PROJ_DODGE_X for e in airs)
+        # ---- D8 falling-trajectory verification --------------------
+        # A RAW "projectile_air" label (h > 64) is NOT enough: dodge
+        # only slots whose height DECREASED since the previous sighting
+        # of the same slot (the verified rain signature at chunk
+        # granularity). Static / rising / first-sighting elevated
+        # objects stay unverified: never engaged, never dodged.
+        dodgable = []
+        next_h = {}
+        for e in airs:
+            hv = e.get("h")
+            if hv is None:
+                self.stats["proj_unverified"] += 1
+                continue
+            s = e["slot"]
+            ph = self.prev_h.get(s)
+            next_h[s] = hv
+            if ph is not None and 0 < ph - hv <= FALL_MAX_PER_CHUNK:
+                dodgable.append(e)
+            else:
+                self.stats["proj_unverified"] += 1
+        self.prev_h = next_h
+        proj_dodge = any(abs(e["dx_px"]) <= PROJ_DODGE_X
+                         for e in dodgable)
         if proj_dodge:
             self.stats["proj_dodge"] += 1
         near = None

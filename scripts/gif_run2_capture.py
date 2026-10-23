@@ -129,6 +129,9 @@ def run_once(p, chunks, trace, label, outdir, fdir, every, evlog,
     stall_streak = 0
     ladder = 0
     deaths = 0
+    in_death = False   # death-episode guard: corpse/respawn chunks of
+                       # ONE death must not count as new deaths
+                       # (live: chunks 31-33 all counted at px=0.0)
     stop = None
     camera_series = [prev["camera_fx"]]
     max_score = prev["score"]
@@ -222,7 +225,31 @@ def run_once(p, chunks, trace, label, outdir, fdir, every, evlog,
         game_over = _flags_dead(cur["flags_word"])
         cam_regress = gain < -50
         death_evt = any(e["type"] == "death_candidate" for e in evs)
-        if game_over or death_evt or cam_regress or hp1b == 0:
+        deathish = game_over or death_evt or cam_regress or hp1b == 0
+        if deathish and in_death:
+            # same death episode still animating (px=0 corpse / hp=0
+            # corpse / PRESS-START): wait it out, then retry the gate;
+            # do NOT count it again
+            trace.write({"type": "death_episode_wait", "chunk": c,
+                         "trigger": ("game_over_screen" if game_over
+                                     else ("hp_zero" if hp1b == 0
+                                           else ("score_collapse"
+                                                 if death_evt
+                                                 else "camera_regress"))),
+                         "px": round(px_b, 1)})
+            run_frames_captured(p, 60, set(), fdir, every, cap)
+            g = ensure_mission(p, tries=2, log=_log,
+                               want_hp_cands=False)
+            after = tel.snapshot(buttons=[], frame=p.core.frames_run)
+            if (g.get("in_mission")
+                    and _flags_active(after["flags_word"])
+                    and int(p.mem.u16(HP_PAIR[0])) > 0):
+                in_death = False
+                det.reset()
+                prev = after
+            continue
+        if deathish:
+            in_death = True
             deaths += 1
             # DEATH GEOMETRY: enemies at the moment of death
             mem2 = p.mem
@@ -256,9 +283,17 @@ def run_once(p, chunks, trace, label, outdir, fdir, every, evlog,
             g = ensure_mission(p, tries=4, log=_log,
                                want_hp_cands=False)
             after = tel.snapshot(buttons=[], frame=p.core.frames_run)
-            if g.get("in_mission") and _flags_active(after["flags_word"]):
+            # alive requires hp>0: the known environment trap lets a
+            # 1UP=0 corpse pass the flags/gate checks (live: deaths
+            # 31-34 counted 4x from one death before this guard)
+            if (g.get("in_mission")
+                    and _flags_active(after["flags_word"])
+                    and int(p.mem.u16(HP_PAIR[0])) > 0
+                    and 0.0 < int(p.mem.u32(PLAYER_X)) / 65536.0
+                    < 60000.0):
                 det.reset()
                 prev = after
+                in_death = False          # episode ended: alive again
                 continue
             ok = savestate_recover(p, tel, trace, c, ledger, outdir)
             evlog.write({"kind": "restart",
@@ -269,6 +304,7 @@ def run_once(p, chunks, trace, label, outdir, fdir, every, evlog,
                 trace.write({"type": "stop", "chunk": c,
                              "reason": stop, "telemetry": cur})
                 break
+            in_death = False              # fresh timeline after reload
             over, reason = ledger.should_stop()
             if over:
                 stop = reason
