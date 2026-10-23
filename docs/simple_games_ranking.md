@@ -71,12 +71,16 @@ highest-value acquisition target.
 - Value: proves the shared core on a third title; unusable in the
   committed matrix until licensing is resolved. Cost: XS (local).
 
-### 4. hello_pong — PENDING (artifact gated)
-- Source/license: github.com/marconvcm/ps1_dev, MIT. Actions build
-  SUCCEEDED but artifact download needs Actions:read (HTTP 401 with
-  the current token); source build needs Docker+PSn00bSDK (absent).
-- Would be the smallest input-latency probe once fetched. Cost: XS
-  after unblock.
+### 4. hello_pong — BLOCKED (no release artifact exists; build chain absent)
+- Source/license: github.com/marconvcm/ps1_dev, MIT. Re-verified
+  2026-10-23 via API: **0 releases** (the CI workflow publishes
+  artifacts only on tags — none were ever pushed; the earlier
+  Actions:read HTTP 401 was not the binding constraint). Source build
+  requires Docker+PSn00bSDK; Docker confirmed absent from this
+  sandbox (`which docker podman` → nothing, no root).
+- Would be the smallest input-latency probe once unblocked (ask the
+  maintainer to tag a release, or provide Docker). Cost: XS after
+  unblock.
 
 ### 5. ButtonMasher / RPS-PS1-v1 — REJECTED
 - No license, no releases (API re-verified 2026-10-22); source build

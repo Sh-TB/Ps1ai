@@ -7,7 +7,7 @@ test/live A/B), `OBSERVED` (user report / GIF evidence, no
 instrumentation), `PARTIAL` (some scenarios fixed, others open),
 `BLOCKED` (external cause), `SUPERSEDED` (earlier diagnosis replaced).
 
-Baseline: commit `c422606` + this batch. Suite **384 passed + 1 xfailed**
+Baseline: commit `b283b19` + the reproducibility batch. Suite **384 passed + 1 xfailed**
 (was 383+1 at `c422606`).
 
 ## Behavioral defects (user-reported gameplay)
@@ -15,7 +15,7 @@ Baseline: commit `c422606` + this batch. Suite **384 passed + 1 xfailed**
 | ID | Defect | Label | Instrument source | Root cause | Minimal fix | Repro test |
 |----|--------|-------|-------------------|------------|-------------|------------|
 | D1 | Fires/advances on a fixed rhythm, walks THROUGH enemies without killing them | `CONFIRMED` (probe0: 400f unarmed walk scored 0, took damage, enemies passed) | `scripts/probe0_addresses.py`, `evidence/probe0/` | RoutePolicy v1 read NO entity data; fire cadence was purely time-based | `ps1play/agent/combat.py` CombatPolicy: nearest-threat selection + point-blank front engage (≤45 px) + forward fire bursts on the run; per-slot engage budget | `tests/test_combat_policy.py::test_front_enemy_faces_right`, `tests/test_msx_regression8.py::test_case1_front_enemy_engaged` |
-| D2 | Dies with enemies BEHIND (the "jeep behind" geometry) | `CONFIRMED` (4/4 baseline in-game deaths at the clamp with rear enemies dx −54…−93) → `PARTIAL` (mid-run fix live-OBSERVED once; clamp fix live-proven) | `scripts/gif_run2_capture.py` death_geometry traces; **live: `evidence/heli_ladder/policy_pass1` chunk 25** | Forward-only policy; rear threats never selected mid-run | Clamp: defensive LEFT rear-clear (live-proven, 5901 clamp kills). Mid-run: bounded rear_check — a pursuer persisting ≤130 px across 4 chunks earns ONE turn+fire chunk (6f LEFT tap → standing LEFT fire → resume). **Live status: fired once in the chopper-zone pass (rear ground enemy slot 14 dx −38 persisting after clamp_clear release → LEFT+Y+B chunk) = live-OBSERVED; a reproducible live series is still owed** | `test_case2_rear_pursuer_turns_bounded`, `test_rear_gate_midrun_vs_clamp` |
+| D2 | Dies with enemies BEHIND (the "jeep behind" geometry) | `CONFIRMED` (4/4 baseline in-game deaths at the clamp with rear enemies dx −54…−93) → **`TESTED` (direction correction) / `PARTIAL` (kill follow-through)** — the owed reproducible live series is DELIVERED: `policy_pass1..4`, four independent boots from the same `chopper_ckpt`, **4/4 identical rear_check firings at chunk 25** (slot 14 armored truck x 1126.5, dx −37.5, hp 254, h 64 → ONE `B+LEFT+Y` turn+fire chunk, then the backbone resumes; never a walk-toward) | `scripts/msx_ckpt_policy_pass.py`; `evidence/heli_ladder/policy_pass{1,2,3,4}/trace.jsonl` + `report_policy_pass*.json` | Forward-only policy; rear threats never selected mid-run | Clamp: defensive LEFT rear-clear (live-proven, 5901 clamp kills). Mid-run: bounded rear_check — a pursuer persisting ≤130 px across 4 chunks earns ONE turn+fire chunk (6f LEFT tap → standing LEFT fire → resume). **Disclosed limit: the fired Y-burst did NOT change the truck's hp (254→254 in all 4 passes) — the armored vehicle resists forward fire from this geometry; the grenade-equipped `clamp_clear` path remains the proven kill mechanism (session-3: 5901 clamp kills). Direction correction is live-TESTED; kill follow-through vs armor is open and honest** | `test_case2_rear_pursuer_turns_bounded`, `test_rear_gate_midrun_vs_clamp` |
 | D3 | Reaches the map/section end and keeps going; never turns back to clear rear (jeep/grenadier) | `CONFIRMED` (62 clamp chunks held RIGHT, never turned) → `TESTED` | session-3 A/B JSONL (`evidence/combat_before_after.json`, local) | No stage-end signal existed; movement intent never re-checked against progress | DERIVED stage-end: player X stalls while RIGHT intent held (2 chunks) → `clamp_clear` (LEFT fire / UP+LEFT moving fire / hops / grenades / escalation walk-back 180/300/450). No map constants | `test_case3_clamp_rear_defensive_clear`, `test_clamp_detection_and_clear`, `test_clamp_escalation_same_wall` |
 | D4 | Never faces the nearest threat — fixed-RIGHT facing, binary forward/back | `CONFIRMED` → `TESTED` | session-3 A/B | Facing hard-wired to traversal direction | Engage/rear_check/clamp_clear face the selected threat's dx sign; up-fire segments always move (heli-ladder pattern 7 fix) | `test_case1`, `test_case2`, `test_clamp_upfire_never_static` |
 | D5 | Chopper directly overhead / falling bombs unanswered | `OBSERVED` (user GIF report) → `TESTED` (classifier + dodge live-verified in 3 instrumented runs) | heli-ladder slot trace; **live: `gif2_combat_live2/3/4` — dodge stats 33→12→24 with 165/367 unverified flags, `policy_pass1` corridor dodges with fall_near 1–2** | No projectile concept: falling shells occupied entity slots and were read as if ground enemies (their HP field is a fuse/phase tag 194/92/73/42, 352→101) | Two-stage classifier: scan labels h>64 `projectile_air`; the policy additionally verifies the FALLING trajectory across sightings before dodging (see D8). Never an engage target; verified faller within 60 px → hop. **Disclosed limits: 1-frame-fall shells undodgeable (hop cadence + movement are the defense); paradrop soldiers match the falling signature mid-air; armed ground-creep (h==64) height-indistinguishable** | `test_case7_falling_shell_dodged_not_faced`, `test_case7b_static_elevated_object_never_dodged` |
@@ -44,7 +44,14 @@ Baseline: commit `c422606` + this batch. Suite **384 passed + 1 xfailed**
   * D9 CONFIRMED live → fixed → live-TESTED (death accounting).
   * D5 dodge live-TESTED (verified-faller dodges only).
   * D2 rear_check live-OBSERVED once (`policy_pass1` chunk 25, correct
-    geometry + buttons); reproducible live series still owed.
+    geometry + buttons); **reproducible live series DELIVERED 2026-10-23:
+    `policy_pass2/3/4` re-ran the identical checkpoint pass — 4/4
+    identical firings (chunk 25, slot 14 dx −37.5 hp 254 h 64,
+    `B+LEFT+Y`), suite re-verified 384+1xfail before the series. D2
+    direction correction → live-`TESTED`; disclosed limit: the fired
+    burst did not change the armored truck's hp (254→254) — kill
+    follow-through vs armor remains `PARTIAL` (grenade `clamp_clear`
+    is the proven kill path).**
   * Case 8 stale invalidation live (15/11/37 resets per run).
   * Checkpoint-phase variance DISCOVERED: the rebuilt `chopper_ckpt`
     (same px 810.3) sits at a different corridor script phase — the
@@ -54,3 +61,8 @@ Baseline: commit `c422606` + this batch. Suite **384 passed + 1 xfailed**
     checkpoint-phase-dependent (consistent with D6 variance).
   * The corridor/truck/clamp lethality (D6/D7) remains the open root
     blocker — 13 real deaths per run concentrate at px 992–1164.
+    The policy_pass series adds precision: the pass dies at the clamp
+    (chunk 26, one-shot −291 truck ram at px 1164) right AFTER the
+    rear_check turn — i.e. the bounded turn fires but one chunk of
+    LEFT fire cannot stop an armored ram; survival there needs the
+    grenade path or a non-armored pursuer scenario.
