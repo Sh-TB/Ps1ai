@@ -228,7 +228,9 @@ def run_once(p, chunks, trace, label, outdir, fdir, every, evlog,
             mem2 = p.mem
             px2 = int(mem2.u32(PLAYER_X)) / 65536.0
             geom = scan_entities(mem2, px=px2)
-            rear = [e for e in geom if e["dx_px"] < -20]
+            rear = [e for e in geom
+                    if e["dx_px"] < -20
+                    and e.get("kind", "enemy") == "enemy"]
             trigger = ("game_over_screen" if game_over else
                        ("hp_zero" if hp1b == 0 else
                         ("score_collapse" if death_evt else
