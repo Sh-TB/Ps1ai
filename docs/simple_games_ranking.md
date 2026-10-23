@@ -15,17 +15,18 @@ committed.
 | # | Capability category | Representative today | Status |
 |---|--------------------|----------------------|--------|
 | 1 | Minimal movement + deterministic goal | **Tetrade** | FULL PLAYTHROUGH (Issue #8) |
-| 2 | Single player + single identifiable opponent | — none yet | no suitable licensed homebrew found; MSX itself is the current testbed |
-| 3 | Directional movement + measurable hit/collision | — none yet | same gap |
-| 4 | Reacting to moving obstacles/projectiles | — none yet | same gap; on MSX this is covered by the verified mortar-shell classifier (case 7) |
+| 2 | Single player + single identifiable opponent | **Poy Poy (USA)** — BOOTED candidate | boot + input causality VERIFIED (owner source); RAM mapping pending |
+| 3 | Directional movement + measurable hit/collision | **Trap Gunner (USA)** — BOOTED candidate | boot + input causality VERIFIED (owner source); RAM mapping pending |
+| 4 | Reacting to moving obstacles/projectiles | Trap Gunner (trap projectiles) + MSX shell classifier | candidate booted; MSX coverage live-TESTED |
 | 5 | Slightly richer world / generalization | **PSX-Minecraft** | BOOTED + INPUT_RESPONSIVE |
 
-Honest gap statement: categories 2–4 (the enemy-capability ladder) have
-NO homebrew representative. The MSX 8-case regression suite
-(`tests/test_msx_regression8.py`) + the heli-ladder savestate harness
-are today's only instruments for enemy awareness; a category-2/3/4
-homebrew (a simple shooter with one identifiable enemy) remains the
-highest-value acquisition target.
+Honest gap statement (updated 2026-10-24): categories 2–4 now have
+BOOT-VERIFIED retail candidates from the owner-supplied source (Poy
+Poy, Trap Gunner — discs local-only, never committed), but NO RAM
+mapping yet: the entity-table reverse-engineering campaign (probe →
+causality → contract) is the acceptance gate before either becomes a
+capability representative. The MSX 8-case regression suite remains
+today's only instrument for enemy awareness.
 
 ## Ranked list
 
@@ -86,6 +87,35 @@ highest-value acquisition target.
 - No license, no releases (API re-verified 2026-10-22); source build
   requires the Windows-only 2012 PSXSDK toolchain — not buildable in
   this CPU-only sandbox.
+
+### 6. Poy Poy (USA) — BOOTED + INPUT-CAUSAL (owner-supplied source)
+- Source: the owner-supplied ROM archive (romsfun mirror, the same
+  source that produced the byte-identical MSX disc, session 12) —
+  retail disc, SCEA license sectors present, SLUS_004.86. Disc
+  binaries local-only, NEVER committed (same policy as MSX).
+- Binary: `Poy Poy (USA).zip` 166,541,778 B sha256 `76f0784b…` →
+  bin/cue; bin md5 `5c1d3783eec9e43d6ca277ae643f333f`.
+- Boot gate: BOOTED (SLUS-00486 detected, RAM 2MB); first non-black
+  frame @60f; title renders (Konami 1997); START → title transition
+  mean-abs diff **181.4** (screenshots in local evidence).
+- Agent relevance: arena battle vs 3 opposing players throwing
+  boulders — a natural category-② (single identifiable opponent)
+  and ④ (dodging thrown projectiles) candidate. Next gate: entity-
+  table RAM mapping via the probe→causality contract used on MSX.
+- Tool: `scripts/romsfun_fetch.py` (k_get_download referer-path flow,
+  Range streaming, re-mint resume; guest cap ≈51 MB per signed URL).
+
+### 7. Trap Gunner (USA) — BOOTED + INPUT-CAUSAL (owner-supplied source)
+- Source: same owner-supplied archive; retail disc, SLUS_006.79,
+  license sectors present. Local-only, never committed.
+- Binary: `Trap Gunner (USA).zip` 420,042,250 B sha256 `644aac0b…` →
+  bin/cue; bin md5 `4acc0cc9bf96dc12623d4bb031caf159`.
+- Boot gate: BOOTED; title renders (Atlus 1998); START → **512-wide
+  mode switch** (320×240 → 512×240) with diff 56.6 — real state
+  transition, input causality proven.
+- Agent relevance: grid-based trap placement vs an opposing trap
+  setter + trap projectiles — category ③④ candidate with discrete
+  tactics (rule-based friendly). Same next gate: RAM mapping.
 
 ## Retry/next-acquisition guidance
 

@@ -12,7 +12,8 @@ import hashlib
 import struct
 import sys
 
-BIN = "/home/z/my-project/emu/msx_usa/Metal Slug X (USA).bin"
+import os
+BIN = os.environ.get("DISC_BIN", "/home/z/my-project/emu/msx_usa/Metal Slug X (USA).bin")
 REPO_EXE = "/home/z/my-project/ps1ai/ps1play/re/SLUS_012.12"
 
 
@@ -127,7 +128,7 @@ def main():
             print("repo exe not found")
 
     # cue content
-    cue = open("/home/z/my-project/emu/msx_usa/Metal Slug X (USA).cue").read()
+    cue = open(os.environ.get("DISC_CUE", BIN.replace(".bin", ".cue"))).read()
     print("--- CUE ---")
     print(cue)
 

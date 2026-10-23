@@ -68,6 +68,32 @@ player-X jump larger than RESPAWN_JUMP_PX (normal walking covers
 change -> all wall/escalation/engage/pursuer state is stale and is
 reset before the next decision.
 
+SESSION-4 COMBAT BEHAVIOURS (user feedback round 3, 2026-10-24):
+  (a) FIRE DISCIPLINE: the traversal backbone no longer fires on a
+      fixed cadence — forward fire only while a foe is actually ahead
+      inside FRONT_FIRE_X (stats["advance_silent"] counts the silent
+      move-only chunks). Advance grenades are cluster-gated the same
+      way. No more aimless bursts into empty air.
+  (b) STOP-AND-KILL (ENGAGE_SHORT 45 -> 200): a front soldier inside
+      200 px STOPS the run — standing aimed fire until the slot dies/
+      disappears (case-6 release) or ENGAGE_BUDGET expires into the
+      walk-through. Soldiers are no longer RUN PAST (the D1 relapse
+      the user re-reported: "you pass through the enemy").
+  (c) MOVING DODGE: a verified falling shell within PROJ_DODGE_X now
+      triggers hop + lateral escape AWAY from the faller — never a
+      straight-up hop in place (the user's "you're jumping up — you
+      must change position"; consistent with the heli must-move
+      mechanic where hold-RIGHT was the only survivor pattern).
+  (d) REAR KILL FOLLOW-THROUGH: the rear check is no longer one
+      isolated chunk per campaign — repeat checks vs the SAME pursuer
+      keep rear fire up; when the pursuer's hp is UNCHANGED across
+      checks (verified no-progress = armor resists bullets), grenades
+      join after REAR_GRENADE_AFTER checks (the proven anti-armor
+      kill path); after REAR_CHECK_MAX checks without a kill signal
+      the agent disengages honestly (stats["rear_gaveup"]) instead of
+      standing forever; a vanished pursuer resolves the campaign
+      (stats["rear_resolved"]).
+
 SCENE/SCAN CONTRACT (ps1play-combat-scan/1, rev 2 — D8):
   scan_entities() returns a list of {"slot","x_px","dx_px","hp","h",
   "kind"} for live enemies + elevated slots of the PLAYER only
@@ -91,9 +117,19 @@ ENEMY_HP_SIGNED = 32768      # hp >= this = transient tag, not an enemy
 
 # ---- engagement geometry (px) ----------------------------------------
 ENGAGE_WINDOW = 400          # scan window (reporting only)
-ENGAGE_SHORT = 45            # front: point-blank only (never stand in
-                             # the open — movement is life; forward
-                             # fire bursts kill far enemies on the run)
+ENGAGE_SHORT = 200           # front stop-and-kill window (user
+                             # directive "at least stop first and kill
+                             # the soldier"): a front soldier inside
+                             # this window STOPS the run — standing
+                             # aimed fire until the slot dies/gone,
+                             # bounded by ENGAGE_BUDGET. Was 45
+                             # (point-blank only): soldiers at 60-150px
+                             # were RUN PAST — the D1 relapse the user
+                             # re-reported
+FRONT_FIRE_X = 400           # on-the-run forward fire ONLY while a
+                             # foe is actually ahead inside this
+                             # window (fire discipline: no aimless
+                             # bursts into empty air)
 REAR_ENGAGE = 300            # rear window while END-CLAMPED
 REAR_ENGAGE_RUN = 0          # mid-run rear defense OFF: turning back
                              # mid-run is the instrumented death
@@ -114,6 +150,11 @@ REAR_CHECK_X = 130           # mid-run pursuer window (death geometry
                              # dx -54..-93, session-3 A/B)
 REAR_CHECK_PERSIST = 4       # consecutive chunks before the check
 REAR_CHECK_TURN = 6          # frames of LEFT tap to turn around
+REAR_CHECK_MAX = 6           # consecutive follow-up checks vs one
+                             # pursuer before honest disengagement
+REAR_GRENADE_AFTER = 2       # hp-unchanged pursuer earns grenades
+                             # after this many repeat checks (verified
+                             # no-progress = armor resists bullets)
 RESPAWN_JUMP_PX = 300        # px jump that invalidates stale state
                              # (walking covers <40px/chunk; the
                              # escalation test's synthetic fast walk
@@ -193,13 +234,19 @@ class CombatPolicy:
         self.rear_slot = None
         self.rear_streak = 0
         self._rear_t = 0
+        self.rear_checks = 0           # follow-up checks, same pursuer
+        self.rear_last_hp = None       # pursuer hp at the last check
+        self.rear_hp_now = None        # pursuer hp this chunk
+        self.no_progress = False       # hp unchanged across checks
         self.prev_h = {}               # slot -> height at last sighting
         self.stats = {"engage": 0, "clamp_clear": 0, "advance": 0,
                       "grenade": 0, "jump": 0, "rear_engage": 0,
                       "front_engage": 0, "dodge": 0,
                       "budget_walkthrough": 0, "rear_check": 0,
                       "proj_dodge": 0, "proj_unverified": 0,
-                      "stale_reset": 0}
+                      "stale_reset": 0, "advance_silent": 0,
+                      "rear_grenade": 0, "rear_resolved": 0,
+                      "rear_gaveup": 0}
 
     # ----------------------------------------------------------------
     def _invalidate_stale(self):
@@ -214,6 +261,10 @@ class CombatPolicy:
         self.engage_streak = 0
         self.rear_slot = None
         self.rear_streak = 0
+        self.rear_checks = 0
+        self.rear_last_hp = None
+        self.rear_hp_now = None
+        self.no_progress = False
         self.prev_h = {}               # height memory is stale too (D8)
         self.stats["stale_reset"] += 1
 
@@ -300,6 +351,16 @@ class CombatPolicy:
                          for e in dodgable)
         if proj_dodge:
             self.stats["proj_dodge"] += 1
+        # MOVING dodge direction (user directive "you're jumping up —
+        # you must CHANGE POSITION"): escape AWAY from the nearest
+        # verified faller; never a straight-up in-place hop.
+        dodge_move = None
+        if dodgable:
+            nf = min(dodgable, key=lambda e: abs(e["dx_px"]))
+            dodge_move = "LEFT" if nf["dx_px"] > 0 else "RIGHT"
+        # fire discipline: on-the-run forward fire only vs a real
+        # ahead target (aimless-burst fix, user directive)
+        ahead_fire = any(0 <= e["dx_px"] <= FRONT_FIRE_X for e in foes)
         near = None
         for e in foes:
             adx = abs(e["dx_px"])
@@ -363,14 +424,42 @@ class CombatPolicy:
             if pursuer is not None and pursuer["slot"] == self.rear_slot:
                 self.rear_streak += 1
             else:
+                if pursuer is not None and \
+                        pursuer["slot"] != self.rear_slot:
+                    # a NEW pursuer starts a fresh follow-through
+                    # campaign (the old one ended unresolved)
+                    self.rear_checks = 0
+                    self.rear_last_hp = None
                 self.rear_slot = (pursuer["slot"]
                                   if pursuer is not None else None)
                 self.rear_streak = 1 if pursuer is not None else 0
+            if pursuer is None and self.rear_checks:
+                # the pursuer is GONE (dead/vanished): threat RESOLVED,
+                # resume clean (case-6 release semantics for the rear;
+                # kill evidence itself is the runner's job)
+                self.stats["rear_resolved"] += 1
+                self.rear_checks = 0
+                self.rear_last_hp = None
+                self.rear_hp_now = None
             if pursuer is not None and \
                     self.rear_streak >= REAR_CHECK_PERSIST:
                 mode = "rear_check"      # counted by the stats[mode] line
+                # kill follow-through bookkeeping: consecutive checks
+                # vs the SAME pursuer, with VERIFIED hit comparison
+                # (hp at this check vs the previous check — the
+                # mission's hit-evidence rule)
+                self.rear_hp_now = pursuer["hp"]
+                self.no_progress = (self.rear_last_hp is not None and
+                                    self.rear_hp_now ==
+                                    self.rear_last_hp)
+                self.rear_last_hp = self.rear_hp_now
+                self.rear_checks += 1
                 self.rear_streak = 0
-                self.rear_slot = None
+                # rear_slot KEPT (not reset): the next chunk's same-slot
+                # match must continue THIS campaign — resetting the slot
+                # made every post-check chunk look like a new pursuer
+                # and wiped the follow-through counters (session-4 bug
+                # caught by test_rear_followthrough_escalates_to_grenade)
             else:
                 mode = "advance"
         elif clamped:
@@ -379,17 +468,28 @@ class CombatPolicy:
             mode = "advance"
         self.mode = mode
         self.stats[mode] = self.stats.get(mode, 0) + 1
+        if mode == "advance" and not ahead_fire:
+            self.stats["advance_silent"] += 1
 
         for fi in range(chunk):
             burst = (self.fc % (FIRE_ON + FIRE_OFF)) < FIRE_ON
             btns = set()
 
             if mode == "rear_check":
-                # turn (short LEFT tap), then standing LEFT-facing fire
-                # (empty btns keeps facing left — never a walk-toward);
-                # bounded to this single chunk
+                # turn (short LEFT tap), then standing LEFT-facing
+                # fire; repeat checks vs an hp-UNCHANGED pursuer
+                # escalate to GRENADES (verified no-progress = armor
+                # resists bullets; the grenade is the proven
+                # anti-armor kill path); empty btns keeps facing left
+                # — never a walk-toward
                 if self._rear_t < REAR_CHECK_TURN:
                     btns = {"LEFT"}
+                elif (self.no_progress
+                        and self.rear_checks > REAR_GRENADE_AFTER
+                        and grenades > 0
+                        and self.fc % 8 < 4):
+                    btns = {"A"}
+                    self.stats["rear_grenade"] += 1
                 elif burst:
                     btns = {"Y"}
                 else:
@@ -453,28 +553,43 @@ class CombatPolicy:
                     btns = {"A"}
                     self.stats["grenade"] += 1
             else:
-                # ---- proven traversal backbone ----------------------
-                # walk-through: fire forward while advancing (standing
-                # still is how runs die — route baseline evidence)
+                # ---- traversal backbone (fire discipline, user
+                # directive "you fire aimless bursts"): move ALWAYS,
+                # fire forward ONLY while a foe is actually ahead
+                # inside FRONT_FIRE_X; cluster grenades stay
+                # target-gated the same way
                 btns = {"RIGHT"}
-                if burst:
+                if burst and ahead_fire:
                     btns.add("Y")
                 if self._hop():
                     btns.add("B")
-                if self.fc % GRENADE_PERIOD == 0:
-                    self.press = 4
+                if (grenades > 2 and self._cluster(enemies)
+                        and self.fc % GRENADE_PERIOD < 4):
+                    btns = {"A"}
                     self.stats["grenade"] += 1
-                if self.press > 0:
-                    btns.add("A")
-                    self.press -= 1
             if proj_dodge and fi < JUMP_HOLD:
-                # verified airborne shell within dodge radius: hop NOW
-                # (heli-ladder: standing in the corridor is shell death)
-                btns.add("B")
+                # verified airborne shell within dodge radius: MOVING
+                # dodge NOW — hop + lateral escape AWAY from the
+                # faller (user directive: never a straight-up hop in
+                # place; heli must-move mechanic). The imminent shell
+                # outranks the mode's own facing for these frames;
+                # firing forward while escaping right is free.
+                btns = {"B", dodge_move}
+                if burst and dodge_move == "RIGHT":
+                    btns.add("Y")
             self.fc += 1
             emit(1, btns)
         if mode == "rear_check":
             self._rear_t = 0
+            if self.rear_checks >= REAR_CHECK_MAX:
+                # honest disengagement: REAR_CHECK_MAX follow-ups
+                # produced no kill signal — stop burning standing
+                # exposure and resume the run (the pursuer streak
+                # must rebuild before the next campaign)
+                self.force_advance = FORCE_ADVANCE
+                self.rear_checks = 0
+                self.rear_last_hp = None
+                self.stats["rear_gaveup"] += 1
         return segs
 
     # ----------------------------------------------------------------

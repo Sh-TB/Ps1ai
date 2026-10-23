@@ -85,3 +85,42 @@ honest Nortis license-block marker).
    `python scripts/msx_ckpt_policy_pass.py --tag policy_passN --chunks 60` (live series).
 7. This report.
 8. Issue updates: #5 (session reports incl. comment 6358374338 + the reproducibility comment), #6 (5-game round + addenda), #7 (wagon sensor batch), #8 (Tetrade full playthrough).
+
+## Session-4 addendum (2026-10-24, user feedback round 3 + games batch)
+
+User round-3 report ("you pass through enemies, fire aimless bursts,
+jump in place under bombs, keep walking forward with an enemy behind")
+→ four CombatPolicy behaviours, all rule-based, zero core edits:
+
+| Behaviour | Contract change | Offline | Live (pass5/6/7, 3 boots bit-identical) |
+|---|---|---|---|
+| Fire discipline | advance fire only vs a real ahead target; advance grenades cluster-gated | 2 new tests | `advance_silent` 14/15 chunks; score 1500 aimed vs 3300 sprayed (the +1800 were aimless-burst incidental kills, now honestly gone) |
+| Stop-and-kill | ENGAGE_SHORT 45→200 px | renamed+new tests | 5 engage chunks, +100 score each (soldiers killed, not passed) |
+| Moving dodge | verified faller → hop + lateral escape AWAY from it | frame-level test | proj_dodge 3 (chunk-union granularity disclosed) |
+| Rear kill follow-through | repeat checks + hp-verified grenade escalation + REAR_CHECK_MAX honest disengagement + `rear_resolved` | 2 new tests | c13 rear fire killed rear soldiers: +200 score, slot vanished, `rear_resolved: 1` — first kill signal on a rear check (soft pursuers; armored-truck-vs-grenade live run still owed) |
+
+Suite 389+1xfail (was 384+1). Category verdicts after session 4:
+category A/B rows of D1/D2/D5 strengthen (see ledger); category C/D
+unchanged: D2-vs-armor live grenade, D6 sustained quiet, D7 handler
+trace, mission-1 stage clear remain open.
+
+### Games batch (owner-supplied source, "test the other small games")
+
+The owner's download source (the same romsfun mirror that produced the
+byte-identical MSX disc) was re-armed as a persisted tool
+(`scripts/romsfun_fetch.py`): k_get_download admin-ajax with the
+post-id+file-index referer path, signed-URL Range streaming (the CDN
+rejects Referer on data), re-mint+resume across the ≈51 MB guest cap
+per signed URL. Two small retail games acquired, identity-verified,
+booted with input causality, one game per process:
+
+| Game | Serial | Size / md5 | Boot gate | Agent category |
+|---|---|---|---|---|
+| Poy Poy (USA) | SLUS_004.86 | 166,541,778 B / `5c1d3783…` | title renders; START diff 181.4 | ② (identifiable opponents) + ④ (dodge thrown boulders) |
+| Trap Gunner (USA) | SLUS_006.79 | 420,042,250 B / `4acc0cc9…` | START → 512-wide mode switch, diff 56.6 | ③④ (discrete trap tactics vs an opponent) |
+
+Disc binaries local-only (never committed — same policy as MSX).
+Acceptance gate for either to become a capability representative:
+entity-table RAM mapping via the probe→causality→contract campaign
+used on MSX. This upgrades the category-②③④ gap from "no candidate at
+all" to "boot-verified candidates, RAM mapping pending".

@@ -12,7 +12,8 @@ sys.path.insert(0, os.path.dirname(os.path.dirname(
     os.path.abspath(__file__))))
 
 from ps1play.agent.combat import (                     # noqa: E402
-    CombatPolicy, scan_entities, ENGAGE_WINDOW, REAR_ENGAGE)
+    CombatPolicy, scan_entities, ENGAGE_WINDOW, REAR_ENGAGE,
+    REAR_CHECK_TURN, REAR_CHECK_PERSIST)
 
 
 class FakeMem:
@@ -100,13 +101,22 @@ def test_front_enemy_faces_right():
     assert pol.mode == "engage"
 
 
-def test_midrange_front_enemy_keeps_running():
-    """v4: mid-range front enemies do not stop the run — the forward
-    fire bursts kill them during the walk-through."""
+def test_midrange_front_enemy_stops_and_engages():
+    """session 4 (user directive "at least stop first and kill the
+    soldier"): a front soldier inside 200 px STOPS the run — standing
+    aimed fire, never run past (the old 45px point-blank-only window
+    let soldiers at 60-150px be sprinted through)."""
     pol = CombatPolicy()
-    enemies = [{"slot": 1, "x_px": 1120.0, "dx_px": 120.0, "hp": 90}]
-    pol.decide(60, 1000.0, enemies, grenades=0, hp=100)
-    assert pol.mode == "advance"
+    enemies = [{"slot": 1, "x_px": 1120.0, "dx_px": 120.0, "hp": 90,
+                "kind": "enemy"}]
+    segs = pol.decide(60, 1000.0, enemies, grenades=0, hp=100)
+    btns = set().union(*[s["btns"] for s in segs])
+    assert pol.mode == "engage"               # STOPS the run to fight
+    assert "LEFT" not in btns                 # faces the soldier
+    assert "Y" in btns                        # fires at it
+    # (RIGHT in btns is the facing/closing key — see
+    # test_front_enemy_faces_right; the stop-vs-run decision is the
+    # MODE, which used to be advance = run past)
 
 
 def test_pointblank_front_engaged_chasers_ignored():
@@ -254,13 +264,118 @@ def test_rear_gate_midrun_vs_clamp():
 
 
 def test_far_front_enemy_not_engaged():
-    """v3: a far front enemy does not stop the run — advance (forward
-    fire bursts deal with it on the way)."""
+    """v3 (updated session 4): a far front enemy does not stop the
+    run — advance WITH on-the-run fire (it is a real ahead target);
+    close_front still stops into the aimed engage."""
     pol = CombatPolicy()
-    far_front = [{"slot": 1, "x_px": 1350.0, "dx_px": 350.0, "hp": 90}]
+    far_front = [{"slot": 1, "x_px": 1350.0, "dx_px": 350.0, "hp": 90,
+                  "kind": "enemy"}]
     pol.decide(30, 1000.0, far_front, grenades=0, hp=100)
     assert pol.mode == "advance"
-    close_front = [{"slot": 1, "x_px": 1020.0, "dx_px": 20.0, "hp": 90}]
+    close_front = [{"slot": 1, "x_px": 1020.0, "dx_px": 20.0, "hp": 90,
+                    "kind": "enemy"}]
     pol2 = CombatPolicy()
     pol2.decide(30, 1000.0, close_front, grenades=0, hp=100)
     assert pol2.mode == "engage"
+
+
+# --------------- session-4 behaviours (user feedback round 3) -----
+def test_fire_discipline_silent_when_no_target():
+    """user directive "you fire aimless bursts": with NO foe ahead the
+    backbone MOVES WITHOUT FIRING (silent advance, counted)."""
+    pol = CombatPolicy()
+    segs = pol.decide(60, 1000.0, [], grenades=0, hp=100)
+    btns = set().union(*[s["btns"] for s in segs])
+    assert "RIGHT" in btns
+    assert "Y" not in btns, "aimless burst into empty air"
+    assert pol.stats["advance_silent"] == 1
+
+
+def test_fire_discipline_fires_only_vs_ahead_target():
+    """fire discipline, positive + negative half: a foe AHEAD keeps
+    the on-the-run fire; a REAR-only field stays silent (rear is the
+    rear_check's business, not the forward muzzle)."""
+    pol = CombatPolicy()
+    ahead = [{"slot": 1, "x_px": 1300.0, "dx_px": 300.0, "hp": 90,
+              "kind": "enemy"}]
+    segs = pol.decide(60, 1000.0, ahead, grenades=0, hp=100)
+    assert pol.mode == "advance"
+    assert "Y" in set().union(*[s["btns"] for s in segs])
+    pol2 = CombatPolicy()
+    rear = [{"slot": 2, "x_px": 950.0, "dx_px": -50.0, "hp": 80,
+             "kind": "enemy"}]
+    segs2 = pol2.decide(60, 1000.0, rear, grenades=0, hp=100)
+    assert pol2.mode == "advance"
+    assert "Y" not in set().union(*[s["btns"] for s in segs2])
+
+
+def test_moving_dodge_escapes_away_from_faller():
+    """user directive "you're jumping up — you must CHANGE POSITION":
+    the verified-faller dodge is hop + lateral escape AWAY from the
+    shell — faller ahead -> escape LEFT, faller behind -> escape
+    RIGHT. Never a straight-up in-place hop."""
+    def faller(dx, h):
+        return [{"slot": 9, "x_px": 1000.0 + dx, "dx_px": float(dx),
+                 "hp": 60, "h": h, "kind": "projectile_air"}]
+    pol = CombatPolicy()
+    pol.decide(60, 1000.0, faller(30, 120), grenades=0, hp=100)
+    segs = pol.decide(60, 1000.0, faller(30, 90), grenades=0, hp=100)
+    dodged = [s for s in segs if "B" in s["btns"]]
+    assert dodged, "verified faller did not trigger the dodge"
+    for s in dodged:
+        assert "LEFT" in s["btns"], f"in-place hop: {s['btns']}"
+    pol2 = CombatPolicy()
+    pol2.decide(60, 1000.0, faller(-30, 120), grenades=0, hp=100)
+    segs2 = pol2.decide(60, 1000.0, faller(-30, 90), grenades=0,
+                        hp=100)
+    dodged2 = [s for s in segs2 if "B" in s["btns"]]
+    assert dodged2
+    for s in dodged2:
+        assert "RIGHT" in s["btns"], f"in-place hop: {s['btns']}"
+
+
+def test_rear_followthrough_escalates_to_grenade():
+    """user directive "the enemy is behind you and you keep walking
+    forward": a persisting pursuer earns REPEAT rear checks; an
+    hp-UNCHANGED pursuer (verified no-progress = armor) gets grenades
+    after REAR_GRENADE_AFTER checks; the rear stance never walks
+    toward the pack; a vanished pursuer RESOLVES the campaign."""
+    pol = CombatPolicy()
+    rear = [{"slot": 2, "x_px": 950.0, "dx_px": -50.0, "hp": 254,
+             "kind": "enemy"}]
+    checks = 0
+    for _ in range(40):
+        segs = pol.decide(60, 1000.0, rear, grenades=9, hp=100)
+        if pol.mode == "rear_check":
+            checks += 1
+            btns = set().union(*[s["btns"] for s in segs])
+            assert "RIGHT" not in btns          # never a walk-toward
+            left = sum(s["frames"] for s in segs
+                       if "LEFT" in s["btns"])
+            assert left <= REAR_CHECK_TURN + 2, left
+        if pol.stats["rear_grenade"] > 0:
+            break
+    assert checks >= 3, f"no follow-through checks: {checks}"
+    assert pol.stats["rear_grenade"] >= 1, "no grenade escalation"
+    # resolution: the pursuer vanishes -> campaign closes clean
+    pol2 = CombatPolicy()
+    for _ in range(REAR_CHECK_PERSIST):
+        pol2.decide(60, 1000.0, rear, grenades=0, hp=100)
+    assert pol2.stats["rear_check"] >= 1
+    pol2.decide(60, 1000.0, [], grenades=0, hp=100)
+    assert pol2.stats["rear_resolved"] == 1
+    assert pol2.mode == "advance"
+
+
+def test_rear_followthrough_gives_up_honestly():
+    """bounded exposure: REAR_CHECK_MAX follow-ups without a kill
+    signal -> honest disengagement (force_advance), not standing
+    forever in front of an armored ram."""
+    pol = CombatPolicy()
+    rear = [{"slot": 2, "x_px": 950.0, "dx_px": -50.0, "hp": 254,
+             "kind": "enemy"}]
+    for _ in range(200):
+        pol.decide(60, 1000.0, rear, grenades=9, hp=100)
+    assert pol.stats["rear_gaveup"] >= 1
+    assert pol.stats["rear_check"] >= 1
+    assert pol.mode in ("advance", "rear_check")
