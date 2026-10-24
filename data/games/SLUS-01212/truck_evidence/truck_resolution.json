@@ -1,0 +1,88 @@
+{
+  "schema": "ps1play-truck-resolution/1",
+  "generated": "2026-10-25",
+  "issue": 5,
+  "commit_base": "d99db8993084cdc2a8a112e7f5f69d9de004b219",
+
+  "field_semantics_table": [
+    {"field": "+0x8E (u16)", "status": "CONFIRMED",
+     "meaning": "screen-x integer half of u32 +0x8C (world_x - camera_left, u16 wrap)",
+     "evidence": [
+       "9-slot consistency: sx == world_x - 872.5 for slots 0,3,8,9,10,13,14,16,20 at the engage frame (uplob2 presence dump)",
+       "writer 0x80064674: lw 0x8c(a0)/addu/sw per entity = camera-scroll delta add to +0x8C AND +0x90 (screen x/y)",
+       "Gate B2 no-fire decay 148->2 (slot 3) = the camera advancing past a static entity, not damage",
+       "player 'hp' 210->234 == exactly the 24px the player walked right (uplob1 point_blank)",
+       "zero sh/sw stores to 0x8E in the whole overlay code region (field scan) and no subtract-store fingerprint anywhere"],
+     "old_label": "hp (CONTRADICTED)"},
+    {"field": "+0xA4 (u16)", "status": "CONFIRMED",
+     "meaning": "armored-truck HP (300 at engage; flat grenade = 100 dmg; death when 0)",
+     "evidence": [
+       "uplob6 lob0: 300->200 with the only raw change cluster at w82 (=+0xA4) plus hit-reaction words",
+       "uplob9 spam: 200->100->0 across two clamp-stand lobs, +400 score",
+       "death state word0 -> 0xA304 (distinct from the 0x4BE4 empty marker)",
+       "plugin-path reps 1-3: hp_track 300->200->100->0 bit-identical, +500 score, player alive"],
+     "old_label": "unknown (was never read)"},
+    {"field": "+0x7E (u16)", "status": "CONFIRMED",
+     "meaning": "height above ground (64 = ground contact); falling-bomb signature = h dropping 1..20/f",
+     "evidence": ["faller at x=1040.7 h 178->166->133->104 across 30f samples (uplob10)", "truck/soldiers constant 64 while parked"],
+     "old_label": "height (unchanged)"},
+    {"field": "+0x00 (u16)", "status": "OBSERVED",
+     "meaning": "state-handler pointer word0 (pairs with word1 = 0x8010/0x800x high half)",
+     "evidence": ["truck parked = 0x9E88 (unchanged across hits); death = 0xA304; empty = 0x4BE4; faller = 0xB4E4; wall mortarman = 0xE17C"],
+     "old_label": "state (unchanged)"},
+    {"field": "+0x2C (u16)", "status": "OBSERVED",
+     "meaning": "fuse/timer (helper 0x80019e5c initializes; grenade fuse 23->20 observed)",
+     "evidence": ["slot 11 f2C 23->20 during a live throw (uplob1)"],
+     "old_label": "unknown"}
+  ],
+
+  "entity_identity_table": {
+    "slot_14": "THE armored truck (st 0x9E88, world 937.5 at engage, screen-x 65 = the visual truck; HP +0xA4 = 300)",
+    "slot_10": "right-side soldier (st 0x4054, world 1139.8, screen-x 267) — the historical 'slot 14 truck hp 254' was this class of mislock",
+    "slot_11_wall": "wall mortarman (st 0xE17C, h 74..100) — throws the faller bombs",
+    "faller_bombs": "st 0xB4E4, hp_a4 == 30, h dropping fast; track the player's position; the explosion kills the player at the clamp",
+    "slot_0": "player (PLAYER_X == slot0+0x78; 'hp pair' 0x0CA2F6 == player screen-x)"
+  },
+
+  "truck_kill_recipe": {
+    "status": "GAMEPLAY_VERIFIED (plugin path 3/3 bit-identical; manual path 5/5)",
+    "grenades": 4,
+    "hp": "300 -> 200 -> 100 -> 0 (u16 @+0xA4)",
+    "steps": [
+      "approach to the hit band: player world x = truck_x + 50..62 (the truck is BEHIND the player at the D7 zone)",
+      "face-LEFT flat lob -> 100 dmg (uplob6/7/8 hit1 x4)",
+      "escape RIGHT ~110f",
+      "at hp<=200: stand near the clamp, face-LEFT, alternate UP-lob / flat lob every ~35f (uplob9 spam3/4)",
+      "done when hp_a4 == 0 (state 0xA304); score +400..+500 total"
+    ]
+  },
+
+  "d7_release_status": {
+    "status": "BLOCKED (exact unknown documented)",
+    "proven": [
+      "the clamp death is the faller bombs from the wall mortarman, NOT the truck (uplob10 walk PNG: explosion at death; faller spawned at the player's x 2 events before death)",
+      "killing the truck does NOT release the pin (uplob9/10/11: max_px exactly 1164.0 with the truck dead)",
+      "the walker flags 0x40 bit appears at the clamp in every run (0xB,0x43); historical pin signature (0xA,0x43) never reached in these runs because the player died first",
+      "the wall mortarman + remaining section entities were still alive in every release attempt"
+    ],
+    "smallest_next_experiment": "after the truck kill, kill the wall mortarman (st 0xE17C, UP-lob from below) and the remaining section entities, then walk right; if the clamp still holds, m2c-decompile the state-writer function containing 0x80023308 (the section advance at progress<threshold) and trace which condition the D7 section waits on"
+  },
+
+  "manual_vs_assisted": {
+    "manual_runtime_only": {
+      "what": "the historical #3/#5 campaign: 10 grenades per run lobbed at the entity with +0x8E in [200,300] (the mislocked soldier), watching +0x8E as 'hp'",
+      "frames": ">= 60000 (historical recon, #3-#5)",
+      "result": "NO truck kill; '254->207 damage' was the soldier walking; +700 score was infantry kills; the mislabel survived multiple sessions",
+      "cost": "multiple full-session runs, no reusable recipe",
+      "reproducible": "no (the claimed damage never reproduced a kill)"
+    },
+    "tool_assisted": {
+      "what": "m2c+Ghidra corpus xref scans + raw-byte field scans + score-ref tracing + full-record live diffs",
+      "wall_clock": "~2.5 h total session wall (static scans ~6 min of it; 16 emulator sessions ~11 min)",
+      "emulator_frames": "~45000 across uplob1..12 + plugin reps (most of it approach walking)",
+      "result": "field semantics corrected with 5-way evidence; the truck identified, its real HP located (+0xA4), a 4-grenade kill recipe found, wired into the plugin, 3/3 bit-identical",
+      "cost": "zero paid tooling; m2c + committed Ghidra corpus + capstone",
+      "reproducible": "yes — 8/8 independent kills (5 manual-script + 3 plugin-path)"
+    }
+  }
+}

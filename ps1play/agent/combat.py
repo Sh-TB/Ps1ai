@@ -212,6 +212,20 @@ CLUSTER_WIN = 250
 MODES = ("engage", "clamp_clear", "advance", "rear_check")
 
 
+# ---- corrected entity-field semantics (Issue #5 truck campaign,
+#      uplob2..uplob12 live evidence 2026-10-25) --------------------------
+# +0x8E is NOT hp: it is the SCREEN-X integer half of the u32 at +0x8C
+# (world_x - camera_left; camera-scroll writer 0x80064674 adds deltas to
+# +0x8C/+0x90 for every entity; no-fire Gate B2 decay 148->2 was the
+# camera advancing, not damage; the truck '254->207' was movement).
+# The ARMORED TRUCK's real HP is the u16 at +0xA4 (300 at the engage
+# checkpoint; flat grenade = 100 dmg; death state word0 = 0xA304).
+ENTITY_HP_A4 = 0xA4          # u16 armored-truck HP (live-verified)
+TRUCK_DEATH_ST = 0xA304      # slot word0 after the death anim starts
+FALLER_ST = 0xB4E4           # falling-bomb state word0 (hp_a4 == 30)
+WALL_SOLDIER_ST = 0xE17C     # wall mortarman (the faller thrower)
+
+
 def scan_entities(mem, px=None):
     """Read the entity table; return live enemies + airborne
     projectiles sorted by |dx|.
@@ -222,7 +236,15 @@ gains "kind": "enemy" (ground) or "projectile_air" (height word
 @+0x7E above ground contact — verified falling-shell signature).
 Unverified slots (hp 0/out-of-window, signed transients, x off-map)
 are dropped — absence from this list means NOT OBSERVED, never
-"area is safe"."""
+"area is safe".
+
+    CORRECTED SEMANTICS (Issue #5 truck campaign): the legacy "hp"
+key still carries the u16@+0x8E reading for backward compatibility,
+but that field is the SCREEN-X integer ("sx" — the same value), NOT
+health. New keys per entry: "sx" (= hp, honest name), "hp_a4" (u16
+at +0xA4: the armored-truck HP, live-verified 300->0 under grenades,
+0 on non-armored entities), "st" (state-handler word0 — distinguishes
+the truck death 0xA304, faller bombs 0xB4E4, wall mortarman 0xE17C)."""
     if px is None:
         px = int(mem.u32(PLAYER_X)) / 65536.0
     out = []
@@ -241,12 +263,98 @@ are dropped — absence from this list means NOT OBSERVED, never
         if abs(dx) > ENGAGE_WINDOW:
             continue
         h = int(mem.u16(base + 0x7E))
+        st = int(mem.u16(base))
+        hp_a4 = int(mem.u16(base + ENTITY_HP_A4))
         out.append({"slot": s, "x_px": round(x_px, 1),
-                    "dx_px": round(dx, 1), "hp": hp, "h": h,
+                    "dx_px": round(dx, 1), "hp": hp, "sx": hp,
+                    "h": h, "st": st, "hp_a4": hp_a4,
                     "kind": ("projectile_air" if h > GROUND_HEIGHT
                              else "enemy")})
     out.sort(key=lambda e: abs(e["dx_px"]))
     return out
+
+
+def find_truck(enemies):
+    """Return the live armored-truck entry from a scan_entities list,
+    or None. Identity (live-verified, uplob5/6/7/9): ground contact
+    (h == GROUND_HEIGHT), state word0 = 0x9E88 (the parked truck;
+    unchanged across grenade hits uplob9 spam3/4) and a +0xA4 HP in
+    [100, 600]. NOTE: 0x4054 is the RIGHT-side soldier (slot 10), not
+    the truck — uplob1's screen-x mislock. The truck is never
+    'kind: projectile_air'."""
+    for e in enemies:
+        if e.get("kind") != "enemy":
+            continue
+        if e.get("h") != GROUND_HEIGHT:
+            continue
+        if e.get("st") != 0x9E88:
+            continue
+        if 100 <= e.get("hp_a4", 0) <= 600:
+            return e
+    return None
+
+
+def truck_kill_segments(px, truck, ammo, phase):
+    """Pure decision function: the live-verified armored-truck kill
+    routine (uplob7/9/10: 3/3 and 5/5 reproducible, 4 grenades,
+    HP 300->0 via +0xA4).
+
+    phase: None | {"mode": "approach"|"escape"|"spam", "until": f}
+    Returns (segments, new_phase, done).
+    Segments: [{'frames', 'btns'}] — the caller runs them verbatim.
+
+    Geometry (proven): hit band = truck world x + 50..62 (player LEFT
+    of the truck — the truck is BEHIND the player at the D7 zone);
+    face-LEFT flat lob from the band connects (100 dmg); escape RIGHT
+    ~110f to the clamp; when hp_a4 <= 200 stand at the clamp and spam
+    face-LEFT alternating UP-lobs and flat lobs (~35f apart) — the
+    chasing/parked truck eats them (200->100->0).
+    done: True when truck["hp_a4"] <= 0 (death state 0xA304)."""
+    if truck is None or truck.get("hp_a4", 0) <= 0:
+        return [], phase, True
+    tx = truck["x_px"]
+    hp = truck["hp_a4"]
+    mode = (phase or {}).get("mode")
+    until = (phase or {}).get("until", 0)
+    segs = []
+    if mode == "escape" and until > 0:
+        segs.append({"frames": min(until, 110), "btns": {"RIGHT"}})
+        return segs, {"mode": "spam" if hp <= 200 else "approach",
+                      "until": 0}, False
+    if hp <= 200:
+        # spam phase at the clamp (proven: kills from 200 in 2 hits)
+        if ammo <= 0:
+            return segs, phase, True
+        up = ((phase or {}).get("n", 0) % 2 == 0)
+        b = {"LEFT", "UP", "A"} if up else {"LEFT", "A"}
+        segs.append({"frames": 2, "btns": {"LEFT"}})
+        if up:
+            segs.append({"frames": 3, "btns": {"UP"}})
+            segs.append({"frames": 6, "btns": b})
+        else:
+            segs.append({"frames": 6, "btns": b})
+        segs.append({"frames": 2, "btns": set()})
+        segs.append({"frames": 22, "btns": set()})
+        np_ = {"mode": "spam", "until": 0,
+               "n": (phase or {}).get("n", 0) + 1}
+        return segs, np_, False
+    # approach to the hit band
+    dx = tx - px
+    if dx < -62:
+        segs.append({"frames": 30, "btns": {"LEFT"}})
+        return segs, {"mode": "approach", "until": 0}, False
+    if dx > -50:
+        segs.append({"frames": 12, "btns": {"RIGHT"}})
+        return segs, {"mode": "approach", "until": 0}, False
+    # in the band: the proven hit (face-left flat lob) then escape
+    if ammo <= 0:
+        return segs, phase, True
+    segs.append({"frames": 2, "btns": {"LEFT"}})
+    segs.append({"frames": 8, "btns": {"A"}})
+    segs.append({"frames": 2, "btns": set()})
+    segs.append({"frames": 110, "btns": {"RIGHT"}})
+    return segs, {"mode": "spam" if hp - 100 <= 200 else "approach",
+                  "until": 0, "n": 0}, False
 
 
 SCAN_SCHEMA = "ps1play-combat-scan/1"
