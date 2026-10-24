@@ -1147,3 +1147,9 @@ remains UNCLEARED — no claim made. Full report: issue #5 comment
 - New <50 MB fetch: FFT6 — World of Ruin (29.7 MB, sha256 6fc04405…) — boots (license sectors intact, BOOT=SCUS_942.21), pad live, X/LEFT causal; RAM mapping pending.
 - MSX: the owed grenade-vs-armored-truck run delivered (4 arms): gtruck1/2 honest stock bit-identical (truck hp 254→207, score +700/6 kills, counter 10→0 verified), gtruck3 disclosed top-up 50 identical (extra grenades miss at close range), gtruck4 retreat-variant died in the rear zone — grenades = confirmed anti-armor weapon, full kill BLOCKED by geometry. policy_pass8: round-3 behaviours live, same clamp death (27 chunks, px 1164).
 - Suite: 400 passed + 1 xfailed (11 new offline tests for the plugins + capability).
+
+## 2026-10-24 — Debugger deep dive (Issue #9 directive)
+- PCSX-Redux: park verdict OVERTURNED (guest alive: vblank ctr +1/frame, ISR ~92 exc/120f, cycles advancing; park = sampling artifact). Pad delivery PROVEN (setOverride takes bit INDEX; Mission-2 used bitmask=L2 bug; padbuff 0x800BB122 flips). API gotchas: one-shot BPs (return true), -debugger required, getScratchPtr=hw regs (I_STAT+0x1070), CP0 via r[12]/r[13], crash triggers (per-frame getRegisters / low-addr BPs in disc boot / stale /dev/shm WRAM).
+- MSX boot: disc boot CD-completion IRQ dead (OpenBIOS wrapper polls [phys 0x5F74]); -loadexe entry contract v1=0 (patched in RAM, verified; post-entry wedge next).
+- Ghidra: headless restored (JDK shim); FULL overlay decompile 468/468 -> data/games/SLUS-01212/ghidra/overlay_decompiled.json; entity geometry cross-validated (0x800C9A98 hub, +0x8E hp, +0x92 x, thresholds 0x21/0x2F/5); NEW scan_section() sensor (state 0x0EB5F4, flags 0x0EB5D0 bit0/0x200, progress 0x0EB5D4) + 7 tests; suite 427+1xfail.
+- Commit 6580c21 pushed; Issue #9 comment issuecomment-6386545165; addenda #5 issuecomment-6386547972, #6 issuecomment-6386548275. Full report docs/debugger_deep_dive.md.
