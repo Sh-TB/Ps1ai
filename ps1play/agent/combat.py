@@ -115,6 +115,17 @@ SLOTS = 40                   # slot 0 = player, 1..39 = world entities
 ENEMY_HP_MAX = 600           # 352-armored-vehicle observed; 600 covers
 ENEMY_HP_SIGNED = 32768      # hp >= this = transient tag, not an enemy
 
+# ---- section-walker sensors (Ghidra FUN_80021898 decompile, Issue #9
+#      debugger deep dive 2026-10-24) ------------------------------------
+# The camera/scroll section walker keeps its state in a small struct;
+# the decompiled live code names these globals:
+SECTION_STATE = 0x0EB5F4     # u16 section/state id (0x9, 0xE, 0xF seen
+                             # in the walker branches)
+SECTION_FLAGS = 0x0EB5D0     # u16 bit0 = advanced-this-step latch,
+                             # 0x200 = final-state-complete latch
+SECTION_PROGRESS = 0x0EB5D4  # u16 walker progress accumulator (also the
+                             # step limit in the decompiled compare)
+
 # ---- engagement geometry (px) ----------------------------------------
 ENGAGE_WINDOW = 400          # scan window (reporting only)
 ENGAGE_SHORT = 200           # front stop-and-kill window (user
@@ -226,6 +237,33 @@ are dropped — absence from this list means NOT OBSERVED, never
 
 
 SCAN_SCHEMA = "ps1play-combat-scan/1"
+
+
+SECTION_SCHEMA = "ps1play-section-scan/1"
+
+
+def scan_section(mem):
+    """Read the camera/scroll section-walker state (read-only sensor).
+
+    Provenance: Ghidra decompile of FUN_80021898 (Issue #9 debugger
+    deep dive) — the walker's globals were identified statically from
+    the live-referenced scroll word 0x0EB598. Semantics are OBSERVED
+    from the decompiled control flow:
+      state    u16 section id; the walker branches on 0x9, 0xE, 0xF
+      flags    u16 bit0 = advanced-this-step, 0x200 = the final state
+               (0xF) completed (section-complete latch)
+      progress u16 walker accumulator
+    UNCERTAINTY: state numbering is per-section and not exhaustively
+    mapped — this sensor explains WHY the camera is pinned (D7) and
+    when it releases; it must never be used as a safety assertion on
+    its own. Absence/inconsistency = NOT OBSERVED, never "safe".
+    """
+    state = int(mem.u16(SECTION_STATE))
+    flags = int(mem.u16(SECTION_FLAGS))
+    progress = int(mem.u16(SECTION_PROGRESS))
+    return {"state": state, "flags": flags, "progress": progress,
+            "schema": SECTION_SCHEMA,
+            "complete": bool(flags & 0x200) or state == 0xF}
 
 
 def validate_scan(scan, px=None, diagnostics=None):
