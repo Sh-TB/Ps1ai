@@ -29,8 +29,20 @@ This module enforces the v0.6 contract (mission review §4):
                     respawn / continue moved the camera back)
       WRAP          u16 wraparound
       INVALID       signal invalidated (post-reload remap, stale data)
+      NOT_GAMEPLAY  gameplay gate says we are NOT in active play (menu /
+                    game-over) - frozen progress here is NOT a stall
     plus monotonicity regression detection and honest to_dict() with
     status + evidence. An unverified signal NEVER claims progress.
+
+Issue #10 (Gate B) addition - GameplayGate:
+  The flags word 0x800EE518 on SLUS-01212 was identified as a 32-bit
+  system-active bitmask (set-all 0x80072950 / clear-bit 0x8006d0cc;
+  runtime: 0xFF held for 1,620 frames of play, 0x1 at menu).  The
+  progress sensor u16 @ 0x800EB85A was validated as monotonic-forward
+  (3/3 bit-identical runs).  Feeding the gate into ProgressSignal
+  prevents classifying menu/idle freezes as STALLED - the decision
+  rule: flags==active AND progress frozen AND input held => STUCK;
+  flags!=active => NOT_GAMEPLAY (recovery path, not bulldoze).
 """
 
 # candidate ranking ----------------------------------------------------------
@@ -107,6 +119,7 @@ class ProgressSignal:
     RESET = "RESET"
     WRAP = "WRAP"
     INVALID = "INVALID"
+    NOT_GAMEPLAY = "NOT_GAMEPLAY"
 
     def __init__(self, addr, verified, lock_churn=3500, freeze_tol=2,
                  reset_drop=100, max_reasonable=0xFFFF):
@@ -126,6 +139,7 @@ class ProgressSignal:
         self.n_stall = 0
         self.n_reset = 0
         self.n_wrap = 0
+        self.n_gate = 0
         self.last_state = None
         self.last_churn = 0
 
@@ -141,8 +155,23 @@ class ProgressSignal:
         self.status = self.INVALID
         self.invalid_reason = reason
 
-    def update(self, value, churn=0, frame=None):
-        """Feed one sample + the chunk's RAM churn; classify the state."""
+    def update(self, value, churn=0, frame=None, in_gameplay=None):
+        """Feed one sample + the chunk's RAM churn; classify the state.
+
+        in_gameplay: optional explicit gameplay-gate verdict
+        (GameplayGate.is_active).  None preserves legacy behaviour
+        exactly (no gate data); False classifies this sample as
+        NOT_GAMEPLAY regardless of freeze/churn (a menu freeze is not
+        a stall).  True behaves like legacy.
+        """
+        if in_gameplay is False:
+            # keep value continuity (a menu reset must surface as RESET
+            # on resume, not as a phantom stall) but never classify.
+            self.value = value
+            self.last_state = self.NOT_GAMEPLAY
+            self.last_churn = churn
+            self.n_gate += 1
+            return self.NOT_GAMEPLAY
         st = self.PROGRESS
         if self.status == self.INVALID:
             return st
@@ -200,5 +229,29 @@ class ProgressSignal:
                            "camera_lock": self.n_lock,
                            "stall": self.n_stall,
                            "reset": self.n_reset,
-                           "wrap": self.n_wrap},
+                           "wrap": self.n_wrap,
+                           "gate_not_gameplay": self.n_gate},
                 "lock_churn": self.lock_churn}
+
+
+class GameplayGate:
+    """Gameplay-active gate over a game's system-activity bitmask.
+
+    Issue #10 Gate B evidence (SLUS-01212): word 0x800EE518 is a
+    32-bit system-active bitmask; 0xFF (low 8 bits set) during play,
+    0x1 at menu/game-over; writers identified statically
+    (set-all 0x80072950, clear-bit 0x8006d0cc).
+
+    is_active(word) is a pure function: a word is 'active' when at
+    least `min_bits` of the low `mask_bits` bits are set (default:
+    >=7 of 8 - tolerant to single-system hiccups but strict enough
+    to reject the 0x1 menu state).  A word of 0 is never active.
+    """
+
+    def __init__(self, mask_bits=8, min_bits=7):
+        self.mask_bits = mask_bits
+        self.min_bits = min_bits
+
+    def is_active(self, word):
+        word &= (1 << self.mask_bits) - 1
+        return bin(word).count("1") >= self.min_bits

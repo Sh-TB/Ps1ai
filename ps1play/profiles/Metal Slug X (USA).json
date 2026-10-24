@@ -680,7 +680,7 @@
    }
   }
  ],
- "updated": "2026-10-20 08:14:35",
+ "updated": "2026-10-25 issue #10 Gate B sensors",
  "gsmap": {
   "score": {
    "addr": 975640,
@@ -793,5 +793,24 @@
    "bot reliably crosses canyon->market->village (~35% of M1) each life; wall = village soldier-truck + bomber chopper"
   ],
   "evidence": "download/ps1play_v4_mission1/ (PNG predeath/death/zone_live/lab)"
+ },
+ "sensors": {
+  "flags_word": {
+   "addr": 976152,
+   "dtype": "u32",
+   "active_value": 255,
+   "semantics": "32-bit system-active bitmask; >=7 of low 8 bits set during play, 0x1 at menu/game-over",
+   "status": "CONFIRMED",
+   "evidence": "issue #10 Gate B: runtime 3/3 identical runs + static writers FUN_80072950(set-all)/FUN_8006d0cc(clear-bit)",
+   "issue": 10
+  },
+  "progress_x": {
+   "addr": 964698,
+   "dtype": "u16",
+   "semantics": "monotonic forward progress counter, wraps at 256; freeze with input held = stuck signature",
+   "status": "CONFIRMED",
+   "evidence": "issue #10 Gate B: monotonic under RIGHT 3/3 bit-identical runs; freeze at steps 70-80 reproduced; matches issue #4 forward candidate",
+   "issue": 10
+  }
  }
 }
