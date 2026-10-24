@@ -1,0 +1,17 @@
+{
+ "started": "2026-10-24T17:15:24Z",
+ "menu_anchor": 6210,
+ "census_f2200": {
+  "det": 0,
+  "left_vs_right": 3,
+  "left_vs_none": 3,
+  "verdict": "not_yet"
+ },
+ "census_f3000": {
+  "det": 0,
+  "left_vs_right": 3,
+  "left_vs_none": 3,
+  "verdict": "not_yet"
+ },
+ "finished": "2026-10-24T17:15:49Z"
+}

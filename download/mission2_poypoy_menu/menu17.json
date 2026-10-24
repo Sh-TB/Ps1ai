@@ -1,0 +1,28 @@
+{
+ "started": "2026-10-24T17:13:47Z",
+ "candidates": {
+  "start": {
+   "det": 0,
+   "left_vs_right": 3,
+   "left_vs_none": 5,
+   "verdict": "DEMO_or_transition"
+  },
+  "xhold": {
+   "det": 0,
+   "left_vs_right": 3,
+   "left_vs_none": 131364,
+   "verdict": "DEMO_or_transition"
+  },
+  "o": {
+   "det": 0,
+   "left_vs_right": 3,
+   "left_vs_none": 3,
+   "verdict": "DEMO_or_transition"
+  }
+ },
+ "gate_attempts": [
+  0
+ ],
+ "menu_anchor": 6210,
+ "finished": "2026-10-24T17:14:11Z"
+}

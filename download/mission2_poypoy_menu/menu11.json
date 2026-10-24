@@ -1,0 +1,112 @@
+{
+ "A": [
+  {
+   "i": 0,
+   "frame": 2120,
+   "mean": 103.4
+  },
+  {
+   "i": 1,
+   "frame": 2420,
+   "mean": 86.2
+  },
+  {
+   "i": 2,
+   "frame": 2720,
+   "mean": 94.0
+  },
+  {
+   "i": 3,
+   "frame": 3020,
+   "mean": 90.5
+  },
+  {
+   "i": 4,
+   "frame": 3320,
+   "mean": 88.6
+  },
+  {
+   "i": 5,
+   "frame": 3620,
+   "mean": 121.5
+  },
+  {
+   "i": 6,
+   "frame": 3920,
+   "mean": 88.4
+  },
+  {
+   "i": 7,
+   "frame": 4220,
+   "mean": 112.1
+  },
+  {
+   "i": 8,
+   "frame": 4520,
+   "mean": 182.1
+  },
+  {
+   "i": 9,
+   "frame": 4820,
+   "mean": 182.1
+  }
+ ],
+ "B": [
+  {
+   "i": 0,
+   "frame": 5120,
+   "diff_vs_A": 124.5
+  },
+  {
+   "i": 1,
+   "frame": 5420,
+   "diff_vs_A": 129.5
+  },
+  {
+   "i": 2,
+   "frame": 5720,
+   "diff_vs_A": 122.9
+  },
+  {
+   "i": 3,
+   "frame": 6020,
+   "diff_vs_A": 90.5
+  },
+  {
+   "i": 4,
+   "frame": 6320,
+   "diff_vs_A": 62.7
+  },
+  {
+   "i": 5,
+   "frame": 6620,
+   "diff_vs_A": 65.2
+  },
+  {
+   "i": 6,
+   "frame": 6920,
+   "diff_vs_A": 39.0
+  },
+  {
+   "i": 7,
+   "frame": 7220,
+   "diff_vs_A": 31.4
+  },
+  {
+   "i": 8,
+   "frame": 7520,
+   "diff_vs_A": 127.3
+  },
+  {
+   "i": 9,
+   "frame": 7820,
+   "diff_vs_A": 131.2
+  }
+ ],
+ "started": "2026-10-24T17:03:20Z",
+ "anchor_frame": 1770,
+ "verdict": "X_drives_flow",
+ "max_divergence": 131.2,
+ "first_divergence_at": 0,
+ "finished": "2026-10-24T17:04:27Z"
+}
