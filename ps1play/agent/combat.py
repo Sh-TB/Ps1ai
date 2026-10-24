@@ -126,6 +126,19 @@ SECTION_FLAGS = 0x0EB5D0     # u16 bit0 = advanced-this-step latch,
 SECTION_PROGRESS = 0x0EB5D4  # u16 walker progress accumulator (also the
                              # step limit in the decompiled compare)
 
+# ---- D7 pin signature (sectioncorr1 live correlation, 34 chunks) ------
+# state 0xA was observed ONLY at the D7 wall pin (8/8 pin chunks, px
+# 1159.8..1164.0, scroll frozen 0x048CFFFF) and NEVER mid-section.
+# The 0x40 flag bit is CORROBORATION ONLY: it also appeared once
+# mid-section at (state 0xB, flags 0x43) during a front-engage stall
+# (chunk c12, px 1052) — so the discriminator is state==0xA, not the
+# flag bit. Single-frame transients ((0x5,0x1) at c28, (0,0,0)/(0x5,0x1)
+# at walker resets) must not fire the trigger -> PIN_CONFIRM
+# consecutive readings are required before the policy reacts.
+SECTION_PIN_STATE = 0xA
+SECTION_PIN_FLAG = 0x40      # corroborating bit (not required)
+SECTION_PIN_CONFIRM = 2      # consecutive pin readings before acting
+
 # ---- engagement geometry (px) ----------------------------------------
 ENGAGE_WINDOW = 400          # scan window (reporting only)
 ENGAGE_SHORT = 200           # front stop-and-kill window (user
@@ -263,8 +276,11 @@ def scan_section(mem):
     894->1140); (state 0xA, flags 0x43) = the D7 pin signature — px
     frozen at 1164.0 with scroll word frozen at 0x048CFFFF for the
     whole pin; single-frame transients (0,0,0) / (0x5,0x1) observed
-    at walker resets. The 0x40 flag bit appears only in the pinned
-    combination so far.
+    at walker resets. Refinement from the same timeline: state 0xA is
+    the pin DISCRIMINATOR (8/8 pin chunks, never mid-section, flags
+    inside the pin varied 0x43/0x1/0x0); the 0x40 flag bit is only
+    CORROBORATION — it was also seen once mid-section at (0xB, 0x43)
+    during a front-engage stall (chunk c12, px 1052).
     """
     state = int(mem.u16(SECTION_STATE))
     flags = int(mem.u16(SECTION_FLAGS))
@@ -379,6 +395,10 @@ class CombatPolicy:
         self._armor_t = 0              # frames since armor campaign start
         self.no_progress = False       # hp unchanged across checks
         self.prev_h = {}               # slot -> height at last sighting
+        # D7 instrument pin (scan_section correlation, Issue #9)
+        self.section_pinned = False    # instrument pin actively believed
+        self.sec_pin_streak = 0        # consecutive pin-signature readings
+        self.sec_free_streak = 0       # consecutive non-signature readings
         self.stats = {"engage": 0, "clamp_clear": 0, "advance": 0,
                       "grenade": 0, "jump": 0, "rear_engage": 0,
                       "front_engage": 0, "dodge": 0,
@@ -387,7 +407,8 @@ class CombatPolicy:
                       "stale_reset": 0, "advance_silent": 0,
                       "rear_grenade": 0, "rear_resolved": 0,
                       "rear_gaveup": 0, "armor_hold": 0,
-                      "armor_grenade": 0}
+                      "armor_grenade": 0, "section_pin": 0,
+                      "section_pin_release": 0}
 
     # ----------------------------------------------------------------
     def _invalidate_stale(self):
@@ -414,6 +435,17 @@ class CombatPolicy:
         self.armor_hp_now = None
         self.armor_no_progress = False
         self.prev_h = {}               # height memory is stale too (D8)
+        # D7 instrument pin: the signature is GAME-STATE evidence read
+        # fresh every chunk, not a positional observation — a px jump
+        # (respawn/teleport) does NOT invalidate it. The streaks reset
+        # (they must re-confirm from live readings), but section_pinned
+        # stays until 2 consecutive live non-signature readings release
+        # it. Reason: the F6 respawn geometry (respawn INSIDE the truck
+        # kill zone) makes the defensive stance the safe default for the
+        # <=2 extra chunks; dropping the pin on a px jump would resume
+        # the run INTO the kill zone.
+        self.sec_pin_streak = 0
+        self.sec_free_streak = 0
         self.stats["stale_reset"] += 1
 
     # ----------------------------------------------------------------
@@ -442,6 +474,48 @@ class CombatPolicy:
                 self.clamp_entry_px = None
         else:
             self.clamp_streak = 0
+
+    # ----------------------------------------------------------------
+    def observe_section(self, sec):
+        """Feed one scan_section() reading (call once per chunk, before
+        decide; None = sensor not read this chunk, a no-op).
+
+        Instrument-based D7-pin detection (Issue #9 debugger deep dive
+        -> sectioncorr1 live correlation): the walker state 0xA
+        POSITIVELY identifies the section pin, so the defensive
+        clamp_clear response engages immediately — without waiting for
+        the derived px-stagnation streak, which knockback wobble resets
+        (sectioncorr1 c11-c20: px oscillated 1052->962->1057->953 while
+        pinned-phase pressure continued; the derived streak kept
+        resetting in exactly those chunks).
+
+        Discipline: absence of the signature is NEVER a safety
+        assertion (walker state numbering is not exhaustively mapped);
+        release therefore requires SECTION_PIN_CONFIRM consecutive
+        non-signature readings, and stale invalidation keeps the pin
+        (see _invalidate_stale)."""
+        if not sec:
+            return
+        # state 0xA alone is the discriminator: pin chunks were observed
+        # with flags 0x43/0x1/0x0 (sectioncorr1 c25-33) — requiring the
+        # 0x40 flag bit would falsely RELEASE the pin at (0xA, 0x0)
+        # readings like c33.
+        sig = sec.get("state") == SECTION_PIN_STATE
+        if sig:
+            self.sec_pin_streak += 1
+            self.sec_free_streak = 0
+            if not self.section_pinned and \
+                    self.sec_pin_streak >= SECTION_PIN_CONFIRM:
+                self.section_pinned = True
+                self.stats["section_pin"] += 1
+        else:
+            self.sec_pin_streak = 0
+            if self.section_pinned:
+                self.sec_free_streak += 1
+                if self.sec_free_streak >= SECTION_PIN_CONFIRM:
+                    self.section_pinned = False
+                    self.sec_free_streak = 0
+                    self.stats["section_pin_release"] += 1
 
     # ----------------------------------------------------------------
     def decide(self, chunk, px, enemies, grenades=0, hp=None):
@@ -480,7 +554,7 @@ class CombatPolicy:
         # end-clamp it turns back to clear the rear zone.
         # Airborne projectiles (verified falling shells) are NEVER
         # engage targets — they are dodged below.
-        clamped = self.clamp_streak >= 2
+        clamped = self.clamp_streak >= 2 or self.section_pinned
         cands = sorted(enemies or [], key=lambda e: abs(e["dx_px"]))
         foes = [e for e in cands if e.get("kind", "enemy") == "enemy"]
         airs = [e for e in cands if e.get("kind", "enemy") != "enemy"]
