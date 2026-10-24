@@ -1,0 +1,71 @@
+{
+ "scorecards": [
+  {
+   "header": {
+    "run_id": "tplay_20261024_065627",
+    "track": "A",
+    "commit": "1670519",
+    "plugin": "tetrade_play",
+    "game": "Tetrade (MIT homebrew)",
+    "emulator": "beetle-psx 0.9.44.1 + OpenBIOS (license-patched local image)",
+    "checkpoint_id": "power-on-boot (clean setup)",
+    "evidence_dir": "/home/z/my-project/ps1ai/download/mission2_tetrade_evidence"
+   },
+   "counters": {
+    "deaths": 0,
+    "damage": 0,
+    "stalls": 0,
+    "recoveries": 0,
+    "decisions": 109,
+    "pred_ok": 106,
+    "pred_bad": 0
+   },
+   "primary": {
+    "verified_progress": 1242,
+    "progress_provenance": null,
+    "survival_events_per_100_decisions": 0.0,
+    "stall_rate": 0.0,
+    "recovery_quality": null,
+    "decision_quality": 1.0
+   }
+  },
+  {
+   "header": {
+    "run_id": "tplay_20261024_070110",
+    "track": "A",
+    "commit": "1670519",
+    "plugin": "tetrade_play",
+    "game": "Tetrade (MIT homebrew)",
+    "emulator": "beetle-psx 0.9.44.1 + OpenBIOS (license-patched local image)",
+    "checkpoint_id": "power-on-boot (clean setup)",
+    "evidence_dir": "/home/z/my-project/ps1ai/download/mission2_tetrade_evidence"
+   },
+   "counters": {
+    "deaths": 0,
+    "damage": 0,
+    "stalls": 0,
+    "recoveries": 0,
+    "decisions": 109,
+    "pred_ok": 106,
+    "pred_bad": 0
+   },
+   "primary": {
+    "verified_progress": 1242,
+    "progress_provenance": null,
+    "survival_events_per_100_decisions": 0.0,
+    "stall_rate": 0.0,
+    "recovery_quality": null,
+    "decision_quality": 1.0
+   }
+  }
+ ],
+ "repeatability": {
+  "runs": 2,
+  "distinct_outcomes": 1,
+  "repeatable": true,
+  "progress_values": [
+   1242,
+   1242
+  ]
+ }
+}

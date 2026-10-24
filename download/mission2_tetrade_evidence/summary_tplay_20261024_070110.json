@@ -1,0 +1,24 @@
+{
+ "header": {
+  "run_id": "tplay_20261024_070110",
+  "track": "A",
+  "commit": "1670519",
+  "plugin": "tetrade_play",
+  "game": "Tetrade (MIT homebrew)",
+  "emulator": "beetle-psx 0.9.44.1 + OpenBIOS (license-patched local image)",
+  "checkpoint_id": "power-on-boot (clean setup)",
+  "evidence_dir": "/home/z/my-project/ps1ai/download/mission2_tetrade_evidence"
+ },
+ "counters": {
+  "decisions": 106,
+  "deaths": 0,
+  "damage_events": 0,
+  "stall_chunks": 0,
+  "recoveries": 0,
+  "restores": 0,
+  "prediction_correct": 106,
+  "prediction_wrong": 0
+ },
+ "wall_s": 0.003,
+ "path": "/home/z/my-project/ps1ai/download/mission2_tetrade_evidence/decisions_tplay_20261024_070110.jsonl"
+}

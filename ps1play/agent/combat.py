@@ -211,6 +211,80 @@ are dropped — absence from this list means NOT OBSERVED, never
     return out
 
 
+SCAN_SCHEMA = "ps1play-combat-scan/1"
+
+
+def validate_scan(scan, px=None, diagnostics=None):
+    """Issue #9 §9-A: combat-state correctness — schema validation for
+    scan_entities() output (contract ps1play-combat-scan/1).
+
+    Every combat branch must receive well-formed fields; a malformed
+    entry is a DIAGNOSTIC EVENT, never a silent "area is safe".
+    Returns True when the scan satisfies the contract. When
+    `diagnostics` (a dict) is passed, per-violation details are added as
+    diagnostics["violations"] without raising.
+
+    Contract:
+      entry keys   slot(int 1..SLOTS-1), x_px(0<..<4096),
+                   dx_px(x_px-px), hp(0<hp<ENEMY_HP_SIGNED),
+                   h(int >=0), kind("enemy"|"projectile_air")
+      invariants   kind == "projectile_air" iff h > GROUND_HEIGHT
+                   |dx_px| = |x_px - px| (when px known)
+                   sorted by |dx_px| ascending
+    """
+    ok = True
+    violations = []
+    prev_key = None
+    for i, e in enumerate(scan or []):
+        where = f"[{i}]"
+        slot = e.get("slot")
+        if not isinstance(slot, int) or not 1 <= slot < SLOTS:
+            violations.append(f"{where} bad slot {slot!r}")
+            ok = False
+        x = e.get("x_px")
+        if not isinstance(x, (int, float)) or not 0.0 < x < 4096.0:
+            violations.append(f"{where} bad x_px {x!r}")
+            ok = False
+        hp = e.get("hp")
+        if not isinstance(hp, int) or not 0 < hp < ENEMY_HP_SIGNED:
+            violations.append(f"{where} bad hp {hp!r}")
+            ok = False
+        h = e.get("h")
+        if not isinstance(h, int) or h < 0:
+            violations.append(f"{where} bad h {h!r}")
+            ok = False
+        kind = e.get("kind")
+        if kind not in ("enemy", "projectile_air"):
+            violations.append(f"{where} bad kind {kind!r}")
+            ok = False
+        elif isinstance(h, int) and h >= 0 and \
+                kind != ("projectile_air" if h > GROUND_HEIGHT else "enemy"):
+            violations.append(f"{where} kind/kind-height mismatch "
+                              f"(kind={kind} h={h})")
+            ok = False
+        if px is not None and isinstance(x, (int, float)):
+            dx = e.get("dx_px")
+            if not isinstance(dx, (int, float)) or \
+                    abs(abs(dx) - abs(x - px)) > 0.51:
+                violations.append(f"{where} dx_px {dx!r} != |x_px-px|")
+                ok = False
+        key = abs(e["dx_px"]) if isinstance(e.get("dx_px"),
+                                            (int, float)) else None
+        if key is None:
+            violations.append(f"{where} missing dx_px")
+            ok = False
+        elif prev_key is not None and key < prev_key - 1e-9:
+            violations.append(f"{where} sort order broken")
+            ok = False
+        else:
+            prev_key = key
+    if diagnostics is not None:
+        diagnostics["violations"] = violations
+        diagnostics["schema"] = SCAN_SCHEMA
+        diagnostics["entries"] = len(scan or [])
+    return ok
+
+
 class CombatPolicy:
     """Face-and-kill traversal: nearest threat (front OR rear) is
     engaged; the derived end-clamp switches to rear-clear; otherwise
@@ -304,6 +378,16 @@ class CombatPolicy:
         the damage-triggered dodge reflex)."""
         segs = []
         prev = None
+
+        # ---- §9-A schema pre-flight: a malformed scan is counted and
+        # NEVER silently treated as "no threats observed". Behaviour is
+        # unchanged (the branch still runs on what it can read); the
+        # violation counter makes the anomaly visible in every ledger.
+        diag = {}
+        if not validate_scan(enemies, px=px, diagnostics=diag):
+            self.stats["scan_schema_violations"] = \
+                self.stats.get("scan_schema_violations", 0) + 1
+            self.last_scan_diagnostics = diag
 
         def emit(n, btns):
             nonlocal prev
