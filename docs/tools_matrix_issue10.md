@@ -26,3 +26,27 @@ Workflow comparison (Gate C, same question family: entity-field semantics + stuc
 | D: combined (sensor -> policy -> live A/B) | pincorr1: 40 chunks live-validated, 0 deaths, +400 score | 1 per trial | one session | D7 instrument pin wired + live-validated (`24bf036`) |
 
 Honest caveats: condition A wall-clock is reconstructed from committed evidence timestamps (historical, not re-measured); today's probes are deterministic from a savestate anchor and re-runnable via the committed script; the '+0x8E' decay-without-fire signature is CONFIRMED as a runtime signature (3/3 identical) but its semantics (HP vs per-entity timer) remain OBSERVED and must be reconciled with the hp re-confirmation from `6580c21` (slot 14 vs slots 0-3 may behave differently).
+
+## Addendum 2 — m2c measured head-to-head (source-recovery readability benchmark)
+
+The user asked how much the "convert the game to source" tools actually help read the game, with time/cost/reliability measured. Executed per §11 (smallest discriminating experiment): `scripts/m2c_overlay_decompile.py` regenerates capstone-based GNU-as for every ENEMY.BIN overlay function (live-verified mapping VA 0x8009C0E8 ↔ file offset 0xD180) and runs matt-kempster/m2c on it. Committed outputs: `data/games/SLUS-01212/m2c/` (7 showcase functions + metrics JSONs; full-corpus C kept local, sha256 recorded in `full_corpus.json`).
+
+Same-corpus (468 overlay functions), same machine, CPU-only:
+
+| Metric | m2c (+ capstone emitter) | Ghidra headless (committed corpus) |
+|---|---|---|
+| Functions decompiled to usable C | **405/468 (86.5%)** after delay-slot repair (was 323/468 before; 63 residual failures are cross-function branch targets) | 73/468 clean (15.6%); 276 with WARNING comments; 119 contain `halt_baddata` (broken control flow) |
+| Time | 145.8 s total, 0.31 s/function, re-runnable | one-time ~1 h setup + batch analysis (earlier session); re-runs need project reopen |
+| Setup cost | `git clone m2c` (1 s) + 150-line Python emitter (committed) | ~400 MB download + ghidra_psx_ldr extension + project import/analysis |
+| Correctness spot-check | FUN_800a41d8 output matches raw bytes exactly (verified instruction-by-instruction) | FUN_800a41d8 output is `halt_baddata` garbage (misaligned analysis) |
+| Output shape | compact C with `unkXX` field offsets, real control flow (if/else, no gotos in targets) | verbose; often truncated control flow on this overlay |
+| What the other does better | - | caller/callee graph, xref browser, interactive renaming, EXE-wide view |
+
+Game-reading yield from the m2c pass (new semantic evidence, all OBSERVED/static, needs runtime confirmation before policy use):
+
+- FUN_8009de68 (damage path): compares entity field +0x8E between two entity-table entries, encodes the comparison into +0xEA/+0xEB, then dispatches on the result — `< 9` → handler call with arg 0x11, else sets +0xF4 |= 2, calls with arg 0x12, writes state-handler pointer +0x0 = 0x800AB094 and tail-calls it. This is a damage/transition state machine using the SAME +0x8E field the runtime probes watch.
+- FUN_800a41d8 (damage-entry anchor): reads entity +0x28 flag bit 0x80 → early-exit handler pair; else calls 0x800af1b0 and on success retargets +0x0 = 0x800151DC (EXE-region handler).
+- FUN_800a4588: initializes entity fields (+0xB6=0, +0x26=0xFF, +0x66=0x100, +0xA8=0, +0x7A-=8, +0x7E+=0x12) and retargets +0x0 = 0x800B179C — per-entity state transition.
+- The entity hub pointer `*(void**)0x800C9A98` is referenced by 361/468 overlay functions — now directly readable per-function in C instead of via raw `lw -0x6568($s0)` patterns.
+
+Answer to "which tool converts the game to source": no tool recovers real source; m2c emits clean per-function C for 86.5% of the overlay in 146 s at zero cost and is the best readability tool for targeted questions; Ghidra remains ADOPTED for cross-references and the EXE; full native recomp ports stay REJECTED (no decision value). New candidates logged from the October 2026 landscape sweep (not installed): TDR (PSX-EXE→ELF + PsyQ .SYM converter for Ghidra, GPLv3), DrMefistO/OriginalPSP PSX Loader (Ghidra alternative loader), RetDec (usable via ELF conversion), decomp.wiki PS1 platform page (maspsx/psyq2elf/psyq-obj-parser/xsig), and 214 public PS1 decomp/disassembly projects catalogued by the community lists — the open-source ones (REDRIVER2, SotN, Silent Hill) remain calibration references only, closed-source titles stay the priority.

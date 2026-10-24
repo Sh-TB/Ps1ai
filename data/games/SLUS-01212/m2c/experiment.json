@@ -1,0 +1,92 @@
+{
+ "schema": "issue10/m2c-experiment/2",
+ "overlay_va": "0x8009c0e8",
+ "code_off": "0xd180",
+ "targets": [
+  {
+   "addr": "800a4588",
+   "bytes": 576,
+   "asm_ins": 160,
+   "m2c_seconds": 0.32,
+   "m2c_ok": true,
+   "m2c_c_len": 788,
+   "m2c_c_sha256": "1293a45666d7e027",
+   "ghidra_c_len": 2664,
+   "m2c_out": "800a4588.m2c.c",
+   "asm_out": "800a4588.asm"
+  },
+  {
+   "addr": "8009de68",
+   "bytes": 500,
+   "asm_ins": 125,
+   "m2c_seconds": 0.32,
+   "m2c_ok": true,
+   "m2c_c_len": 852,
+   "m2c_c_sha256": "7f0d07da187e5343",
+   "ghidra_c_len": 1960,
+   "m2c_out": "8009de68.m2c.c",
+   "asm_out": "8009de68.asm"
+  },
+  {
+   "addr": "800a000c",
+   "bytes": 376,
+   "asm_ins": 94,
+   "m2c_seconds": 0.32,
+   "m2c_ok": true,
+   "m2c_c_len": 481,
+   "m2c_c_sha256": "962857a0d9f43e00",
+   "ghidra_c_len": 1691,
+   "m2c_out": "800a000c.m2c.c",
+   "asm_out": "800a000c.asm"
+  },
+  {
+   "addr": "8009e1c4",
+   "bytes": 344,
+   "asm_ins": 99,
+   "m2c_seconds": 0.33,
+   "m2c_ok": true,
+   "m2c_c_len": 1842,
+   "m2c_c_sha256": "6ad002a4a07eaedc",
+   "ghidra_c_len": 1677,
+   "m2c_out": "8009e1c4.m2c.c",
+   "asm_out": "8009e1c4.asm"
+  },
+  {
+   "addr": "800a91c4",
+   "bytes": 208,
+   "asm_ins": 52,
+   "m2c_seconds": 0.3,
+   "m2c_ok": true,
+   "m2c_c_len": 112,
+   "m2c_c_sha256": "e85d9a850fe68541",
+   "ghidra_c_len": 1099,
+   "m2c_out": "800a91c4.m2c.c",
+   "asm_out": "800a91c4.asm"
+  },
+  {
+   "addr": "800a87f8",
+   "bytes": 56,
+   "asm_ins": 14,
+   "m2c_seconds": 0.31,
+   "m2c_ok": true,
+   "m2c_c_len": 285,
+   "m2c_c_sha256": "4475b34adca11638",
+   "ghidra_c_len": 237,
+   "m2c_out": "800a87f8.m2c.c",
+   "asm_out": "800a87f8.asm"
+  },
+  {
+   "addr": "800a41d8",
+   "bytes": 84,
+   "asm_ins": 122,
+   "m2c_seconds": 0.32,
+   "m2c_ok": true,
+   "m2c_c_len": 438,
+   "m2c_c_sha256": "b3e958d849a44d5e",
+   "ghidra_c_len": 635,
+   "m2c_out": "800a41d8.m2c.c",
+   "asm_out": "800a41d8.asm"
+  }
+ ],
+ "notes": []
+}
