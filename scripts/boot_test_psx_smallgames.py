@@ -50,6 +50,15 @@ def main():
                        ("plugin", "ram_bytes", "booted", "boot_exe",
                         "serial", "firmware_mode", "title") if k in info}
         p.wait(420)
+        # Adaptive settle: the game finishes kernel/pad init at wildly
+        # different times per disc (fast core => hundreds of frames).
+        # Wait until the pad driver mirror is live, then give the title
+        # screen time to render (H5-conservative, one process per game).
+        for _ in range(60):                      # up to ~60x30f = 30 s
+            if mirrors(p.mem)["pad_id41_ok"] > 0:
+                break
+            p.wait(30)
+        p.wait(120)                              # title render tail
         base = p.core.frame_rgb()
         out["mirrors"] = mirrors(p.mem)
         shots = {}

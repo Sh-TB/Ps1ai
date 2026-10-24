@@ -93,3 +93,33 @@ Baseline: commit `b283b19` + the reproducibility batch. Suite **389 passed + 1 x
     rear_check turn — i.e. the bounded turn fires but one chunk of
     LEFT fire cannot stop an armored ram; survival there needs the
     grenade path or a non-armored pursuer scenario.
+
+## Session-5 labels (2026-10-24)
+
+* **D2 (kill follow-through vs armored truck) — the owed
+  grenade-vs-truck live run DELIVERED (4 arms):** `gtruck1/2` (honest
+  stock, 10 grenades, reproduced bit-identical): standing lob campaign
+  at the truck encounter — **truck hp 254 → 207** (grenades DO damage
+  armor; Y bursts did not: 254→254), score 0→700 (6 kill-events ≥100),
+  grenade counter 10→0 VERIFIED (0xEDCF4), player survives 40 chunks.
+  `gtruck3` (DISCLOSED top-up to 50): identical outcome — extra
+  grenades miss once the truck closes (lob arc sails over at close
+  range; damage freezes at 207). `gtruck4` (retreat-lob variant): died
+  c31 in the rear mortar/chopper zone with LESS truck damage (288) —
+  retreating re-opens the rear kill zones. **Verdict: grenade = the
+  confirmed anti-armor weapon (damage reproduced 3×), full kill
+  BLOCKED by geometry (clamp ram + rear zones), not by the weapon.**
+  D2 stays PARTIAL with a much sharper boundary; scripts/
+  `msx_grenade_truck.py`, evidence `heli_ladder/gtruck*` (local).
+* **policy_pass8 regression:** the round-3 behaviours all live
+  (engage 5, front_engage 300, dodge 5, rear_check 2, rear_resolved 1,
+  advance_silent 14/15); same 27-chunk clamp death at px 1164.
+* **D5-adjacent (PSXMC fall-void):** the infdev build's fall handler
+  is UNIMPLEMENTED — walking >7 blocks from spawn halts the game
+  (observed twice live); the plugin's out-and-back patrol engineers
+  around it and the halt is detected/reported honestly.
+* **New defect class (game-side, documented): PSXMC dig crash** —
+  targeting a block with R2 writes the breaking state and can halt the
+  game (infdev bug: `worldGetChunk` called with a ChunkBlockPosition,
+  possible NULL deref). Observed 2×; the plugin gates the dig to a
+  bounded final experiment.

@@ -29,6 +29,7 @@ E_VFS_IFACE, E_DISK_EXT_VER = 61, 72
 
 PIXEL_0RGB1555, PIXEL_XRGB8888, PIXEL_RGB565 = 0, 1, 2
 DEVICE_JOYPAD = 1
+DEVICE_ANALOG = 5          # DualShock-class pad (L2/R2/L3/R3 exist)
 MEM_SAVE_RAM, MEM_SYSTEM_RAM, MEM_VIDEO_RAM = 1, 2, 0
 
 
@@ -132,9 +133,18 @@ class LibretroCore:
 
         @INPUT_STATE
         def input_state(port, device, index, device_id):
-            if port != 0 or device != DEVICE_JOYPAD:
+            if port != 0:
                 return 0
-            return 1 if device_id in self._buttons else 0
+            if device == DEVICE_JOYPAD:
+                return 1 if device_id in self._buttons else 0
+            if device == DEVICE_ANALOG:
+                # DualShock-class ports: triggers/binds may be queried as
+                # analog buttons (index 2); sticks (index 0/1) are
+                # centered — this agent steers with digital buttons only.
+                if index == 2:      # RETRO_DEVICE_INDEX_ANALOG_BUTTON
+                    return 1 if device_id in self._buttons else 0
+                return 0
+            return 0
 
         @ENVIRONMENT
         def environment(cmd, data):
@@ -292,6 +302,18 @@ class LibretroCore:
         self.lib.retro_set_controller_port_device(0, DEVICE_JOYPAD)
         self._map_memories()
         return self.av_info
+
+    def set_port_device(self, device, port=0):
+        """Opt-in controller-class switch (contract capability).
+
+        The PSX digital pad (id 0x41, selected by DEVICE_JOYPAD) has no
+        L2/R2/L3/R3 buttons; DualShock-class games bind actions to
+        them, so a game may opt in via its plugin INPUT_DEVICE class
+        attribute. Default stays DEVICE_JOYPAD for every existing
+        game/flow — nothing changes unless a plugin opts in.
+        """
+        self.lib.retro_set_controller_port_device(port, int(device))
+        self.port_device = int(device)
 
     def _map_memories(self):
         for attr, mem_id in (("_sram", MEM_SAVE_RAM), ("_ram", MEM_SYSTEM_RAM),

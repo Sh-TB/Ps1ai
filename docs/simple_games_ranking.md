@@ -125,3 +125,25 @@ today's only instrument for enemy awareness.
   fixed: SHA-256 → license-patch locally → boot gate → input
   causality → THEN capability tests.
 - One boot per process; license patching stays LOCAL-ONLY.
+
+---
+
+## Session-5 batch (2026-10-24): the owner directive "test the small
+## games we have" — every locally-held <30 MB title exercised
+
+| # | Game | This session's state | Evidence |
+|---|------|--------------------|----------|
+| 1 | Tetrade (MIT) | COMPLETE PLUGIN + full playthrough (Issue #8) — unchanged, re-booted in the sweep | sweep BOOTED, pad live |
+| 2 | PSX-Minecraft (MIT) | **COMPLETE PLUGIN (`PSXMCPlayPlugin`)** — 250-chunk play session, 232 verified move bursts, health/air telemetry live, world-entry + fall-guard + dig experiment | `psxmc_*` evidence dir |
+| 3 | Nortis (no license) | PLAYED locally (license-blocked for distribution, status unchanged): boots straight into its field; 188-rule-input autoplay, 67 field-active chunks, 1 score-region change captured | `nortis_play/autoplay_report.json` |
+| 4 | Poy Poy (USA) | PLUGIN (`PoyPoyPlugin`, menu-reach scope): title→START→MODE SELECT path data-frozen; cursor nav verified; match-entry confirm button NOT identified (X/O/START/SQ/TR tested, idle-timeout to title suspected) — honest BLOCKED-by-discovery | `poypoy_menu*/` probes |
+| 5 | Trap Gunner (USA) | Menu walk mapped: boot→512-wide title→menus→TUTORIAL MOVIE submenu reached; main-game entry not yet isolated | `trapgunner_menu/` |
+| 6 | FFT6 — World of Ruin (hack, NEW <50 MB fetch) | Downloaded 29,734,169 B (sha256 `6fc04405…`), boots (license sectors intact, BOOT=SCUS_942.21), pad live, X/LEFT causal (7.1) — boot-verified candidate, RAM mapping pending | `fft6_*` evidence |
+
+Pad-class finding (probe5 matrix, decisive): the beetle DIGITAL pad
+(id 0x41) delivers ALL 16 button bits — including L2/R2/L3/R3 — read
+at the game's own `input` buffer (PSXMC map symbol). The host gained
+an opt-in `INPUT_DEVICE` capability (contract v1, default JOYPAD
+unchanged), but beetle 0.9.44.1's ANALOG mode is input-DEAD
+(A/B: digital d_z=844038/d_yaw=614400 vs analog all-zero), so no
+plugin uses it today.

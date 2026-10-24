@@ -124,3 +124,37 @@ Acceptance gate for either to become a capability representative:
 entity-table RAM mapping via the probe→causality→contract campaign
 used on MSX. This upgrades the category-②③④ gap from "no candidate at
 all" to "boot-verified candidates, RAM mapping pending".
+
+---
+
+## Session-5 addendum (2026-10-24) — small-games directive + the owed grenade run
+
+Owner directive: test the small local games (<30 MB), build complete
+plugins for ≥2 games and play them; main game 40% / small games 50% /
+one new <50 MB game per round.
+
+* Small-games boot sweep: 5/5 BOOTED (Tetrade, PSXMC, Nortis,
+  Poy Poy, Trap Gunner) with pad-live verification
+  (`scripts/smallgames_sweep.py`).
+* **Second complete plugin: `PSXMCPlayPlugin`** (after Issue #8's
+  Tetrade): contract v1, zero core edits, zero memory writes; 250-chunk
+  live session, 232 verified move bursts, health/air world telemetry,
+  fall-guard, bounded dig experiment. Source-first (MIT repo structs)
+  + live-verified anchors (`psxmc_probe*.py` series).
+* Poy Poy: plugin with data-frozen menu path (title→MODE SELECT);
+  match-entry confirm unidentified — honest discovery blocker.
+  Trap Gunner: menu walk to the tutorial submenu. Nortis: local
+  autoplay (license-blocked status unchanged).
+* New <50 MB fetch: FFT6 — World of Ruin hack (29.7 MB, sha256
+  verified) — boots, pad live, input-causal; RAM mapping pending.
+* Pad-class truth (decisive): beetle DIGITAL pad carries all 16 button
+  bits (probe5 matrix at the game's own input buffer); ANALOG mode is
+  input-dead (A/B) — host gained a backward-compatible opt-in
+  INPUT_DEVICE capability that nothing needs today.
+* MSX (main game): the owed **grenade-vs-armored-truck live run**
+  delivered as a 4-arm campaign — grenades are the confirmed
+  anti-armor weapon (hp 254→207 reproduced 3×, Y-immune; kills +700
+  score, counter-verified), full kill blocked by clamp/rear-zone
+  geometry, not by the weapon. policy_pass8 re-verified the round-3
+  combat behaviours (same clamp death point).
+* Suite: **400 passed + 1 xfailed** (11 new offline tests).

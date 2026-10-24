@@ -15,7 +15,7 @@ import time
 
 import numpy as np
 
-from .core.host import LibretroCore
+from .core.host import LibretroCore, DEVICE_JOYPAD, DEVICE_ANALOG
 from .core.memory import MemoryView
 from .core.statemgr import StateManager, Journal
 from .agent.observer import Observer
@@ -107,8 +107,18 @@ class PS1Play:
         self.profile.setdefault("serial", serial)
         self.profile.setdefault("plugin", cls.ID)
         self.plugin = cls(self.profile)
+        # Opt-in controller class (contract v1 capability): a plugin may
+        # declare INPUT_DEVICE="dualshock" when its bindings need
+        # L2/R2/L3/R3 (the digital pad has no such buttons). Default:
+        # unchanged DEVICE_JOYPAD for every existing game.
+        self.input_device = DEVICE_JOYPAD
+        want = getattr(self.plugin, "INPUT_DEVICE", None)
+        if want and want in ("dualshock", "analog"):
+            self.core.set_port_device(DEVICE_ANALOG)
+            self.input_device = DEVICE_ANALOG
         return {"core": f"{self.core.core_name} {self.core.core_ver}",
                 "serial": serial, "plugin": self.plugin.ID,
+                "input_device": self.input_device,
                 "ram_bytes": len(self.mem),
                 "profile_reused": self.profile.get("discovered") is not None}
 

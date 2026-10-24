@@ -452,10 +452,12 @@ class PowerPlayTriviaPlugin(GamePlugin):
 
 
 from .tetrade_play import TetradePlayPlugin  # noqa: E402 (circular-free)
+from .psxmc_play import PSXMCPlayPlugin      # noqa: E402 (circular-free)
+from .poy_poy import PoyPoyPlugin            # noqa: E402 (circular-free)
 
 
 PLUGIN_CLASSES = [MetalSlugXPlugin, TetradePlugin, TetradePlayPlugin,
-                  PowerPlayTriviaPlugin,
+                  PSXMCPlayPlugin, PoyPoyPlugin, PowerPlayTriviaPlugin,
                   GenericPlugin]
 
 
