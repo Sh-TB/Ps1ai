@@ -164,6 +164,20 @@ FALL_MAX_PER_CHUNK = 1200    # max height drop per 60f chunk still a
                              # fall (rain signature 1..20/f x 60f;
                              # anything larger = slot redefinition)
 
+# ---- armor-hold (Issue #9 §8/§9-E/F: the clamp-death fix) ------------
+# CLAMP-ROOT discriminator (this session): holding px 950-998 for 5400
+# frames = ZERO deaths while the armored wave approached into range and
+# got chipped (hp 340->214 under standing fire); pressing to the pin
+# (px 1100-1164) died identically 4/4 to the one-shot -291 ram. The
+# fatal contact is POSITION-DEPENDENT: it needs the agent at the pin
+# with the truck charging. Fix: NEVER advance toward an armored foe
+# (hp >= ARMOR_HP_MIN); stop and shoot it at range, grenade when close.
+ARMOR_HP_MIN = 200           # armored class (truck observed 254-340)
+ARMOR_ENGAGE_X = 230         # trucks close to ~73-185px before the ram;
+                             # stand ground anywhere inside this window
+ARMOR_GRENADE_X = 110        # grenade is the proven anti-armor kill
+                             # path (254->207 x3, +700 score)
+
 # ---- cadence (RoutePolicy-compatible) --------------------------------
 FIRE_ON, FIRE_OFF = 8, 6
 JUMP_PERIOD, JUMP_HOLD = 200, 13
@@ -311,6 +325,12 @@ class CombatPolicy:
         self.rear_checks = 0           # follow-up checks, same pursuer
         self.rear_last_hp = None       # pursuer hp at the last check
         self.rear_hp_now = None        # pursuer hp this chunk
+        self.armor_slot = None         # §8 armor-hold campaign slot
+        self.armor_checks = 0
+        self.armor_last_hp = None
+        self.armor_hp_now = None
+        self.armor_no_progress = False
+        self._armor_t = 0              # frames since armor campaign start
         self.no_progress = False       # hp unchanged across checks
         self.prev_h = {}               # slot -> height at last sighting
         self.stats = {"engage": 0, "clamp_clear": 0, "advance": 0,
@@ -320,7 +340,8 @@ class CombatPolicy:
                       "proj_dodge": 0, "proj_unverified": 0,
                       "stale_reset": 0, "advance_silent": 0,
                       "rear_grenade": 0, "rear_resolved": 0,
-                      "rear_gaveup": 0}
+                      "rear_gaveup": 0, "armor_hold": 0,
+                      "armor_grenade": 0}
 
     # ----------------------------------------------------------------
     def _invalidate_stale(self):
@@ -339,6 +360,13 @@ class CombatPolicy:
         self.rear_last_hp = None
         self.rear_hp_now = None
         self.no_progress = False
+        # §8 armor-hold state is positional too: a respawn/segment
+        # change means the tracked truck campaign no longer applies
+        self.armor_slot = None
+        self.armor_checks = 0
+        self.armor_last_hp = None
+        self.armor_hp_now = None
+        self.armor_no_progress = False
         self.prev_h = {}               # height memory is stale too (D8)
         self.stats["stale_reset"] += 1
 
@@ -445,6 +473,19 @@ class CombatPolicy:
         # fire discipline: on-the-run forward fire only vs a real
         # ahead target (aimless-burst fix, user directive)
         ahead_fire = any(0 <= e["dx_px"] <= FRONT_FIRE_X for e in foes)
+        # §8/§9-E/F armored-threat detection (before near-selection:
+        # an armored foe outranks a closer soft foe — the soft one is
+        # survivable at range, the truck's charge is the 4/4 killer).
+        # AHEAD threats only (dx >= 0): rear threats keep the verified
+        # rear_check/grenade campaign (the jeep geometry) — armor_hold
+        # must never hijack the mid-run rear defence.
+        armor_threat = None
+        if not clamped:
+            for e in foes:
+                if e.get("hp", 0) >= ARMOR_HP_MIN and e["dx_px"] >= 0 and \
+                        e["dx_px"] <= ARMOR_ENGAGE_X:
+                    armor_threat = e
+                    break
         near = None
         for e in foes:
             adx = abs(e["dx_px"])
@@ -489,6 +530,27 @@ class CombatPolicy:
             # moving (baseline's survivable behaviour)
             mode = "advance"
             self.force_advance -= 1
+        elif not clamped and armor_threat is not None:
+            # §8/§9-E/F CLAMP-ROOT fix: an armored foe (hp >= 200) in
+            # range = STOP AND SHOOT (user directive "at least stop
+            # first"). Advancing into its charge path is the
+            # instrumented 4/4 one-shot death at the pin; holding and
+            # firing is the 0-death verified behaviour. Kill
+            # follow-through: track hp across chunks; an hp-UNCHANGED
+            # streak escalates to grenades (verified anti-armor path).
+            mode = "armor_hold"
+            if armor_threat["slot"] == self.armor_slot:
+                self.armor_checks += 1
+            else:
+                self.armor_slot = armor_threat["slot"]
+                self.armor_checks = 1
+                self.armor_last_hp = None
+                self._armor_t = 0
+            self.armor_hp_now = armor_threat["hp"]
+            self.armor_no_progress = (self.armor_last_hp is not None and
+                                      self.armor_hp_now ==
+                                      self.armor_last_hp)
+            self.armor_last_hp = self.armor_hp_now
         elif near is not None and not (clamped and near["dx_px"] < 0):
             # mid-run: engage only point-blank FRONT threats; at the
             # clamp a rear threat goes to the DEFENSIVE clear (below),
@@ -579,6 +641,32 @@ class CombatPolicy:
                 else:
                     btns = set()      # stand, keep facing left
                 self._rear_t += 1
+            elif mode == "armor_hold":
+                # stand ground; assert facing with a SHORT tap only at
+                # campaign start (holding the direction key would WALK
+                # toward the truck — facing persists once standing);
+                # then standing aimed fire; hp-unchanged streak
+                # escalates to GRENADES (the verified anti-armor kill
+                # path — Y alone only chips). NEVER a walk-toward
+                # (the pin-zone ram is 4/4 fatal).
+                dx = armor_threat["dx_px"]
+                face = {"LEFT"} if dx < 0 else {"RIGHT"}
+                adx = abs(dx)
+                if self._armor_t < 2:
+                    btns = face              # face assert (2 frames)
+                elif (self.armor_no_progress
+                        and self.armor_checks > 2
+                        and grenades > 0
+                        and adx <= ARMOR_GRENADE_X
+                        and self.fc % GRENADE_PERIOD < 4):
+                    btns = {"A"}
+                    self.stats["armor_grenade"] = \
+                        self.stats.get("armor_grenade", 0) + 1
+                elif burst:
+                    btns = {"Y"}
+                else:
+                    btns = set()             # stand, keep facing
+                self._armor_t += 1
             elif mode == "engage":
                 dx = near["dx_px"]
                 rear = dx < 0
