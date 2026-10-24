@@ -257,6 +257,14 @@ def scan_section(mem):
     mapped — this sensor explains WHY the camera is pinned (D7) and
     when it releases; it must never be used as a safety assertion on
     its own. Absence/inconsistency = NOT OBSERVED, never "safe".
+
+    LIVE CORRELATION (chopper_ckpt run sectioncorr1, 34 chunks, 2026
+    -10-24): (state 0xB, flags 0x1) = walker advancing freely (px
+    894->1140); (state 0xA, flags 0x43) = the D7 pin signature — px
+    frozen at 1164.0 with scroll word frozen at 0x048CFFFF for the
+    whole pin; single-frame transients (0,0,0) / (0x5,0x1) observed
+    at walker resets. The 0x40 flag bit appears only in the pinned
+    combination so far.
     """
     state = int(mem.u16(SECTION_STATE))
     flags = int(mem.u16(SECTION_FLAGS))

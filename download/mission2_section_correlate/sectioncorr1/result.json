@@ -1,0 +1,1581 @@
+{
+ "tag": "sectioncorr1",
+ "commit": "98852ae",
+ "checkpoint": "chopper_ckpt px810.3",
+ "chunks_requested": 34,
+ "chunks_run": 34,
+ "wall_s": 5.8,
+ "frames": 2040,
+ "death": null,
+ "timeline": [
+  {
+   "chunk": 0,
+   "px": 810.8,
+   "hp": 291,
+   "score": 0,
+   "scroll": 53138459,
+   "section_state": 0,
+   "section_flags": 0,
+   "section_progress": 0,
+   "section_complete": false,
+   "n_entities": 7,
+   "entities": [
+    [
+     6,
+     799.1,
+     280,
+     64,
+     "enemy"
+    ],
+    [
+     5,
+     776.0,
+     257,
+     152,
+     "projectile_air"
+    ],
+    [
+     14,
+     768.4,
+     249,
+     152,
+     "projectile_air"
+    ],
+    [
+     19,
+     664.0,
+     145,
+     64,
+     "enemy"
+    ],
+    [
+     8,
+     648.1,
+     129,
+     128,
+     "projectile_air"
+    ],
+    [
+     9,
+     624.4,
+     105,
+     96,
+     "projectile_air"
+    ]
+   ]
+  },
+  {
+   "chunk": 1,
+   "px": 894.8,
+   "hp": 139,
+   "score": 100,
+   "scroll": 58446875,
+   "section_state": 11,
+   "section_flags": 1,
+   "section_progress": 65535,
+   "section_complete": false,
+   "n_entities": 7,
+   "entities": [
+    [
+     21,
+     929.4,
+     174,
+     102,
+     "projectile_air"
+    ],
+    [
+     15,
+     939.5,
+     184,
+     80,
+     "projectile_air"
+    ],
+    [
+     16,
+     848.5,
+     93,
+     64,
+     "enemy"
+    ],
+    [
+     6,
+     811.1,
+     55,
+     64,
+     "enemy"
+    ],
+    [
+     5,
+     776.0,
+     20,
+     152,
+     "projectile_air"
+    ],
+    [
+     14,
+     768.4,
+     13,
+     152,
+     "projectile_air"
+    ]
+   ]
+  },
+  {
+   "chunk": 2,
+   "px": 897.8,
+   "hp": 128,
+   "score": 300,
+   "scroll": 58840091,
+   "section_state": 11,
+   "section_flags": 1,
+   "section_progress": 65535,
+   "section_complete": false,
+   "n_entities": 8,
+   "entities": [
+    [
+     21,
+     877.0,
+     107,
+     64,
+     "enemy"
+    ],
+    [
+     16,
+     848.5,
+     79,
+     64,
+     "enemy"
+    ],
+    [
+     23,
+     848.5,
+     79,
+     64,
+     "enemy"
+    ],
+    [
+     6,
+     811.1,
+     41,
+     64,
+     "enemy"
+    ],
+    [
+     5,
+     776.0,
+     6,
+     152,
+     "projectile_air"
+    ],
+    [
+     4,
+     1061.2,
+     291,
+     64,
+     "enemy"
+    ]
+   ]
+  },
+  {
+   "chunk": 3,
+   "px": 900.8,
+   "hp": 128,
+   "score": 400,
+   "scroll": 59036699,
+   "section_state": 11,
+   "section_flags": 1,
+   "section_progress": 65535,
+   "section_complete": false,
+   "n_entities": 11,
+   "entities": [
+    [
+     21,
+     877.0,
+     105,
+     64,
+     "enemy"
+    ],
+    [
+     16,
+     848.5,
+     76,
+     64,
+     "enemy"
+    ],
+    [
+     23,
+     848.5,
+     76,
+     64,
+     "enemy"
+    ],
+    [
+     10,
+     980.8,
+     208,
+     90,
+     "projectile_air"
+    ],
+    [
+     6,
+     811.1,
+     39,
+     64,
+     "enemy"
+    ],
+    [
+     5,
+     776.0,
+     4,
+     152,
+     "projectile_air"
+    ]
+   ]
+  },
+  {
+   "chunk": 4,
+   "px": 903.8,
+   "hp": 128,
+   "score": 600,
+   "scroll": 59233307,
+   "section_state": 11,
+   "section_flags": 1,
+   "section_progress": 65535,
+   "section_complete": false,
+   "n_entities": 10,
+   "entities": [
+    [
+     16,
+     848.5,
+     73,
+     64,
+     "enemy"
+    ],
+    [
+     23,
+     848.5,
+     73,
+     64,
+     "enemy"
+    ],
+    [
+     6,
+     811.1,
+     36,
+     64,
+     "enemy"
+    ],
+    [
+     25,
+     1015.8,
+     240,
+     90,
+     "projectile_air"
+    ],
+    [
+     5,
+     776.0,
+     1,
+     152,
+     "projectile_air"
+    ],
+    [
+     28,
+     1087.6,
+     312,
+     64,
+     "enemy"
+    ]
+   ]
+  },
+  {
+   "chunk": 5,
+   "px": 906.8,
+   "hp": 128,
+   "score": 600,
+   "scroll": 59429915,
+   "section_state": 11,
+   "section_flags": 1,
+   "section_progress": 65535,
+   "section_complete": false,
+   "n_entities": 7,
+   "entities": [
+    [
+     28,
+     938.8,
+     160,
+     90,
+     "projectile_air"
+    ],
+    [
+     16,
+     848.5,
+     70,
+     64,
+     "enemy"
+    ],
+    [
+     23,
+     848.5,
+     70,
+     64,
+     "enemy"
+    ],
+    [
+     6,
+     811.1,
+     32,
+     64,
+     "enemy"
+    ],
+    [
+     25,
+     1050.8,
+     272,
+     90,
+     "projectile_air"
+    ],
+    [
+     9,
+     1095.6,
+     317,
+     64,
+     "enemy"
+    ]
+   ]
+  },
+  {
+   "chunk": 6,
+   "px": 906.8,
+   "hp": 128,
+   "score": 600,
+   "scroll": 59429915,
+   "section_state": 11,
+   "section_flags": 1,
+   "section_progress": 65535,
+   "section_complete": false,
+   "n_entities": 6,
+   "entities": [
+    [
+     16,
+     848.5,
+     70,
+     64,
+     "enemy"
+    ],
+    [
+     23,
+     848.5,
+     70,
+     64,
+     "enemy"
+    ],
+    [
+     28,
+     970.8,
+     192,
+     90,
+     "projectile_air"
+    ],
+    [
+     6,
+     811.1,
+     32,
+     64,
+     "enemy"
+    ],
+    [
+     9,
+     1082.8,
+     304,
+     90,
+     "projectile_air"
+    ],
+    [
+     13,
+     1110.8,
+     332,
+     64,
+     "enemy"
+    ]
+   ]
+  },
+  {
+   "chunk": 7,
+   "px": 909.8,
+   "hp": 128,
+   "score": 600,
+   "scroll": 59626523,
+   "section_state": 11,
+   "section_flags": 1,
+   "section_progress": 65535,
+   "section_complete": false,
+   "n_entities": 5,
+   "entities": [
+    [
+     16,
+     848.5,
+     67,
+     64,
+     "enemy"
+    ],
+    [
+     23,
+     848.5,
+     67,
+     64,
+     "enemy"
+    ],
+    [
+     8,
+     1005.8,
+     224,
+     90,
+     "projectile_air"
+    ],
+    [
+     6,
+     811.1,
+     30,
+     64,
+     "enemy"
+    ],
+    [
+     9,
+     1117.8,
+     336,
+     90,
+     "projectile_air"
+    ]
+   ]
+  },
+  {
+   "chunk": 8,
+   "px": 993.8,
+   "hp": 144,
+   "score": 600,
+   "scroll": 64934939,
+   "section_state": 11,
+   "section_flags": 1,
+   "section_progress": 65535,
+   "section_complete": false,
+   "n_entities": 1,
+   "entities": [
+    [
+     8,
+     1040.5,
+     191,
+     93,
+     "projectile_air"
+    ]
+   ]
+  },
+  {
+   "chunk": 9,
+   "px": 1083.8,
+   "hp": 211,
+   "score": 600,
+   "scroll": 70833179,
+   "section_state": 11,
+   "section_flags": 1,
+   "section_progress": 65535,
+   "section_complete": false,
+   "n_entities": 2,
+   "entities": [
+    [
+     8,
+     1129.5,
+     257,
+     64,
+     "enemy"
+    ],
+    [
+     14,
+     1166.5,
+     294,
+     64,
+     "enemy"
+    ]
+   ]
+  },
+  {
+   "chunk": 10,
+   "px": 1057.7,
+   "hp": 185,
+   "score": 700,
+   "scroll": 69385862,
+   "section_state": 0,
+   "section_flags": 0,
+   "section_progress": 0,
+   "section_complete": false,
+   "n_entities": 4,
+   "entities": [
+    [
+     28,
+     1060.5,
+     188,
+     115,
+     "projectile_air"
+    ],
+    [
+     20,
+     1073.1,
+     201,
+     123,
+     "projectile_air"
+    ],
+    [
+     13,
+     1078.2,
+     206,
+     132,
+     "projectile_air"
+    ],
+    [
+     14,
+     1126.5,
+     254,
+     64,
+     "enemy"
+    ]
+   ]
+  },
+  {
+   "chunk": 11,
+   "px": 1052.0,
+   "hp": 179,
+   "score": 700,
+   "scroll": 68942857,
+   "section_state": 11,
+   "section_flags": 1,
+   "section_progress": 65535,
+   "section_complete": false,
+   "n_entities": 4,
+   "entities": [
+    [
+     20,
+     1033.5,
+     161,
+     64,
+     "enemy"
+    ],
+    [
+     28,
+     1028.5,
+     156,
+     64,
+     "enemy"
+    ],
+    [
+     13,
+     1026.9,
+     154,
+     64,
+     "enemy"
+    ],
+    [
+     14,
+     1126.5,
+     254,
+     64,
+     "enemy"
+    ]
+   ]
+  },
+  {
+   "chunk": 12,
+   "px": 1052.0,
+   "hp": 179,
+   "score": 700,
+   "scroll": 68942857,
+   "section_state": 11,
+   "section_flags": 67,
+   "section_progress": 65535,
+   "section_complete": false,
+   "n_entities": 4,
+   "entities": [
+    [
+     20,
+     1033.5,
+     161,
+     64,
+     "enemy"
+    ],
+    [
+     28,
+     1028.5,
+     156,
+     64,
+     "enemy"
+    ],
+    [
+     13,
+     1026.9,
+     154,
+     64,
+     "enemy"
+    ],
+    [
+     14,
+     1126.5,
+     254,
+     64,
+     "enemy"
+    ]
+   ]
+  },
+  {
+   "chunk": 13,
+   "px": 962.0,
+   "hp": 90,
+   "score": 700,
+   "scroll": 63242240,
+   "section_state": 11,
+   "section_flags": 1,
+   "section_progress": 65535,
+   "section_complete": false,
+   "n_entities": 5,
+   "entities": [
+    [
+     8,
+     973.0,
+     101,
+     185,
+     "projectile_air"
+    ],
+    [
+     13,
+     1026.9,
+     154,
+     64,
+     "enemy"
+    ],
+    [
+     28,
+     1028.5,
+     156,
+     64,
+     "enemy"
+    ],
+    [
+     20,
+     1033.5,
+     161,
+     64,
+     "enemy"
+    ],
+    [
+     14,
+     1126.5,
+     254,
+     64,
+     "enemy"
+    ]
+   ]
+  },
+  {
+   "chunk": 14,
+   "px": 1057.0,
+   "hp": 185,
+   "score": 800,
+   "scroll": 69075697,
+   "section_state": 11,
+   "section_flags": 1,
+   "section_progress": 65535,
+   "section_complete": false,
+   "n_entities": 4,
+   "entities": [
+    [
+     20,
+     1029.4,
+     157,
+     64,
+     "enemy"
+    ],
+    [
+     28,
+     1025.7,
+     153,
+     64,
+     "enemy"
+    ],
+    [
+     13,
+     1023.7,
+     151,
+     64,
+     "enemy"
+    ],
+    [
+     14,
+     1126.5,
+     254,
+     64,
+     "enemy"
+    ]
+   ]
+  },
+  {
+   "chunk": 15,
+   "px": 1057.0,
+   "hp": 185,
+   "score": 1100,
+   "scroll": 69272305,
+   "section_state": 0,
+   "section_flags": 0,
+   "section_progress": 0,
+   "section_complete": false,
+   "n_entities": 5,
+   "entities": [
+    [
+     21,
+     1082.0,
+     210,
+     96,
+     "projectile_air"
+    ],
+    [
+     20,
+     1029.4,
+     157,
+     64,
+     "enemy"
+    ],
+    [
+     28,
+     1025.7,
+     153,
+     64,
+     "enemy"
+    ],
+    [
+     13,
+     1023.7,
+     151,
+     64,
+     "enemy"
+    ],
+    [
+     14,
+     1126.5,
+     254,
+     64,
+     "enemy"
+    ]
+   ]
+  },
+  {
+   "chunk": 16,
+   "px": 1057.0,
+   "hp": 185,
+   "score": 1700,
+   "scroll": 69272305,
+   "section_state": 11,
+   "section_flags": 1,
+   "section_progress": 65535,
+   "section_complete": false,
+   "n_entities": 11,
+   "entities": [
+    [
+     20,
+     1029.4,
+     157,
+     64,
+     "enemy"
+    ],
+    [
+     21,
+     1086.0,
+     214,
+     88,
+     "projectile_air"
+    ],
+    [
+     24,
+     1087.0,
+     215,
+     97,
+     "projectile_air"
+    ],
+    [
+     28,
+     1025.7,
+     153,
+     64,
+     "enemy"
+    ],
+    [
+     13,
+     1023.7,
+     151,
+     64,
+     "enemy"
+    ],
+    [
+     27,
+     1097.5,
+     225,
+     105,
+     "projectile_air"
+    ]
+   ]
+  },
+  {
+   "chunk": 17,
+   "px": 953.0,
+   "hp": 81,
+   "score": 1700,
+   "scroll": 62652744,
+   "section_state": 11,
+   "section_flags": 1,
+   "section_progress": 65535,
+   "section_complete": false,
+   "n_entities": 7,
+   "entities": [
+    [
+     8,
+     884.0,
+     12,
+     87,
+     "projectile_air"
+    ],
+    [
+     13,
+     1023.7,
+     151,
+     64,
+     "enemy"
+    ],
+    [
+     28,
+     1025.7,
+     153,
+     64,
+     "enemy"
+    ],
+    [
+     20,
+     1029.4,
+     157,
+     64,
+     "enemy"
+    ],
+    [
+     14,
+     1126.5,
+     254,
+     64,
+     "enemy"
+    ],
+    [
+     24,
+     1126.6,
+     254,
+     80,
+     "projectile_air"
+    ]
+   ]
+  },
+  {
+   "chunk": 18,
+   "px": 1046.8,
+   "hp": 174,
+   "score": 3300,
+   "scroll": 68407094,
+   "section_state": 11,
+   "section_flags": 1,
+   "section_progress": 65535,
+   "section_complete": false,
+   "n_entities": 9,
+   "entities": [
+    [
+     20,
+     1029.4,
+     157,
+     64,
+     "enemy"
+    ],
+    [
+     28,
+     1025.7,
+     153,
+     64,
+     "enemy"
+    ],
+    [
+     13,
+     1023.7,
+     151,
+     64,
+     "enemy"
+    ],
+    [
+     11,
+     1100.4,
+     228,
+     79,
+     "projectile_air"
+    ],
+    [
+     24,
+     1118.8,
+     246,
+     135,
+     "projectile_air"
+    ],
+    [
+     14,
+     1126.5,
+     254,
+     64,
+     "enemy"
+    ]
+   ]
+  },
+  {
+   "chunk": 19,
+   "px": 1046.8,
+   "hp": 174,
+   "score": 3500,
+   "scroll": 68603702,
+   "section_state": 11,
+   "section_flags": 1,
+   "section_progress": 65535,
+   "section_complete": false,
+   "n_entities": 10,
+   "entities": [
+    [
+     25,
+     1078.8,
+     206,
+     90,
+     "projectile_air"
+    ],
+    [
+     28,
+     1101.5,
+     229,
+     72,
+     "projectile_air"
+    ],
+    [
+     10,
+     1102.9,
+     230,
+     216,
+     "projectile_air"
+    ],
+    [
+     21,
+     1123.6,
+     251,
+     190,
+     "projectile_air"
+    ],
+    [
+     29,
+     1123.6,
+     251,
+     219,
+     "projectile_air"
+    ],
+    [
+     14,
+     1126.5,
+     254,
+     64,
+     "enemy"
+    ]
+   ]
+  },
+  {
+   "chunk": 20,
+   "px": 984.8,
+   "hp": 112,
+   "score": 3500,
+   "scroll": 64537222,
+   "section_state": 11,
+   "section_flags": 1,
+   "section_progress": 65535,
+   "section_complete": false,
+   "n_entities": 4,
+   "entities": [
+    [
+     10,
+     1040.5,
+     168,
+     207,
+     "projectile_air"
+    ],
+    [
+     17,
+     1097.9,
+     225,
+     115,
+     "projectile_air"
+    ],
+    [
+     21,
+     1123.6,
+     251,
+     88,
+     "projectile_air"
+    ],
+    [
+     14,
+     1126.5,
+     254,
+     64,
+     "enemy"
+    ]
+   ]
+  },
+  {
+   "chunk": 21,
+   "px": 1040.8,
+   "hp": 168,
+   "score": 3500,
+   "scroll": 68015156,
+   "section_state": 11,
+   "section_flags": 1,
+   "section_progress": 65535,
+   "section_complete": false,
+   "n_entities": 5,
+   "entities": [
+    [
+     10,
+     1009.1,
+     137,
+     207,
+     "projectile_air"
+    ],
+    [
+     15,
+     1008.0,
+     136,
+     206,
+     "projectile_air"
+    ],
+    [
+     24,
+     1008.0,
+     136,
+     180,
+     "projectile_air"
+    ],
+    [
+     21,
+     1119.9,
+     247,
+     90,
+     "projectile_air"
+    ],
+    [
+     14,
+     1126.5,
+     254,
+     64,
+     "enemy"
+    ]
+   ]
+  },
+  {
+   "chunk": 22,
+   "px": 1040.8,
+   "hp": 168,
+   "score": 3500,
+   "scroll": 68211764,
+   "section_state": 0,
+   "section_flags": 0,
+   "section_progress": 0,
+   "section_complete": false,
+   "n_entities": 5,
+   "entities": [
+    [
+     10,
+     1028.6,
+     156,
+     210,
+     "projectile_air"
+    ],
+    [
+     29,
+     1011.2,
+     139,
+     118,
+     "projectile_air"
+    ],
+    [
+     24,
+     1008.0,
+     136,
+     64,
+     "enemy"
+    ],
+    [
+     14,
+     1126.5,
+     254,
+     64,
+     "enemy"
+    ],
+    [
+     15,
+     1168.8,
+     296,
+     90,
+     "projectile_air"
+    ]
+   ]
+  },
+  {
+   "chunk": 23,
+   "px": 1040.8,
+   "hp": 168,
+   "score": 3500,
+   "scroll": 68211764,
+   "section_state": 11,
+   "section_flags": 1,
+   "section_progress": 65535,
+   "section_complete": false,
+   "n_entities": 7,
+   "entities": [
+    [
+     10,
+     1033.3,
+     161,
+     206,
+     "projectile_air"
+    ],
+    [
+     24,
+     1033.3,
+     161,
+     181,
+     "projectile_air"
+    ],
+    [
+     26,
+     1033.3,
+     161,
+     206,
+     "projectile_air"
+    ],
+    [
+     21,
+     1088.8,
+     216,
+     90,
+     "projectile_air"
+    ],
+    [
+     15,
+     1118.5,
+     246,
+     103,
+     "projectile_air"
+    ],
+    [
+     14,
+     1126.5,
+     254,
+     64,
+     "enemy"
+    ]
+   ]
+  },
+  {
+   "chunk": 24,
+   "px": 1140.9,
+   "hp": 268,
+   "score": 3500,
+   "scroll": 74570144,
+   "section_state": 11,
+   "section_flags": 1,
+   "section_progress": 65535,
+   "section_complete": false,
+   "n_entities": 4,
+   "entities": [
+    [
+     14,
+     1126.5,
+     254,
+     64,
+     "enemy"
+    ],
+    [
+     10,
+     1061.5,
+     189,
+     205,
+     "projectile_air"
+    ],
+    [
+     8,
+     1033.4,
+     161,
+     125,
+     "projectile_air"
+    ],
+    [
+     24,
+     1033.3,
+     161,
+     77,
+     "projectile_air"
+    ]
+   ]
+  },
+  {
+   "chunk": 25,
+   "px": 1164.0,
+   "hp": 291,
+   "score": 3500,
+   "scroll": 76283903,
+   "section_state": 10,
+   "section_flags": 67,
+   "section_progress": 65535,
+   "section_complete": false,
+   "n_entities": 4,
+   "entities": [
+    [
+     14,
+     1126.5,
+     254,
+     64,
+     "enemy"
+    ],
+    [
+     10,
+     1126.4,
+     254,
+     208,
+     "projectile_air"
+    ],
+    [
+     8,
+     1124.8,
+     252,
+     184,
+     "projectile_air"
+    ],
+    [
+     24,
+     1124.8,
+     252,
+     208,
+     "projectile_air"
+    ]
+   ]
+  },
+  {
+   "chunk": 26,
+   "px": 1164.0,
+   "hp": 291,
+   "score": 3500,
+   "scroll": 76283903,
+   "section_state": 10,
+   "section_flags": 67,
+   "section_progress": 65535,
+   "section_complete": false,
+   "n_entities": 4,
+   "entities": [
+    [
+     10,
+     1154.0,
+     282,
+     209,
+     "projectile_air"
+    ],
+    [
+     28,
+     1137.3,
+     265,
+     137,
+     "projectile_air"
+    ],
+    [
+     14,
+     1126.5,
+     254,
+     64,
+     "enemy"
+    ],
+    [
+     8,
+     1124.8,
+     252,
+     91,
+     "projectile_air"
+    ]
+   ]
+  },
+  {
+   "chunk": 27,
+   "px": 1164.0,
+   "hp": 291,
+   "score": 3500,
+   "scroll": 76283903,
+   "section_state": 10,
+   "section_flags": 67,
+   "section_progress": 65535,
+   "section_complete": false,
+   "n_entities": 2,
+   "entities": [
+    [
+     10,
+     1155.3,
+     283,
+     204,
+     "projectile_air"
+    ],
+    [
+     14,
+     1126.5,
+     254,
+     64,
+     "enemy"
+    ]
+   ]
+  },
+  {
+   "chunk": 28,
+   "px": 1086.9,
+   "hp": 214,
+   "score": 3500,
+   "scroll": 71428335,
+   "section_state": 5,
+   "section_flags": 1,
+   "section_progress": 59631,
+   "section_complete": false,
+   "n_entities": 6,
+   "entities": [
+    [
+     14,
+     1126.5,
+     254,
+     64,
+     "enemy"
+    ],
+    [
+     10,
+     1145.4,
+     273,
+     207,
+     "projectile_air"
+    ],
+    [
+     26,
+     1155.3,
+     283,
+     141,
+     "projectile_air"
+    ],
+    [
+     28,
+     1155.3,
+     283,
+     99,
+     "projectile_air"
+    ],
+    [
+     24,
+     991.9,
+     119,
+     114,
+     "projectile_air"
+    ],
+    [
+     8,
+     923.6,
+     51,
+     126,
+     "projectile_air"
+    ]
+   ]
+  },
+  {
+   "chunk": 29,
+   "px": 1164.0,
+   "hp": 291,
+   "score": 3600,
+   "scroll": 76283903,
+   "section_state": 10,
+   "section_flags": 67,
+   "section_progress": 65535,
+   "section_complete": false,
+   "n_entities": 2,
+   "entities": [
+    [
+     10,
+     1129.9,
+     257,
+     210,
+     "projectile_air"
+    ],
+    [
+     14,
+     1126.5,
+     254,
+     64,
+     "enemy"
+    ]
+   ]
+  },
+  {
+   "chunk": 30,
+   "px": 1159.8,
+   "hp": 287,
+   "score": 3600,
+   "scroll": 76005887,
+   "section_state": 10,
+   "section_flags": 1,
+   "section_progress": 65535,
+   "section_complete": false,
+   "n_entities": 7,
+   "entities": [
+    [
+     10,
+     1150.5,
+     278,
+     210,
+     "projectile_air"
+    ],
+    [
+     28,
+     1139.6,
+     267,
+     154,
+     "projectile_air"
+    ],
+    [
+     26,
+     1132.3,
+     260,
+     115,
+     "projectile_air"
+    ],
+    [
+     14,
+     1126.5,
+     254,
+     64,
+     "enemy"
+    ],
+    [
+     29,
+     1111.8,
+     239,
+     98,
+     "projectile_air"
+    ],
+    [
+     8,
+     999.8,
+     127,
+     98,
+     "projectile_air"
+    ]
+   ]
+  },
+  {
+   "chunk": 31,
+   "px": 1164.0,
+   "hp": 291,
+   "score": 3800,
+   "scroll": 76283903,
+   "section_state": 10,
+   "section_flags": 67,
+   "section_progress": 65535,
+   "section_complete": false,
+   "n_entities": 2,
+   "entities": [
+    [
+     10,
+     1155.0,
+     283,
+     206,
+     "projectile_air"
+    ],
+    [
+     14,
+     1126.5,
+     254,
+     64,
+     "enemy"
+    ]
+   ]
+  },
+  {
+   "chunk": 32,
+   "px": 1164.0,
+   "hp": 291,
+   "score": 3800,
+   "scroll": 76283903,
+   "section_state": 10,
+   "section_flags": 67,
+   "section_progress": 65535,
+   "section_complete": false,
+   "n_entities": 4,
+   "entities": [
+    [
+     10,
+     1155.0,
+     283,
+     207,
+     "projectile_air"
+    ],
+    [
+     15,
+     1155.0,
+     283,
+     155,
+     "projectile_air"
+    ],
+    [
+     28,
+     1155.0,
+     283,
+     120,
+     "projectile_air"
+    ],
+    [
+     14,
+     1126.5,
+     254,
+     64,
+     "enemy"
+    ]
+   ]
+  },
+  {
+   "chunk": 33,
+   "px": 1164.0,
+   "hp": 291,
+   "score": 3800,
+   "scroll": 76283903,
+   "section_state": 10,
+   "section_flags": 0,
+   "section_progress": 64823,
+   "section_complete": false,
+   "n_entities": 2,
+   "entities": [
+    [
+     14,
+     1126.5,
+     254,
+     64,
+     "enemy"
+    ],
+    [
+     10,
+     1095.9,
+     223,
+     209,
+     "projectile_air"
+    ]
+   ]
+  }
+ ],
+ "sensor_provenance": "scan_section: state 0x0EB5F4 / flags 0x0EB5D0 / progress 0x0EB5D4 \u2014 Ghidra FUN_80021898 decompile, semantics OBSERVED-from-static; this run correlates them live with the D7 clamp (read-only)"
+}
