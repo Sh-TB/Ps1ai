@@ -196,7 +196,16 @@ FALL_MAX_PER_CHUNK = 1200    # max height drop per 60f chunk still a
 # fatal contact is POSITION-DEPENDENT: it needs the agent at the pin
 # with the truck charging. Fix: NEVER advance toward an armored foe
 # (hp >= ARMOR_HP_MIN); stop and shoot it at range, grenade when close.
-ARMOR_HP_MIN = 200           # armored class (truck observed 254-340)
+# CORRECTED SEMANTICS (Issue #5 truck campaign, 73c172d + this
+# session's reach2 live probe): the historical key `hp >= 200` read
+# +0x8E, which is the SCREEN-X — the 0x4054 right-side soldier
+# (screen-x 240-340) mislocked as armor and armor_hold stalled the run
+# 58 chunks at ~900 until the faller bombs killed the agent. The
+# armored class must key the REAL HP u16@+0xA4 (truck 230-300 live,
+# grenade = 100 dmg, GAMEPLAY_VERIFIED 8/8) and require GROUND contact
+# (h == 64) so the airborne chopper (hp_a4 300, h 206-228, bullets
+# cannot reach) never gets the stand-and-fire treatment.
+ARMOR_HP_MIN = 200           # armored class on the REAL HP +0xA4
 ARMOR_ENGAGE_X = 230         # trucks close to ~73-185px before the ram;
                              # stand ground anywhere inside this window
 ARMOR_GRENADE_X = 110        # grenade is the proven anti-armor kill
@@ -710,7 +719,9 @@ class CombatPolicy:
         armor_threat = None
         if not clamped:
             for e in foes:
-                if e.get("hp", 0) >= ARMOR_HP_MIN and e["dx_px"] >= 0 and \
+                if e.get("hp_a4", 0) >= ARMOR_HP_MIN and \
+                        e.get("h") == GROUND_HEIGHT and \
+                        e["dx_px"] >= 0 and \
                         e["dx_px"] <= ARMOR_ENGAGE_X:
                     armor_threat = e
                     break
@@ -774,7 +785,8 @@ class CombatPolicy:
                 self.armor_checks = 1
                 self.armor_last_hp = None
                 self._armor_t = 0
-            self.armor_hp_now = armor_threat["hp"]
+            self.armor_hp_now = armor_threat.get("hp_a4",
+                                                 armor_threat["hp"])
             self.armor_no_progress = (self.armor_last_hp is not None and
                                       self.armor_hp_now ==
                                       self.armor_last_hp)

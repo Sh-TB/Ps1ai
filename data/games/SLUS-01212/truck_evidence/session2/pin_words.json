@@ -1,0 +1,42 @@
+{
+ "summary": {
+  "state": 11,
+  "flags": 1,
+  "sectid": 0,
+  "progress_u32": 4294967295,
+  "progress_signed": -1,
+  "px": 0.0
+ },
+ "dump": {
+  "0xeb5b0": [
+   "0x0",
+   "0xfff9a000",
+   "0xffffffff",
+   "0x6000b"
+  ],
+  "0xeb5c0": [
+   "0xffffffff",
+   "0x0",
+   "0x0",
+   "0x40000000"
+  ],
+  "0xeb5d0": [
+   "0xff0001",
+   "0xffffffff",
+   "0x0",
+   "0x0"
+  ],
+  "0xeb5e0": [
+   "0xff00001c",
+   "0x1e00108",
+   "0x0",
+   "0x800eb928"
+  ],
+  "0xeb5f0": [
+   "0x0",
+   "0x6000b",
+   "0x80084dcc",
+   "0x0"
+  ]
+ }
+}

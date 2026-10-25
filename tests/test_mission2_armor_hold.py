@@ -8,9 +8,12 @@ to grenades when hp is unchanged."""
 from ps1play.agent.combat import CombatPolicy, ARMOR_GRENADE_X
 
 
-def _truck(px, dx, hp=300):
+def _truck(px, dx, hp=300, hp_a4=300):
+    """Corrected-semantics fixture: `hp` = the +0x8E SCREEN-X (legacy
+    key, kept for compat), `hp_a4` = the REAL HP u16@+0xA4 (the field
+    the armored class must key since the 73c172d correction)."""
     return {"slot": 14, "x_px": px + dx, "dx_px": dx, "hp": hp,
-            "h": 64, "kind": "enemy"}
+            "hp_a4": hp_a4, "h": 64, "kind": "enemy"}
 
 
 def test_armored_foe_triggers_stop_not_walk():
@@ -73,12 +76,57 @@ def test_armor_release_when_softened():
     pol = CombatPolicy()
     px = 950.0
     pol.observe(px, 0.0, False)
-    pol.decide(60, px, [_truck(px, 100.0, hp=210)], grenades=0, hp=200)
+    pol.decide(60, px, [_truck(px, 100.0, hp_a4=210)], grenades=0,
+               hp=200)
     assert pol.mode == "armor_hold"
-    # truck softened below ARMOR_HP_MIN -> normal selection resumes
+    # truck softened below ARMOR_HP_MIN on the REAL HP field -> normal
+    # selection resumes
     pol.observe(px, 0.0, False)
-    pol.decide(60, px, [_truck(px, 100.0, hp=180)], grenades=0, hp=200)
+    pol.decide(60, px, [_truck(px, 100.0, hp_a4=180)], grenades=0,
+               hp=200)
     assert pol.mode != "armor_hold"
+
+
+def test_screenx_soldier_no_longer_mislocks_as_armor():
+    """Regression (this session's reach2 live probe): the +0x8E field
+    is the SCREEN-X — a right-side soldier at screen-x 250 with NO
+    real HP (hp_a4 == 0) must NOT trigger armor_hold (the historical
+    mislock stalled the run 58 chunks at ~900 until the faller bombs
+    killed the agent)."""
+    pol = CombatPolicy()
+    px = 900.0
+    pol.observe(px, 0.0, False)
+    pol.decide(60, px, [_truck(px, 150.0, hp=250, hp_a4=0)],
+               grenades=0, hp=200)
+    assert pol.mode != "armor_hold"
+    assert pol.stats["armor_hold"] == 0
+
+
+def test_airborne_chopper_never_gets_armor_hold():
+    """Regression (this session's chopper campaign): the chopper
+    (hp_a4 300, h 206-228) is AIRBORNE — bullets cannot reach it, so
+    the stand-and-fire armor_hold treatment would just hold the agent
+    in the bomb rain. Only GROUND contact (h == 64) classifies."""
+    pol = CombatPolicy()
+    px = 950.0
+    pol.observe(px, 0.0, False)
+    chop = {"slot": 19, "x_px": px + 120.0, "dx_px": 120.0,
+            "hp": 150, "hp_a4": 300, "h": 212,
+            "kind": "projectile_air"}
+    pol.decide(60, px, [chop], grenades=2, hp=200)
+    assert pol.mode != "armor_hold"
+    assert pol.stats["armor_hold"] == 0
+
+
+def test_route_damaged_truck_still_classifies():
+    """The truck's route-state HP is 230 (live, reach5 anchor) — above
+    ARMOR_HP_MIN on the REAL field even after route attrition."""
+    pol = CombatPolicy()
+    px = 950.0
+    pol.observe(px, 0.0, False)
+    pol.decide(60, px, [_truck(px, 150.0, hp=90, hp_a4=230)],
+               grenades=2, hp=200)
+    assert pol.mode == "armor_hold"
 
 
 def test_armored_threat_outranks_closer_soft_foe():

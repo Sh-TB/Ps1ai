@@ -87,3 +87,76 @@ machine, the death/ammo terminations). Suite: **453 passed + 1 xfailed**.
   advance at `progress < threshold`) and trace the wait condition.
 - `SUPERSEDED` — the `+0x8E = hp` label and the "254→207 grenade
   damage" claim.
+
+---
+
+## Session 2 addendum (2026-10-25, base `73c172d`): the wreck blocker, the chopper identity, and the dead progress-gate hypothesis
+
+The sandbox reset wiped the `truck_engage` savestate and the evidence
+tree, so the session opened by re-deriving everything honestly: m2c
+re-cloned, `truck_engage` re-created with **no cheats** (policy walk
+into the CLAMP-ROOT safe band, save on the first parked-truck
+sighting), and the kill campaign re-run from it.
+
+### What changed in the picture
+
+1. **The truck this route parks AHEAD (1126.5), not behind (937.5).**
+   The revived anchor holds the parked truck at 1126.5 with `hp_a4`
+   230 (route attrition; 300 fresh). The kill still works — 5 more
+   GAMEPLAY_VERIFIED kills this session, and the lob connect band is
+   much wider than the historical hit band: **|dx| 53..135 all
+   connect** (grenade = 100 dmg re-confirmed; +800 score).
+2. **NEW BLOCKER — the wreck.** A truck killed while parked ahead
+   leaves a persistent corpse (`0xA304 → 0xA44C`, no further
+   transition in >1500f) whose left edge physically blocks the road at
+   **px ≈ 1058**: post-kill walks freeze there and hop-advance /
+   hop-dodge inputs are **no-ops** (kr_rep9: four consecutive dodge
+   hops, px frozen 1058.1). This explains the split between the
+   historical walks (truck parked behind → clear road → the 1164 pin)
+   and this session's walks (truck parked ahead → wreck block).
+3. **The chopper identified.** The `hp_a4 = 300, h 206-228` slot
+   cycling `0xaa94/0xabdc` is the **chopper** (PNG: it renders at the
+   top of the screen), it *tracks* the player and drops the `0xB4E4`
+   faller bombs. Bullets (UP+Y) and UP-lobs do not connect at h≈210;
+   it is the last live combatant in every blocked attempt and it kills
+   any clamped/frozen player. The historical `0xE17C` wall mortarman
+   does not exist in this route state (the wall entities are `0xe19c`
+   and they vanish without explicit kills).
+4. **The progress-gate hypothesis is DEAD.** The advance store at
+   `0x80023308` (fn `0x800230e0`) requires a signed
+   `PROGRESS(0x800EB5D4) < a0` — live PROGRESS is `0xFFFFFFFF`
+   (−1 signed), so the gate would pass; the release fails **upstream**:
+   the dispatch chain never produces the nonzero next-state. The
+   section-state handler `fn 0x80021128` is a 13-opcode script
+   dispatcher; requests ≠ 8 set `flags |= 0x42` (the pin bit's source:
+   `ori` at `0x800212a8/0x800215a0/0x80021700/0x800218cc`), the live
+   pin flags 0x43 = 0x42 | 0x01 (the ticker's advance latch). None of
+   the three functions has any static caller (EXE + overlay jal/j/
+   pointer scans all negative) — the chain runs on computed jumps.
+5. **Policy fix (plugin layer, smallest justified).** The armor class
+   keyed `hp >= 200` on **+0x8E — the screen-x** (a pre-correction
+   leftover): the 0x4054 right-side soldier mislocked as armor and
+   `armor_hold` stalled the baseline run 58 chunks at ~900 until the
+   bombs killed the agent. The class now keys the **real HP
+   (`hp_a4 ≥ 200`) + ground contact** — the airborne chopper can never
+   get the stand-and-fire treatment. Paired trial (same deterministic
+   core, same script): baseline died c67 at ~900; the fixed policy
+   reached the **D7 pin (1164.0) by c10** and scored +1800 by c40.
+   4 new/updated regressions; suite **456 passed + 1 xfailed**.
+
+### Honest status delta
+
+- `GAMEPLAY_VERIFIED` — truck kill (5 more reps this session, wider
+  connect band documented).
+- `IMPLEMENTED + UNIT_TESTED` — the armor-class correction (policy
+  layer only; zero core changes).
+- `BLOCKED` — the D7 release. New exact statement: the truck's death
+  does not release the pin (re-confirmed), the progress gate at
+  `0x800232f4` is NOT the blocker (signed −1 passes), the blocker sits
+  in the computed-jump dispatch chain that must produce the next
+  section state — and the chopper (unkilled at h≈210) is the last live
+  combatant. Smallest next experiment: kill the chopper (jumping lob
+  arc, or trace the overlay chopper handler for its vulnerable state);
+  if the pin still holds, table-disassemble the `0x80022500` ticker
+  and correlate its next-state production with a live trace at the
+  `0x80023308` store.

@@ -1,0 +1,56 @@
+{
+ "schema": "ps1play-truck-resolution-session2/1",
+ "generated": "2026-10-25",
+ "issue": 5,
+ "commit_base": "73c172d8cbbb3fc40dd01099facc90d7bdfcc475",
+ "context": "continuation of the D7 blocker campaign after the sandbox reset wiped the truck_engage savestate and the evidence/ tree; everything below is re-derived live or re-cloned (m2c)",
+ "anchor_revival": {
+  "status": "DONE (honest, no cheats)",
+  "how": "boot -> CombatPolicy walk (grenades=0) -> fine steps into the CLAMP-ROOT safe band -> hold with 200f hop cadence + faller dodges -> save on the first parked-truck sighting",
+  "anchor_state": {"truck": "slot 8/19, st 0x9E88, x 1126.5, h 64, hp_a4 230", "player_px": 1061.7, "grenades": 10, "score": 2900},
+  "note": "the truck this route parks AHEAD (1126.5), NOT behind (the historical 937.5); hp_a4 230 = route attrition (300 fresh)"
+ },
+ "kill_recipe_extension": {
+  "status": "GAMEPLAY_VERIFIED (this session 5x: kr_rep2..9 + wreck reps)",
+  "lob_connect_band": "|dx| 53..135 (the historical 50..62 hit band is a subset, not a requirement; grenade arc reaches further)",
+  "hp_track_example": "230 -> 130 -> 30 -> 0 (grenade = 100 dmg re-confirmed)",
+  "score": "+800 at the kill (2900 -> 3700)",
+  "caveat": "soldiers ride ON the truck (PNG evidence session2/truck_parked_ahead_soldiers.png); reposition walks against its front are defeated by contact push (~-0.7px/f) — throw lobs immediately instead"
+ },
+ "new_blocker_wreck": {
+  "status": "CONFIRMED (live, 4 discriminating runs)",
+  "finding": "a truck killed while parked AHEAD leaves a wreck (st 0xA304 -> 0xA44C, x 1126.5) that PHYSICALLY blocks the road: post-kill walks freeze at px ~1058 (the wreck's left edge), and hop-advance + hop-dodge inputs are NO-OPS there (kr_rep9: 4 consecutive dodge hops, px frozen 1058.1)",
+  "wreck_state_watch": "0xA44C persists with no further transition observed for >1500f (strict-hold wait, truck_wreck_release)",
+  "explains": "why historical post-kill walks reached the pin at 1164 (their truck was parked BEHIND at 937.5 — no block) while this session's ahead-parked kills always froze at ~1058"
+ },
+ "chopper_identity": {
+  "status": "CONFIRMED (live census + PNG)",
+  "entity": "st 0xaa94/0xabdc, hp_a4 300, h 206-228, tracks the player x, drops the 0xB4E4 faller bombs (hp_a4 30)",
+  "attack_attempts": "UP+Y bursts: hp 300 unchanged across 7+ bursts (bullets cannot reach h~210); UP-lobs at dx -8..-25: no connect (3 throws) — the chopper is the last live combatant in every blocked attempt and kills a clamped/frozen player",
+  "evidence": "session2/chopper_screen_top_death.png (the chopper renders at the top of the screen, out of ground-fire reach)"
+ },
+ "d7_release_status": {
+  "status": "BLOCKED (exact unknown narrowed; the progress-gate hypothesis is DEAD)",
+  "proven_this_session": [
+   "the truck's death does NOT release the pin (kr reps + wreck reps; matches 73c172d)",
+   "killing the truck when parked AHEAD adds a SECOND blocker (the wreck) before the pin",
+   "the advance gate at 0x800232f4 (fn 0x800230e0) is a SIGNED compare: PROGRESS(0x800EB5D4) < a0 — live PROGRESS = 0xFFFFFFFF (-1 signed) at the death dump, so the gate WOULD pass; the release fails UPSTREAM (the dispatch chain never produces the nonzero next-state s0 that 0x80023308 stores)",
+   "the section-state handler fn 0x80021128 is a 13-opcode script dispatcher (jump table at 0x80010E14, opcode byte from a stack copy of the 0x80010DB8 path-table region); requests != 8 set flags |= 0x42 (ori at 0x800212a8/0x800215a0/0x80021700/0x800218cc) — the live pin flags 0x43 = 0x42 | 0x01 (the ticker advance latch 0x80022c04); request 8 sets 0x12",
+   "no static callers exist for 0x800230e0/0x80022500/0x80021128 anywhere (EXE jal/j raw-scan + overlay + pointer-build scans negative) — the chain is dispatched through computed jumps (RAM-only tables)",
+   "the wall mortarman signature 0xE17C does NOT exist in this route state; the wall entities are 0xe19c (h 90-100, x 1141-1166) and they vanish without explicit kills"
+  ],
+  "smallest_next_experiment": "kill the CHOPPER (the last live combatant) — it needs a reach mechanism that can hit h~210: candidates are a lob thrown while jumping (UP+B+A arc), or trace the overlay's chopper-handler for its vulnerable window/state; if the chopper dies and the pin STILL holds, m2c the full fn 0x80022500 ticker body (the embedded jump table at 0x80022600+ needs table-driven disassembly) and correlate its next-state production with a live trace at the 0x80023308 store"
+ },
+ "policy_fix": {
+  "change": "ps1play/agent/combat.py: the armor class now keys the REAL HP (hp_a4 >= ARMOR_HP_MIN) + ground contact (h == 64) instead of the +0x8E screen-x; the armor no-progress escalation tracks hp_a4",
+  "evidence": "the historical key mislocked the 0x4054 right-side soldier (screen-x 240-340) — the reach2/zone_probe baseline stalled 58 chunks in armor_hold at ~900-1033 and died at c67; the fixed policy walked to the D7 pin (1164.0) by c10, +1800 score by c40 (paired trial, same deterministic core, same script)",
+  "tests": "4 new/updated regressions in tests/test_mission2_armor_hold.py (screen-x soldier rejection, airborne chopper rejection, route-damaged truck classification, real-HP softening); suite 456 passed + 1 xfailed",
+  "status": "IMPLEMENTED + UNIT_TESTED; live paired trial 1x (GAMEPLAY_OBSERVED, further reps cheap via scripts/truck_zone_probe.py)"
+ },
+ "field_semantics_addenda": [
+  {"field": "wreck states", "status": "OBSERVED", "meaning": "truck death 0xA304 -> wreck 0xA44C (persistent, blocks movement as a physical obstacle)"},
+  {"field": "0xaa94/0xabdc", "status": "OBSERVED", "meaning": "the chopper pair (hp_a4 300, h 206-228); NOT the truck"},
+  {"field": "0x800EB5C8 (SECTID)", "status": "OBSERVED", "meaning": "u16 section-file id; 0 at the D7 blocker (the 0xF special-case at 0x800224d0 and 0x800232a0 never applies here)"},
+  {"field": "0x800EB5D4 (PROGRESS)", "status": "OBSERVED", "meaning": "u32, -1 (0xFFFFFFFF) at the blocker; init 0x80000000 at 0x800225f8; the signed-compare gate at 0x800232f4 would PASS at -1"}
+ ]
+}
