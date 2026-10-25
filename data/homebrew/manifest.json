@@ -50,7 +50,31 @@
         }
       ],
       "boot_exe": "PSXMC.exe",
-      "status": "ACCEPTED+TESTED 2026-10-22: BOOTED to world render (PSXMC INFDEV HUD, terrain, hotbar, hearts) through the shared core + OpenBIOS with the LOCAL license-patched image; INPUT_RESPONSIVE (cross/left produce large world/camera deltas 49.8/54.4 mean-abs-diff); STATE_CHANGE_CONFIRMED. padbuff ok41=2. Second input-causality-positive game (A6)."
+      "status": "ACCEPTED+TESTED 2026-10-22: BOOTED to world render (PSXMC INFDEV HUD, terrain, hotbar, hearts) through the shared core + OpenBIOS with the LOCAL license-patched image; INPUT_RESPONSIVE (cross/left produce large world/camera deltas 49.8/54.4 mean-abs-diff); STATE_CHANGE_CONFIRMED. padbuff ok41=2. Second input-causality-positive game (A6). ROUND-4 2026-10-25: GAMEPLAY_CONFIRMED — directional movement causality with 75.5% reversal restoration (LEFT 120f madiff 21.45 -> RIGHT-after-LEFT madiff 5.25); camera look-loop returns BIT-IDENTICAL baseline (madiff 0.0 over 76800 px x3) after down->left->up->right; R2 ATTACK = persistent world change (dig, 30.64/44991 px); R1 JUMP bit-exact landing; START opens inventory UI on RELEASE (mid-hold 0.0); idle windows bit-exact (0 changed px) vs held 15-46 — clean idle-vs-held separator; button bindings ground-truthed against upstream bindings.c @ infdev_2025_04_18 and verified 1:1. Evidence: issue #6 round-4 report + scratch/issue6_round4_psxmc (report.json, 40 PNGs)."
+    },
+    {
+      "id": "hello_pong",
+      "plugin": "GenericPlugin (dedicated plugin pending)",
+      "source": "https://github.com/marconvcm/ps1_dev",
+      "license": "MIT",
+      "license_file": "LICENSE",
+      "revision": "Actions run 34011353452 artifact ps1-build-artifacts (id 9982555693, expires 2026-12-05, head dec2f3f0)",
+      "artifacts": [
+        {
+          "name": "hello_pong.bin",
+          "url": "https://api.github.com/repos/marconvcm/ps1_dev/actions/artifacts/9982555693/zip (token auth; zip sha256 51321870297181c7b4ec45f7841198bd57f604af99554c2694feb16e5e40bc49 matches API digest)",
+          "bytes": 2500176,
+          "sha256": "a592f7edd6fc5f5ee83bd9bcf36ef8861803ba47e5b0e1daa94d7fe5615af247"
+        },
+        {
+          "name": "hello_pong.cue",
+          "url": null,
+          "note": "generated locally: FILE/TRACK MODE2/2352 INDEX 00:00:00; BOOT=cdrom:\\GAMEPS1.exe;1",
+          "bytes": 74
+        }
+      ],
+      "boot_exe": "GAMEPS1.exe",
+      "status": "ACCEPTED+BOOTED 2026-10-25 through the shared beetle core + OpenBIOS with the LOCAL license-patched image: static rendered game screen at f1200 (frame_mean 20.24, max 248, identical through f2100), padbuff 00 41 ff ff x2 (pad_id41=2); screen content GAME OVER / PLAYER 1 WINS! / PRESS X TO PLAY AGAIN (game render, VLM+human-verified screenshot). Unpatched control reproduces the OpenBIOS CDChecker boot-loop (animated cube, frame_mean 71.4->49.8, pad_id41=0, EXE never in RAM). Input causality PENDING (round-5 target: X restart). Note: earlier boot_verdict.json BOOT_FAIL (19:49Z) was a missing-openbios.bin workspace mistake, superseded by the 19:57Z timeline; recorded honestly."
     }
   ],
   "rejected": [
@@ -59,7 +83,7 @@
       "source": "https://github.com/jbreckmckye/nortis",
       "reason": "no LICENSE file anywhere in repo (re-verified 2026-10-22 via API: 88 files scanned, 0 license files; README contains no project license statement) — redistribution rights unverified; integration blocked",
       "status": "REPLACED",
-      "local_test_evidence": "LOCAL-ONLY boot+input test 2026-10-22 (license-patched image, binary never committed): BOOTED to NOTRIS title, START -> gameplay HUD (PLAY NOTRIS!, score/lines/controls, falling tetromino, next-piece preview updates). The game itself works through the shared core; only the license blocks acceptance."
+      "local_test_evidence": "LOCAL-ONLY boot+input test 2026-10-22 (license-patched image, binary never committed): BOOTED to NOTRIS title, START -> gameplay HUD (PLAY NOTRIS!, score/lines/controls, falling tetromino, next-piece preview updates). The game itself works through the shared core; only the license blocks acceptance. ROUND-4 2026-10-25 FULL LOCAL CAUSALITY CHAIN (A6-grade, LOCAL-ONLY): START -> gameplay (diff 11.58, session-3 independent 11.66); falling piece motion 7/7 windows; LEFT dx slope -11.0 px/sample, RIGHT +16.0 (control windows 0.0); CROSS hard-drop vertical extent 183 px vs control 31 px; CIRCLE-held suppresses CROSS hard-drop (fall speed 31 vs 175) exactly as upstream pad.c button-priority predicts — button discrimination proven; START is a no-op mid-game (negative control, matches source). License re-probe 2026-10-25: repo HTTP 200, 98 files, 0 license files — integration stays blocked. Evidence: issue #6 round-4 report + scratch/issue6_round4_nortis (report.json, 27 PNGs)."
     },
     {
       "id": "buttonmasher",
@@ -74,12 +98,6 @@
       "status": "REPLACED"
     }
   ],
-  "candidates_pending": [
-    {
-      "id": "hello_pong",
-      "source": "https://github.com/marconvcm/ps1_dev",
-      "license": "MIT",
-      "note": "2026-10-22: GitHub Actions run 34011353452 (Build PS1 Game) SUCCEEDED, but artifact download requires Actions:read which the fine-grained token lacks (HTTP 401 on /actions/artifacts). Source build needs Docker+PSn00bSDK (no Docker in sandbox). Pad API is InitPAD/StartPAD (BIOS path) — same boot-gate caveat applies. PENDING: fetch artifact with an Actions:read token, then license-patch and run the standard input protocol."
-    }
-  ]
+  "candidates_pending": [],
+  "round4_addendum": "2026-10-25: hello_pong's recorded 401 blocker was STALE — the shared sandbox egress IP was GitHub-rate-limited (403 with rate-limit body), not the token lacking Actions:read; with the EXISTING Ps1ai token both listing and zip download return 200, and the zip sha256 matches the API digest field exactly. hello_pong moved to accepted on BOOT evidence; input-causality test (PRESS X TO PLAY AGAIN restart) is the round-5 target."
 }

@@ -1277,3 +1277,33 @@ remains UNCLEARED — no claim made. Full report: issue #5 comment
   under truck_evidence/session4/.
 - Honest: no from-mission-start policy clear claimed; Mission 2
   entry not attempted; mortarman HP semantics UNKNOWN.
+
+---
+## 2026-10-25 — Issue #6 round 4: three games advanced in parallel (Nortis / PSXMC / hello_pong)
+
+- Round-4 protocol: 3 parallel subagents, one per game; one beetle boot per
+  process; evidence in scratch/issue6_round4_{nortis,psxmc,hellopong}/;
+  probe scripts persisted at scripts/nortis_causality.py,
+  scripts/psxmc_causality.py, scratch/issue6_round4_hellopong/boot_hellopong.py.
+- Nortis (LOCAL-ONLY, integration still blocked): FULL causality chain —
+  START→gameplay 11.58 (independent 11.66), piece motion 7/7, LEFT/RIGHT dx
+  slopes −11.0/+16.0 (controls 0.0), CROSS hard-drop 183 px vs 31 px control,
+  CIRCLE-held suppresses hard-drop (vy 31 vs 175) per upstream pad.c
+  priority; START no-op mid-game (negative control). License re-probe:
+  98 files, 0 license files — still REJECTED.
+- PSX-Minecraft: GAMEPLAY_CONFIRMED — movement reversal 75.5% restored
+  (21.45→5.25), look-loop returns bit-identical baseline (madiff 0.0), R2 dig
+  persistent (30.64/44991 px), R1 jump bit-exact landing, START inventory on
+  release, idle bit-exact vs held 15–46; bindings verified vs upstream
+  bindings.c @ infdev_2025_04_18.
+- hello_pong: 401 blocker root-caused as SHARED-IP RATE LIMIT (403 + rate-limit
+  body), not token permissions; existing token lists+downloads the artifact
+  (zip sha256 == API digest); hello_pong.bin 2,500,176 B sha256 a592f7ed…;
+  license-patched local image BOOTED (f1200 static game screen, frame_mean
+  20.24, padbuff 00 41 ff ff ×2, stable f2100; screenshot GAME OVER / PLAYER 1
+  WINS! / PRESS X TO PLAY AGAIN); unpatched control = CDChecker cube loop.
+  Accepted on boot evidence; X-restart input test = round-5 target. Earlier
+  BOOT_FAIL (workspace missing openbios.bin) recorded honestly, superseded.
+- Manifest: accepted = tetrade, psx-minecraft, hello_pong (3);
+  candidates_pending = []; docs addendum 3 written. No game bytes committed;
+  repo hygiene unchanged (patched images local-only).

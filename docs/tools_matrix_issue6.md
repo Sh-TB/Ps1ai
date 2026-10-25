@@ -96,3 +96,42 @@ Status changes:
 
 Practical rule for the lab: **one beetle boot per process**; boot-gated
 discs must be license-patched locally before any input-causality claim.
+
+---
+
+## Addendum 3 (2026-10-25) — round 4: three games advanced in parallel
+
+**Nortis — full LOCAL causality chain (A6-grade, integration still blocked):**
+START → gameplay (gray diff 11.58; session-3 independent run 11.66), falling
+piece motion 7/7 windows, LEFT dx slope −11.0 px/sample / RIGHT +16.0
+(controls 0.0), CROSS hard-drop 183 px vertical extent vs 31 px control, and
+CIRCLE-held suppresses the CROSS hard-drop (fall speed 31 vs 175) exactly as
+upstream `pad.c` button-priority predicts. START is a no-op mid-game
+(negative control, matches source). License re-probe via authenticated API:
+98 files, 0 license files — `REJECTED` stands, evidence upgraded.
+
+**PSX-Minecraft — GAMEPLAY_CONFIRMED:** directional movement with reversal
+(LEFT 120f madiff 21.45 → RIGHT-after-LEFT 5.25, 75.5% restored); look-loop
+down→left→up→right returns a BIT-IDENTICAL baseline (madiff 0.0); R2 attack
+digs a persistent world change (30.64 / 44991 px); R1 jump lands bit-exact;
+START inventory opens on RELEASE (mid-hold 0.0); idle windows are bit-exact
+(0 changed px) vs held 15–46. Bindings ground-truthed against upstream
+`bindings.c` @ `infdev_2025_04_18`, verified 1:1.
+
+**hello_pong — artifact obtained + BOOTED (blocker was stale):** the recorded
+"401 token lacks Actions:read" was actually the shared sandbox egress IP
+hitting the GitHub rate limit (403 with a rate-limit body). With the EXISTING
+Ps1ai token: artifacts listing 200, zip download 200, zip sha256
+`51321870…bc49` matches the API digest exactly. Extracted `hello_pong.bin`
+(2,500,176 B, sha256 `a592f7ed…af247`, BOOT=cdrom:\GAMEPS1.exe;1), built the
+standard local license-patched image: BOOTED at f1200 (static game screen,
+frame_mean 20.24, padbuff `00 41 ff ff` ×2, stable to f2100; screenshot shows
+GAME OVER / PLAYER 1 WINS! / PRESS X TO PLAY AGAIN). Unpatched control
+reproduces the CDChecker cube boot-loop. Accepted on boot evidence; input
+causality (X restart) is the round-5 target. An earlier `BOOT_FAIL` verdict
+from a workspace missing `openbios.bin` is recorded honestly and superseded.
+
+Manifest updated accordingly: accepted = tetrade, psx-minecraft, hello_pong;
+candidates_pending = []. New probe scripts persisted outside the repo:
+`scripts/nortis_causality.py`, `scripts/psxmc_causality.py`,
+`scratch/issue6_round4_hellopong/boot_hellopong.py`.
