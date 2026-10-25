@@ -1,0 +1,64 @@
+{
+ "session": "6",
+ "date": "2026-10-25",
+ "issue": 5,
+ "base_commit": "21d92db",
+ "trigger": "user directive: 'ادامه قطار' (continue the train) — mission-2 entry was the declared session-5 next action",
+ "suite": {"passed": 466, "xfailed": 1, "plugin_changes": "NONE (script-level session; zero combat.py edits)"},
+ "environment": {
+  "sandbox_state": "emu workspace + pin_ckpt/chopper_ckpt savestates survived; capstone 5.0.7 live",
+  "game_sha256": "45cde149878fe945d0219fd0f61ca09856aee66bdcc9119de21c0583f1d0667d",
+  "firmware": "openbios",
+  "one_boot_per_process": true,
+  "evidence_dir_local": "/home/z/my-project/work/msx_recomp/evidence/issue5_lives_variant/"
+ },
+ "script": "scripts/lives_banner_variant.py — the session-5 declared variant (pre-window chopper kill before trigger-B) executed honestly: the interlude was built with guards (abort on any (0,*)/0xC walker reading or px<900, throw cap 80, close-in waits) and a full entity census (36 slots) in the D7 zone and the mission-end hold",
+ "primary_result": {
+  "id": "S6-M2-ENTRY",
+  "claim": "MISSION 2 (the TRAIN mission) ENTRY — GAMEPLAY_VERIFIED 3/3 bit-identical: from a fresh boot, the shipped policy clears mission 1 to the banner (re-verified; c=107 bare / c=95 with the death-forensics frames inserted), the post-banner CONTINUE? countdown accepts ONE START tap, the resumed end-zone gameplay walks RIGHT through the MSX-logo transition (score reset 7800->0, loading flags 0) into MISSION 2 gameplay at fresh spawn px 74.6 (php 74, gren 10), continuing to fight on top of the train (px 404, score 3800, POWs + soldiers visible on the cars, PNG evidence)",
+  "status": "GAMEPLAY_VERIFIED",
+  "runs": "lives5/6/7: banner c=95; M-transition chain identical (anomalies at walk i=45-47 = the end-scene break; i=103-104 = loading (flags 0, score 7800); i=105 = score reset 0; i=106 = M2 gameplay px 74.6); final px 404.1 score 3800 sec (11,9)",
+  "inputs": "mission 1 = the SHIPPED policy (no script inputs); the post-banner continue-accept + RIGHT walk = DISCLOSED scripted probes (phase S / phase M)",
+  "png_evidence": "session6/m2_transition_msx_logo.png, session6/m2_train_entry_pow_soldiers.png, session6/m2_train_gameplay_px404.png, session6/postbanner_continue_screen.png, session6/continue_accepted_endzone.png"
+ },
+ "findings": [
+  {
+   "id": "S6-F1",
+   "claim": "SUPERSEDED: the session-5 '1 disclosed deterministic death at c43 (faller rain during the mission-end hold, php 155->0, the last life)' is a MEASUREMENT ARTIFACT, not a death. The c42-43 event is the MISSION-CLEAR TALLY teardown: the death-frame PNG burst shows the player STANDING with no death animation, the 'PAYS BONUS 60 / PRESS START' tally HUD and 1UP=2 (lives intact); php is stable 155 for 12 hold chunks (c30-c41) then flips 0 exactly when px tears down to 0.0; the fast 'respawn' (php 120, px 992, gren 10 within ~80f) is the tally scene's own world values",
+   "status": "GAMEPLAY_VERIFIED (PNG + telemetry forensics, 5 independent boots)",
+   "consequence": "the banner was ALWAYS reached with lives remaining; the alive() sensor (flags 0xFF + php>0) misreads the tally scene — a harness predicate caveat, recorded"
+  },
+  {
+   "id": "S6-F2",
+   "claim": "NO chopper threat exists in the fresh-boot e2e route: zero st 0xAA94/0xABDC rows across 19 D7-zone censuses + 8 hold censuses (36-slot scans, session-3 F5 lesson applied); the 'chopper' visible in the post-clear scene PNGs is set-dressing/boss-not-engaged; the declared 'pre-window chopper kill' precondition DISSOLVES — the guarded interlude never fired (status None in every run)",
+   "status": "OBSERVED (census evidence)",
+   "consequence": "session-5 S5-F2's faller-rain attribution is withdrawn; no plugin chopper-handling is needed for the mission-1 clear"
+  },
+  {
+   "id": "S6-F3",
+   "claim": "the post-banner flow (0-input watch W: the (0xB,1) CONTINUE? countdown screen, px 0.0; ONE START tap accepts: end-zone gameplay px 992, score kept 3301) is the STANDARD post-clear flow, not a 0-lives branch — session-5 S5-F3's '0 lives' framing is corrected: the CONTINUE? screen follows the mission-1 clear regardless, and accepting it + walking RIGHT enters mission 2",
+   "status": "GAMEPLAY_VERIFIED (3/3)",
+   "consequence": "session-4/5's open item 'Mission 2 entry NOT claimed' is now CLAIMED with PNG evidence"
+  },
+  {
+   "id": "S6-F4",
+   "claim": "the gsmap lives address 0x0475A8 reads 65535 (0xFFFF) constant through the whole run (boot, tally, continue, M2) — NOT live in this emulator context (task-13 conclusion re-confirmed); the 1UP HUD in the PNGs is the only lives source of truth",
+   "status": "CONFIRMED (negative)"
+  },
+  {
+   "id": "S6-F5",
+   "claim": "harness nuance: the death-frame PNG forensics inserts ~80f of no-input, which perturbs the deterministic timing (2 teardown events instead of 1; banner c=95 vs c=107) — the mission-1 clear and the M2 entry remain fully deterministic UNDER THE SAME SCRIPT (5/6/7 identical bit-for-bit); the bare e2e predicate (runs 1-4) reproduces session-5 exactly",
+   "status": "OBSERVED"
+  }
+ ],
+ "honest_limits": [
+  "mission-2 GAMEPLAY beyond the walk-forward probe is NOT claimed: no M2 policy, no M2 combat claims, no M2 clear",
+  "the chopper interlude remains in the script as a guarded no-op (evidence-first discipline: it can be activated if a route where the chopper engages is ever proven)",
+  "the 'deaths' counter in the JSONL counts tally-teardown events, NOT player deaths (S6-F1)"
+ ],
+ "next_declared": [
+  "M2 (train mission) policy work: reuse the entity/section vocabulary on the M2 route (the train introduces moving-ground combat: the player rides the cars while soldiers board — the mission-1 px/walker semantics need re-derivation on the M2 map)",
+  "fix the harness alive() predicate for scene teardowns (php>0 must NOT be a death signal inside (0xB,1)/(0,0) tally signatures)",
+  "1UP HUD OCR or a live lives address (the gsmap candidate is dead) for honest lives accounting"
+ ]
+}
