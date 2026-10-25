@@ -119,12 +119,16 @@ def test_clamp_clear_aims_at_the_nearest_ground_foe_side():
 
 
 def test_clamp_clear_default_left_facing_preserved():
-    # no ground foes -> the historical LEFT/UP-LEFT rain behaviour
+    # no ground foes -> the historical LEFT/UP-LEFT rain behaviour.
+    # session-4: px kept below the D7 zone (1150) — at the D7 pin the
+    # policy now goes SILENT on an empty scan (d7_quiet_hold, its own
+    # test in test_session4_release.py); this test pins the GENERIC
+    # section-pin clear behaviour.
     pol = CombatPolicy()
     for _ in range(2):
         pol.observe_section({"state": 0xA, "flags": 0x43})
-    pol.observe(px=1164.0, advanced=0.0, intent_right=True)
-    segs = pol.decide(60, 1164.0, [], grenades=0, hp=291)
+    pol.observe(px=1000.0, advanced=0.0, intent_right=True)
+    segs = pol.decide(60, 1000.0, [], grenades=0, hp=291)
     assert pol.mode == "clamp_clear"
     assert any("LEFT" in (s.get("btns") or set()) for s in segs)
     assert not any("RIGHT" in (s.get("btns") or set())

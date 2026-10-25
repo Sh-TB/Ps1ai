@@ -234,6 +234,42 @@ TRUCK_DEATH_ST = 0xA304      # slot word0 after the death anim starts
 FALLER_ST = 0xB4E4           # falling-bomb state word0 (hp_a4 == 30)
 WALL_SOLDIER_ST = 0xE17C     # wall mortarman (the faller thrower)
 
+# ---- session-4 (F9 unblock): wave-soldier liveness + mission end --
+# Live wave soldiers CYCLE their state word0 between 0x4054 and
+# 0x41FC with no input at all (soldier_hp_probe shp_100033: slot 12
+# @1072 flipped within ~600f unattended) — "st == 0x4054" is NOT a
+# liveness test.  The corpse states ARE stable: a killed soldier
+# flips to 0x4BE4 (then 0x5CC8) and its row zeros out at ~+138f
+# (shp2 shot-1 diff).  Before this filter the scan labelled
+# mid-anim corpses (valid screen-x until despawn) as enemies — the
+# policy aimed its fire at the dead and the live soldier survived:
+# the mechanism behind session-3 F9's "Y-bursts did not kill".
+CORPSE_ST = (0x4BE4, 0x5CC8)
+SOLDIER_FAMILY_ST = (0x4054, 0x41FC)
+# Mission-end sequence: the walker leaves the pin family and lands
+# in state 0xC while the player sits at px 26.4 — the "MISSION 1 /
+# CLEAR TIME / PRESS START" banner (chain_a_full x3/3, PNG evidence;
+# release_confirm independently keyed on (0xC, 8/9) @ px 26.4).
+# Walking during the banner expires its countdown into a mission
+# restart (chain_a v3/v4) — the policy must HOLD (no input) here.
+SECTION_MISSION_END = 0xC
+MISSION_END_CONFIRM = 2      # consecutive readings (transient guard)
+
+# D7 zone latch (session-4 policy trial evidence): the pin cycle
+# RE-ARMS every time the policy walks back into the clamp (the
+# pending-queue check runs on the px-1164 trigger) — kill/walk/repin
+# oscillation burned all 10 grenades and died to the fallers
+# (policy_chain_trial fix arm c=23, 3/3).  Once the player reaches
+# the D7 clamp the policy stays in the defensive clear UNTIL the
+# mission-end sequence: the end sequence comes to a STANDING player
+# (chain_a v2/v6 evidence) — never walk into the re-pin.
+D7_ZONE_PX = 1150.0          # >= this: the D7 clamp zone
+D7_HOLD_PX = 985.0           # walk-back floor while latched (the
+                             # warp/wave zone is 992+; the release
+                             # ran standing at 992-1016)
+D7_EXIT_PX = 300.0           # < this = mission restart (px 26-32):
+                             # only a restart un-latches the zone
+
 
 def scan_entities(mem, px=None):
     """Read the entity table; return live enemies + airborne
@@ -273,6 +309,11 @@ the truck death 0xA304, faller bombs 0xB4E4, wall mortarman 0xE17C)."""
             continue
         h = int(mem.u16(base + 0x7E))
         st = int(mem.u16(base))
+        if st in CORPSE_ST:
+            # session-4: a corpse keeps a valid screen-x until its
+            # ~+138f despawn — including it made the policy fire at
+            # the dead while the live soldier walked (F9 unblock)
+            continue
         hp_a4 = int(mem.u16(base + ENTITY_HP_A4))
         out.append({"slot": s, "x_px": round(x_px, 1),
                     "dx_px": round(dx, 1), "hp": hp, "sx": hp,
@@ -514,6 +555,9 @@ class CombatPolicy:
         self.prev_h = {}               # slot -> height at last sighting
         # D7 instrument pin (scan_section correlation, Issue #9)
         self.section_pinned = False    # instrument pin actively believed
+        self.mission_end = False       # 0xC banner latch (session-4)
+        self.me_streak = 0
+        self.d7_zone = False           # D7 clamp-zone latch (s-4)
         self.sec_pin_streak = 0        # consecutive pin-signature readings
         self.sec_free_streak = 0       # consecutive non-signature readings
         self.stats = {"engage": 0, "clamp_clear": 0, "advance": 0,
@@ -574,6 +618,21 @@ class CombatPolicy:
                 abs(px - self.last_observe_px) > RESPAWN_JUMP_PX):
             self._invalidate_stale()      # respawn/teleport: all stale
         self.last_observe_px = px
+        # session-4 D7 zone latch: entering the clamp zone latches the
+        # defensive state; ONLY a mission restart (px < D7_EXIT_PX —
+        # the restart sits at px 26-32) un-latches it.  The pin-cycle
+        # warp to ~992 is 172px (< RESPAWN_JUMP_PX) and must NOT
+        # un-latch — the queue may still hold live entities.
+        if px is not None:
+            if px >= D7_ZONE_PX:
+                if not self.d7_zone:
+                    self.d7_zone = True
+                    self.stats["d7_zone_latch"] = \
+                        self.stats.get("d7_zone_latch", 0) + 1
+            elif px < D7_EXIT_PX and self.d7_zone:
+                self.d7_zone = False
+                self.stats["d7_zone_exit"] = \
+                    self.stats.get("d7_zone_exit", 0) + 1
         if intent_right:
             if advanced < 2.0:
                 self.clamp_streak += 1
@@ -593,9 +652,11 @@ class CombatPolicy:
             self.clamp_streak = 0
 
     # ----------------------------------------------------------------
-    def observe_section(self, sec):
+    def observe_section(self, sec, px_now=None):
         """Feed one scan_section() reading (call once per chunk, before
         decide; None = sensor not read this chunk, a no-op).
+        px_now: the current player px (optional; enables the
+        mission-restart unlatch — garbage/absent px never unlatches).
 
         Instrument-based D7-pin detection (Issue #9 debugger deep dive
         -> sectioncorr1 live correlation): the walker state 0xA
@@ -643,6 +704,49 @@ class CombatPolicy:
                     self.section_pinned = False
                     self.sec_free_streak = 0
                     self.stats["section_pin_release"] += 1
+        # session-4: the mission-end sequence (walker state 0xC at
+        # px < 200 = the MISSION 1 banner).  Confirmed x2 consecutive
+        # readings, then LATCHED for the rest of the run: every input
+        # during the banner risks expiring its countdown into a
+        # mission restart (chain_a v3/v4 paired evidence).  0xC is
+        # NOT in the decompiled walker branch set (0x9/0xE/0xF) —
+        # this latch is OBSERVED-live semantics, stated honestly.
+        if sec.get("state") == SECTION_MISSION_END:
+            self.me_streak += 1
+            if not self.mission_end and \
+                    self.me_streak >= MISSION_END_CONFIRM:
+                self.mission_end = True
+                self.stats["mission_end"] = \
+                    self.stats.get("mission_end", 0) + 1
+        else:
+            self.me_streak = 0
+        # trigger B (session-4 policy trial): the walker RESET with
+        # the release flag (state 0, flags & 0x8) INSIDE the D7 zone
+        # is the pre-banner step of the end sequence — the trial's
+        # boundary reads saw (0,8) then the restart with 0xC never
+        # sampled, because policy inputs during (0,8)->(0xC) skip the
+        # banner.  Latch the hold IMMEDIATELY on this signature while
+        # d7_zone (observed 3/3 in chain_a v2/v6 + the trial).
+        if (not self.mission_end and self.d7_zone and
+                sec.get("state") == 0 and
+                (sec.get("flags", 0) & 0x8)):
+            self.mission_end = True
+            self.stats["mission_end"] = \
+                self.stats.get("mission_end", 0) + 1
+            self.stats["mission_end_prebanner"] = \
+                self.stats.get("mission_end_prebanner", 0) + 1
+        # unlatch: the banner expired into a mission restart — the
+        # walker is back in a normal state at the restart position
+        # (px 26-32, valid reading).  The banner itself (state 0xC or
+        # the (0,8) reset) never unlatches; px 26.4 sits INSIDE the
+        # restart window and must keep holding.
+        if (self.mission_end and sec.get("state") not in (0, 0xC)
+                and px_now is not None and 0.0 < px_now < 300.0):
+            self.mission_end = False
+            self.d7_zone = False
+            self.me_streak = 0
+            self.stats["mission_end_restart_resume"] = \
+                self.stats.get("mission_end_restart_resume", 0) + 1
 
     # ----------------------------------------------------------------
     def decide(self, chunk, px, enemies, grenades=0, hp=None):
@@ -681,6 +785,17 @@ class CombatPolicy:
         # end-clamp it turns back to clear the rear zone.
         # Airborne projectiles (verified falling shells) are NEVER
         # engage targets — they are dodged below.
+        # ---- mission-end HOLD (session-4, chain_a v3/v4 lesson) ----
+        # Once the 0xC banner latches, ANY input (walking counts)
+        # advances the banner's countdown into a mission restart.
+        # Emit a full-chunk no-input segment and nothing else.
+        if self.mission_end:
+            self.mode = "mission_end_hold"
+            self.stats["mission_end_hold"] = \
+                self.stats.get("mission_end_hold", 0) + 1
+            emit(chunk, set())
+            return segs
+
         clamped = self.clamp_streak >= 2 or self.section_pinned
         cands = sorted(enemies or [], key=lambda e: abs(e["dx_px"]))
         foes = [e for e in cands if e.get("kind", "enemy") == "enemy"]
@@ -774,10 +889,20 @@ class CombatPolicy:
         if dodge:
             self.stats["dodge"] += 1
 
-        if self.force_advance > 0:
+        if self.force_advance > 0 and not self.d7_zone:
             # walk-through even through a threat: fire forward while
-            # moving (baseline's survivable behaviour)
+            # moving (baseline's survivable behaviour).
+            # session-4: NEVER inside the D7 zone — the "threat" is
+            # the section's pending queue (the release condition);
+            # walking past it re-arms the pin (the trial's
+            # kill/walk/repin oscillation).  The budget expiry still
+            # resets its counters below via the normal paths.
             mode = "advance"
+            self.force_advance -= 1
+        elif self.force_advance > 0:
+            # D7 zone: burn the walkthrough budget in place (stand,
+            # no input) — the queue entities must be KILLED, not passed
+            mode = "clamp_clear"
             self.force_advance -= 1
         elif not clamped and armor_threat is not None:
             # §8/§9-E/F CLAMP-ROOT fix: an armored foe (hp >= 200) in
@@ -809,7 +934,8 @@ class CombatPolicy:
             # never a walk-toward (walking into the pursuit pack is
             # the instrumented death pattern)
             mode = "engage"
-        elif not clamped and near is None and self.force_advance <= 0:
+        elif (not clamped and not self.d7_zone and near is None
+              and self.force_advance <= 0):
             # mission case 2 mid-run rear check: a PERSISTENT close
             # pursuer (the jeep geometry) earns ONE bounded turn-and-
             # fire chunk before the run resumes — direction correction,
@@ -860,10 +986,13 @@ class CombatPolicy:
                 # caught by test_rear_followthrough_escalates_to_grenade)
             else:
                 mode = "advance"
-        elif clamped or self.section_pinned:
+        elif clamped or self.section_pinned or self.d7_zone:
             # session-3: the instrument pin (0xA, or a SUSTAINED
             # (0xB, flags&0x40)) holds the defensive clear even when
             # the derived px-stall streak flickers (knockback wobble)
+            # session-4: the D7 zone latch keeps the clear through the
+            # pin cycle (advance re-enters the clamp and re-arms the
+            # pending queue — the trial's kill/walk/repin loop)
             mode = "clamp_clear"
         else:
             mode = "advance"
@@ -965,30 +1094,60 @@ class CombatPolicy:
                 walked_back = (self.clamp_entry_px is not None and
                                px is not None and
                                self.clamp_entry_px - px >= back)
-                phase = (self.fc // 240) % 2       # 4s alternation
-                hop_now = (self.fc % 90) < JUMP_HOLD   # rain hop
-                aim = "LEFT"
+                if self.d7_zone and px is not None and \
+                        px <= D7_HOLD_PX:
+                    # never retreat past the wave zone while latched:
+                    # the release ran STANDING at 992-1016 and the
+                    # end sequence comes to the player
+                    walked_back = True
                 gnd = [e for e in foes
                        if e.get("h", GROUND_HEIGHT) == GROUND_HEIGHT]
-                if gnd:
-                    nf = min(gnd, key=lambda e: abs(e["dx_px"]))
-                    aim = "LEFT" if nf["dx_px"] < 0 else "RIGHT"
-                if self.clamp_round >= 2 and not walked_back:
+                fam = [e for e in gnd
+                       if e.get("st") in SOLDIER_FAMILY_ST]
+                # session-4 D7 discipline: the pending-queue soldiers
+                # are the release condition — aim them FIRST (2 aimed
+                # bullets each, soldier_bpp 3/3); when the zone is
+                # QUIET (no family soldier, no ground foe) go SILENT:
+                # the end sequence starts with the (0,8) walker reset
+                # and ANY input during it skips the banner (the
+                # policy trial's c=13->restart, 3/3)
+                if self.d7_zone and not fam and not gnd and \
+                        not airs:
+                    btns = set()
+                    self.stats["d7_quiet_hold"] = \
+                        self.stats.get("d7_quiet_hold", 0) + 1
+                elif self.clamp_round >= 2 and not walked_back:
                     btns = {"LEFT"} | ({"Y"} if burst else set())
-                elif phase == 0:
+                elif fam or (self.d7_zone and gnd):
+                    # queue soldiers (or any zone ground foe): flat
+                    # aimed fire only — no UP-phase alternation (the
+                    # 4s UP window wasted half the dps; the scripted
+                    # proof is 2 flat bullets per soldier)
+                    nf = min(fam or gnd,
+                             key=lambda e: abs(e["dx_px"]))
+                    aim = "LEFT" if nf["dx_px"] < 0 else "RIGHT"
                     btns = ({aim, "Y"} if burst else {aim})
                 else:
-                    # UP-aim fire at the rain-source/chopper zone.
-                    # w2_chopper_hp protocol B is UP+<aim>+Y SUSTAINED
-                    # (MOVING); heli-ladder pattern 07 proved the
-                    # STATIC variant is a death pattern (sword pack
-                    # kills the standing firer, 0 source kills in
-                    # 1037f) — never emit a static up-fire segment.
-                    btns = ({"UP", aim, "Y"} if burst
-                            else {"UP", aim})
-                if hop_now:
+                    phase = (self.fc // 240) % 2   # 4s alternation
+                    aim = "LEFT"
+                    if gnd:
+                        nf = min(gnd, key=lambda e: abs(e["dx_px"]))
+                        aim = "LEFT" if nf["dx_px"] < 0 else "RIGHT"
+                    if phase == 0:
+                        btns = ({aim, "Y"} if burst else {aim})
+                    else:
+                        # UP-aim fire at the rain-source/chopper
+                        # zone.  w2_chopper_hp protocol B is
+                        # UP+<aim>+Y SUSTAINED (MOVING); heli-ladder
+                        # pattern 07 proved the STATIC variant is a
+                        # death pattern — never emit it static.
+                        btns = ({"UP", aim, "Y"} if burst
+                                else {"UP", aim})
+                hop_now = (self.fc % 90) < JUMP_HOLD   # rain hop
+                if hop_now and btns:
                     btns.add("B")
-                if grenades > 2 and self.fc % GRENADE_PERIOD == 0:
+                if grenades > 2 and self.fc % GRENADE_PERIOD == 0 \
+                        and btns:
                     btns = {"A"}
                     self.stats["grenade"] += 1
             else:

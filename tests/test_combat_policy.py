@@ -141,12 +141,15 @@ def test_no_enemy_advances_right():
 
 
 def test_clamp_detection_and_clear():
+    # session-4: kept below the D7 zone (px >= 1150 latches the D7
+    # quiet-hold now — that behaviour has its own test in
+    # test_session4_release.py)
     pol = CombatPolicy()
     # two stalled advance chunks -> clamp detected
-    pol.observe(1160.0, 0.5, True)
-    pol.observe(1161.0, 1.0, True)
+    pol.observe(960.0, 0.5, True)
+    pol.observe(961.0, 1.0, True)
     assert pol.clamp_streak >= 2
-    segs = pol.decide(60, 1161.0, [], grenades=0)
+    segs = pol.decide(60, 961.0, [], grenades=0)
     btns = set().union(*[s["btns"] for s in segs])
     assert "LEFT" in btns or "UP" in btns    # clearing the rear
     assert pol.mode == "clamp_clear"
@@ -169,12 +172,14 @@ def test_clamp_upfire_never_static():
 
 
 def test_clamp_resets_on_progress():
+    # session-4: px >= 1150 latches the D7 zone — keep this progress
+    # test BELOW it (mid-section px values)
     pol = CombatPolicy()
-    pol.observe(1160.0, 0.5, True)
-    pol.observe(1161.0, 1.0, True)
-    pol.observe(1200.0, 39.0, True)          # moving again
+    pol.observe(960.0, 0.5, True)
+    pol.observe(961.0, 1.0, True)
+    pol.observe(1000.0, 39.0, True)          # moving again
     assert pol.clamp_streak == 0
-    segs = pol.decide(30, 1200.0, [], grenades=0)
+    segs = pol.decide(30, 1000.0, [], grenades=0)
     assert pol.mode == "advance"
 
 

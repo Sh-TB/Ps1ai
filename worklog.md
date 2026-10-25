@@ -1249,3 +1249,31 @@ remains UNCLEARED — no claim made. Full report: issue #5 comment
   + OpenBIOS with the local license-patched images.
 - Issue #5 session-3 report posted: issuecomment-6393918486; pushed
   93ba5bb..f953dc0 (+ this batch).
+
+## 2026-10-25 — Session 4: F9 unblocked, MISSION 1 banner through the shipped policy
+
+- Sandbox restored (capstone 5.0.7; repo fast-forwarded 6b97fbe ->
+  b19ad97; 459+1xfail baseline). `pin_ckpt` rebuilt
+  (`chopper_hunt --mode reach`): px 1164, gren 10, score 1200 — the
+  deterministic warp/respawn/wave behaviour reproduced (k=18, 992,
+  1064-1103).
+- S1 soldier probes (`soldier_hp_probe*.py`, `soldier_bpp.py`):
+  the wave 0x4054 soldier takes exactly 2 AIMED bullets (3/3);
+  liveness = state family {0x4054, 0x41FC} (cycles unattended),
+  corpse = {0x4BE4, 0x5CC8} (row zeros ~+138f); the HP word stays
+  UNKNOWN (41 words move on a no-input miss control).
+- The F9 mystery resolved: facing + corpse mis-aim. The session-3
+  "Y-bursts did not kill" soldier sat BEHIND the player (dx -92) and
+  the filter kept mid-anim corpses.
+- End-sequence decode: `(0xB,0x1)@992 -> (0,8) -> (0xC,0x9)@26.4` =
+  the MISSION 1 banner, standing player, no walk; inputs during the
+  window skip it; the pin cycle re-arms on re-entry.
+- Policy patch (plugin layer): corpse-free scan, mission-end hold
+  (0xC x2 + pre-banner (0,8) trigger), D7 zone latch, family-priority
+  aim, quiet-hold, restart resume. 466+1xfail (7 new tests, 3
+  re-scoped legacy tests).
+- PAIRED RESULT: policy-only arm 3/3 MISSION_BANNER (c=79, 0 deaths)
+  vs baseline arm 0/3 (death_no_respawn x3). PNGs + JSONs committed
+  under truck_evidence/session4/.
+- Honest: no from-mission-start policy clear claimed; Mission 2
+  entry not attempted; mortarman HP semantics UNKNOWN.

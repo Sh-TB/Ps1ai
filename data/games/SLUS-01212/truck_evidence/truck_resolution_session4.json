@@ -1,0 +1,126 @@
+{
+ "session": "4",
+ "date": "2026-10-25",
+ "issue": 5,
+ "anchor_commit": "b19ad97",
+ "suite": {
+  "passed": 466,
+  "xfailed": 1
+ },
+ "environment": {
+  "sandbox_reset": true,
+  "restored": [
+   "capstone 5.0.7",
+   "repo fast-forward 6b97fbe->b19ad97 (8 commits)"
+  ],
+  "game_sha256": "45cde149878fe945d0219fd0f61ca09856aee66bdcc9119de21c0583f1d0667d",
+  "exe_sha256": "1508b53216cc20dad8c1354e7702dae2940c34e7b2adeffb00337ab6659e0f35",
+  "firmware": "openbios",
+  "checkpoints_lost": [
+   "pin_ckpt",
+   "truck_engage",
+   "clamp0",
+   "chopper_ckpt",
+   "chopper_live"
+  ],
+  "checkpoints_built": [
+   "pin_ckpt (px 1164.0, gren 10, score 1200) - rebuilt via chopper_hunt --mode reach, behaviour-equivalent (deterministic warp k=18, respawn 992, wave 1064-1103)"
+  ]
+ },
+ "findings": [
+  {
+   "id": "S4-F1",
+   "claim": "F9 root cause = FACING + CORPSE mis-aim, not an unkillable soldier: the wave-zone 0x4054 soldier dies to 2 AIMED bullets 3/3 (soldier_bpp: deterministic taps-to-death 2/2/2 across fresh pin_ckpt reloads)",
+   "status": "GAMEPLAY_VERIFIED",
+   "evidence": "scripts/soldier_bpp.py report; scripts/soldier_hp_probe2.py (shp2: shot 0 miss at stale facing, shot 1 kill +200 score, corpse flip 0x4054->0x4BE4); session-3 chopper_chain's bursts fired 24f of Y after a 6f turn tap computed from an anim-cycled row - the soldier sat at dx -92..-120 (BEHIND the player at the pin)",
+   "files": [
+    "scripts/soldier_hp_probe.py",
+    "scripts/soldier_hp_probe2.py",
+    "scripts/soldier_bpp.py"
+   ]
+  },
+  {
+   "id": "S4-F2",
+   "claim": "Soft-soldier HP word: still UNRESOLVED at word granularity (row diff drowned by animation noise - 41 words move on a no-input MISS control), but the BEHAVIOURAL HP is 2 bullets (3/3) and liveness is the state-word family: live = {0x4054, 0x41FC} (cycles UNATTENDED within ~600f - v1 probe slot 12), corpse = {0x4BE4, 0x5CC8} (stable; row zeros at ~+138f after the flip)",
+   "status": "OBSERVED",
+   "evidence": "soldier_hp_probe shp_100033 CONTROL_NO_INPUT (20 words moved without fire; +0xce 55->0, +0xd2 312->27 decay without fire - ruled out as HP); shp2 MISS_CONTROL (41 words) vs SHOT diffs",
+   "consequence": "scan_entities now drops CORPSE_ST rows (the F9 mis-aim fix); the hp label on soft soldiers stays UNKNOWN (honest)"
+  },
+  {
+   "id": "S4-F3",
+   "claim": "The D7 pin release chain does NOT need the px>1170 walk: after the wave clear the end sequence runs BY ITSELF on a standing player - (0xB,0x1) @992 -> (0,8) walker reset -> (0xC,0x9) @ px 26.4 = the MISSION 1 banner (MISSION 1 + CLEAR TIME 0'09\"61 + PRESS START, score 1500)",
+   "status": "GAMEPLAY_VERIFIED",
+   "reps": "6/6 total (chain_a_full v6 x3 scripted + policy_chain_trial fix x3 pure-policy)",
+   "evidence": "chain_a a1_102112 tally timeline (k=2 warp-back, k=7 (0,8), k=8 (0xC,9)@26.4); release_confirm independently keyed (0xC,8/9)@26.4; PNG session4/chain_scripted_banner.png",
+   "files": [
+    "scripts/chain_a_full.py"
+   ]
+  },
+  {
+   "id": "S4-F4",
+   "claim": "The end sequence is INPUT-FRAGILE: any policy input during the (0,8)->(0xC) window skips/expedites the banner into a mission restart (px 982 -> 26-32, sec (0xB,0x9)); walking during the banner expires its countdown (chain_a v3/v4)",
+   "status": "GAMEPLAY_VERIFIED",
+   "reps": "chain_a v1 (walk missed banner -> restart), v3/v4 (walk at the wave zone -> re-pin/death), policy trial pre-fix iterations",
+   "consequence": "the policy needs the quiet-hold (S4-F6/S4-F8)"
+  },
+  {
+   "id": "S4-F5",
+   "claim": "The pin cycle RE-ARMS on re-entry: walking back into the px-1164 clamp re-runs the pending-queue check (policy trial pre-latch: kill/walk/repin oscillation burned all 10 grenades, died to fallers c=23, 3/3)",
+   "status": "CONFIRMED",
+   "evidence": "policy_chain_trial fix-arm trajectories (px 992->1164->992 cycles, mode advance<->clamp_clear alternation)",
+   "files": [
+    "scripts/policy_chain_trial.py"
+   ]
+  },
+  {
+   "id": "S4-F6",
+   "claim": "MISSION 1 COMPLETE through the SHIPPED PLUGIN POLICY alone (no scripted inputs): CombatPolicy from pin_ckpt - warp detect -> D7-zone latch (never advance inside the cycle) -> corpse-free aimed clamp_clear (2-bullet soldier kills) -> pre-banner (0,8) HOLD -> (0xC,9)@26.4 banner",
+   "status": "GAMEPLAY_VERIFIED",
+   "reps": "3/3 (c=79, score 2500, 0 deaths, deterministic)",
+   "evidence": "policy_chain_trial report_fix_*.json runs 1-3 outcome=MISSION_BANNER end_chunk=79; PNG session4/policy_banner.png",
+   "files": [
+    "scripts/policy_chain_trial.py",
+    "ps1play/agent/combat.py"
+   ]
+  },
+  {
+   "id": "S4-F7",
+   "claim": "PAIRED REGRESSION: baseline (pre-patch behaviour: corpses included in the scan + no mission-end hold) 0/3 - death_no_respawn x3 (2 deaths each); fix 3/3 MISSION_BANNER. The two deltas of the session-4 patch are necessary AND sufficient for the policy-path mission completion",
+   "status": "GAMEPLAY_VERIFIED",
+   "evidence": "policy_chain_trial report_baseline_*.json vs report_fix_*.json",
+   "files": [
+    "scripts/policy_chain_trial.py"
+   ]
+  },
+  {
+   "id": "S4-F8",
+   "claim": "Policy patch (plugin layer only, ps1play/agent/combat.py): (a) scan_entities drops CORPSE_ST rows; (b) SECTION_MISSION_END=0xC latch (x2 confirm) + pre-banner trigger B ((0,8) reset inside the D7 zone) -> full-chunk no-input HOLD; (c) D7 zone latch (px>=1150; un-latch only on restart px<300) -> never advance inside the cycle, walk-back floor 985; (d) clamp_clear: family-priority aim + quiet-hold on an empty zone scan; (e) mission-end unlatch on a valid-px restart reading (resumes into the next mission)",
+   "status": "IMPLEMENTED+UNIT_TESTED",
+   "suite": "466 passed + 1 xfailed (7 new tests in tests/test_session4_release.py + 3 legacy tests re-scoped below the D7 zone)",
+   "files": [
+    "ps1play/agent/combat.py",
+    "tests/test_session4_release.py",
+    "tests/test_combat_policy.py",
+    "tests/test_section_pin_policy.py"
+   ]
+  },
+  {
+   "id": "S4-F9",
+   "claim": "RESIDUAL UNKNOWN (honest): the wall mortarman 0xE17C-class slot survived 3-4 aimed taps in both arms (slot 15 'dead=False') - NOT needed for the release (the banner arrives with it alive), but it is the faller source and the standing-player death risk during the sequence; its HP word/armor semantics are unmeasured",
+   "status": "UNKNOWN",
+   "next": "one live probe: single-bullet diff on the mortarman row (the S1 protocol) if Mission-2 attrition needs it"
+  }
+ ],
+ "honest_status": "MISSION 1 completion (the MISSION 1 / CLEAR TIME / PRESS START banner) is GAMEPLAY_VERIFIED 6/6 (3 scripted + 3 pure-policy) from the D7 pin checkpoint with real inputs only. NOT claimed: a full from-mission-start clear under the shipped policy alone (the pin_ckpt embeds the pre-D7 progress), Mission 2 entry, or the soft-soldier HP word at field granularity.",
+ "artifacts": {
+  "png": [
+   "session4/chain_scripted_banner.png",
+   "session4/policy_banner.png"
+  ],
+  "local_evidence": [
+   "work/msx_recomp/evidence/issue5_soldier_hp/",
+   "work/msx_recomp/evidence/issue5_chain_a/",
+   "work/msx_recomp/evidence/issue5_policy_trial/"
+  ]
+ }
+}

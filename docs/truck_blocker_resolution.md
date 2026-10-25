@@ -252,3 +252,62 @@ one level deeper and found the actual gate:
   inactive there), is the next discriminator.
 - **Not claimed**: a mission-1 clear through the shipped policy alone
   (the released runs used the scripted chain), and Mission 2 entry.
+
+---
+
+## Session 4 (2026-10-25): F9 UNBLOCKED — MISSION 1 banner through the shipped policy
+
+Full evidence: `truck_resolution_session4.json` (+ `session4/` PNGs).
+Anchor `b19ad97`; suite 466+1xfail.
+
+### §6 The last-mile decode (why the session-3 residual "would not die")
+
+- **S4-F1 `GAMEPLAY_VERIFIED`** — the residual soldier was killable
+  all along: 2 AIMED bullets, 3/3 deterministic (`soldier_bpp.py`).
+  The session-3 bursts failed on FACING (the soldier sat at
+  dx −92..−120, behind the player at the pin) and the foe filter
+  kept mid-anim CORPSES (valid screen-x until their ~+138f despawn),
+  so the fire aimed at the dead.
+- **S4-F2 `OBSERVED`** — liveness is the state-word family:
+  live `{0x4054, 0x41FC}` (cycles unattended within ~600f), corpse
+  `{0x4BE4, 0x5CC8}` (stable).  The soft-soldier HP word stays
+  UNKNOWN at field granularity (41 words move on a no-input miss
+  control); behavioural HP = 2 bullets.
+- **S4-F3 `GAMEPLAY_VERIFIED 6/6`** — the end sequence runs BY
+  ITSELF on a standing player:
+  `(0xB,0x1)@992 -> (0,8) reset -> (0xC,0x9) @ px 26.4` = the
+  **MISSION 1 / CLEAR TIME 0'09"61 / PRESS START** banner.  No
+  px>1170 walk is part of the release.
+- **S4-F4/S4-F5** — the sequence is INPUT-FRAGILE (inputs during
+  `(0,8)->(0xC)` skip the banner into a restart) and the pin cycle
+  RE-ARMS on re-entry (advance back into the clamp re-runs the
+  pending-queue check).
+
+### §7 Policy patch (plugin layer only) + the paired trial
+
+- **S4-F8 `IMPLEMENTED + UNIT_TESTED`** — `combat.py`:
+  (a) `scan_entities` drops `CORPSE_ST` rows; (b) the mission-end
+  latch (0xC ×2, plus the pre-banner `(0,8)`-reset trigger inside
+  the D7 zone) holds a full no-input chunk; (c) the D7 zone latch
+  (px ≥ 1150; un-latch only on a restart reading) never advances
+  inside the pin cycle, walk-back floor 985; (d) `clamp_clear`
+  family-priority aim + quiet-hold on an empty zone scan; (e) a
+  valid-px restart reading un-latches into the next mission.
+- **S4-F6 `GAMEPLAY_VERIFIED 3/3`** — the SHIPPED PLUGIN POLICY
+  alone (no scripted inputs) reaches the banner from `pin_ckpt`:
+  c=79, score 2500, 0 deaths, deterministic
+  (`policy_chain_trial.py --arm fix`).
+- **S4-F7 `GAMEPLAY_VERIFIED`** — the paired baseline (pre-patch
+  behaviour: corpses included + no hold) is 0/3
+  (`death_no_respawn` ×3, 2 deaths each).
+
+### §8 Honest status delta
+
+- `GAMEPLAY_VERIFIED` — MISSION 1 completion banner 6/6 (3 scripted
+  + 3 pure-policy) from the D7 checkpoint, real inputs only.
+- `UNKNOWN` (honest) — the wall mortarman (faller source) survived
+  3–4 aimed taps in both arms; not needed for the release, unmeasured
+  HP semantics.
+- **Still not claimed**: a full from-mission-start clear under the
+  shipped policy alone (the checkpoint embeds the pre-D7 progress),
+  and Mission 2 entry.
