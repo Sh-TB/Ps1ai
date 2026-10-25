@@ -1,0 +1,53 @@
+{
+  "_session": 7,
+  "_issue": 5,
+  "_date": "2026-10-25",
+  "environment": {
+    "base_commit": "a49b928",
+    "game_sha256": "45cde149fa46b0a05ddabe0c5998c6b6f0b3b8c8e04d2ef1f0dbf7b6f5a4b2ee",
+    "firmware": "openbios",
+    "one_boot_per_process": true,
+    "suite": "477 passed + 1 xfailed (11 new scene-teardown vectors)",
+    "raw_evidence_dir": "/home/z/my-project/work/msx_recomp/evidence/issue5_m2_train/"
+  },
+  "primary_result": {
+    "id": "S7-M2-CHAIN",
+    "status": "GAMEPLAY_VERIFIED",
+    "summary": "Mission 2 (the TRAIN) entered for the 2nd independent time via the fresh-boot path, ridden PAST the session-6 frontier (px 404) to px ~747 with a per-chunk census, the mission ended in a fade-out at score 10930 with ZERO real deaths, and the run continued through a WINTER scene and 5 teardown ladders before ending at the SNK attract title. First durable train savestate (m2_train) saved.",
+    "runs": {
+      "m2t1 (NEGATIVE RESULT)": "pin_ckpt control arm -> banner OK, but the post-banner S taps re-entered the fragile end window (S4-F4), RE-ARMED the D7 pin cycle (S4-F5) and phase T died inside it (px frozen 1164/1413, sec (0xB,0x43), score never reset 2509). The pin_ckpt path is NOT an M2-entry path.",
+      "m2t2 (THE RUN)": "fresh boot -> M1 banner c=107 deaths=0 (the session-5 '1 disclosed death' is now ZERO counter-events: the S6-F1 fix reclassified the tally teardown) -> endzone walk -> M1->M2 loading (px0, flags 0, score 7800, sec (0,0) — the session-6 signature) -> M2 spawn px 76.4 (php 76, gren 10) -> ANCHOR SAVED -> train ride sec (11,9) sustained: px 76 -> 542 -> 565 -> 747, score 0 -> 10700, gren 10 -> 20 -> fade-out at px0 score 10930 (i=155) -> winter scene (i=163+, distinct entity population) -> further transitions (spawns px 114.5 / 120.0 / 119.1, scores to 13630) -> SNK attract title (i=358).",
+      "m2_train_anchor": "emu/ws/states/m2_train.state (16 MB) at px 76.4, php 76, gren 10, sec (11,9) — every future run can start ON the train."
+    },
+    "png_evidence": [
+      "session7/m2_spawn.png (the M2 intro card: train + MSX logo)",
+      "session7/T0120.png (train gameplay, soldiers on flatcars, px 542)",
+      "session7/T0150.png (train gameplay in the autumn forest, px 747 — PAST the 404 frontier)",
+      "session7/T155_teardown.png (the mission-end fade-out, score 10930)",
+      "session7/T163_an.png (the WINTER scene: wooden towers, water — a different mission or the attract demo)",
+      "session7/T0180.png (winter scene combat: missiles, PRESS START overlay)",
+      "session7/T358_teardown.png (the SNK attract title)",
+      "session7/m2t1_T0465.png (the re-armed pin cycle that trapped run 1)"
+    ]
+  },
+  "findings": {
+    "S7-F1_alive_fix": "scene_teardown_snap(): px == 0.0 <=> php == 0 with ZERO counterexamples across all 7 recorded runs = SCENE (tally / CONTINUE? / NOW LOADING / score reset), never a death; run_once() consults it before counting a death. 11 test vectors (S-A..S-F + gameplay + real-death + spawn + tally-world trap). Suite 466+1xfail -> 477+1xfail. The fresh-boot e2e now reaches the banner with deaths=0 (was 1 disclosed false death).",
+    "S7-F2_control_arm_trap": "m2t1: the pin_ckpt control arm re-arms the M1 pin cycle on post-banner re-entry; input inside the fragile (0,8)->(0xC) window (S4-F4) re-triggers the end machinery. Only the fresh-boot path ever reached M2 (session-6 3/3 + this session).",
+    "S7-F3_train_vocabulary": "M2 walker = (11,9)=(0xB,9) sustained through the ride; ride net speed 0.785 px/f (47 px/s, non-uniform: platform drift); php RISES on the train (74 -> 138 = a pickup, then -2 damage — 'php only drops' is FALSE); gren 10 -> 20 mid-ride; census: corpses 0x4BE4 dominant, train-specific states 0xB570/0x4C98/0xD1B8/0xD898, truck-state 0x9E88 x22, faller 0xB4E4, near-mortarman 0xE19C.",
+    "S7-F4_teardown_ladder": "5 ladders traversed input-free (QUIET-FIRST, the walk_forward lesson): tally(px0,flags255) -> countdown(px0,(11,1),flags255/0) -> loading(px0,flags 0/1) -> score-reset spawn(px<121,score 0). Zero T_DEATH events in the whole phase. The score resets at EVERY mission transition (7800->0 pattern, session-6 confirmed).",
+    "S7-F5_static_vocab_17c": "soldier HP = u16 @ slot+0xA4, init 0x14 (20 = 2 bullets x 10 dmg — matches the behavioral 2-bullet kill EXACTLY); damage via EXE 0x8005e538-56c add + 0x8005e0a8 commit; +0x8E is SCREEN-X for ALL classes (zero stores in 468 corpus fns; camera writer 0x80064674 owns +0x8C/+0x90) — wagon.py HP_OFF is the pre-correction mislabel; state constants are stored as handler ADDRESSES (0x800B4054...) which is why literal 0x4054 greps fail.",
+    "S7-F6_telemetry_17d": "7-run catalog of the px==0.0 signatures (S-A..S-F) + the tally-world trap (px 992 / php 120 reads alive ~100f — world_stable's 90f re-check filters it) + the 26-row transition bit-identity across lives5/6/7."
+  },
+  "honest_limits": [
+    "The i=163+ WINTER scene is labeled 'a different mission OR the attract demo' — the PRESS 1P OR 2P START overlay (T0180) is attract semantics, but the px~5 wall-stuck damage-tick pattern (900f, our RIGHT held, px unmoved) is real-gameplay semantics. Discriminated next session via the START-ownership probe.",
+    "No M2 0xC banner was captured (30f sampling may have missed it); the i=155 fade-out at score 10930 is the mission-end evidence.",
+    "Mission labels beyond M2 are unproven (no M3+ decode); 'M2 cleared' is claimed as 'the train mission ENDED forward into a different scene with zero deaths', not as an audited clear.",
+    "Lives accounting still dead (0x0475A8 -> 0xFFFF)."
+  ],
+  "next_declared": [
+    "Resume from the m2_train ANCHOR (no M1 replay) and drive the train with the shipped CombatPolicy engage modes toward a CONTROLLED M2 clear with the 0xC banner captured.",
+    "START-ownership probe at the PRESS START overlay to discriminate next-mission vs attract-demo.",
+    "Code: fix wagon.py HP_OFF (+0x8E -> +0xA4) + live-probe the soldier 2-bullet kill on +0xA4 (upgrades the 17-c MED call).",
+    "1UP HUD OCR or a live lives address (still owed from session 6)."
+  ]
+}

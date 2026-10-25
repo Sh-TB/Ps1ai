@@ -106,6 +106,24 @@ def alive(m):
     return (s["flags"] == 0xFF and s["px"] != 0.0 and s["php"] > 0)
 
 
+def scene_teardown_snap(s):
+    """S6-F1 (session-6) + session-7 telemetry: the mission-clear tally
+    teardown tears the world down — px -> 0.0 AND php -> 0 SIMULTANEOUSLY
+    (php stays 155 through the whole hold, then flips with px).  Across
+    every recorded run, px == 0.0  <=>  php == 0 with ZERO
+    counterexamples, and every real combat death happens at px != 0.
+    So a px==0.0 + php==0 reading is a SCENE (tally / CONTINUE? countdown
+    / NOW LOADING / score reset), never a gameplay death.  Trap kept
+    honest: the tally's own world reads px 992 / php 120 ~100f later and
+    SATISFIES alive() — callers that must not re-enter on it need a
+    stability re-check (see m2_train_advance.world_stable)."""
+    return s["px"] == 0.0 and s["php"] == 0
+
+
+def scene_teardown(m):
+    return scene_teardown_snap(snap(m))
+
+
 def png(p, name, tag):
     try:
         rgb = p.core.frame_rgb()
@@ -168,6 +186,20 @@ def run_once(p, m, J, tag, chunks, control):
             break
         s = snap(m)
         if not alive(m):
+            if scene_teardown_snap(s):
+                # S6-F1: scene teardown, NOT a death — no death count,
+                # quiet-wait through the teardown ladder (tally /
+                # countdown / loading / score reset) until the world
+                # reads alive again (defensive: the PASS path above ends
+                # this loop at the banner before any tally exists).
+                J({"ev": "SCENE_TEARDOWN", "chunk": c, **s})
+                log(f"scene teardown c{c} px={s['px']} php={s['php']}")
+                for w in range(100):
+                    p.core.run(30, set())
+                    if alive(m):
+                        break
+                last_px, last_segs = None, None
+                continue
             deaths += 1
             J({"ev": "death", "chunk": c, **s})
             log(f"death #{deaths} c{c} px={s['px']} php={s['php']}")
