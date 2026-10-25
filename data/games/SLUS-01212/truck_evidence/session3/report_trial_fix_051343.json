@@ -1,0 +1,42 @@
+{
+ "tag": "fix",
+ "deaths": 1,
+ "released": false,
+ "mission_screen": false,
+ "max_px": 1164.0,
+ "final": {
+  "px": 0.0,
+  "score": 1700,
+  "flags": 255,
+  "gren": 0,
+  "sec": [
+   11,
+   1
+  ],
+  "prog": 4294967295
+ },
+ "stats": {
+  "engage": 4,
+  "clamp_clear": 7,
+  "advance": 13,
+  "grenade": 22,
+  "jump": 4,
+  "rear_engage": 0,
+  "front_engage": 240,
+  "dodge": 3,
+  "budget_walkthrough": 0,
+  "rear_check": 0,
+  "proj_dodge": 8,
+  "proj_unverified": 38,
+  "stale_reset": 0,
+  "advance_silent": 13,
+  "rear_grenade": 0,
+  "rear_resolved": 0,
+  "rear_gaveup": 0,
+  "armor_hold": 0,
+  "armor_grenade": 0,
+  "section_pin": 0,
+  "section_pin_release": 0
+ },
+ "wall_s": 35.9
+}

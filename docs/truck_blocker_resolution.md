@@ -160,3 +160,95 @@ sighting), and the kill campaign re-run from it.
   if the pin still holds, table-disassemble the `0x80022500` ticker
   and correlate its next-state production with a live trace at the
   `0x80023308` store.
+
+## Session 3 (2026-10-25): the D7 release condition — PROVEN, and the MISSION 1 screen reached
+
+Baseline `93ba5bb` (session-2 report already posted), suite re-verified
+**456+1xfail** after the sandbox reset (capstone + m2c re-cloned), final
+suite **459+1xfail** (3 new tests). Machine-readable record:
+`data/games/SLUS-01212/truck_evidence/truck_resolution_session3.json`.
+
+### §1 The release condition (the session-2 §5 experiment executed and exceeded)
+
+The named smallest experiment was "kill the chopper"; the session went
+one level deeper and found the actual gate:
+
+- **F1 `GAMEPLAY_VERIFIED` 3/3** — the D7 pin releases when the
+  section VM's pending-entity queue CLEARS. From `pin_ckpt` (px 1164,
+  10 grenades): take the one-shot, ride the F6 respawn to px 992,
+  standing-fire the 2 frozen `0x4054` soldiers (+200) → walker state
+  **0xB → 0xC**, flags 0x1 → 0x8, the progress word leaves
+  0xFFFFFFFF → 0xFFF38B4A (`scripts/release_test.py` rel1/2/3,
+  bit-identical).
+- **F2 `GAMEPLAY_VERIFIED`** — the release rolls into the
+  **MISSION 1 complete screen** ("MISSION 1" banner + PRESS START +
+  score 1500; PNG evidence committed): the explicit in-game
+  completion evidence, reproduced across 3 runs
+  (`release_advance.py`, `release_confirm.py` ×2).
+- **F3 `OBSERVED`** — post-screen flow: START toggles PAUSE;
+  unpause + START → **"Metal Slug X — NOW LOADING"** → the SNK attract
+  title (the continue-countdown expires during the tally wait — a
+  timing nuance for the next milestone, not a blocker).
+
+### §2 The chopper: killed, with the recipe
+
+- **F4 `GAMEPLAY_VERIFIED`** — **hop + UP-lob thrown at the apex**,
+  connect band **|dx| ≈ 7–29** (nearly overhead; h ≈ 205–214), 3
+  connects = dead (hp_a4 300→200→100→0), **+1100 score**
+  (`chopper_kill.py` arm J1: 3 hp drops + CHOPPER_GONE; the full
+  chain runs kill it in 19 deterministic throws). The ground UP-lob
+  control arm reproduces session-2's negative (+200, no hp drop).
+- **F8 `CONFIRMED`** — at the pin the chopper IS the active killer
+  (the trial death census has the chopper `0xABDC` hp_a4 300 at dx
+  −124 with `0xB4E4` fallers in flight); in a no-input control it
+  parks inactive (slot 13, x=0, hp_a4 300). It engages when the
+  player acts.
+- **F5 `CONFIRMED`** — the armored truck lives in **slot 33**,
+  OUTSIDE the historical 24-slot scan window — every earlier scan
+  (slots 1–23) was structurally blind to it. This session's scripts
+  scan 36 slots; widening `scan_entities` itself is deferred (it
+  changes live behaviour and deserves its own paired trial).
+
+### §3 The section-VM decode (static, m2c/capstone on the canonical EXE)
+
+- **F6 `IMPLEMENTED`** — the 13-opcode dispatcher `0x80021128`
+  consumes a 30-byte script buffer at `0x80010DB8` (cursor-indexed,
+  opcodes 0x01–0x0D; the buffer is ASCII tokens in the EXE file but
+  runtime-rebuilt pointers+bytes in RAM — live-verified). Request 8 →
+  `flags |= 0x12` + a counter decrement; request ≠ 8 → `flags |=
+  0x42` — the live pin signature. Runner id s16 @`0x800EB588` (−1 =
+  inactive), gate u16 @`0x800EB5C6` (==9 special arm). The queue
+  walker `0x80020444` resolves requests from a node list
+  @`0x800EB5F8` (nodes +0x5C/+0x8) via a table @`0x800EB5E8`, and
+  jal's INTO the dispatcher's handler bodies (`0x800216bc`,
+  `0x80021830`) — the missing link behind "zero static callers".
+  Full disassemblies + m2c attempts:
+  `evidence/issue5_session3_static/`.
+
+### §4 Policy changes (plugin layer only, zero core edits)
+
+- **F7 `IMPLEMENTED + UNIT_TESTED`** — (a) the instrument pin also
+  latches on a SUSTAINED `(0xB, flags&0x40)` reading (boot-2's pin;
+  the 2-consecutive confirm keeps the old single transients out —
+  the `(0xB,0x43)` contract test updated with the evidence citation);
+  (b) `clamp_clear` now aims its fire at the nearest live ground
+  foe's side — the hard-coded LEFT fired AWAY from the respawn-side
+  soldiers; (c) the mode fallback holds `clamp_clear` while
+  `section_pinned` even when the derived px-stall streak flickers.
+  Suite 459+1xfail (3 new tests in `test_section_pin_policy.py`).
+
+### §5 Honest status delta
+
+- `GAMEPLAY_VERIFIED` — the D7 release via section-entity clear
+  (3/3); the MISSION 1 screen (3 observations); the chopper kill
+  (jump-lob, 3 connects).
+- `BLOCKED` — the **full-chain last mile**: with chopper + soldiers +
+  truck all dead (the truck died to collateral at its parked 937.5 —
+  wreck `0xA44C`), the walker still cycles `(0xA/0xB, 0x43)` at
+  px ~984 with one residual frozen `0x4054` at 1072 that Y-bursts
+  did not kill. Soft soldiers do not use `+0xA4`, so the session's
+  foe filter cannot separate a live `0x4054` from a corpse — that
+  word, and the boot-phase difference vs the releasing runs (chopper
+  inactive there), is the next discriminator.
+- **Not claimed**: a mission-1 clear through the shipped policy alone
+  (the released runs used the scripted chain), and Mission 2 entry.

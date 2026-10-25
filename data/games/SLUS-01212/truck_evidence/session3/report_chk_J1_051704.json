@@ -1,0 +1,88 @@
+{
+ "arm": "J1",
+ "start": {
+  "px": 1164.0,
+  "score": 1600,
+  "flags": 255,
+  "gren": 9,
+  "sec": [
+   11,
+   1
+  ]
+ },
+ "final": {
+  "px": 1127.5,
+  "score": 2700,
+  "flags": 255,
+  "gren": 0,
+  "sec": [
+   0,
+   0
+  ]
+ },
+ "score_delta": 1100,
+ "score_events": 4,
+ "events": [
+  {
+   "cycle": 2,
+   "dx": 13.7,
+   "ch": {
+    "s": 20,
+    "st": 43668,
+    "x": 1134.5,
+    "h": 205,
+    "hpA4": 300
+   },
+   "score": 1700,
+   "d_score": 100,
+   "gren": 7,
+   "CONNECT": true
+  },
+  {
+   "cycle": 6,
+   "dx": 19.7,
+   "ch": {
+    "s": 20,
+    "st": 43668,
+    "x": 1140.5,
+    "h": 205,
+    "hpA4": 300
+   },
+   "score": 2100,
+   "d_score": 400,
+   "gren": 5,
+   "CONNECT": true
+  },
+  {
+   "cycle": 10,
+   "dx": 20.5,
+   "ch": {
+    "s": 20,
+    "st": 43668,
+    "x": 1141.3,
+    "h": 206,
+    "hpA4": 200
+   },
+   "score": 2400,
+   "d_score": 300,
+   "gren": 3,
+   "CONNECT": true
+  },
+  {
+   "cycle": 16,
+   "dx": -20.6,
+   "ch": {
+    "s": 20,
+    "st": 43668,
+    "x": 1143.4,
+    "h": 210,
+    "hpA4": 100
+   },
+   "score": 2700,
+   "d_score": 300,
+   "gren": 0,
+   "CONNECT": true
+  }
+ ],
+ "chopper_final": null
+}

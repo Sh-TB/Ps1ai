@@ -1,0 +1,29 @@
+{
+ "tag": "rel1_045831",
+ "rep": 1,
+ "respawned": true,
+ "killed": 2,
+ "released": true,
+ "max_px": 1034.0,
+ "final": {
+  "px": 0.0,
+  "score": 1500,
+  "flags": 255,
+  "gren": 0,
+  "sec": [
+   11,
+   1
+  ],
+  "walker": {
+   "0x800eb588": 0,
+   "0x800eb5ce": 81920,
+   "0x800eb5d0": 16711681,
+   "0x800eb5d4": 4294967295,
+   "0x800eb5f4": 393227,
+   "0x800eb5f8": 2148027852,
+   "0x800eb5e8": 0
+  }
+ },
+ "score_total": 1500,
+ "wall_s": 33.0
+}

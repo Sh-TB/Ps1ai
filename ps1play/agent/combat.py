@@ -617,7 +617,17 @@ class CombatPolicy:
         # with flags 0x43/0x1/0x0 (sectioncorr1 c25-33) — requiring the
         # 0x40 flag bit would falsely RELEASE the pin at (0xA, 0x0)
         # readings like c33.
-        sig = sec.get("state") == SECTION_PIN_STATE
+        # Session-3 addition (Issue #5 D7 release campaign): a SECOND
+        # live boot pins with the walker still in state 0xB — px frozen
+        # 1164.0, flags 0x43 sustained, release 3/3 identical
+        # (release_test.py rel1-3) once the section's pending entities
+        # are cleared. The old-boot (0xB,0x43) readings (c12/c30) were
+        # SINGLE transients, so the SECTION_PIN_CONFIRM consecutive
+        # requirement still keeps them out; only a SUSTAINED
+        # (0xB, flags&0x40) reading now latches the pin.
+        sig = (sec.get("state") == SECTION_PIN_STATE or
+               (sec.get("state") == 0xB and
+                (sec.get("flags", 0) & SECTION_PIN_FLAG)))
         if sig:
             self.sec_pin_streak += 1
             self.sec_free_streak = 0
@@ -791,7 +801,9 @@ class CombatPolicy:
                                       self.armor_hp_now ==
                                       self.armor_last_hp)
             self.armor_last_hp = self.armor_hp_now
-        elif near is not None and not (clamped and near["dx_px"] < 0):
+        elif near is not None and \
+                not ((clamped or self.section_pinned)
+                     and near["dx_px"] < 0):
             # mid-run: engage only point-blank FRONT threats; at the
             # clamp a rear threat goes to the DEFENSIVE clear (below),
             # never a walk-toward (walking into the pursuit pack is
@@ -848,7 +860,10 @@ class CombatPolicy:
                 # caught by test_rear_followthrough_escalates_to_grenade)
             else:
                 mode = "advance"
-        elif clamped:
+        elif clamped or self.section_pinned:
+            # session-3: the instrument pin (0xA, or a SUSTAINED
+            # (0xB, flags&0x40)) holds the defensive clear even when
+            # the derived px-stall streak flickers (knockback wobble)
             mode = "clamp_clear"
         else:
             mode = "advance"
@@ -933,12 +948,18 @@ class CombatPolicy:
                 elif self._hop():
                     btns.add("B")
             elif mode == "clamp_clear":
-                # DEFENSIVE rear-clear at the derived stage-end: hold
-                # the line, fire LEFT into the pursuers (jeep /
-                # grenadier — they walk into the bullets), alternate
-                # UP-fire at the chopper/rain zone, HOP against the
-                # mortar rain, grenades into the pack. Walk back only
-                # on escalation rounds (no kill progress observed).
+                # DEFENSIVE stage-end clear: hold the line, fire INTO
+                # the pending section entities (they ARE the release
+                # condition — session-3: clearing the 2 frozen
+                # soldiers released the pin 3/3 and reached the
+                # MISSION 1 screen), alternate UP-fire at the
+                # chopper/rain zone, HOP against the mortar rain,
+                # grenades into the pack. Walk back only on
+                # escalation rounds (no kill progress observed).
+                # Session-3 aiming fix: the fire facing follows the
+                # nearest live GROUND foe's side — the hard-coded
+                # LEFT fired away from the respawn-side soldiers
+                # (px 992 respawn, soldiers 1064-1103 = RIGHT).
                 back = CLAMP_ESCALATE[min(self.clamp_round,
                                           len(CLAMP_ESCALATE) - 1)]
                 walked_back = (self.clamp_entry_px is not None and
@@ -946,19 +967,25 @@ class CombatPolicy:
                                self.clamp_entry_px - px >= back)
                 phase = (self.fc // 240) % 2       # 4s alternation
                 hop_now = (self.fc % 90) < JUMP_HOLD   # rain hop
+                aim = "LEFT"
+                gnd = [e for e in foes
+                       if e.get("h", GROUND_HEIGHT) == GROUND_HEIGHT]
+                if gnd:
+                    nf = min(gnd, key=lambda e: abs(e["dx_px"]))
+                    aim = "LEFT" if nf["dx_px"] < 0 else "RIGHT"
                 if self.clamp_round >= 2 and not walked_back:
                     btns = {"LEFT"} | ({"Y"} if burst else set())
                 elif phase == 0:
-                    btns = ({"LEFT", "Y"} if burst else {"LEFT"})
+                    btns = ({aim, "Y"} if burst else {aim})
                 else:
                     # UP-aim fire at the rain-source/chopper zone.
-                    # w2_chopper_hp protocol B is UP+LEFT+Y SUSTAINED
+                    # w2_chopper_hp protocol B is UP+<aim>+Y SUSTAINED
                     # (MOVING); heli-ladder pattern 07 proved the
                     # STATIC variant is a death pattern (sword pack
                     # kills the standing firer, 0 source kills in
                     # 1037f) — never emit a static up-fire segment.
-                    btns = ({"UP", "LEFT", "Y"} if burst
-                            else {"UP", "LEFT"})
+                    btns = ({"UP", aim, "Y"} if burst
+                            else {"UP", aim})
                 if hop_now:
                     btns.add("B")
                 if grenades > 2 and self.fc % GRENADE_PERIOD == 0:

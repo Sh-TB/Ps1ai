@@ -1,0 +1,27 @@
+{
+ "overlay": {
+  "n_funcs": 468,
+  "refs": {
+   "chopper_a": [],
+   "chopper_b": [],
+   "wreck_dead": [],
+   "wreck_live": [],
+   "truck_parked": [],
+   "faller_bomb": [],
+   "soldier_4054": []
+  }
+ },
+ "exe": {
+  "n_funcs": 5,
+  "refs": {
+   "chopper_a": [],
+   "chopper_b": [],
+   "wreck_dead": [],
+   "wreck_live": [],
+   "truck_parked": [],
+   "faller_bomb": [],
+   "soldier_4054": []
+  }
+ },
+ "wreck_bodies": {}
+}

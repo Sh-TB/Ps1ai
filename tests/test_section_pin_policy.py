@@ -9,7 +9,13 @@ tests pin the contract:
     mode WITHOUT the derived px-stagnation streak (the instrument
     reacts while clamp_streak is still 1).
   - single readings and 1-frame transients never fire the trigger.
-  - (0xB, 0x43) — the c12 mid-section flags combination — is NOT a pin.
+  - (0xB, 0x43) SINGLE/transient readings are NOT a pin (the
+    sectioncorr1 c12/c30 mid-section transients).
+  - Session-3 CONTRACT UPDATE (Issue #5 D7 release campaign): a
+    second live boot pins SUSTAINED at (0xB, 0x43) — px frozen 1164.0,
+    3/3 identical releases once the section's pending entities are
+    cleared (release_test.py rel1-3 + the MISSION 1 screen PNG).
+    2+ consecutive (0xB, flags&0x40) readings now latch the pin.
   - (0xA, 0x1) / (0xA, 0x0) ARE pins (flags are corroboration only).
   - release needs 2 consecutive non-signature readings.
   - stale invalidation (px jump) keeps the pin but resets streaks.
@@ -59,16 +65,70 @@ def test_single_reading_and_transient_never_fire():
     assert pol.mode == "advance"
 
 
-def test_state_0b_flags_43_is_not_the_pin():
-    # sectioncorr1 c12: (0xB, 0x43) mid-section during a front-engage
-    # stall — the 0x40 flag bit alone must never trigger
+def test_state_0b_flags_43_transient_is_not_the_pin():
+    # sectioncorr1 c12/c30: (0xB, 0x43) SINGLE mid-section transients
+    # — one reading (or a non-sustained run) must never trigger.
+    # Session-3: SUSTAINED (0xB,0x43) IS the boot-2 pin (see the
+    # sustained test below); the confirm streak keeps transients out.
     pol = CombatPolicy()
-    for _ in range(6):
-        pol.observe_section({"state": 0xB, "flags": 0x43})
+    pol.observe_section({"state": 0xB, "flags": 0x43})
+    pol.observe_section({"state": 0xB, "flags": 0x1})   # transient broken
+    pol.observe_section({"state": 0xB, "flags": 0x43})
+    pol.observe_section({"state": 0xB, "flags": 0x1})   # never 2 consecutive
     assert pol.section_pinned is False
     pol.observe(px=1052.0, advanced=0.0, intent_right=True)
     pol.decide(60, 1052.0, [], grenades=0, hp=179)
     assert pol.mode != "clamp_clear" or pol.clamp_streak >= 2
+
+
+def test_state_0b_flags_43_sustained_is_the_boot2_pin():
+    # Session-3 (Issue #5): boot 2 pins SUSTAINED at (0xB, 0x43) with
+    # px frozen 1164.0; clearing the section entities released it 3/3
+    # (release_test.py rel1/2/3) and reached the MISSION 1 screen.
+    pol = CombatPolicy()
+    for _ in range(2):
+        pol.observe_section({"state": 0xB, "flags": 0x43})
+    assert pol.section_pinned is True
+    pol.observe(px=1164.0, advanced=0.0, intent_right=True)
+    pol.decide(60, 1164.0, [], grenades=0, hp=291)
+    assert pol.mode == "clamp_clear"
+    assert pol.stats["section_pin"] == 1
+
+
+def test_clamp_clear_aims_at_the_nearest_ground_foe_side():
+    # Session-3 aiming fix: the hard-coded LEFT fired AWAY from the
+    # respawn-side soldiers (px 992 respawn, foes 1064-1103 RIGHT).
+    # The foe sits beyond ENGAGE_SHORT (200) but inside the scan
+    # window — near is None, so the pinned clear itself must aim.
+    pol = CombatPolicy()
+    for _ in range(2):
+        pol.observe_section({"state": 0xB, "flags": 0x43})
+    pol.observe(px=992.0, advanced=0.0, intent_right=True)
+    foes = [{"slot": 12, "st": 0x4054, "x_px": 1222.0,
+             "dx_px": 230.0, "hp": 100, "sx": 100, "h": 64,
+             "hp_a4": 0, "kind": "enemy"}]
+    segs = pol.decide(60, 992.0, foes, grenades=0, hp=291)
+    assert pol.mode == "clamp_clear"
+    fired_right = any("RIGHT" in (s.get("btns") or set()) and
+                      "Y" in (s.get("btns") or set())
+                      for s in segs)
+    assert fired_right
+    walked_left = any("LEFT" in (s.get("btns") or set())
+                      for s in segs)
+    assert not walked_left          # hold the line, fire RIGHT
+
+
+def test_clamp_clear_default_left_facing_preserved():
+    # no ground foes -> the historical LEFT/UP-LEFT rain behaviour
+    pol = CombatPolicy()
+    for _ in range(2):
+        pol.observe_section({"state": 0xA, "flags": 0x43})
+    pol.observe(px=1164.0, advanced=0.0, intent_right=True)
+    segs = pol.decide(60, 1164.0, [], grenades=0, hp=291)
+    assert pol.mode == "clamp_clear"
+    assert any("LEFT" in (s.get("btns") or set()) for s in segs)
+    assert not any("RIGHT" in (s.get("btns") or set())
+                   for s in segs)
 
 
 @pytest.mark.parametrize("flags", [0x43, 0x1, 0x0])

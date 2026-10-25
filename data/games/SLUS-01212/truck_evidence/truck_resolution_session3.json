@@ -1,0 +1,88 @@
+{
+ "session": "3",
+ "date": "2026-10-25",
+ "issue": 5,
+ "anchor_commit": "93ba5bb",
+ "suite": {"passed": 459, "xfailed": 1},
+ "environment": {
+  "sandbox_reset": true,
+  "restored": ["capstone 5.0.x via uv", "m2c re-cloned (work/m2c, matt-kempster)", "repo fast-forward 6b97fbe->93ba5bb (36 commits)"],
+  "game_sha256": "45cde149878fe945d0219fd0f61ca09856aee66bdcc9119de21c0583f1d0667d",
+  "exe_sha256": "1508b53216cc20dad8c1354e7702dae2940c34e7b2adeffb00337ab6659e0f35",
+  "firmware": "openbios",
+  "checkpoints_lost": ["truck_engage", "clamp0", "chopper_ckpt"],
+  "checkpoints_built": ["pin_ckpt (px 1164.0, gren 10, score 1200, sec 0xB/0x1)", "chopper_live (chopper x 1121.7 h 211 hp_a4 300, player px 1079)"]
+ },
+ "findings": [
+  {
+   "id": "F1",
+   "claim": "D7 pin release condition = the section VM's pending-entity queue must CLEAR",
+   "status": "GAMEPLAY_VERIFIED",
+   "reps": "3/3 identical (release_test rel1/2/3)",
+   "evidence": "respawn at 992 -> standing-fire kills the 2 frozen 0x4054 soldiers (score +200) -> ZONE_CLEAR -> walker state 0xB -> 0xC, walker flags 0x1 -> 0x8, progress word 0xFFFFFFFF -> 0xFFF38B4A",
+   "files": ["scripts/release_test.py", "evidence local rel1/rel2/rel3 JSONL+reports"]
+  },
+  {
+   "id": "F2",
+   "claim": "MISSION 1 complete screen reached (explicit in-game completion evidence)",
+   "status": "GAMEPLAY_VERIFIED",
+   "reps": "3 mission screens (adv, cfm1, cfm2) after releases",
+   "evidence": "PNG adv_050221_c000.png + cfm_*_mission_screen.png: 'MISSION 1' banner + 'PRESS START', score 1500, 1UP=0",
+   "files": ["scripts/release_advance.py", "scripts/release_confirm.py"]
+  },
+  {
+   "id": "F3",
+   "claim": "Post-screen flow: START toggles PAUSE; unpause+START -> 'Metal Slug X - NOW LOADING' -> SNK attract title (continue-countdown expired during the tally wait)",
+   "status": "OBSERVED",
+   "files": ["cfm_050610_post060.png (NOW LOADING)", "cfm_050610_post099.png (SNK title)"]
+  },
+  {
+   "id": "F4",
+   "claim": "Chopper kill recipe: hop + UP-lob at apex, connect band |dx| ~7-29 (nearly overhead), h ~205-214, 3 connects = dead (hp_a4 300->200->100->0), +1100 score",
+   "status": "GAMEPLAY_VERIFIED",
+   "reps": "arm J1 (chk_J1): 3 hp drops + CHOPPER_GONE; chain runs: 19 throws -> CHOPPER_DEAD k25 (deterministic x2)",
+   "negative_control": "arm G (ground UP+A): +200 only, no chopper hp drop, death c21 — session-2 negative reproduced",
+   "files": ["scripts/chopper_kill.py", "scripts/chopper_chain.py"]
+  },
+  {
+   "id": "F5",
+   "claim": "The armored truck lives in entity slot 33 — OUTSIDE the historical 24-slot scan window (scan_entities SLOTS=24)",
+   "status": "CONFIRMED",
+   "evidence": "trial_fix c04: slot 33 st 0x9E88 x 940.5 h 65 (the behind-parked truck); all historical scans (slots 1-23) never saw it",
+   "consequence": "the scan-coverage gap is fixed in this session's scripts (n=36); combat.py scan_entities SLOTS unchanged this session (behaviour-affecting change deferred)"
+  },
+  {
+   "id": "F6",
+   "claim": "Section-VM static decode: the 13-opcode dispatcher (fn 0x80021128) consumes a 30-byte runtime-rebuilt script buffer at 0x80010DB8 (opcodes 0x01-0x0D, cursor-indexed), request==8 -> flags|=0x12 + counter decrement, request!=8 -> flags|=0x42 (the pin signature); runner id s16 @0x800EB588 (-1 inactive), gate u16 @0x800EB5C6 (==9 special arm); the queue walker fn 0x80020444 resolves requests from a node list @0x800EB5F8 (nodes +0x5C/+0x8) via a table @0x800EB5E8",
+   "status": "IMPLEMENTED",
+   "evidence": "scripts/pin_release_disasm.py + walker_writers_scan.py + dispatcher_full.asm + mgr_80020444.asm; the 0x80010DB8 buffer content differs between the EXE file (ASCII tokens) and live RAM (pointers + opcode bytes 00 01 01 01 01 02 03...) — rebuilt at runtime",
+   "files": ["scripts/pin_release_disasm.py", "scripts/walker_writers_scan.py", "scripts/pin_script_probe.py", "evidence/issue5_session3_static/"]
+  },
+  {
+   "id": "F7",
+   "claim": "Policy fixes (plugin layer only): (a) the instrument pin also latches on a SUSTAINED (state 0xB, flags&0x40) — boot-2's pin signature (2-consecutive confirm keeps the old single transients out); (b) clamp_clear aims the fire at the nearest live ground foe's side (the hard-coded LEFT fired away from the respawn-side soldiers); (c) the mode fallback holds clamp_clear while section_pinned even when the derived px-stall streak flickers",
+   "status": "IMPLEMENTED+UNIT_TESTED",
+   "suite": "459 passed + 1 xfailed (3 new tests; the (0xB,0x43) contract updated from single-transient-only to sustained-pins with the session-3 evidence)",
+   "files": ["ps1play/agent/combat.py", "tests/test_section_pin_policy.py"]
+  },
+  {
+   "id": "F8",
+   "claim": "At the pin the chopper is the active killer (trial_fix death census: chopper st 0xABDC hp_a4 300 at dx -124 with fallers 0xB4E4 in flight); in the no-input control it parks inactive (slot 13 x=0 hp_a4 300) — the chopper engages when the player acts",
+   "status": "CONFIRMED",
+   "files": ["scripts/policy_release_trial.py", "scripts/pin_slots_probe.py"]
+  },
+  {
+   "id": "F9",
+   "claim": "FULL-CHAIN last mile BLOCKED: chopper dead (19 throws) + soldiers dead (+400 score) + truck dead (wreck 0xA44C at its parked 937.5) still leaves the walker cycling (0xA/0xB, 0x43) at px ~984 with one residual frozen 0x4054 soldier at 1072 that the Y-bursts did not kill; no 0xC transition",
+   "status": "BLOCKED",
+   "next": "discriminate the residual 0x4054's true HP word (soft soldiers do not use +0xA4) and kill it, then walk the section; the release_test arm (soldiers-only, chopper inactive) DID release — the difference matrix (which entities gate WHICH boot-phase pin) is the next experiment"
+  }
+ ],
+ "honest_status": {
+  "GAMEPLAY_VERIFIED": ["D7 release via section-entity clear (3/3)", "MISSION 1 complete screen (3 observations)", "chopper kill via jump-lob (3 connects)"],
+  "IMPLEMENTED": ["section-VM static decode", "policy pin/aiming fixes"],
+  "CONFIRMED": ["truck slot 33", "chopper-active-at-pin killer", "0x80010DB8 runtime rebuild"],
+  "BLOCKED": ["full-chain last mile (residual 0x4054 + the (0xA/0xB,0x43) cycle at px 984)"],
+  "not_claimed": ["mission-1 clear via the pure-policy path (the released runs reached the mission screen through the manual chain, not the shipped policy)"]
+ }
+}
