@@ -1307,3 +1307,25 @@ remains UNCLEARED — no claim made. Full report: issue #5 comment
 - Manifest: accepted = tetrade, psx-minecraft, hello_pong (3);
   candidates_pending = []; docs addendum 3 written. No game bytes committed;
   repo hygiene unchanged (patched images local-only).
+
+## 2026-10-25 — Issue #6 round 5 + Issue #5 session 8: the complete-game round (50/50 split)
+
+- Round-5 protocol (user directive): 50% main game (MSX) / 50% other games;
+  16-a (MSX) and 16-b (hello_pong) ran as parallel subagents; 16-c (Nortis)
+  hit two Task-tool infra timeouts and was executed by the orchestrator
+  directly (script: scripts/nortis_complete_loop.py, 6 documented iterations).
+- 16-a MSX: WINTER scene = ATTRACT_DEMO (decisive: self-advance + START
+  aborts to PSX menu + input immunity); real M2 ride reproduced px 76.4→822.4
+  score→10930 zero deaths; m2_train anchor restored bit-for-bit; 0xC banner
+  levers recorded. Report: issues/5#issuecomment-6403863028.
+- 16-b hello_pong: COMPLETE_LOOP_OBSERVED ×2; X=CROSS mapping ground-truthed
+  from upstream game_pad.h; PLAYER_CONTROLLED (paddle reversal dy −90/+169,
+  no AI); natural game over bit-identical to boot screen; second complete
+  played game after Tetrade.
+- 16-c Nortis (LOCAL-ONLY): COMPLETE LOCAL LOOP — boot → 16-piece greedy
+  steering (perception fixed across 5 documented detector/geometry bugs incl.
+  an inverted-steering-direction bug) → natural game over → START restart →
+  fresh board. Line clear NOT achieved (6 iterations, deterministic RNG,
+  counters stayed 0) — honest gap recorded; score/lines causality unproven.
+- Manifest: hello_pong + nortis statuses updated; docs addendum 4; evidence
+  under scratch/issue6_round5_{hellopong,nortis} (+ v1..v5 archives).

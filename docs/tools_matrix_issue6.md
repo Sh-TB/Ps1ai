@@ -135,3 +135,40 @@ Manifest updated accordingly: accepted = tetrade, psx-minecraft, hello_pong;
 candidates_pending = []. New probe scripts persisted outside the repo:
 `scripts/nortis_causality.py`, `scripts/psxmc_causality.py`,
 `scratch/issue6_round4_hellopong/boot_hellopong.py`.
+
+---
+
+## Addendum 4 (2026-10-25) — round 5: the complete-game round
+
+**hello_pong — second game with a COMPLETE played loop (after Tetrade/`3a76322`):**
+controls ground-truthed from upstream `src/libs/game_pad.h` (`PAD_BUTTON_X =
+0x4000` = PSX CROSS = libretro **B**; libretro X = TRIANGLE = in-play pause,
+negative control madiff 0.0). X-restart causal (GAME_OVER → MENU → PLAYING,
+madiff 4.223). **PLAYER_CONTROLLED**: left paddle UP dy −90.0 / DOWN +169.0
+(reversal proven), RIGHT clean no-op, right paddle static — no AI
+(`P1: OK / P2: OK`). Steered play tracked the ball; ball exit → natural
+GAME_OVER **bit-identical** to the boot screen (madiff 0.0) → restart →
+second cycle. Whole game ≈170f, ends after ~2 points. Quirks honest:
+winner text constant, paddle position carries across restarts.
+
+**Nortis — COMPLETE LOCAL GAME LOOP, no line clear (honest):** boot →
+16-piece greedy steering run (shallowest-reachable-column policy with
+piece-masked board perception) → NATURAL game over ("GAME OVER! TRY AGAIN /
+PRESS START", PNG-verified) → START restart → empty board + fresh piece
+(diff vs entry 0.71, falling blob 204 px). Line clear NOT achieved across
+**6 policy iterations** on the deterministic RNG — score/lines causality
+stays UNPROVEN (counters 0). The iteration record (border poisoning,
+spawn-piece contamination, HUD-strip false positives, and the **inverted
+steering direction bug** fixed in v6) is preserved in
+`scratch/issue6_round5_nortis/report.json.iterations` — the learning loop
+the lab documents, dead ends included.
+
+**MSX (main game, issue #5 session 8, run in parallel):** the WINTER scene
+after the train fade-out is the **ATTRACT DEMO** — decisive probes:
+input-free watch self-advances (px 76.4→428.6, score 0→4000), one START tap
+aborts to the PSX main menu (px→0.0, flags→0), RIGHT-hold does nothing
+while the demo's own player fights (px frozen 5.1, score climbing). The
+session-7 "wall-stuck damage-tick" pattern is the demo's player. Real M2
+ride reproduced (px 76.4→822.4, score→10930, zero deaths) from the
+session-7 `m2_train` anchor — restored bit-for-bit deterministic. 0xC
+banner still uncaptured; levers recorded in `m3_verdict.json`.
