@@ -9,3 +9,4 @@ emu/
 # owner-local game content (never commit copyrighted game files)
 ps1play/re/SLUS_012.12
 ps1play/re/*.BIN
+work/
