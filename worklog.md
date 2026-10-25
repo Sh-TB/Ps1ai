@@ -1233,3 +1233,19 @@ remains UNCLEARED — no claim made. Full report: issue #5 comment
   chopper_kill/chopper_chain/policy_release_trial/pin_slots_probe/
   pin_script_probe/pin_release_disasm/walker_writers_scan/
   session3_static_chopper.
+
+## 2026-10-25 — Session 3 addendum: previous-games re-test (owner directive)
+
+- The sandbox had wiped the retail-disc downloads (Poy Poy, Trap
+  Gunner — MISSING_CUE honestly recorded); the homebrew binaries
+  survived in the machine-local workspace.
+- Re-fetch + SHA-256 verify + license-patch re-run
+  (fetch_homebrew.py + make_homebrew_lic.py): TETRADE/PSXMC/Nortis
+  patched images ready (local-only, never committed).
+- Boot + input-causality sweep 3/3 BOOTED (smallgames_sweep.py,
+  one process per game): **Tetrade** (pad id 0x41 mirror, START/X/LEFT
+  RAM-diffs 1.37 each), **PSXMC**, **Nortis** — the two complete
+  plugins' games still boot and respond through the shared beetle core
+  + OpenBIOS with the local license-patched images.
+- Issue #5 session-3 report posted: issuecomment-6393918486; pushed
+  93ba5bb..f953dc0 (+ this batch).
