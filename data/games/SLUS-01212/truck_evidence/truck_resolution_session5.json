@@ -1,0 +1,73 @@
+{
+ "session": "5",
+ "date": "2026-10-25",
+ "issue": 5,
+ "anchor_commit": "de84bec",
+ "suite": {"passed": 466, "xfailed": 1},
+ "environment": {
+  "sandbox_reset": true,
+  "restored": ["capstone 5.0.7 (venv reset again - recurring)", "repo fast-forward 6b97fbe->de84bec (4 commits)"],
+  "savestates_survived": true,
+  "state_dir_note": "config workspace /home/z/my-project/emu/ws was re-created empty by the reset; the historical states (pin_ckpt Oct25 10:00, truck_engage, chopper_ckpt/live, issue5_m1_start) live in /tmp/my-project/emu/ws/states and were copied over (5 files)",
+  "game_sha256": "45cde149878fe945d0219fd0f61ca09856aee66bdcc9119de21c0583f1d0667d",
+  "firmware": "openbios",
+  "one_boot_per_process": true
+ },
+ "primary_result": {
+  "id": "S5-E2E",
+  "claim": "MISSION 1 completed END-TO-END by the SHIPPED plugin policy ALONE (ps1play.agent.combat.CombatPolicy, session-4 patch, zero changes this session) from a FRESH real-play boot: 3/3 runs, bit-identical (banner chunk c=107, score 3300, px 26.4, 1 disclosed deterministic death each).",
+  "status": "GAMEPLAY_VERIFIED",
+  "arm": {
+   "runs": 3,
+   "outcome": "MISSION_BANNER 3/3",
+   "determinism": "all three runs identical: c=107, death at c43 (faller rain during the mission-end hold), score 3300, wall ~5.9s each (boot included)",
+   "inputs": "policy-generated only; NO savestate loads, NO checkpoint saves, NO scripted inputs inside the claimed runs",
+   "grenades": "real counter passed (10 at start; 9 after one engage-grenade; 10 after the death respawn pickup)"
+  },
+  "trajectory_e2e1": [
+   "c0-c11 advance: desert px 347->1164, one engage-grenade (score 600, gren 10->9)",
+   "c12 d7_zone latch (px>=1150 wobble), clamp_clear+engage kill the ground wave: score 2100->3300",
+   "c27 trigger-B pre-banner signature (walker (0,8) inside the D7 zone) -> mission_end latch",
+   "c28-c107 mission_end_hold (no input); the chopper stays ALIVE raining fallers (it is NOT in the section pending-queue - the release does not require it, re-confirming session-3)",
+   "c43 the standing player dies to the faller rain (php 155->0, the last life); in-place respawn wait; run resumes holding (php 120, px 992, gren 10)",
+   "c107 the proven release chain completes: walker (0xC,9) @ px 26.4, confirm-after-quiet PASS, PRESS START scene (PNG, visual match to the session-3/4 accepted evidence)"
+  ],
+  "pass_predicate": "walker state 0xC in the mission-start px window [10,60] (observer 26.4) + mission_end latch + was_deep + confirm-after-quiet (60f no-input re-read); PNG visually verified per run",
+  "evidence_files": "evidence/issue5_e2e_trial/ (JSONL per run + report_*.json + PNGs); repo copy: session5/ PNGs + this file"
+ },
+ "control_result": {
+  "id": "S5-CONTROL",
+  "claim": "the session-4 checkpoint arm re-run on this machine with the EXACT session-4 protocol (pin_ckpt -> no-input warp pre-wait -> 15f policy chunks): MISSION_BANNER c=73 px 26.4 score 2500 0 deaths",
+  "status": "GAMEPLAY_VERIFIED",
+  "note": "session-4's own paired trial was 3/3 (c=79, 2500, 0 deaths); this session reproduces it 1/1 after restoring pin_ckpt from /tmp"
+ },
+ "findings": [
+  {
+   "id": "S5-F1",
+   "claim": "the (0xC) walker reading has a mid-gameplay TRANSIENT: control1 (protocol deviation: policy inputs during the pin cycle instead of the no-input warp pre-wait) produced (0xC,8)->(0xC,9)@px3.4 with gameplay visibly ON SCREEN (PNG), px unstable (1146->3.4 in one chunk)",
+   "status": "OBSERVED",
+   "consequence": "the harness PASS predicate hardening (px window [10,60] + confirm-after-quiet + mission_end latch + was_deep) rejects it; the SHIPPED policy's mission_end streak-latch (2 consecutive 0xC readings, no px guard) WOULD latch on this transient - no gameplay failure observed in 4 clean runs (3 e2e + 1 control), recorded as a known sharp edge, NOT patched (minimal-change discipline)",
+   "evidence": "control1_122743_mission_banner.png (gameplay, not banner)"
+  },
+  {
+   "id": "S5-F2",
+   "claim": "the mission-end hold is survivable but NOT free: with the chopper alive the faller rain kills a standing player in ~10 chunks (php 155->0); the deterministic e2e run spends the LAST life at c43 and still completes (the release only needs the GROUND queue clear; the respawned life survives the remaining ~930f of rain)",
+   "status": "GAMEPLAY_VERIFIED (deterministic 3/3)",
+   "consequence": "the 'banner with lives remaining' variant needs the proven pre-window chopper kill (session-3 jump-lob) BEFORE the trigger-B signature, or a faller-safe hold position - declared next action"
+  },
+  {
+   "id": "S5-F3",
+   "claim": "post-banner flow with 0 lives: the (0xC) scene expires into the CONTINUE? countdown (no-input watch W0-W5: px 0.0, walker (0xB,1), CONTINUE? 3 on screen); ONE START tap ACCEPTED the continue: gameplay resumed at px 992 (the wave zone) with 1UP->2, score kept (3301), RIGHT moved the player 135px (flags 0xFF)",
+   "status": "OBSERVED",
+   "consequence": "Mission 2 entry is NOT claimed and remains OPEN: the observed START path (0 lives) accepted a continue instead; session-3's START->NOW LOADING->SNK-title observation and this continue-accept are both consistent with a lives-dependent branch; needs a lives-remaining run (S5-F2) to observe the real next-mission flow",
+   "evidence": "m2probe_123744_W5.png (CONTINUE? 3), m2probe_123744_S1_right.png (continue-respawned gameplay)"
+  }
+ ],
+ "honest_limits": [
+  "no policy code changed this session - the 466+1xfail suite is untouched and green",
+  "the e2e claim includes 1 disclosed deterministic death per run (in-place respawn, the proven recovery semantics of the prior trials); a zero-death e2e run is the follow-up, not a claim",
+  "Mission 2 entry: not achieved, not claimed - the probe characterized the post-banner continue branch only",
+  "wall-clock times are this 2-core machine's; emulator frames are the honest unit (e2e run ~24k frames incl. boot)"
+ ],
+ "scripts": ["scripts/e2e_policy_trial.py", "scripts/m2_entry_probe.py"]
+}
