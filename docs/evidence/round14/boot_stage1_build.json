@@ -1,0 +1,43 @@
+{
+ "image": "/home/z/my-project/emu/games_homebrew/patched/breakout_r14.bin",
+ "bytes": 152880,
+ "sha256": "eb33fc88887fa884b2df628482abfb5e5f94f58347028a7ae6da4d1bd69d6106",
+ "total_sectors": 65,
+ "stage1": {
+  "t_addr": "0x80180000",
+  "t_size": 2048,
+  "pc0": "0x80180000",
+  "path_str_addr": "0x80180100",
+  "scratch": "0x80182000",
+  "syscalls": {
+   "open": "B0:0x32",
+   "read": "B0:0x34",
+   "close": "B0:0x36",
+   "flushCache": "A0:0x44"
+  },
+  "chunks": [
+   "0x800 header (discard)",
+   "0x8000",
+   "0x8000",
+   "0x3000"
+  ],
+  "labels": {
+   "start": "0x80180000",
+   "bad": "0x8018002c",
+   "opened": "0x80180034",
+   "loop": "0x80180070",
+   "big": "0x8018008c",
+   "doread": "0x80180090"
+  }
+ },
+ "game_exe": {
+  "sha256": "822a50e6fe77e5c43caef377acf4363d5f9da35cbd4ef0b8bebbc408d3cc2425",
+  "bytes": 79872,
+  "verbatim": true
+ },
+ "root_dir": [
+  "SYSTEM.CNF;1@23",
+  "LOADER.EXE;1@24",
+  "CS50X.EXE;1@26"
+ ]
+}

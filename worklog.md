@@ -1784,3 +1784,21 @@ EXE_LOAD_CRASH under OpenBIOS; candidate recorded with next levers.
 
 Suite untouched this round (no core changes; all new scripts are
 additive tools). No game bytes committed.
+
+
+## 2026-10-27 — Issue #6 round 14: honest correction + real gameplay
+
+- User rejected the r13 showcase GIF ("only the ball moves"): audit
+  confirmed 0% interception, paddle never moved, dead wiggle code,
+  walkover win — claim retracted in docs Addendum 6.
+- hello_pong REAL match: port-1 disconnect activates the game's own AI;
+  60 Hz servo on the left paddle; 9000 frames, 117 move-steps, real
+  catches, 0 misses, 0-0 eternal rally; AI proven unbeatable from
+  upstream source (speed parity + deadband + 60px paddle). GIF:
+  https://h.uguu.se/VmqXgChs.gif
+- psxBreakout: OpenBIOS 16-sector single-read cap measured (empirical
+  cliff); stage-1 MIPS loader built+verified; boot blocked by an open
+  kernel-phase stale-CD-read anomaly (hello_pong originals served for
+  some sectors; no second file ever opened — LD_PRELOAD + atime);
+  full saga in docs/evidence/round14/.
+- Suite: not run this round (additive scripts only). No game bytes.

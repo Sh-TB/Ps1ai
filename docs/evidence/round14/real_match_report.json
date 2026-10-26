@@ -1,0 +1,12 @@
+{
+ "frames": 9000,
+ "catches": 11,
+ "misses": 0,
+ "rallies": 0,
+ "score_reads": [],
+ "win": false,
+ "ai_active": true,
+ "wall_s": 148.0,
+ "frames_total": 9000,
+ "verdict": "INCOMPLETE"
+}

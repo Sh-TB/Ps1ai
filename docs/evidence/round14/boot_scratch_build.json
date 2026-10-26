@@ -1,0 +1,9 @@
+{
+ "image": "/home/z/my-project/emu/games_homebrew/patched/breakout_scratch.bin",
+ "bytes": 152880,
+ "total_sectors": 65,
+ "sha256": "f87e48f6ec717fd7b830aa85f2ef818df066e9933bc568833797d033d2f97060",
+ "pvd": "own template (PSX layout: L@140 M@144 root@156)",
+ "records": "+14 padded (hello_pong style)",
+ "lineage": "NONE - no hello_pong bytes anywhere"
+}

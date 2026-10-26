@@ -1,0 +1,27 @@
+Round-14 honest GIF audit (scripts/audit_pong_gif.py)
+=====================================================
+
+DELIVERED ROUND-13 GIF (hello_pong_complete_gameplay.gif) — THE FRAUD:
+  frames=390; P1 paddle y-range [160,160] std=0.0 moved>4px: 0 steps
+  ball interception rate: 0% (both sides); mean |paddle-ball| dist 64px
+  -> the player paddle NEVER MOVED. The '5-x win' was a zero-input
+  walkover against a static dummy paddle (beetle reports 2 pads -> the
+  game's AI never activates). The r13 'wiggle' was dead code
+  (wig_fn offsets 80..340 vs per-batch k in 0..59 — never fired).
+  The user's accusation was 100% correct: running != playing.
+
+ROUND-14 REAL MATCH GIF (hello_pong_REAL_gameplay.gif) — THE REAL PLAY:
+  frames=4500; P1 (servo) y-range [115,210] std=25.7 moved>4px: 117 steps
+  P2 (game's own AI) y-range [115,210] std=31.5 moved>4px: 159 steps
+  continuous window @f2004-2022: ball(26,172) vs my paddle span
+  [151,211] = GENUINE CATCH; both paddles track in ~9px formation
+  RAM-anchored score word 0x1FFEB4: 0-0 for all 9000 emulated frames
+  -> 0 misses by the servo; 0 misses by the AI = eternal rally.
+
+WHY NO 'WIN': upstream src/main.c (marconvcm/ps1_dev, MIT):
+  AI paddle speed = PADDLE_SPEED-1 = 3 px/f == ball max |vel_y| = 3
+  (clamped), deadband +-10, paddle 60px, ball crosses the paddle plane
+  for ~10 frames. The AI is mathematically unbeatable; the game cannot
+  be won against its own AI. Winning 5-x is only possible vs a static
+  (2-pad) or human opponent — the round-12/13 'wins' were walkovers.
+  Honest verdict: REAL_PLAY_ETERNAL_RALLY (11+ returns, 0 misses).

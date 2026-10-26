@@ -1,0 +1,29 @@
+Round-14 psxBreakout boot campaign (status: BLOCKED, fully documented)
+=======================================================================
+Root causes measured this round (all reproducible):
+ 1. OpenBIOS loadExe() issues ONE dev_cd_read for the whole exe body and
+    IGNORES its return value; the kernel CD path delivers at most 16
+    sectors (0x8000 bytes) per call (empirical cliff: t_size 0x8000
+    boots, 0x9000+ truncates at exactly 32768). cs50x.exe needs 38
+    sectors -> truncated load -> exec into zeroed RAM -> dead black.
+ 2. Stage-1 loader approach (hand-assembled MIPS, capstone-verified)
+    defeated by an unresolved CD-read anomaly: the kernel boot phase
+    serves STALE hello_pong_lic.bin ORIGINAL bytes for some sectors
+    (PVD/path-table/root/CNF/exe-header reads show hello_pong's
+    original values even when the on-disc bytes differ), while other
+    sectors (e.g. LBA 27) arrive REAL. LD_PRELOAD tracing shows the
+    process opens ONLY the target .bin (atime forensics agree); the
+    stale bytes exist nowhere on disk, in the core .so, or in any
+    scanned process memory region. The psyqo shell (checker) reads the
+    REAL disc (content-dependent outcomes), the kernel phase does not.
+    Sector-boundary-spanning user-data writes also serve stale.
+ 3. Exploit path (v2): the kernel's fixed pc0 0x80013FF0 (hello_pong's
+    original) + real body reads -> entry stub at LBA32[2032] +
+    self-copying stage2 at LBA27 -> the stage2 DID load (verified in
+    RAM at 0x80011000) but the entry stub's sector (32) served stale,
+    so execution entered hello_pong's original bytes -> crash.
+ Next levers: (a) find a single-sector spot INSIDE LBA 25..38 that is
+ both executed (reachable from pc0's fall-through?) and really served;
+ (b) instrument beetle-psx itself (the anomaly lives between the mmap
+ and the kernel-phase CD reads); (c) ask upstream (open an issue on
+ beetle-psx-libretro with the minimal repro).

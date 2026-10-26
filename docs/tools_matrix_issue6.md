@@ -426,3 +426,49 @@ Three games advanced in parallel (10-train round, GitHub-first recon: origin 60a
   directory record at offset **156**, not ECMA-119's 168; a
   strict-ECMA image drops to the shell cube loop — consistent with the
   BIOS reading the root record at 156 on PSX-flavored images.
+
+
+## Addendum 6 (2026-10-27) — round 14: the honest correction + REAL play
+
+**Correction of round 13's showcase.** The user audited the delivered
+`hello_pong_complete_gameplay.gif` and called it out: "the ball just
+moves, nobody plays." The round-14 re-audit (scripts/audit_pong_gif.py)
+confirms it completely: the player paddle NEVER MOVED (std 0.0, 0
+move-steps), 0% ball interception, and the "5-x win" was a zero-input
+walkover against a static dummy (beetle reports 2 pads -> upstream AI
+never activates). The r13 paddle "wiggle" was dead code (batch-relative
+offsets 80..340 vs k in 0..59). Running != playing — the criticism
+stands and the claim is retracted.
+
+**REAL play, same game, this round** (`r14_hellopong_real.py`): libretro
+port 1 disconnected via `set_port_device(RETRO_DEVICE_NONE, port=1)` ->
+the game's OWN AI drives the right paddle (verified: 38 tracking events
+in 240 frames). A closed-loop servo (screen ball centroid + paddle row,
+60 Hz) drives MY left paddle: 9000 frames, 117 paddle move-steps,
+genuine catches (continuous window @f2004: ball y=172 inside the paddle
+span [151,211]), 0 misses, RAM-anchored score 0x1FFEB4 stays 0-0.
+GIF: https://h.uguu.se/VmqXgChs.gif (2x speed).
+
+**Why there is no "WIN" line: the upstream AI is unbeatable by design**
+(src/main.c, MIT): AI speed = PADDLE_SPEED-1 = 3 px/frame == the ball's
+clamped max |vel_y| = 3; deadband 10px; paddle 60px; the ball spends
+~10 frames inside the paddle plane. No aim can outrun it. Every
+"win 5-x" on this game (r11/r12/r13) was a static-dummy walkover.
+
+**psxBreakout (the new tiny game): boot campaign, status BLOCKED.**
+(1) OpenBIOS's loadExe does ONE read for the whole body and ignores
+failures; the kernel CD path caps at 16 sectors/0x8000 bytes per call
+(empirical cliff: 0x8000 loads, 0x9000 truncates at exactly 32768) —
+cs50x.exe needs 38. (2) A capstone-verified hand-assembled stage-1
+loader was defeated by an open anomaly: the kernel boot phase serves
+STALE hello_pong_lic.bin original bytes for some sectors (root/CNF/
+exe-header read hello_pong's original values regardless of on-disc
+bytes) while other sectors arrive real; LD_PRELOAD + atime forensics
+prove the process opens ONLY the target image. Full saga + repro in
+docs/evidence/round14/psxbreakout_boot_saga.txt.
+
+Tools this round: audit_pong_gif, r14_diag_exe, r14_diag_bioscalls,
+r14_diag_pvd, r14_boot_watch, r14_size_build/probe (the cliff), r14_bisect,
+r14_screens, r14_forensic{,2,3}, r14_stage1_build{,2}/stage1v2/v3,
+r14_scratch_build, r14_padloader_build, r14_exploit{,2}_build,
+r14_boot_and_play, r14_hellopong_real, preload_log.
