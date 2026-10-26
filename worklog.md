@@ -1444,3 +1444,85 @@ from 1abf046.
   flags. Next lever: M1-end vs M2-side loading diff (needs anchor).
 - Manifest statuses + round7_addendum; docs addendum 6. Suite
   485 passed + 1 xfailed. No game bytes committed.
+
+---
+
+## 2026-10-26 — Issue #6 round 8 (+ Issue #5 session 11): MSX anchor regenerated + gate mechanism map + decisive latch negative; Tetrade level/speed/score triple CAUSAL; PSXMC place5 honest negative with two convention discoveries (50/50)
+
+- Round-8 protocol (50% main game / 50% others), three parallel
+  subagent tracks; all three agents produced full evidence before a
+  Task-tool infra timeout cut their return messages — orchestrator
+  reconstructed from on-disk artifacts (round-5/7 precedent) and ran
+  the final MSX analysis + probe directly.
+- 8-a MSX (m2t9 + diff): the m2_train anchor is REGENERATED (attempt 9
+  of the series; scripts/msx_m2_anchor9.py): fresh boot -> M1 banner
+  (chunk 107, deaths 0) -> post-banner gameplay_seen -> 2 M2 spawns ->
+  anchor saved at px 76.4 / score 0 / php 76 / gren 10 / sec (11,9) —
+  the session-9 spawn numbers reproduce exactly; the same run also
+  saved an m1_end anchor (px 0.0, score 3300, sec (11,1), the
+  CONTINUE? gate). 56,099 frames, one boot.
+- 8-a MSX (the recorded lever — M1-end vs M2-side loading diff):
+  scripts/msx_m1end_m2side_diff.py tracked per-byte RAM over 5 windows
+  (A m2_train live ride +505.6px; B m1_end quiet 4800f; C m1_end
+  signature-gated START taps -> endzone trap again, no spawn; D M1
+  live; E m1_end 7200f quiet -> attract world). Diff-of-diffs
+  (scripts/msx_m1end_m2side_analyze.py + 4 unit tests): spawn_exclusive
+  411 B / world_exclusive 3,982 B / ladder_exclusive 766,662 B /
+  discriminator 3,381 B; gren 10->20 write at M2 spawn-in (f30)
+  reproduces the session-7 record.
+- 8-a MSX (mechanism map): 0x0EB5FC is a WORLD-ALIVE latch — 0xFF in
+  every live mission world (M1 and M2), 0x00 within the 30f
+  post-restore re-init burst in every m1_end window and it stays 0
+  while the ladder dies into attract; FLAGS_WORD 0x0EE518 dies to 0 at
+  ~f2400 in every restored ladder (mission given up); a ~f5820 attract
+  score write (3300->700) confirms E ended in the attract demo.
+- 8-a MSX (decisive negative probe, scripts/msx_r8_latch_probe.py,
+  DISCLOSED GS-code constant holds): from m1_end restore, holding
+  0x0EB5FC=0xFFFF (whole window and late-arm), and holding it together
+  with SECTION_FLAGS=0x0009, does NOT reopen the gate — all arms
+  replay the identical ladder into attract (fw->0, score stays 3300,
+  no spawn). The gate's missing state is NOT (world-alive latch,
+  section-flags) in tracked main RAM; with m2t8/rg1-4/gs1-2 that is 12
+  documented non-spawning contexts vs 2/10 fresh-boot successes —
+  the differentiator is outside tracked main RAM (restore-path or
+  CD-pipeline state). Gate stays OPEN, instrument bank grows.
+- 8-c Tetrade (triple CAUSAL — 4th complete played game with
+  counter-level causality): source pinned upstream main.c v1.0 @5155664
+  (LEVEL_GOAL 8, drop rates 30/27/13, clear table 200/500/700/1000 x
+  level, hard-drop 2/cell); main run 6 cycles, 368 pieces, 122 LINE
+  CLEARS, natural game overs every cycle, CONTINUE refused each time.
+  (a) CAUSAL(level): 0x1FF5A0 flips 0->1 at fc 4293 with lines 8->9 =
+  LEVEL_GOAL exactly (natural play, zero writes); (b) CAUSAL(speed):
+  drop cadence medians 30f (n=374, all=30, phase-locked mod 30) -> 27f
+  (n=248, all=27) -> 13f at level 2 (n=69) — the source table
+  verbatim; (c) CAUSAL(score): 40/40 level-0 clears add zero clear
+  points (0 x level) and 61/61 level>=1 clears match the 200/500/700/
+  1000 table x level exactly. Independent HUD corroboration via VLM
+  reads (score 674 matches RAM at the flip; level 1 visible next
+  cycle). Verdicts: GAMEPLAY_CONFIRMED + CAUSAL(level,speed,score).
+  A first-pass b-verdict MISMATCH was refixed (phase concentration is
+  per (cycle, level) bucket — gameTimer restarts each life).
+- 8-b PSXMC place5 (honest INCONCLUSIVE(place), root-cause refined):
+  pitch ladder 15.5-25 deg with the DIRECT convention (ring+ = camera
+  DOWN, matching the raycast), fine-aim err <=1 deg, control arm clean
+  (no UI, no stack change) — and every attempt: stack 26->26 (delta 0)
+  with ui_opened and world_px 35-40k. Two NEW source discoveries:
+  (1) the raycast and the RENDER pipeline disagree on pitch sign
+  (world_raycast.c rotationToDirection5o Y = -sin5o(pitch) vs
+  camera.c:83 +sin(pitch)) — aim conventions must be chosen per
+  consumer; (2) the UI-close binding is START
+  (BINDING_OPEN_INVENTORY -> RELINQUISH); CIRCLE is BINDING_LOOK_RIGHT,
+  not a UI close (round-7 UI-recovery was rotating the camera).
+  Reach 6 (player.h:27), place at hit+face (player.c:321). The
+  stack-delta-0 + UI-opened pattern suggests the USE raycast hits
+  nothing placeable at these pitches (hits: [] every attempt) while a
+  table UI still opens — next lever: place the target face IN FRAME
+  at a pitch where the raycast provably intersects (ray-directed, not
+  camera-directed, aim), then the world_px gate.
+- Tools: msx_m1end_m2side_diff.py (5-window one-boot tracker),
+  msx_m1end_m2side_analyze.py (+ tests/test_msx_r8_analyze.py),
+  msx_m2_anchor9.py, msx_m2_candidates8.py, msx_r8_globals_query.py,
+  msx_r8_latch_probe.py, psxmc_r8_place5.py, tetrade_r8_levelup.py.
+  Suite 489 passed + 1 xfailed. No game bytes committed; patched
+  images and evidence local-only (scratch/issue6_round8_{msx,psxmc,
+  tetrade}/).
