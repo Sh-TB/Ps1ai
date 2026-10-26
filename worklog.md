@@ -1614,3 +1614,63 @@ from 1abf046.
   tetrade_r9_tetris.py (2-ply AI + tetris PNG ring), psxmc_r9_place6.py.
   Evidence: scratch/issue6_round9_msx/{arena_t4,cap,cap2,leaderkill},
   scratch/issue6_round9_tetrade/, scratch/issue6_round9_psxmc/.
+
+---
+
+## 2026-10-26 — Issue #6 round 10 (50/50, three games in parallel)
+
+**Tetrade (issue #8 DoD CLOSED).** `tetrade_r10_plugin_loop.py` ran the
+complete loop through plugin contract v1 with zero core edits
+(PS1Play.run_steps/observe/play -> TetradePlayPlugin hooks only):
+boot -> title -> menu -> Marathon -> 151 pieces / 41 clears (score gate
+41/41 exact; level-0 clears zero clear-pts per source), 6 natural level
+flips 0->6 (thresholds exact), next-piece read 150/152 (98.7%), natural
+game over at level 6 (score 33,582 @ 0x1FF5A8), CONTINUE refused
+(CIRCLE), restart -> fresh Marathon (counters zeroed + live piece).
+All five issue-#8 DoD items PASS/CAUSAL. Evidence:
+`scratch/round10_tetrade/plugin_loop/` (report + 12 PNGs + JSONL).
+
+**MSX (issue #7).** Arena pin regenerated fresh (`msx_r10_cap.py`:
+57,482 f, 31 disclosed continues, wr9_arena at px 2212, census = 3x
+300-HP 0xA0D0 slots 10-12). Four experiments: (1) `msx_r10_timergate.py`
+fight/kite/hold — front duo kill-causal again (+500/slot), post-clear
+survival caps at 1,140 f -> INCONCLUSIVE_SURVIVAL_CEILING; (2)
+`msx_r10_rollover.py` — 1 Hz countdown hunt (12 x 60 f snapshots, u16
+exact -1/window): NO 1 Hz timer word anywhere in main RAM (the "300 s
+timer" is not a u16 countdown at the arena); engineered survival
+(edge-hold, early jumps, anti-air, grenade lobs) still ceilinged at
+21.1 s; (3) `msx_r10_rear2.py` — surgical 2 f turn + stationary grenade
+lobs landed a slot-12 HP drop (+200 damage points) = REAR_DAMAGE_CAUSAL
+(the rear spawner IS hittable without walking); trio still cycles to
+respawn-pending within ~100 f and the player dies ~16 s in; (4)
+continue-landing map from the cap trace: landings at 1164 (chopper pin)
+and 1424-1525 (truck pin), NONE past 2212 — the arena is one-pass.
+Issue #7's >=50-wagon target stays blocked at the gauntlet with the
+spawner-reachability, timer-absence and checkpoint-map evidence
+recorded.
+
+**PSXMC (place campaign; FIX-1/FIX-2 CLOSED, place still open).** All
+three r10 instrument root-causes fixed and validated: (1) chunk ABI via
+capstone disasm of the fixed binary (worldGetChunkBlock @0x80025ab0 /
+chunkGetBlock @0x8001c120): World.chunks @ +0x3144 (ax + 7*az; NULL =
+unloaded — the r10 '49-consecutive-pointer' scan failed on the 5x5
+window inside the 7x7 array), Chunk.blocks @ +0x8C (x + 8z + 64y, x
+innermost); (2) id deref via upstream block.h @infdev_2025_04_18:
+IBlock is a vtable-first interface, Block.id is a u8 BEHIND the pointer
+at IBlock+0 (callers do lw+lbu); (3) fallback base algebra + center-slot
+sanity (idx 24, not 0). Oracle VALIDATED x3 (straight-down in-column/
+in-reach/world-arbitrated, clean horizon negative; world ids REAL:
+stone id 1 at the real surface y=7 — the flatland 4/5 expectation is
+wrong for this spawn). New discoveries: per-boot spawn FACING differs
+(+z / -z; facing calibration implemented: forward = the dz direction
+that grows as pitch flattens), ring->ray pitch mapping is non-linear
+but within-run monotonic; servo convergence on world-arbitrated in-
+reach hits proven ([0,7,-2] @ pitch 27 = 2 ahead). place7 v2-v5 honest
+FAILED_PLACE_REJECTED — remaining lever: canonical-latch
+disambiguation (the player struct retains several breaking-like
+triples; the CURRENT one must be picked, e.g. by the fixed player.c:134
+offset or by repeat-latch tracking). Tools: msx_r10_{cap,timergate,
+rollover,rear2}, tetrade_r10_plugin_loop, psxmc_r10_{lib,oracle,
+place7}, psxmc_disasm_offsets, psxmc_find_id_offset; tests
+test_psxmc_r10_oracle.py (16, mock-based) + tetrade plugin tests.
+Suite 521 passed + 1 xfailed. No game bytes committed.

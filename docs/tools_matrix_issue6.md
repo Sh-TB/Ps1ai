@@ -321,3 +321,57 @@ fixes; the place campaign remains open.
 
 Suite **489 passed + 1 xfailed**. No game bytes committed; patched
 images and savestates local-only.
+
+### Addendum 4 (2026-10-26) — round 10: three games advanced in parallel
+
+**MSX (issue #7).** `scripts/msx_r10_cap.py` regenerated the px-2212
+arena pin from a fresh boot (57,482 f, 31 disclosed continues, census
+= 3x 300-HP 0xA0D0 slots 10-12, wr9_arena savestate). `msx_r10_
+timergate.py` (fight/kite/hold) confirmed the front duo kill-causal
+again (+500/slot) but survival after field clear caps at 1,140 f —
+the 300 s rollover (18,000 f) is unreachable while the rear spawner
+lives; verdict INCONCLUSIVE_SURVIVAL_CEILING. `msx_r10_rollover.py`
+added a 1 Hz countdown hunt (12 x 60 f RAM snapshots, u16 exact
+-decrement/s): **NO 1 Hz timer word exists in main RAM** — the "300 s
+timer" is not a u16 countdown at the arena; engineered survival (edge
+hold, early jumps, anti-air, grenade lobs) still ceilinged at 21.1 s.
+`msx_r10_rear2.py` proved the rear spawner REACHABLE without walking:
+surgical 2 f turn + stationary grenade lobs landed a slot-12 HP drop
+(+200 damage points, REAR_DAMAGE_CAUSAL) — but the trio cycles to
+respawn-pending within ~100 f of engagement and the player still dies
+~16 s in. Continue-landing map from the cap trace: 1164 (chopper pin,
+dozens of landings) and 1424-1525 (truck pin); **no checkpoint past
+2212** — the arena is one-pass. Issue #7's >=50-wagon target stays
+blocked at the gauntlet, now with the spawner-reachability + timer
+absence + checkpoint map evidence recorded.
+
+**Tetrade (issue #8 DoD closure).** `scripts/tetrade_r10_plugin_loop
+.py` ran the COMPLETE loop through the plugin contract v1 with zero
+core edits (PS1Play.run_steps/observe/play -> TetradePlayPlugin hooks
+only): boot -> title -> menu -> Marathon -> 151 pieces / 41 clears
+(score gate 41/41 exact, level-0 clears zero clear-pts per source) ->
+6 natural level flips 0->6 (thresholds exact) -> next-piece RAM read
+150/152 (98.7%) -> natural game over at level 6 (score 33,582,
+0x1FF5A8) -> CONTINUE refused (CIRCLE) -> restart -> fresh Marathon
+(counters zeroed + live piece). All five issue-#8 DoD items PASS/CAUSAL.
+
+**PSXMC.** Round-9's two mandatory fixes both closed: FIX-1 per-
+attempt bit-exact stability gates (`stable_gate`, sha twice 8 f
+apart); FIX-2 the R2 breaking-state oracle VALIDATED (straight-down
+x3 in-column/in-reach/world-arbitrated, clean horizon negative) after
+three instrument root-causes: (1) chunk offset — capstone disasm of
+the fixed binary (`worldGetChunkBlock` @0x80025ab0 / `chunkGetBlock`
+@0x8001c120) pinned World.chunks @ +0x3144 (ax + 7*az, NULL = idle
+slot — the r10 '49-consecutive-pointer' runtime scan failed on the
+5x5-loaded window) and Chunk.blocks @ +0x8C (x + 8z + 64y, x
+innermost); (2) id deref — upstream block.h (@infdev_2025_04_18):
+IBlock is a vtable-first interface, Block.id is a u8 BEHIND a pointer
+at IBlock+0 (callers do `lw`+`lbu`); (3) base algebra in the fallback
+scanner. Ground truth for this spawn: real surface y=7 (not the
+flatland 4/5). `psxmc_r10_place7.py` v2 digs a world-arbitrated cell
+2-3 blocks ahead and places into the hole with converging sensors
+(world id 0->non-zero + stack delta + PNG diff); the place campaign
+verdict is recorded in `scratch/round10_psxmc/place7/report.json`.
+
+Suite **521 passed + 1 xfailed**. No game bytes committed; patched
+images, workspaces and savestates local-only.
