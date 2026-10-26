@@ -26,6 +26,7 @@ PAIRS = {
     "TETRADE_PSX.bin": "TETRADE_lic.bin",
     "nortis_nortis.bin": "nortis_lic.bin",
     "PSXMC.bin": "PSXMC_lic.bin",
+    "hello_pong.bin": "hello_pong_lic.bin",   # round 11 (task 17-c)
 }
 
 

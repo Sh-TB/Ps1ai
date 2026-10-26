@@ -1674,3 +1674,83 @@ rollover,rear2}, tetrade_r10_plugin_loop, psxmc_r10_{lib,oracle,
 place7}, psxmc_disasm_offsets, psxmc_find_id_offset; tests
 test_psxmc_r10_oracle.py (16, mock-based) + tetrade plugin tests.
 Suite 521 passed + 1 xfailed. No game bytes committed.
+
+---
+
+## 2026-10-26 — Issue #6 round 11 (50/50, three games in parallel, "10 heavy segments")
+
+**MSX (issue #7/#5).** `msx_r11_wagons.py` two live passes (40+40
+disclosed continues, 41+41 deaths, max_px 2212 both): **194 wagons
+crossed cumulative (97 persistent per pass; small 88, big 12) — the
+>=50-wagon target MET 3.8x over**; lifecycle-closed tracker with a
+45 f persistence rule and H_SPLIT small/big classification (v1
+instrument failure archived honestly). `msx_r11_progress_watch.py` v2
+(kill-phase coverage via a core.run shim; v1's passive-window NEGATIVE
+archived): **17 kill_exact words** (0x0E7D9A-0x0E7E68 cluster, first
+flip f13675) and two **kill-aligned global transitions reproduced
+twice, each holding >=5 polls: SECTION_FLAGS 0x0EB5D0 1->67 and
+world_alive_latch 0x0EB5FC 255->0**; the ~1,100 f post-clear death
+reproduced with an EMPTY census (the death mechanism is internal, not
+enemy-driven); camera never released (0/N across rounds 9-11).
+`msx_r11_section_write.py` (disclosed GS writes, control walk first):
+holding the observed flags/latch state does NOT open the gate
+(ALL_HELD; walk clamps at px 2212 = physical wall; latch=0 KILLS the
+player — the world-alive latch is load-bearing). `msx_r11_mission_
+select.py`: attract/gameplay stable-word surveys (1,048,093 / 1,046,963
+u16), 2,633 diff candidates (band 0xFFDF8-0xFFFA1 = stack tail);
+m3probe NEGATIVE x2 (SECTION_STATE 0x0EB5F4 = 2/3 and SECTION_PROGRESS
+0x0EB5D4 = 2/3 held with restore verified — no world/scene change);
+fresh-boot M1 section state = [9,1], prog 0xFFFF, FLAGS_WORD 0x1FF.
+`msx_r11_wave_stop.py` INCONCLUSIVE (slot-12 kill not landed this boot;
+r10 rear2 recipe is per-boot timing-sensitive). Next lever recorded:
+the 17-word kill cluster.
+
+**hello_pong (second complete game).** `hellopong_r11_fetch_boot.py`:
+artifact re-downloaded (zip sha match), hello_pong.bin 2,500,176 B
+sha256 == manifest, ISO9660 volume "ELLO_PONG", license-patched locally
+(sectors from the user's own MSX disc; patched image stays out of VCS),
+OpenBIOS boot verified (padbuff id-41 x2 from f600), START/X input
+causality with the attempt-1 held-set instrument bug fixed and archived.
+`hellopong_r11_full_loop.py` + `hellopong_r11_grade_fix.py` (corrected
+grading of the same evidence; upstream main.c ground truth: trigger =
+is_button_just_released(CROSS), GAME_OVER -(X rel)-> GAME_MENU, win at
+5): **COMPLETE_LOOP_CAUSAL — start -> play (ball tracked 141/171 and
+158/195 steps, serves 5-6) -> natural game over x2 (left 4-0 and 5-0) ->
+X-release restart vs idle control legs (control stays GAME_OVER, X arm
+-> MENU, both games) -> fresh games 2 AND 3 to natural game over.**
+hello_pong = the SECOND complete game played end-to-end in this lab
+(after Tetrade). Paddle causality visual (row 123->115 during UP-hold,
+restored); RAM score sensor absent (recorded).
+
+**PSXMC (place campaign; mining CLOSED, placement one inventory-transfer
+away).** `psxmc_r11_latch_offset.py` v1 LATCH_OFFSET_BROKEN superseded
+by the ELF disasm ground truth: BreakingState @ player+0x6C (ticks
++0x74 += 4096/20 Hz tick, position +0x78 as 3x s32 — NOT the s16
+VECTOR, block ptr +0x88) — verified against updateBreakingState
+@0x80013c9c (addiu s3,a0,0x6c; the 0x88 lw; the 0x74 tick increment).
+`psxmc_r11_place8.py` v1-v16 honest ladder: flat-world forward rays hit
+nothing within reach 6 (servo wander explained); 15-deg ring
+quantization (between-ring dead zones); vertical ring hits one cell
+BEHIND; **mining SOLVED — engine-confirmed break of [0,7,-1] at the
+source-predicted tick (stone hand ~152 ticks; continuous hold required,
+release resets per player.c:402)**; post-remesh WorldReader reads
+unreliable -> engine-sensed verification; spawn-kit item found
+(cobblestone id 4 x92 at P+0x64 slot 0, reproduced x2 boots — the r10
+find_hotbar missed it via expect_item=58); `psxmc_r11_item_survey.py`
+ITEMS_PRESENT. Placement itself: item-NULL no-op (the use handler reads
+the HOTBAR UI P+0x5C whose slot 0 is empty; the item sits in the
+INVENTORY UI P+0x64) — v16's weak PLACE_CONFIRMED downgraded honestly
+(stack 92->92, y_rise 0). Recorded next lever: inventory->hotbar
+transfer (START opens; R2 cursor-click; L2 split/store-one), then a
+straight-down refill with stack/y-rise verification. blockCanHarvest
+ground truth: hand cannot harvest stone -> no drop -> mining cannot
+bootstrap items.
+
+**Tools.** msx_r11_{wagons,lib,progress_watch,section_write,mission_
+select,wave_stop}, hellopong_r11_{fetch_boot,full_loop,regrade,grade_
+fix}, psxmc_r11_{lib,latch_offset,place8,item_survey}; tests
+test_psxmc_r11_latch.py (raw-step ring semantics fixed in
+nearest_reachable_ring) + test_r11_sensors.py. Suite **548 passed +
+1 xfailed** (was 521). No game bytes committed; scratch/ gitignored;
+every write probe disclosed (GS constant codes, disabled + restore
+verified per arm).

@@ -375,3 +375,21 @@ verdict is recorded in `scratch/round10_psxmc/place7/report.json`.
 
 Suite **521 passed + 1 xfailed**. No game bytes committed; patched
 images, workspaces and savestates local-only.
+
+
+## Addendum 5 (2026-10-26) — round 11: three lanes, 10 heavy segments
+
+| tool | lane | what it adds |
+|------|------|--------------|
+| msx_r11_wagons.py | MSX | lifecycle-closed wagon tracker (45 f persistence, H_SPLIT small/big), cumulative >=50 target met (194) |
+| msx_r11_progress_watch.py | MSX | kill-phase block indexing via a core.run shim (v1 lesson: index DURING kills); found the kill-aligned SECTION_FLAGS 1->67 + world_alive_latch 255->0 pair |
+| msx_r11_section_write.py | MSX | disclosed GS-write gate probe with honest restore semantics (pre-value comparison) |
+| msx_r11_mission_select.py | MSX | attract/gameplay stable-word survey + focused m3probe arm (single-word writes: NEGATIVE x2) |
+| msx_r11_wave_stop.py | MSX | rear-spawner wave-stop discriminator (INCONCLUSIVE this boot) |
+| hellopong_r11_fetch_boot.py | hello_pong | artifact re-fetch + local lic patch + boot/input gate with upstream main.c ground truth |
+| hellopong_r11_full_loop.py | hello_pong | complete loop driver (start->play->natural game over->X-release restart->fresh game) |
+| hellopong_r11_grade_fix.py | hello_pong | corrected grading (release-trigger semantics; class-transition metric) -> COMPLETE_LOOP_CAUSAL |
+| psxmc_r11_latch_offset.py | PSXMC | static BreakingState extraction; superseded by ELF disasm ground truth (player+0x6C layout) |
+| psxmc_r11_place8.py | PSXMC | engine-sensed mining (breaking.position closed-loop; tick-exact) + engine-target place with physical-signal grading |
+| psxmc_r11_item_survey.py | PSXMC | all-slot UI item scan (found the spawn-kit cobblestone the r10 expect_item=58 scan rejected) |
+| psxmc_r11_lib.py | PSXMC | raw-step ring math fix (nearest_reachable_ring on the measured integer step) + RepeatLatchTracker + dead-reckon aim |
