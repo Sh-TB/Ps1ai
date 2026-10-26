@@ -1329,3 +1329,81 @@ remains UNCLEARED — no claim made. Full report: issue #5 comment
   counters stayed 0) — honest gap recorded; score/lines causality unproven.
 - Manifest: hello_pong + nortis statuses updated; docs addendum 4; evidence
   under scratch/issue6_round5_{hellopong,nortis} (+ v1..v5 archives).
+
+## 2026-10-25 — Issue #6 round 6 (+ Issue #5 session 9): line-clear causality closed, M2 terminus characterized, reusable playloop tool
+
+**Nortis — LINE CLEARS ACHIEVED + complete played loop x2 cycles (the
+round-5 honest gap CLOSED):** the campaign went source-first (cloned
+upstream `jbreckmckye/nortis`: field 26x10, GameState 7 ints,
+shapes table, pad.c one-action-per-frame with CIRCLE-priority, gravity
+pinned to 20 f/row by the flipped-args `MAX(MIN(1,sets),20)` bug) and
+then RAM-first with a 6-probe calibration ladder
+(`nortis_calib{,2..6}.py`, dead ends preserved):
+  - GameState located + verified @ `0x15FB0` (block/rot/lines/points/
+    x/y/play; x responds +-1 to taps, y ticks with falls);
+  - the RELEASE BINARY differs from today's master: true settled field
+    @ `0x1615C` (26x10 u32s, stride 40, row = positionY-2), a SECOND
+    identical copy @ +0x410, and a render array @ `0x15FCC` (active
+    piece included — it is NOT the collision field; three probes were
+    burned on it before the behavioral isolate: changes-only-at-commit);
+  - the game STARTS WITH TERRAIN: title-screen leftover pieces (S+T at
+    field rows 10-13, cols 4-6) are never cleared by
+    `game_actionRestart` in the binary — pieces stack on them (this is
+    why 6 round-5 PNG-policy iterations could not clear);
+  - input truth re-confirmed: 1-cell moves per press-edge (2f press),
+    ROTATE=CIRCLE(A), HARD DROP=CROSS(B), one action/frame.
+`nortis_lineclear.py` (RAM-truth greedy: clear-first (max_height,
+bumpiness) scoring, per-piece plan verification landed==planned):
+**run lc10: 62 pieces, 50/62 plan-perfect, 5 LINE CLEARS, clearedLines
+0->1->2->3 (cycle 1, 31 pieces, natural game over) -> START restart
+(lines reset 0) -> cycle 2: 2 more clears (0->1->2) -> natural game
+over.** `points` stays 0 (source never increments it — honest note).
+Evidence: scratch/issue6_round6_nortis/ (JSONLs, CLEAR PNGs, reports).
+
+**MSX (Issue #5 session 9, 50% of the round) — the M2 terminus
+characterized with 6 honest variants** (`msx_m2_extend.py` v1..v6, one
+boot per process, all from the regenerated `m2_train` anchor —
+regeneration run m2t7 reproduced the full chain fresh-boot->M1 banner
+c=107->M2 spawn px 76.4 php 76 in 72 s):
+  - v1: faithful ride reproduces **px 76.4 -> 822.4** (score 10930,
+    php 121 — NOT a death), then the S6-F1 teardown signature; the
+    fine 15f ladder (3600f) shows NO (11,1) countdown — score holds
+    10930 to f~3135 then resets, flags->255 at f3480;
+  - v3 long watch: the teardown screen IS **NOW LOADING** (PNG), the
+    attract logo cinematic hijacks at f~1200-2400, and at f4020 a
+    WINTER world spawns (px 120.3, php 120, score 0, fresh run state);
+  - v4 input battery on that world: RIGHT probe self-moved -35.7 px
+    while the demo's own player fought (php 119->84, score 0->500) =
+    **input-DEAD ATTRACT DEMO** (session-8 verdict holds for this
+    instance too, now with the sharper characterization);
+  - v5 (SELECT-feed during loading) and v6 (early START taps f300/900/
+    1500) = honest negatives; web ground truth: MS2/X arcade missions
+    are 1 Drifting in Desert, 2 Monument of Depression, 3 Madrigal of
+    Wind, 4 Return to Hong-Kong, 5 Kiss in the Dark, 6 I Wish to
+    Believe in Love — NO train mission in the arcade order, so the
+    SLUS train section is Arrange-mode-specific (numbering question
+    recorded).  Net: the ride ends at a deterministic scripted crash
+    -> 52 s loading -> attract hijack; the M2->M3 gameplay gate stays
+    OPEN with the attract-flag RAM hunt as the recorded next lever.
+Evidence: scratch/issue6_round6_msx/ (6 reports, ladders, watch PNGs).
+
+**Auxiliary tool (the round's tools ask): `scripts/playloop.py`** —
+the reusable game-loop driver factored out of the per-round probes:
+one-boot-per-process, Observation bundle (frame+madiff+padbuff),
+pluggable policies, honest-verdict composition, JSONL+report.
+`tests/test_playloop.py` = 5 mock-harness tests (policy loop, terminal
+stop, restart cycle, verdict table, pong static-detection).
+**hello_pong dogfood:** artifact REFETCHED via the documented API
+procedure (zip sha256 51321870... == manifest digest; bin sha256
+a592f7ed... == manifest), license-patched image rebuilt locally, and
+the loop ran THROUGH the tool: boot (padbuff 00 41 ff ff), natural
+game over (madiff 5.61 burst -> 0.0 static), X restart issued, and the
+restart transition **madiff 4.223 — the round-5 causal signature
+reproduced exactly**.  Steering acts stayed 0 (the brightness-blob
+detector needs tuning — honest note; paddle control dy -90/+169 was
+round-5-proven), so score-region causality stays INCONCLUSIVE this
+round.  Evidence: scratch/issue6_round6_pong_tools/.
+
+Suite: **482 passed + 1 xfailed** (5 new playloop tests).  No game
+bytes committed; all patched images local-only; origin fast-forward
+from 1abf046.

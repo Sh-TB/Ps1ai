@@ -172,3 +172,52 @@ session-7 "wall-stuck damage-tick" pattern is the demo's player. Real M2
 ride reproduced (px 76.4→822.4, score→10930, zero deaths) from the
 session-7 `m2_train` anchor — restored bit-for-bit deterministic. 0xC
 banner still uncaptured; levers recorded in `m3_verdict.json`.
+
+## Addendum 5 (2026-10-25) — round 6: Nortis line-clear causality closed; M2 terminus characterized; playloop tool
+
+**Nortis — the round-5 gap (line clear NOT achieved) is CLOSED.**  The
+path was calibration-heavy and is the lab's best documented learning
+loop yet: six probes (`nortis_calib{,2..6}.py`) pinned the release
+binary's true memory layout — GameState @0x15FB0 (7 u32s), settled
+field @0x1615C (26x10 u32s, stride 40, row = positionY-2) with a
+second copy @+0x410, render array @0x15FCC that misleadingly contains
+the active piece (three probes burned before the
+changes-only-at-commit behavioral isolate), and **starting terrain**:
+title-screen leftovers (S+T pieces, field rows 10-13) the binary never
+clears — invisible to every previous PNG-based policy.  Input: 1 cell
+per press-edge, ROTATE=CIRCLE(A), DROP=CROSS(B), one action/frame,
+gravity 20 f/row (source flipped-args bug: level pinned to 20).
+`nortis_lineclear.py` (RAM-truth greedy, clear-first scoring, per-piece
+plan verification): **lc10 = 62 pieces, 50/62 plan-perfect, 5 line
+clears; cycle 1: clearedLines 0->1->2->3 -> natural game over; START
+restart -> cycle 2: 0->1->2 -> natural game over.**  `points` stays 0
+(the source never increments it).  Verdict: **GAMEPLAY_CONFIRMED +
+CAUSAL (lines counter)** — Nortis now has a complete played game WITH
+line-clear causality, twice.
+
+**MSX session 9 (issue #5, the 50% main-game share):** the M2 train
+ride's deterministic terminus is now fully characterized — ride
+px 76.4->822.4 (score 10930, php 121, no death) -> scripted crash
+teardown -> **NOW LOADING** (52 s) -> attract-logo cinematic (f1200-
+2400) -> a WINTER world spawns at f4020 (px 120.3, php 120, score 0,
+fresh run state) that is **input-dead** (RIGHT probe: the demo's own
+player self-moved -35.7 px and took damage).  SELECT-feeding the
+loading window (v5) and early START taps (v6) = honest negatives.
+Arcade-order ground truth (fandom): no train mission exists in
+MS2/X arcade — the SLUS train section is Arrange-specific.  The
+M2->M3 gameplay gate stays OPEN; recorded next lever = attract-flag
+RAM hunt around the loading window.  6 variant reports +
+ladders in scratch/issue6_round6_msx/.
+
+**New tool: `scripts/playloop.py`** (+ 5 mock tests) — the reusable
+game-loop driver (one boot/process, Observation bundle, pluggable
+policies, honest verdicts, JSONL+report).  hello_pong dogfood: the
+artifact was REFETCHED through the documented API procedure (zip
+sha256 51321870... == manifest; bin a592f7ed... == manifest),
+re-patched locally, and the loop ran through the tool: boot ->
+natural game over (madiff 5.61 -> 0.0 static) -> X restart ->
+transition **madiff 4.223 — the round-5 causal signature, reproduced**.
+Score-region causality INCONCLUSIVE (the blob steering detector found
+no ball: threshold tuning pending; paddle control was round-5-proven).
+
+Suite 482 passed + 1 xfailed (5 new playloop tests).
