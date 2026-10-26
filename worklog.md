@@ -1526,3 +1526,91 @@ from 1abf046.
   Suite 489 passed + 1 xfailed. No game bytes committed; patched
   images and evidence local-only (scratch/issue6_round8_{msx,psxmc,
   tetrade}/).
+
+## 2026-10-26 — Issue #6 round 9 (+ Issue #7 wagon run): MSX armored-trio kill causality + decisive camera-held negative at the px-2212 arena pin; Tetrade TETRIS x2 + natural level-2 + full drop-rate ladder to L18 (5/5 gates CAUSAL); PSXMC place6 probe honestly FAILED with two instrument findings (50/50)
+
+- Round-9 protocol (50% main game / 50% others), three parallel tracks;
+  all three subagents produced complete on-disk work before a Task-tool
+  infra timeout cut their return messages (round-8 precedent) — the
+  orchestrator recovered every lane's artifacts from disk and drove the
+  remaining executions directly. Suite 489 passed + 1 xfailed
+  (unchanged baseline); no game bytes committed.
+- 9-a MSX (Issue #7 WAGON RUN, three runs + two arms):
+  * T4 sensor run (scripts/msx_wr9_arena.py, 55,524 frames, one boot):
+    BOOTED + INPUT_RESPONSIVE + STATE_CHANGE_CONFIRMED; walked M1 to
+    the px~1596 pin (armored truck visible in progress_c0450.png); 30
+    continue-accepted checkpoint respawns (counted + disclosed, the v1
+    honesty rule); WagonSensor recorded 1,108 spawn / 1,095 despawn
+    events with spawn PNGs.
+  * cap v1 (scripts/msx_wr9_cap.py, 70,351 frames): max_px 2212.0 (the
+    deepest M1 traversal this campaign), 40 disclosed continues, 1,365
+    sensor spawns. Lesson: entity-class gating (chopper/truck st
+    families) never confirms at the pins — the px-2212 pin is held by
+    OTHER families.
+  * cap v2 (scripts/msx_wr9_cap2.py) PIN-BASED capture: arena :=
+    alive AND px >= 1400 AND px-window < 10 over 3x60f chunks (>= 360f
+    pinned) -> ARENA_CAPTURED at px 2212.0 (score 9709, php 291, gren
+    15, 35 census slots); savestate `wr9_arena` saved.
+  * Pin census: THREE 300-HP armored ground enemies (st family 0xA0D0,
+    slots 10-12, hpA4 300, h 63) + a related 0xAB94 flyer (hp 0) — the
+    same armored-HP class as the choppers; CHOPPER_ST extended to
+    (0xAA94, 0xABDC, 0xA0D0, 0xAB94), disclosed in the report.
+  * Arm YB (the issue-doc web strategy: sustained AIMED UP+FIRE):
+    8 CHOPPER_KILLs (slots 10+11, score +500 each: 9709->10209),
+    SQUADRON_FELL x4 (all targeted slots empty within 600f) — and the
+    CAMERA HELD: 0/4 resolution attempts, player died (300 s timer +
+    respawn waves) before any walk probe. Arm J1 (the session-3 proven
+    hop+UP-lob recipe): kills land FASTER (cycle 2-3), same 8 kills,
+    same SQUADRON_FELL x4, CAMERA HELD 0/4; slot 12 (x behind the
+    player) was never reachable.
+  * Verdict: armored-kill CAUSAL (16 kills across arms, exact +500
+    score steps); gate CAMERA-HELD — decisive negative for the
+    "squadron falls with its red leader" resolution AT THIS PIN. Three
+    pin profiles now documented: 1164 (chopper-flyover ambush), ~1596
+    (T4 truck pin), 2212 (armored trio). The train yard remains
+    unreachable in one boot; continues (71 across three runs) are the
+    only traversal mechanism and are always disclosed.
+- 9-c Tetrade (scripts/tetrade_r9_tetris.py, engine-swap only — the
+  round-7 TetradeLoopPolicy untouched): a 2-ply placement AI
+  (Tetrade2PlyAI, Dellacherie eval + explicit TETRIS bonus) with the
+  NEXT piece read from live RAM (nextTetriminos[0].type @ base+896;
+  promotion cross-check 715/715 exact). Live run (ws_tetrade_r9, one
+  boot, 3 cycles, 710 pieces, 269 clears, 172 s):
+  * G1 calibration CAUSAL (profile anchor 0x1FECA0 + LEFT/RIGHT
+    x-displacement probe dx=1);
+  * G2 TETRIS x2 CAUSAL: fc8560 level 5 score 22058->27084 = +5000 =
+    1000x5 exact; fc29039 level 14 score 170108->184108 = +14000 =
+    1000x14; pre-vanish PNG ring (tetris_pre0..8) + clear PNGs;
+    clears_by_type d1 175 / d2 34 / d3 6 / d4 2;
+  * G3 natural level 1->2 flip x2 (lines 17->18 and 16->17, threshold
+    8*(level+1)=16; NO RAM writes anywhere) with 11 level-2 clears all
+    matching the table; 35 level flips total across 3 cycles (max
+    level 18, two natural game overs: lv15->0 and lv18->0);
+  * G4 level-2 cadence CAUSAL: 86/86 clean y-step gaps = exactly 13
+    f/cell (source: 30/(1.10*2) -> 13);
+  * G5 score suite CAUSAL: level 0 clears 12/12 zero, level>=1
+    205/205 match the 200/500/700/1000 x level table;
+  * NEW: the full drop-rate ladder measured for the first time —
+    medians per level L0..L18 = 30/27/13/9/6/5/4/3/3/3/2/2/2/2/1...
+    (n=98..463 clean windows each; min=max median at L0..L13).
+- 9-b PSXMC (scripts/psxmc_r9_place6.py — the round-8 "next lever":
+  ray-directed aim with a LIVE raycast map via the R2 breaking-state):
+  one-character fix at run time (LOOK_LEFT "Q" -> "SQ", the inputmap
+  name). The run honestly FAILED as a probe: fresh-boot spawn differs
+  from the r7/r8 worlds (player at [0, 9.62, 0], pitch/yaw 0) and the
+  R2 breaking-state map returned NO hits at any pitch 5..80 deg
+  (in_reach [], ground_block_y null); the CONTROL arm (5 deg, which
+  geometrically cannot place) still showed world_px 26,605 / win_px
+  2,327 with no input — the fresh world is not static between pre and
+  after frames (mobs/clouds), so the script's own verdict is "FAILED:
+  control arm also anomalous (sensor chain suspect)". Verdict:
+  FAILED(probe); the place campaign stays OPEN with two instrument
+  fixes recorded for round 10: (1) a bit-exact stability gate
+  immediately before EACH attempt (not only at baseline), (2)
+  validate the R2 breaking-state probe against a known-hit
+  configuration before using it as a raycast oracle.
+- Tools: msx_wr9_arena.py, msx_wr9_cap.py, msx_wr9_cap2.py,
+  msx_wr9_leaderkill.py (arms C/YB/J1/GR/MIX + walk phase),
+  tetrade_r9_tetris.py (2-ply AI + tetris PNG ring), psxmc_r9_place6.py.
+  Evidence: scratch/issue6_round9_msx/{arena_t4,cap,cap2,leaderkill},
+  scratch/issue6_round9_tetrade/, scratch/issue6_round9_psxmc/.

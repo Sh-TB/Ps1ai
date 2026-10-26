@@ -286,3 +286,38 @@ was diagnosed and closed (different missions/rides/policies —
 verdict_flags hook; `--game pong` default unchanged) + 3 new tests.
 Suite **485 passed + 1 xfailed**.  No game bytes committed; all patched
 images local-only.
+
+---
+
+## Addendum 4 (2026-10-26) — round 9: pin-capture methodology + 2-ply Tetrade engine + honest probe failure
+
+**MSX (issue #7 WAGON RUN).** `scripts/msx_wr9_arena.py` (T4 sensor
+walk), `msx_wr9_cap.py` (v1: 70,351 f, max_px 2212, 1,365 sensor
+spawns), `msx_wr9_cap2.py` (v2: PIN-BASED arena capture — alive AND
+px >= 1400 AND px-window < 10 over 3x60f chunks — saved `wr9_arena`
+at px 2212.0 with a 35-slot census). `msx_wr9_leaderkill.py` runs one
+arm per boot (C control / YB sustained UP+FIRE / J1 hop+UP-lob /
+GR grenade economy / MIX rotation) from the savestate with disclosed
+restores, hp-drop/kill bookkeeping, squadron-collapse watch and a
+300f RIGHT walk probe for camera-unlock. Round-9 result: armored-kill
+CAUSAL (16 kills of the 300-HP 0xA0D0 trio, +500 each), CAMERA-HELD
+0/8 — the entity-class gate was replaced by the pin signature after
+census showed the pins held by non-chopper families (CHOPPER_ST
+extended to include 0xA0D0/0xAB94, disclosed).
+
+**Tetrade.** `scripts/tetrade_r9_tetris.py`: 2-ply placement AI
+(Dellacherie + TETRIS bonus) swapped INTO the untouched round-7
+playloop policy object; next piece read from live RAM (base+896,
+promotion cross-check 715/715); per-frame RGB ring dumps pre/post
+vanish PNGs around 4-line clears. All five round gates CAUSAL
+(tetris x2 exact-scored, natural 1->2 flip x2, L2 cadence 86/86 = 13
+f/cell, 205/205 + 12/12 score suite, full drop ladder L0..L18).
+
+**PSXMC.** `scripts/psxmc_r9_place6.py`: stable-frame grabs (two
+consecutive bit-exact), no camera movement between pre/after, live
+raycast map via the R2 breaking-state. Honest probe failure (control
+arm anomalous in a fresh world) with the two recorded instrument
+fixes; the place campaign remains open.
+
+Suite **489 passed + 1 xfailed**. No game bytes committed; patched
+images and savestates local-only.
