@@ -11,7 +11,8 @@ REPO = "/home/z/my-project/ps1ai"
 sys.path.insert(0, REPO)
 sys.path.insert(0, os.path.join(REPO, "scripts"))
 
-from playloop import Observation, Playloop, verdict_from  # noqa: E402
+from playloop import (Observation, Playloop, TetradeLoopPolicy,  # noqa: E402
+                      verdict_from)
 
 
 class FakeCore:
@@ -146,3 +147,115 @@ def test_pong_policy_restart_on_static():
         prev = f
     assert pol.game_overs >= 1
     assert any(e["ev"] == "restart" for e in pol.events)
+
+
+def test_policy_registry_and_target_resolution():
+    # round-7 CLI wiring: registry slots + per-game default targets
+    from playloop import GAME_DEFAULTS, POLICIES, resolve_targets
+    assert "pong" in POLICIES and "tetrade" in POLICIES
+    cue, ws = resolve_targets("pong", None, None)
+    assert cue == GAME_DEFAULTS["pong"]["cue"]
+    assert cue.endswith("hello_pong_lic.cue")
+    assert ws == GAME_DEFAULTS["pong"]["workspace"]
+    cue2, ws2 = resolve_targets("tetrade", None, None)
+    assert cue2.endswith("tetrade_lic.cue")
+    assert "ws_tetrade_r7" in ws2
+    # explicit overrides win over per-game defaults
+    cue3, ws3 = resolve_targets("pong", "/x/a.cue", "/x/ws")
+    assert (cue3, ws3) == ("/x/a.cue", "/x/ws")
+
+
+class _FakeMem32:
+    """u32 view over a 2 MB zero page + write helper (little-endian)."""
+
+    def __init__(self, size=0x200000):
+        self.buf = bytearray(size)
+
+    def w(self, addr, val):
+        self.buf[addr:addr + 4] = int(val).to_bytes(4, "little")
+
+    def u32(self, addr):
+        return int.from_bytes(self.buf[addr:addr + 4], "little")
+
+    def snapshot(self):
+        return bytes(self.buf)
+
+
+class _FakeLoop:
+    class _P:
+        pass
+
+    def __init__(self, mem):
+        self.p = self._P()
+        self.p.mem = mem
+        self.journal = lambda ev: None
+
+
+def _seed_tetrade(mem, base, piece=(0, 0, 0, 0, 0, 1, 1, 1, 0, 1, 0, 0,
+                                    0, 0, 0, 0), typ=3):
+    off = TetradeLoopPolicy.OFF
+    for k, v in off.items():
+        mem.w(base + v, 0)
+    for i, v in enumerate(piece):
+        mem.w(base + off["tet_shape"] + i * 4, v)
+    mem.w(base + off["tet_type"], typ)
+    mem.w(base + off["tet_x"], 3)
+    mem.w(base + off["tet_y"], 2)
+
+
+def test_tetrade_policy_iterative_wiring():
+    # nav -> calib (profile anchors verified) -> play segments, without
+    # an emulator: the policy must re-plan from RAM and drive taps.
+    from playloop import TetradeLoopPolicy
+    base = 2092192                     # live-verified Issue-8 anchor
+    mem = _FakeMem32()
+    _seed_tetrade(mem, base)
+    obs = lambda: Observation(0, None, None, 1, None)
+    pol = TetradeLoopPolicy(loop=_FakeLoop(mem), cycles=1, out_dir=None)
+    for _ in range(15):                # drain NAV queue + handoff
+        pol.act(0, obs())
+        if pol.state != "nav":
+            break
+    assert pol.state == "calib"
+    pol.act(0, obs())
+    assert pol.state == "play"
+    assert pol.base == base and pol.anchor_src == "profile"
+    # a full segment sequence must issue at least one concrete action
+    # (rotate CIRCLE / move / hard-drop UP) and stay within vocab
+    vocab = set()
+    for _ in range(60):
+        cmd = pol.act(0, obs())
+        if cmd:
+            vocab |= cmd[0]
+        if pol.state != "play":
+            break
+    assert vocab, "policy never acted"
+    assert vocab <= {"A", "B", "UP", "DOWN", "LEFT", "RIGHT", "START"}
+    assert pol.totals["plans"] >= 1
+
+
+def test_tetrade_policy_over_refuse_and_verdict_flags():
+    # game_over=1 -> refuse CONTINUE with A(CIRCLE); verdict flags must
+    # stay honest (no gameplay claim without a line clear).
+    from playloop import TetradeLoopPolicy
+    base = 2092192
+    mem = _FakeMem32()
+    _seed_tetrade(mem, base)
+    obs = lambda: Observation(0, None, None, 1, None)
+    pol = TetradeLoopPolicy(loop=_FakeLoop(mem), cycles=1, out_dir=None)
+    for _ in range(20):                # drain NAV -> calib -> play
+        pol.act(0, obs())
+        if pol.state == "play":
+            break
+    assert pol.state == "play"
+    mem.buf[base + TetradeLoopPolicy.OFF["over"]] = 1
+    cmds = []
+    for _ in range(60):
+        cmds.append(pol.act(0, obs()))
+        if pol.state == "done":
+            break
+    assert any(c and c[0] == {"A"} for c in cmds), "no refuse tap"
+    assert any(e["ev"] == "refuse_continue" for e in pol.events)
+    assert pol.state == "done"
+    flags = pol.verdict_flags()
+    assert not flags.get("gameplay_confirmed")

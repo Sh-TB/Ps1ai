@@ -1407,3 +1407,40 @@ round.  Evidence: scratch/issue6_round6_pong_tools/.
 Suite: **482 passed + 1 xfailed** (5 new playloop tests).  No game
 bytes committed; all patched images local-only; origin fast-forward
 from 1abf046.
+
+## 2026-10-26 — Issue #6 round 7 (+ Issue #5 session 10): Tetrade line-clear closed, PSXMC place causality, MSX gate negatives (50/50)
+
+- Round-7 protocol (50% main game / 50% others): 17-c (Tetrade+tools)
+  completed as a subagent; 17-a (MSX) and 17-b (PSXMC) subagent attempts
+  hit repeated Task-tool infra timeouts and were finished by the
+  orchestrator directly from the on-disk leftovers (round-5 precedent).
+- 17-c Tetrade: source-first (main.c v1.0) + one-boot calibration
+  ladder -> base 0x1FECA0 (matrix/type/x/y/score/single/level/over);
+  RAM-truth bot through the generalized playloop tool: 39 pieces,
+  8 LINE CLEARS over 2 cycles (0->1->2->5 with a TRIPLE; CONTINUE?
+  refused -> counters reset -> 3 more singles), natural game overs
+  (532/474). Score drop-driven as source predicts at level 0.
+  Verdict GAMEPLAY_CONFIRMED + CAUSAL(lines). playloop.py generalized
+  (--policy/--cue/--workspace, POLICIES registry) + 3 tests.
+- 17-b PSXMC: first battery honest-INCONCLUSIVE with quantified
+  diagnosis (aim ladder 2-12 deg below horizon; 90 deg = ~228 frames;
+  fine-aim residuals +-100-175 deg) -> monotonic pitch sweep produced
+  full-screen diffs later identified as the CRAFTING UI overlay
+  (game ticks >=2x/frame: tick1 USE, tick2 raycasts the just-placed
+  table -> modal, block_crafting_table.c:232); place4 (fine aim
+  err <1 deg, UI-recovery) proved the USE stack-consumption chain
+  26->25->24->23 @0x7cda0 (CRAFTING_TABLE, ItemID-ctx) with ZERO
+  visible placements (world_px 0; attempt 3's raycast then hit a
+  placed table = earlier USEs did modify the world out of frame);
+  savestate round-trip bit-exact + functional re-edit on the restored
+  world. Verdict INCONCLUSIVE(place), stack-consumption CAUSAL;
+  place3 over-claims retracted.
+- 17-a MSX: m2_train anchor still unreached — 41-offset tap sweep
+  -> endzone 41/41 (gs1); 5400f quiet watch -> attract demo (gs2);
+  8 total documented attempts, zero M2 spawns; session-6 "one START
+  accept" record corrected. rg1-vs-session-9 discrepancy diagnosed
+  (different missions/rides). Offline attract-flag mining
+  (candidates.json) top families = 16-byte-stride entity pool, not
+  flags. Next lever: M1-end vs M2-side loading diff (needs anchor).
+- Manifest statuses + round7_addendum; docs addendum 6. Suite
+  485 passed + 1 xfailed. No game bytes committed.

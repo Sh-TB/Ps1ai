@@ -221,3 +221,68 @@ Score-region causality INCONCLUSIVE (the blob steering detector found
 no ball: threshold tuning pending; paddle control was round-5-proven).
 
 Suite 482 passed + 1 xfailed (5 new playloop tests).
+
+## Addendum 6 (2026-10-26) — round 7: Tetrade line-clear causality closed; PSXMC place-block causality + persistence; MSX gate decisive negatives; playloop generalized
+
+**Tetrade — LINE CLEARS + complete played game x2 cycles (through the
+tool).**  Source-first (upstream src/main.c v1.0: board 10x20, struct
+offsets, `BASE_DROP_RATE 30`, A=CIRCLE rot CW / B=CROSS rot CCW /
+UP=hard-drop, `check_lines` adds `200/500/700/1000 * level` — 0 at
+level 0) then a one-boot calibration ladder: LEFT-tap whole-RAM u32
+diff → exactly one hit → live base `0x1FECA0` (matrix 20x10 @+0, type
+`0x1FEFC0`, x `0x1FF004`, y `0x1FF008`, score `0x1FF584`, single
+`0x1FF588`, level `0x1FF5A0`, over `0x1FF5A8`; savestate anchors;
+soft-drop 1f-tap delta 0 = honest negative, reproduces the Issue-8
+record).  Main run through the generalized playloop tool: **39 pieces,
+8 LINE CLEARS** — cycle 1: singles 0→1→2 then a TRIPLE (lines
+0→1→2→5), natural game over (score 532) → CONTINUE? refused with
+CIRCLE → counters verified reset → cycle 2: 3 more singles → natural
+game over (474).  Score stays drop-driven (+2/cell) as source predicts.
+Verdict: **GAMEPLAY_CONFIRMED + CAUSAL (lines counters)**.  Evidence:
+`scratch/issue6_round7_tetrade/`.
+
+**PSX-Minecraft — the PLACE campaign: honest INCONCLUSIVE(place) with
+the failure root-caused and a confirmed use-consumption chain.**  The
+first battery aimed only 2-12 deg below the horizon (90 deg ≈ 228
+frames at the measured 18432 raw/f) — the crosshair never touched
+terrain, and even R2 dig went non-persistent there; the fine-aim
+loop's residuals were ±100-175 deg (asymmetric look rates).  The
+monotonic pitch-sweep follow-up produced giant full-screen diffs that
+the sharper place4 iteration identified as the CRAFTING UI overlay
+(the game ticks ≥2x per frame: tick1 USE acts, tick2 raycasts the
+just-placed table and opens its modal, block_crafting_table.c:232;
+the START guard then left the inventory open — place3's "placements"
+are retracted as UI artifacts).  place4 (fine aim err <1 deg, geo
+gates, UI-recovery): USE taps consume the selected stack with
+ItemID-context verification — chain 26→25→24→23 @`0x7cda0`
+(CRAFTING_TABLE) — but zero VISIBLE world placements (world_px 0 in
+every attempt); attempt 3's raycast then HIT a placed table (UI
+opened, ui_px 36852) — evidence the earlier USEs did modify the
+world, just out of frame.  Savestate round-trip on the edited world:
+RAM bit-exact + frame bit-exact at t+1 + functional re-edit accepted
+on the restored world.  Verdict: **INCONCLUSIVE(place)** —
+stack-consumption CAUSAL, visible placement unproven; next lever =
+camera framing the target face + post-place world_px gate.  Evidence:
+`scratch/issue6_round7_psxmc/` (report_place3.json, report_place4.json).
+
+**MSX (issue #5) — the M1→M2 gate gets decisive negatives.**  From the
+post-banner CONTINUE? gate: a 41-offset tap-timing sweep (24f steps,
+savestate-restored frame-exact retries, `msx_m2_gate_sweep.py`) landed
+in the input-live M1 endzone **41/41** (gs1); a 5400f quiet watch
+self-resolved into the attract demo (gs2); with m2t8/rg1-rg4 that is
+**8 documented attempts, zero M2 spawns** — the session-6 "one START
+accepts into M2" record does not reproduce from this gate instance and
+is corrected to "path-sensitive, mechanism unknown".  Offline mining
+of the rg1 attract-ladder tracker (1.03M changed bytes,
+`msx_m2_candidates.py` → candidates.json) top families decode as the
+16-byte-stride entity pool (self-referential pointers), not flags.
+Recorded next lever: the surgical M1-end vs M2-side loading diff —
+requires the m2_train anchor.  The rg1-vs-session-9 number discrepancy
+was diagnosed and closed (different missions/rides/policies —
+`discrepancy_rg1_vs_session9.md`).
+
+**Tools:** `scripts/playloop.py` generalized (`--policy/--cue/
+--workspace`, GAME_DEFAULTS + POLICIES registry {pong,tetrade},
+verdict_flags hook; `--game pong` default unchanged) + 3 new tests.
+Suite **485 passed + 1 xfailed**.  No game bytes committed; all patched
+images local-only.
