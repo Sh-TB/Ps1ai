@@ -1754,3 +1754,33 @@ nearest_reachable_ring) + test_r11_sensors.py. Suite **548 passed +
 1 xfailed** (was 521). No game bytes committed; scratch/ gitignored;
 every write probe disclosed (GS constant codes, disabled + restore
 verified per arm).
+
+## 2026-10-26 — Issue #6 round 13 (showcase + 2 new games)
+
+**hello_pong (finished) showcase**: hellopong_r13_gif.py — ONE boot,
+1,171 frames captured (every frame) through the complete loop
+(menu->game1 5-x WIN->GAME_OVER->X->menu->game2 5-x WIN->GAME_OVER->
+X->menu), ffmpeg palettegen GIF 390 f @20 fps, 72,594 B, uploaded to
+uguu.se + committed to docs/evidence/round13/. Score sensor (0x1ffeb4)
+read live 1..5 per game; X-release transitions verified per leg
+(mirror-held reads 0x168b4=49151). Verdict GIF_COMPLETE_LOOP.
+
+**New game 1 — Cave Story PSX (accepted)**: r13_new_games.py fetched
+fgsfdsfgs/doukutsupsx v0.7 US iso (sha256 verified; license block
+byte-identical to the standard US retail license -> local patch
+no-op). r13_doukutsu_long.py (one boot): shell cube -> LOADING ->
+Studio Pixel intro -> title menu (New/Load/Options) @f1740, 2 pad
+buffers, PNG evidence. Next finish-target.
+
+**New game 2 — psxBreakout (candidate, honest)**: bare PS-EXE from
+NDR008/psxBreakout v1.0. Route A: hand-rolled strict-ECMA ISO9660
+(PVD+path tables+root) -> shell cube loop. **Finding**: hello_pong's
+PVD deviates from ECMA-119 — root dir record at offset 156; the PSX
+BIOS likely reads it there. Route B (container): swapped cs50x.exe
+into the proven-bootable hello_pong image at the GAMEPS1.EXE dirent
+(extent 24, size patched LE+BE, verified): exe header lands in RAM
+@f440, wiped by f640 (boot loop), user RAM zero @f900 ->
+EXE_LOAD_CRASH under OpenBIOS; candidate recorded with next levers.
+
+Suite untouched this round (no core changes; all new scripts are
+additive tools). No game bytes committed.

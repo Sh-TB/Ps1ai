@@ -403,3 +403,26 @@ Three games advanced in parallel (10-train round, GitHub-first recon: origin 60a
 - **MSX — mission-select static map.** hunt2/hunt3/hunt4: the EXE string table carries "MISSION SELECT" (0x8001019c) + per-mission sequencer files \ANG\M1\MISS01.BIN .. \ANG\M4\MISS16.BIN; a 17-entry menu descriptor table @0x80095ef4 ([str_ptr, 0x801e8000, 0, 0] stride 16); menu state machine @0x8007exxx with states byte 0x80095a7d + handler tables 0x80095a70/0x80095a84/0x80095b24; CONTINUE-string cluster @0x8005a9xx-0x8005bcxx (pause menu). Next lever: trace the state machine to the MISSION SELECT open condition, or a disclosed state-byte write probe. Tools `scripts/msx_r12_{hunt,hunt2,msel}.py`; evidence scratch/round12_msx/hunt{2,3,4}_report.json.
 - **Nortis** — upstream rechecked 2026-10-27: still no license (MONITORED-NO-CHANGE).
 - Suite 548 passed + 1 xfailed; manifest round12_addendum; no game bytes; scratch/ gitignored.
+
+## Addendum 5 (2026-10-26) — round 13: finished-game showcase + two new games
+
+- **hello_pong complete-gameplay GIF** (the round-12 WIN_CAUSAL game):
+  1,171 emulated frames captured (every frame), ffmpeg palettegen
+  fps=20 -> 390-frame GIF, 72,594 B,
+  sha256 7fa33606...c1de3c. Loop: menu -(X)-> game 1 natural play
+  (paddle wiggle visible, score word 0x1ffeb4 reads 2..5) -> 5-x
+  GAME_OVER -(X)-> menu -(X)-> fresh game 2 -> 5-x GAME_OVER -(X)->
+  menu. Verdict **GIF_COMPLETE_LOOP**. Public upload
+  <https://h.uguu.se/rcAKDwni.gif> + committed at
+  `docs/evidence/round13/hello_pong_complete_gameplay.gif`.
+- **Cave Story PSX added (accepted)** — doukutsupsx v0.7 release iso
+  (31,802 KB, sha-verified): license block already standard US, boot
+  under beetle+OpenBIOS reaches the real title menu (New/Load/Options)
+  at f1740. Becomes the next finish-target.
+- **psxBreakout added (candidate)** — bare PS-EXE: locally built
+  ISO9660 + license patch; honest boot gate EXE_LOAD_CRASH (header in
+  RAM @f440, boot-loop wipe @f640, user RAM zero @f900).
+- **New finding (PSX boot loader)**: hello_pong's PVD carries the root
+  directory record at offset **156**, not ECMA-119's 168; a
+  strict-ECMA image drops to the shell cube loop — consistent with the
+  BIOS reading the root record at 156 on PSX-flavored images.
