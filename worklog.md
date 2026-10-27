@@ -1906,3 +1906,42 @@ games: ballistic/air_hockey dumps verified, boot ladder measured through
 publisher logos; input inert in static phases; TITLE_NOT_REACHED honest
 verdict (corrects r16 RAM-only BOOTED). Suite untouched (no framework
 change); no game bytes committed.
+
+## 2026-10-27 — Issue #6 round 19 (ten-train parallel fleet)
+
+Ten trains ran in parallel against c1eb002 (user directive: "10 fast trains,
+not one heavy one"). **Two WON verdicts**:
+
+- **Poy Poy (retail) WON**: charged throw (B held 62f + RIGHT/UP aim) →
+  ball f948 → impact f1078 → 3P hearts=0/mag=226 → "RETIRE!" f1208 stable
+  (run4, 1591f/62 ticks; checkpoint r19_f600). Honest: no dodge occurred,
+  mask v2 19% (RAM anchor used), LUCK BONUS open.
+- **hello_pong WON 5–0**: vx==0 last_vx clobber root-caused (attribution
+  fixed), per-point RAM left_delta=1 @0x1FFEB4, play-again proven through
+  play (win→MENU→0-0→real point).
+
+- **Tetrade PLAYING**: RAM-truth bot — 230 clears / 1,816 pieces / 81 cycles
+  / max 11,240 pts / accuracy 99.86% (2863/2867) / 20 game-overs + 20
+  CONTINUE-refusals.
+- **PSX-Minecraft CONFIRMED(visible place)**: off-platform aim, pitch 66°,
+  L2 taps → stack 10→9, world_px 1,269, persist-60f stable, UI guard clean —
+  closes r7 INCONCLUSIVE(place).
+- **MSX**: three M2-entry levers honestly falsified (menu pokes inert; CD-row
+  swap not live; mission=1 poke → Mission 1 ⇒ 0-based hypothesis falsified).
+  Disc map (T9): 135-entry path table @VA 0x800841C4, 20/20 MISS01..20.BIN
+  mapped, two-level sequencer measured.
+- **HMBTN (farm track)**: text corpus 89.0% byte-exact / 97.2%
+  comment-faithful; 0x0050="'t" fixed; glyphs 5→24; record format (0x2000
+  records, dir 33×u32) agreed by 3 independent community sources; tests 8→11.
+- **Old games**: air_hockey TITLE_REACHED f1356 (stride fix 2448→2352;
+  interactivity unproven — battery below threshold); ballistic
+  BOOT_THEN_STALL (frozen since f2624, ALL_INERT).
+- **Scouting**: autogaz / zenmai / BKBS license-verified+hashed; Nortis still
+  no license; no new Ps1ai items since r18.
+- **Quality**: suite 562+1xfail → 565+1xfail; uguu rot 3/4 → all r19 GIFs
+  mirrored in docs/evidence_gifs/ (incl. r18's).
+
+18 new r19 scripts, docs r19 ×3 (report/disc map/hmbtn text), Addendum 9,
+manifest r19 status appends (tetrade/psx-minecraft/hello_pong); no game
+bytes; suite 565+1xfail. Full report: docs/issue6_r19_report.md (also posted
+to issue #6).

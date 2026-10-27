@@ -40,13 +40,29 @@ def test_decode_control_codes_and_inserts():
 
 
 def test_default_other_contractions():
-    # "Didn't" — apostrophe glyph 0x0050 (evidence-documented)
-    assert ht.decode_stream([0x0003, 0x0028, 0x0023, 0x002D, 0x0050, 0x0033, 0xFFFF]) == "Didn't"
+    # "Didn't" — glyph 0x0050 renders "'t" as ONE value (r19 cross-validated:
+    # decomp array D i d n <0050> _ f e e d <-> comment "Didn't feed animal";
+    # PT-BR tables/hmbtn.tbl agrees)
+    assert ht.decode_stream([0x0003, 0x0028, 0x0023, 0x002D, 0x0050, 0xFFFF]) == "Didn't"
     # "Farm's" — 0x0051 = "'s" (mixed case like the game's own bank)
     vals = [0x0005, 0x0020, 0x0031, 0x002C, 0x0051, 0xFFFF]
     assert ht.decode_stream(vals) == "Farm's"
+    # "You're" — 0x0055 = "'r" (proven by the decomp mg3 corpus:
+    # Y o u <0055> e <-> "You're out of ...")
+    assert ht.decode_stream([0x0018, 0x002E, 0x0034, 0x0055, 0x0024, 0xFFFF]) == "You're"
     # "cows/sheep" separator
     assert ht.decode_stream(g_lower("cows") + [0x0071] + g_lower("sheep")) == "cows/sheep"
+    # r19 additions cross-validated against the PT-BR table
+    assert ht.decode_stream([0x006A, 0x0022, 0x006B, 0xFFFF]) == "(c)"
+    assert ht.decode_stream([0x007F, 0xFFFF]) == "…"
+
+
+def test_faithful_rendering_matches_decomp_comment_style():
+    # inserts render as the raw <400a> value; ctrl as {ffa} — the way the
+    # hmbtn-decomp source comments write them
+    vals = [0x0FFA, 0x0018, 0x0E38, 0x400A, 0xFFFF]
+    assert ht.decode_stream(vals, faithful=True) == "{ffa}Y{e38}<400a>"
+    assert ht.decode_stream(vals) == "<ctrl:0FFA>Y<face:0E38><insert:10>"
 
 
 def test_unescape_comment():
@@ -87,7 +103,7 @@ def test_learn_finds_punctuation(tmp_path):
 
 
 def test_afile_container_roundtrip():
-    # synthetic A_FILE.BIN: 2 members; header = u32 count + (count+1) u32 offsets
+    # legacy embedded layout: u32 count + (count+1) u32 offsets at BIN start
     m0 = struct.pack("<4H", 0x0018, 0x0FFD, 0x002D, 0xFFFF)  # "Y n"
     m1 = b"\x00\x01\x02"
     hdr = 4 + 3 * 4
@@ -98,6 +114,36 @@ def test_afile_container_roundtrip():
     assert ht.afile_member(blob, 0) == m0
     assert ht.afile_member(blob, 1) == m1
     assert ht.decode_stream(ht.u16_stream(m0)) == "Y n"
+
+
+def test_afile_hdt_directory_format():
+    # the REAL game format (hmbtn-decomp tools/afile.py): A_FILE.HDT is the
+    # directory (u32 offsets, count+1 entries, sector-aligned), A_FILE.BIN the
+    # concatenated zero-padded members
+    m0 = struct.pack("<4H", 0x0018, 0x0FFD, 0x002D, 0xFFFF)  # "Y n"
+    m1 = b"\x00\x01\x02\x00"
+    blob = m0 + bytes(0x800 - len(m0)) + m1 + bytes(0x800 - len(m1))
+    hdt = struct.pack("<3I", 0, 0x800, 0x1000)
+    n, offs = ht.afile_list(blob, hdt)
+    assert n == 2 and offs == (0, 0x800, 0x1000)
+    assert ht.afile_member(blob, 0, hdt) == blob[:0x800]
+    assert ht.decode_stream(ht.u16_stream(ht.afile_member(blob, 0, hdt)[:16])) == "Y n"
+
+
+def test_dialogue_record_decode():
+    # one 0x2000-byte record: u32 bank id + pack, text stream at +0x1800
+    rec = bytearray(ht.RECORD_SIZE)
+    struct.pack_into("<i", rec, 0, -1)  # no portrait
+    text = [0x0018, 0x0024, 0x0032, 0xFFFF]  # "Yes"
+    for i, v in enumerate(text):
+        struct.pack_into("<H", rec, ht.RECORD_TEXT_OFFSET + 2 * i, v)
+    vals = ht.record_u16_stream(bytes(rec))
+    assert vals == [0x0018, 0x0024, 0x0032]
+    assert ht.decode_stream(vals) == "Yes"
+    # prefix split: leading 0x0E00..0x0FFF codes (except space) are the prefix
+    vals2 = [0x0FE4, 0x0FF7, 0x0018, 0x0024, 0xFFFF]
+    assert ht.split_prefix(vals2) == 2
+    assert ht.decode_stream(vals2[ht.split_prefix(vals2):]) == "Ye"
 
 
 def test_corpus_extraction_stats(tmp_path):

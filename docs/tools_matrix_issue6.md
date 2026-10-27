@@ -554,3 +554,50 @@ r19 lever: direct MISSION 2 entry from the main menu.
 (license string + PVD); boot ladder measured — Mitchell logo → INFOGRAMES
 publisher screen → long black load; input inert in static phases; verdict
 BOOT_SEQUENCE_MEASURED, TITLE_NOT_REACHED (corrects r16's RAM-only "BOOTED").
+
+## Addendum 9 — round 19 (ten-train parallel fleet: 2 WON, first visible place, disc map)
+
+**Poy Poy WON** (`scripts/r19t1_run4_win.py`): retail round won through play —
+charged throw (B held 62f, aim RIGHT+UP) → ball airborne f948 → impact f1078 →
+3P card hearts=0/mag=226 → "RETIRE!" f1208 stable. Honest: 0 dodges (condition
+never occurred), vision mask v2 regressed to 19% (RAM anchor used), LUCK BONUS
+still open (needs 3 retirees). GIF mirrored in docs/evidence_gifs/.
+
+**MSX M2 falsifications** (`r19t2_m2_enter.py`, `r19t2_m2_native.py`): menu
+pokes inert; CD-row swap (VA 0x841C4/0x800841D4) not live; `mission=1` poke →
+Mission 1 ⇒ 0-based-index hypothesis FALSIFIED (1-based or remapped). M1 live
+px 116.152→204.277→205.459 (RIGHT/fire). Disc map from T9: 135-entry path
+table VA 0x800841C4-0x80084A34; 20/20 MISS01..20.BIN present; two-level
+sequencer measured (docs/msx_disc_map_r19.md).
+
+**Tetrade PLAYING** (`r19t3_tetrade_bot.py`): RAM-truth bot — 1,816 pieces,
+230 line clears, 81 cycles, max 11,240 pts, landing accuracy 2,863/2,867 =
+99.86% (±1 col), 20 natural game-overs + 20 CONTINUE-refusals (CIRCLE).
+
+**hello_pong WON** (`r19t4_hellopong_win.py`): 5–0 full match, per-point RAM
+left_delta=1 @0x1FFEB4; vx==0 clobber of last_vx root-caused (attribution
+fixed); play-again loop proven through play (win→MENU→0-0→real point).
+
+**PSX-Minecraft CONFIRMED(place, visible)** (`r19t5_psxmc_place.py`): off
+spawn platform, pitch 66°, L2 3f-tap ×3 → stack 10→9, world_px=1,269
+(bbox [94,93,168,236]), negative control 0 px, persist-60f identical, UI
+guard clean. Closes r7 INCONCLUSIVE(place).
+
+**HMBTN text** (`hmbtn_text.py` + docs/hmbtn_text_r19.md): 310/353 → 314/353
+byte-exact (89.0%), 343/353 comment-faithful (97.2%); 0x0050="'t" fixed;
+known glyphs 5→24 (source-tagged); A_FILE.HDT = 33×u32 dir, 0x2000-byte
+records, stream @+0x1800 (3 independent community sources agree); tests 8→11.
+
+**Old games** (`r19t7_*`): air_hockey TITLE_REACHED f1356 (stride 2448→2352
+fix); input battery below threshold at f2500 — interactivity UNPROVEN
+(honest). ballistic BOOT_THEN_STALL: frozen since f3180 (zero delta f2624+
+), ALL_INERT batteries — dump never reaches title.
+
+**Scouting** (`scratch/r19t8_scout/`): autogaz (MIT, 468,721 B zip, arcade),
+zenmai (MIT+MIT-Zork, psexe 700,416 B, text adventure), BKBS (MIT code /
+NC data, rhythm) — verified+hashed; Nortis license still absent (monitor);
+Sh-TB/Ps1ai: no new items since r18.
+
+**Quality** (`r19t10_quality/`): suite 562+1xfail at launch → 565+1xfail
+after T6; uguu.se rot measured (3/4 old links 404) → all r19 evidence GIFs
+mirrored under docs/evidence_gifs/ (incl. r18's while alive).
