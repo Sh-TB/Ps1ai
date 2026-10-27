@@ -1815,3 +1815,49 @@ additive tools). No game bytes committed.
 - RESULT: WINNING — 2,176 frames, 1 real death + START restart, 10 pipe passes each anchored by the pipe pos.x (RAM i16, pool slot 1) crossing the game's own scoring gate (x < -1152 world), score digits drawn "10" at the win frame, bird alive. GIF (725 f @20 fps): https://n.uguu.se/PGbBVuMY.gif
 - Transfer artifact: docs/tiny_games_playbook.md (honest RUNNING/PLAYING/WINNING taxonomy; boot-route decision tree; i16-at-base+2 sensor lesson; measured rounds-to-real-play: hello_pong 4 -> flappy 1). Big-game queue: MSX mission-select = ladder rung 2 + pulses; Doukutsu menus = the same servo problem.
 - Evidence: scratch/round15_flappy/{boot,sensors,inputprobe,colprobe,sweep,play}; docs/evidence/round15/; manifest round15_addendum (accepted=5). No game bytes committed.
+
+## 2026-10-27 — Issue #6 round 16: helper-tools priority + old-games queue + Poy Poy unblocked
+
+**Helper tool 1 — `scripts/disc_intake.py` (+ docs/old_games_intake.md, 6 tests).**
+One-shot local-disc intake: license/region, PSX-flavored PVD, dir walk,
+SYSTEM.CNF, PS-EXE inventory, ASCII/SJIS census, boot-route verdict.
+Dump-geometry robustness encoded: sync-measured stride (games_small dumps
+are 2448 B = 2352+96 subchannel while cues claim MODE2/2352), PVD-offset
+calibration (cues disagree on the 150-sector pregap), MODE2 user data at
++24, root record at 156 w/ ECMA-168 fallback. 10/10 local retail discs
+intake'd — all ship license sectors (route 1); MSX anchor reproduces the
+canonical EXE identity (t_size 620,544, pc0 0x80082A44). Tests run on a
+SELF-GENERATED disc (iso9660_min) — zero game bytes in CI.
+
+**Helper tool 2 — the farming game on the user's list = Harvest Moon: Back
+to Nature (SLUS-01115).** 5-repo GitHub audit (docs/hmbtn_tools_audit.md):
+hmbtn-decomp CC0 (matching decomp, A_FILE.BIN map: members 02..06 =
+messege0..4.bin dialogue banks + tools/afile.py), backtonature-decompiled
+Unlicense (461-func EXE decomp), HarvestMoonBTN-Recomp MIT (static recomp
+port), hmbtn-modkit MIT, EVENT-EDITOR. All runnable paths are
+bring-your-own-disc. Built `scripts/hmbtn_text.py` (8 tests): the game's
+u16 glyph text system — charset + control codes, a glyph LEARNER that
+discovered punctuation from the decomp's own comment<->array pairs (353
+pairs, 4,098 chars, 0 mismatches; '?' 17 votes, '.' 39, '!' 4, ',' 2),
+evidence-recorded contractions (0x0050/' 0x0051/'s 0x0054/'m 0x0066/:
+0x0071//), corpus extractor 310/353 (87.8%) byte-exact, A_FILE.BIN
+container parser. Corpus stays LOCAL; game status honest: tooling READY,
+boot + dialogue extraction BLOCKED_PENDING_DISC.
+
+**Poy Poy (old game) — match entry UNBLOCKED (blocker since session 4).**
+New ground truth: the arena scene everyone chased since menu17 is the
+ATTRACT DEMO (auto-starts ~f3000; menu11 passive timeline proves it);
+the old gate-walk STARTs landed on auto transitions and the "candidate
+menu" template was the input-disabled showcase. Verified ladder
+(checkpointed every rung, menu20-23): title(f2350) --START-hold60-->
+MODE SELECT (EXHIBITION/POYPOY CUP/OPTIONS) --B(CROSS)-hold60--> PLAYER
+SET UP (1P+3CPU, OK preselected) --B--> PLAYER ENTRY (HARRY) --B-->
+GLOVE SET UP --B--> PRACTICE arena ("PRESS THE START BUTTON TO EXIT
+PRACTICE" + full control legend). LEFT vs RIGHT census 54,357 differing
+bytes, det_none=0 => REAL_MATCH (player control causal). NEXT: START
+exits practice into the real match, then the closed-loop agent.
+PoyPoyPlugin docstring + boot_script rewritten to the verified path
+(plugins test green). Method lesson encoded: load_state does NOT restore
+frames_run — step RELATIVELY via p.core.run(n) after rewinds.
+
+Suite 562 passed + 1 xfail. No game bytes committed; scripts only.
