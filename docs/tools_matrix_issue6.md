@@ -523,3 +523,34 @@ msel4_* states) — the deterministic M1→M2/M3 gate hunting no longer needs
 attract-mode alchemy; the next lever is the per-mission sequencer path
 (MISS01..MISS16.BIN) via the same ladder discipline. Suite 562 passed +
 1 xfailed; no game bytes; scratch/ gitignored.
+
+## Addendum 8 — round 18 (closed-loop playing extends to a retail game; disc map; old-games boot ladder)
+
+**Poy Poy (USA) — vision-only closed-loop agent, full match** (`scripts/poypoy_r18_agent.py`):
+From the verified REAL_MATCH checkpoint, the agent plays the whole match from
+live frames only (no RAM reads): HARRY mask (gray-blue suit), orb blobs,
+2P-yellow mask, HUD heart pixels. Policy: approach nearest orb → tap B
+(measured grab: btnprobe `b_B_short_t90` — orb lifted overhead) → while
+carrying, approach nearest enemy and tap B (throw attempts). 8,200 frames
+(410 ticks, 37 s wall): **32 grabs, 40 throw attempts, 80 carry-ticks**,
+multi-round match observed (t060 "1P RETIRE!" round-end screen; t150 fresh
+round 02:00 full hearts; t300 HARRY outlived 3P+4P, both "RETIRE!").
+GIF: https://n.uguu.se/gRbdOiKc.gif . Honest verdict: **PLAYING (closed-loop,
+multi-round)** — not WON; mask miss rate 38% (edge/spawn states), no charged
+throws, no dodge — queued r19. Calibration artifacts: calib2 (determinism:
+ambient 0), calib3 (direction input moves HARRY's blue centroid: L −4.4 px,
+R +2.4 px), btnprobe (B=grab; A≡X identical RAM effect twice), throw2
+(short-carry auto-drops within ~90f). Match checkpoint re-entered after the
+/tmp cleanup deleted r17-only states (`poypoy_r18_reenter.py`; census numbers
+bit-match r17: 47,573/48,305).
+
+**MSX disc map** (`docs/msx_disc_map_r18.md`): 355 files re-extracted with the
+community tool (same count as r17); stage tree ST01..06 (ST05 has _1/_2/_3
+sub-stages), LD/WAIT_* overlays, MISSION.BIN table; EXE strings expose
+`MISSION SELECT` + `MISSION 1..6` direct menu entries + full CD path table —
+r19 lever: direct MISSION 2 entry from the main menu.
+
+**Old games** (`docs/oldgames_r18.md`): ballistic + air_hockey dumps verified
+(license string + PVD); boot ladder measured — Mitchell logo → INFOGRAMES
+publisher screen → long black load; input inert in static phases; verdict
+BOOT_SEQUENCE_MEASURED, TITLE_NOT_REACHED (corrects r16's RAM-only "BOOTED").

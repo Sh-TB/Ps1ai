@@ -1893,3 +1893,16 @@ CROSS (not START) confirms via "OK? YES/NO"; chain end = SOLDIER SELECT →
 **live Mission 1** (night desert, credits 3, score 48, px 116.15, php
 116). Checkpoints msel4_* in ws_r17_msel. Suite 562+1xfail; no game
 bytes; scratch/ gitignored.
+
+## 2026-10-27 — Issue #6 round 18
+
+Poy Poy: first retail-game closed-loop PLAYING (vision-only agent, 8200f
+whole match: 32 grabs / 40 throws / 80 carry-ticks; multi-round; RETIRE/DANGER
+screens observed; GIF n.uguu.se/gRbdOiKc.gif). Calibration: determinism
+proven (ambient 0), B=grab measured, A≡X, direction→HARRY centroid shifts.
+MSX: disc re-extracted 355 files; EXE strings reveal MISSION SELECT +
+MISSION 1..6 direct entries + CD path table (r19: direct Mission 2). Old
+games: ballistic/air_hockey dumps verified, boot ladder measured through
+publisher logos; input inert in static phases; TITLE_NOT_REACHED honest
+verdict (corrects r16 RAM-only BOOTED). Suite untouched (no framework
+change); no game bytes committed.
