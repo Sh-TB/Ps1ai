@@ -11,6 +11,32 @@
 
 ---
 
+## 🏆 Achievement #1 — the agent PLAYS and WINS full games (closed loop, zero LLM tokens)
+
+<p align="center">
+  <img src="docs/evidence_gifs/r19_t4_hellopong_win.gif" alt="PS1Play agent wins hello_pong 5-0, closed loop" width="420"><br>
+  <b>hello_pong 5-0</b> — won point by point through legal pad input only:<br>
+  perceive ball &amp; paddle → decide → press → <b>verify every point in RAM</b>,<br>
+  then re-enter via the game's own "PRESS X TO PLAY AGAIN" flow. Verdict: <b>WON</b>.
+</p>
+
+More full-game results from the same recipe (perceive → decide → act → verify):
+
+| game | verdict | proof |
+|---|---|---|
+| **hello_pong** | 🏆 **WON 5-0** | per-point RAM `left_delta=1`, play-again loop replayed |
+| **Poy Poy (retail disc)** | 🏆 **WON round** | charged throw → opponent "RETIRE!" banner f1208 ([GIF](docs/evidence_gifs/r19_t1_poypoy_win.gif)) |
+| **Tetrade** | PLAYING, 99.86% accuracy | 230 line clears, 20 game-overs + 20 CONTINUE refusals ([GIF](docs/evidence_gifs/r19_t3_tetrade_bot.gif)) |
+| **FlappyBird PSX** | WINNING | 10 pipes past the game's own win gate |
+| **PSX-Minecraft** | visible place CONFIRMED | stack 10→9, world_px 1,269, persists 60f ([GIF](docs/evidence_gifs/r19_t5_psxmc_place.gif)) |
+| **psxBreakout** | WON | first closed-loop win: ball tracking + brick clearing |
+
+How it works, step by step: **[docs/closed_loop_play_howto.md](docs/closed_loop_play_howto.md)**
+— the three layers (framework / per-game agent / evidence) and the 7-step
+recipe any new game goes through. Round-by-round lab log: issue **#6**.
+
+---
+
 ## What is this?
 
 **PS1Play** is a plugin-based, agentic framework that boots PlayStation 1 games with
