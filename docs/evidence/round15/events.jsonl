@@ -1,0 +1,25 @@
+{"t": 1793078593.545, "f": 0, "ev": "boot", "core": {"core": "Beetle PSX 0.9.44.1 df2b53b", "serial": null, "plugin": "generic", "input_device": 1, "ram_bytes": 2097152, "profile_reused": false}}
+{"t": 1793078594.892, "f": 0, "ev": "post_wait", "ground_ok": "True"}
+{"t": 1793078596.176, "f": 0, "ev": "scan", "pipe_addrs_n": 1, "pipe_addrs": ["0x34a4e"], "bird_cands_n": 22}
+{"t": 1793078596.176, "f": 0, "ev": "bird_verify_mode", "mode": "lazy_in_loop", "cands": ["0x91ac", "0x91bc", "0x311cc", "0x311d0", "0x313fc", "0x31410", "0x31424", "0x31438", "0x3244c", "0x32450", "0x32460", "0x32484"]}
+{"t": 1793078596.422, "f": 0, "ev": "score_probe", "n": 60000}
+{"t": 1793078596.463, "f": 0, "ev": "DEATH", "i": 5, "passes": 0, "passes_detail": [], "bird_gone": 60, "pre_death_ring": [{"i": 1, "by": 116.0, "gap": 140.0, "gapx": 192, "eff": 140.0, "vy": null, "x": ""}, {"i": 2, "by": 113.0, "gap": 140.0, "gapx": 192, "eff": 140.0, "vy": -3.0, "x": ""}, {"i": 3, "by": 111.0, "gap": 140.0, "gapx": 190, "eff": 140.0, "vy": -2.0, "x": ""}, {"i": 4, "by": 110.0, "gap": 140.0, "gapx": 188, "eff": 140.0, "vy": -1.0, "x": ""}]}
+{"t": 1793078596.56, "f": 0, "ev": "RESTART", "i": 5}
+{"t": 1793078597.814, "f": 0, "ev": "score_hunt", "passes": 1, "cands": 1076, "sample": ["0x564", "0x5bc", "0x5c4", "0x5cc", "0x8a8", "0x928"]}
+{"t": 1793078599.578, "f": 0, "ev": "score_hunt", "passes": 2, "cands": 0, "sample": []}
+{"t": 1793078601.343, "f": 0, "ev": "score_hunt", "passes": 3, "cands": 0, "sample": []}
+{"t": 1793078601.367, "f": 0, "ev": "progress", "i": 600, "passes": 3, "flaps": 19, "bird_ram": null, "bird_vis": null, "gap": 74.0}
+{"t": 1793078603.098, "f": 0, "ev": "score_hunt", "passes": 4, "cands": 0, "sample": []}
+{"t": 1793078604.864, "f": 0, "ev": "score_hunt", "passes": 5, "cands": 0, "sample": []}
+{"t": 1793078606.039, "f": 0, "ev": "progress", "i": 1200, "passes": 5, "flaps": 38, "bird_ram": null, "bird_vis": 102.2, "gap": 90.0}
+{"t": 1793078606.617, "f": 0, "ev": "score_hunt", "passes": 6, "cands": 0, "sample": []}
+{"t": 1793078608.405, "f": 0, "ev": "score_hunt", "passes": 7, "cands": 0, "sample": []}
+{"t": 1793078610.206, "f": 0, "ev": "score_hunt", "passes": 8, "cands": 0, "sample": []}
+{"t": 1793078610.818, "f": 0, "ev": "progress", "i": 1800, "passes": 8, "flaps": 57, "bird_ram": null, "bird_vis": 117.2, "gap": 106.5}
+{"t": 1793078612.067, "f": 0, "ev": "score_hunt", "passes": 9, "cands": 0, "sample": []}
+{"t": 1793078613.926, "f": 0, "ev": "score_hunt", "passes": 10, "cands": 0, "sample": []}
+{"t": 1793078613.93, "f": 0, "ev": "WIN", "i": 2176, "passes": 10, "passes_detail": [{"i": 146, "addr": "0x34a4e", "v": -1163, "score_est": 1}, {"i": 372, "addr": "0x34a4e", "v": -1163, "score_est": 2}, {"i": 597, "addr": "0x34a4e", "v": -1163, "score_est": 3}, {"i": 823, "addr": "0x34a4e", "v": -1163, "score_est": 4}, {"i": 1049, "addr": "0x34a4e", "v": -1163, "score_est": 5}, {"i": 1274, "addr": "0x34a4e", "v": -1163, "score_est": 6}, {"i": 1500, "addr": "0x34a4e", "v": -1163, "score_est": 7}, {"i": 1725, "addr": "0x34a4e", "v": -1163, "score_est": 8}, {"i": 1951, "addr": "0x34a4e", "v": -1163, "score_est": 9}, {"i": 2176, "addr": "0x34a4e", "v": -1163, "score_est": 10}]}
+{"t": 1793078613.934, "f": 0, "ev": "score_word_cands", "cands": null, "passes": 10}
+{"t": 1793078613.934, "f": 0, "ev": "verdict", "win": true, "passes": 10, "deaths": 1, "restarts": 1, "flaps": 69, "wall_s": 20.4}
+{"t": 1793078613.934, "f": 0, "ev": "ffmpeg_start"}
+{"t": 1793078615.669, "f": 0, "ev": "gif_done", "bytes": 3035407, "sha256": "a292cea2afa22d733561ce0fae5847bf91d7de03c148e52bf183a01467f91da4"}

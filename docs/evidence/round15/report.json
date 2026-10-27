@@ -1,0 +1,80 @@
+{
+  "stats": {
+    "captures": 2176,
+    "deaths": 1,
+    "restarts": 1,
+    "passes": 10,
+    "flaps": 69,
+    "win": true,
+    "wall_s": 20.4,
+    "emu_frames": 2269
+  },
+  "passes": [
+    {
+      "i": 146,
+      "addr": "0x34a4e",
+      "v": -1163,
+      "score_est": 1
+    },
+    {
+      "i": 372,
+      "addr": "0x34a4e",
+      "v": -1163,
+      "score_est": 2
+    },
+    {
+      "i": 597,
+      "addr": "0x34a4e",
+      "v": -1163,
+      "score_est": 3
+    },
+    {
+      "i": 823,
+      "addr": "0x34a4e",
+      "v": -1163,
+      "score_est": 4
+    },
+    {
+      "i": 1049,
+      "addr": "0x34a4e",
+      "v": -1163,
+      "score_est": 5
+    },
+    {
+      "i": 1274,
+      "addr": "0x34a4e",
+      "v": -1163,
+      "score_est": 6
+    },
+    {
+      "i": 1500,
+      "addr": "0x34a4e",
+      "v": -1163,
+      "score_est": 7
+    },
+    {
+      "i": 1725,
+      "addr": "0x34a4e",
+      "v": -1163,
+      "score_est": 8
+    },
+    {
+      "i": 1951,
+      "addr": "0x34a4e",
+      "v": -1163,
+      "score_est": 9
+    },
+    {
+      "i": 2176,
+      "addr": "0x34a4e",
+      "v": -1163,
+      "score_est": 10
+    }
+  ],
+  "bird_addr": null,
+  "pipe_addrs": [
+    "0x34a4e"
+  ],
+  "score_word_cands": null,
+  "verdict": "WIN_CAUSAL_VISION_SERVO"
+}

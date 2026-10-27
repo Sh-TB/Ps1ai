@@ -1802,3 +1802,16 @@ additive tools). No game bytes committed.
   some sectors; no second file ever opened — LD_PRELOAD + atime);
   full saga in docs/evidence/round14/.
 - Suite: not run this round (additive scripts only). No game bytes.
+
+## 2026-10-27 — Issue #6 round 15
+
+**Tiny-game real play achieved end-to-end in ONE round (FlappyBirdPSX), plus the tiny->big transfer playbook.**
+
+- FlappyBirdPSX (IcePanorama, Unlicense) ACCEPTED as the 5th game: ships a MODE2/2352 ISO with license sectors -> direct boot (decision-tree route 1), zero patching, Get Ready at ~f600.
+- Controller truth table established by pad-buffer probe: ps1play `X` delivers PSX TRIANGLE (0xEFFF mirror), `B` = CROSS (0xBFFF) — the flap never fired under `X`; four runs died to this before the probe.
+- Input is EDGE-TRIGGERED (source: `i32_last_padd`): hold = one flap. All flaps are 2-frame pulses with >=3-frame release.
+- Collision geometry read from RAM pools (PhysicsCompnt stride 12, ColShape {pid,w,h,ptr}): boxes match the visible pipes exactly — the shipped build's collisions are fair; deaths were servo geometry.
+- Servo derived from measured impulse (36 px rise/flap): flap at gap_center+14 -> apex -22 -> the 20 px bird stays inside the 70 px gap. Scene-color fixes: pipe green (r<150) vs bush green; shaded-column dilation; tan (not white) game-over box.
+- RESULT: WINNING — 2,176 frames, 1 real death + START restart, 10 pipe passes each anchored by the pipe pos.x (RAM i16, pool slot 1) crossing the game's own scoring gate (x < -1152 world), score digits drawn "10" at the win frame, bird alive. GIF (725 f @20 fps): https://n.uguu.se/PGbBVuMY.gif
+- Transfer artifact: docs/tiny_games_playbook.md (honest RUNNING/PLAYING/WINNING taxonomy; boot-route decision tree; i16-at-base+2 sensor lesson; measured rounds-to-real-play: hello_pong 4 -> flappy 1). Big-game queue: MSX mission-select = ladder rung 2 + pulses; Doukutsu menus = the same servo problem.
+- Evidence: scratch/round15_flappy/{boot,sensors,inputprobe,colprobe,sweep,play}; docs/evidence/round15/; manifest round15_addendum (accepted=5). No game bytes committed.
