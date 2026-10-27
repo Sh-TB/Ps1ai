@@ -84,9 +84,9 @@ def raw_mode2(lba, user):
     subheader + user = 2056 bytes) | ECC 276 (zero-filled).
     """
     assert len(user) == USER
-    m, s, f = lba // (75 * 60), (lba // 75) % 60, lba % 75
+    m, s, f = (lba + 150) // (75 * 60), ((lba + 150) // 75) % 60, (lba + 150) % 75
     head = SYNC + bytes([_bcd(m), _bcd(s), _bcd(f), 0x02])
-    sub = bytes([0x00, 0x00, 0x08, 0x00]) * 2     # data, form1 (repeated)
+    sub = bytes([0x00, 0x00, 0x09, 0x00]) * 2     # data, form1+EOR (mkpsxiso-style)
     body = head + sub + user                      # 16 + 8 + 2048 = 0x818
     edc = edc_calc(body[0x10:0x818])              # subheader + user data
     raw = body + struct.pack("<I", edc) + b"\x00" * 276
@@ -195,7 +195,7 @@ def build_image(files, license_text=LICENSE_TEXT):
 
     put(4, license_text)                            # region marker
     plane[16] = _pvd(space, 10, 18, 20, USER)
-    plane[17] = b"\xFF" * USER
+    plane[17] = (b"\xFF" * 8 + b"CD001\x01" + b"\x00" * (USER - 14))  # VDT
     lpt = _path_table_entry(20, False)
     mpt = _path_table_entry(20, True)
     assert len(lpt) == len(mpt) == 10

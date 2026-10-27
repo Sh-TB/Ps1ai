@@ -68,7 +68,8 @@ def test_edc_correct_on_every_sector():
         assert sec[0] == 0x00 and sec[1:11] == b"\xFF" * 10 and sec[11] == 0
         assert sec[15] == 0x02                          # MODE2
         # two identical subheader copies, data form1
-        assert sec[0x10:0x14] == sec[0x14:0x18] == b"\x00\x00\x08\x00"
+        # submode 0x09 = data form1 + EOR, mirrors mkpsxiso-built booting discs
+        assert sec[0x10:0x14] == sec[0x14:0x18] == b"\x00\x00\x09\x00"
         stored, = struct.unpack_from("<I", sec, 0x818)
         calc = iso9660_min.edc_calc(sec[0x10:0x818])
         assert stored == calc, f"EDC mismatch on sector {i}"

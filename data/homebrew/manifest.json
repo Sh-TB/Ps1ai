@@ -1,263 +1,320 @@
 {
-  "description": "PS1 homebrew candidates for plugin-lab validation (Issue #6). Binaries are NOT stored in VCS: fetch with scripts/fetch_homebrew.py and verify SHA-256. Only permissively licensed games are accepted. Boot gate: unpatched homebrew discs boot-loop inside the OpenBIOS shell (license-sector requirement) \u2014 produce local license-patched images with scripts/make_homebrew_lic.py using the user's own retail disc; patched images are local-only and never committed.",
-  "boot_gate_finding": "2026-10-22 OBSERVED: without license sectors (0..15) the OpenBIOS shello CDChecker loops forever (identical cube animation across Tetrade/Nortis/PSXMC; game EXE never reaches RAM, ~72KB nonzero). Copying the 16 license sectors from the user's own MSX disc into a LOCAL copy unblocks boot for all three (RAM 72KB->555KB, game strings/EXE load, padbuff fills with 00 41 ff ff, buttons deliver). This SUPERSEDES the earlier 'OpenBIOS kernel pad defect' diagnosis on the beetle backend: padbuff absence was a symptom of the game never running, not a pad-path defect. PCSX-Redux-side observation is stale pending re-test under the same fix.",
-  "accepted": [
-    {
-      "id": "tetrade",
-      "plugin": "TetradePlugin",
-      "source": "https://github.com/Logan-Campbell/Tetrade",
-      "license": "MIT",
-      "license_file": "LICENSE",
-      "revision": "release v1.0",
-      "artifacts": [
+    "description": "PS1 homebrew candidates for plugin-lab validation (Issue #6). Binaries are NOT stored in VCS: fetch with scripts/fetch_homebrew.py and verify SHA-256. Only permissively licensed games are accepted. Boot gate: unpatched homebrew discs boot-loop inside the OpenBIOS shell (license-sector requirement) \u2014 produce local license-patched images with scripts/make_homebrew_lic.py using the user's own retail disc; patched images are local-only and never committed.",
+    "boot_gate_finding": "2026-10-22 OBSERVED: without license sectors (0..15) the OpenBIOS shello CDChecker loops forever (identical cube animation across Tetrade/Nortis/PSXMC; game EXE never reaches RAM, ~72KB nonzero). Copying the 16 license sectors from the user's own MSX disc into a LOCAL copy unblocks boot for all three (RAM 72KB->555KB, game strings/EXE load, padbuff fills with 00 41 ff ff, buttons deliver). This SUPERSEDES the earlier 'OpenBIOS kernel pad defect' diagnosis on the beetle backend: padbuff absence was a symptom of the game never running, not a pad-path defect. PCSX-Redux-side observation is stale pending re-test under the same fix.",
+    "accepted": [
         {
-          "name": "TETRADE_PSX.bin",
-          "url": "https://github.com/Logan-Campbell/Tetrade/releases/download/v1.0/TETRADE_PSX.bin",
-          "bytes": 3196368,
-          "sha256": "2f41feba2023cbdcd9c1c3d4cfc3d8d1a7f1a2de0afea2e7a050b84640d6eaf8"
+            "id": "tetrade",
+            "plugin": "TetradePlugin",
+            "source": "https://github.com/Logan-Campbell/Tetrade",
+            "license": "MIT",
+            "license_file": "LICENSE",
+            "revision": "release v1.0",
+            "artifacts": [
+                {
+                    "name": "TETRADE_PSX.bin",
+                    "url": "https://github.com/Logan-Campbell/Tetrade/releases/download/v1.0/TETRADE_PSX.bin",
+                    "bytes": 3196368,
+                    "sha256": "2f41feba2023cbdcd9c1c3d4cfc3d8d1a7f1a2de0afea2e7a050b84640d6eaf8"
+                },
+                {
+                    "name": "tetrade.cue",
+                    "url": null,
+                    "note": "generated locally: FILE/TRACK MODE2/2352 INDEX 00:00:00",
+                    "bytes": 74
+                }
+            ],
+            "boot_exe": "tetrade.exe",
+            "exe_t_addr": "0x80010000",
+            "exe_t_size": "0x9b000",
+            "status": "ACCEPTED+TESTED 2026-10-22: BOOTED, INPUT_RESPONSIVE (START title->menu; padbuff 00 41 ff ff at 0xBB120/0xBB142), STATE_CHANGE_CONFIRMED, GAMEPLAY_CONFIRMED (CROSS -> Marathon mode, piece moves with LEFT/RIGHT) through the shared beetle core + OpenBIOS with the LOCAL license-patched image. Unpatched release disc boot-loops (see boot_gate_finding). ROUND-7 2026-10-26 LINE-CLEAR CAUSALITY CLOSED through the generalized scripts/playloop.py tool (iterative RAM-truth bot): one-boot calibration ladder pinned the live layout \u2014 matrix 0x1FECA0 (20x10), type 0x1FEFC0, x 0x1FF004, y 0x1FF008, score 0x1FF584, single 0x1FF588, level 0x1FF5A0, over 0x1FF5A8 (LEFT-tap whole-RAM diff = exactly one hit; savestate anchors; soft-drop 1f-tap delta 0 honest negative). Main run: 39 pieces, 8 LINE CLEARS \u2014 cycle 1: singles 0\u21921\u21922 then a TRIPLE (lines 0\u21921\u21922\u21925), natural game over (score 532) \u2192 CONTINUE? refused with CIRCLE \u2192 counters verified reset \u2192 cycle 2: 3 more singles \u2192 natural game over (474). Score stays drop-driven (+2/cell) exactly as source predicts (check_lines adds 0 at level 0). Upstream ground truth: src/main.c v1.0 (board 10x20, struct offsets, BASE_DROP_RATE 30, A=CIRCLE rot CW / B=CROSS rot CCW / UP=hard-drop). Verdict: GAMEPLAY_CONFIRMED + CAUSAL (lines counters single/double/triple). Evidence: issue #6 round-7 report + scratch/issue6_round7_tetrade. ROUND-19 2026-10-27 CLOSED-LOOP BOT (scripts/r19t3_tetrade_bot.py): reads the r7-pinned RAM (board/type/x/y/score/over), plans (rot,col) via height/holes/bumpiness heuristic, steers and drops \u2014 cumulative 1,816 pieces, 230 line clears, 81 cycles, max score 11,240, landing accuracy 2,863/2,867 = 99.86% (within +/-1 col), 20 natural game-overs each followed by CONTINUE refused with CIRCLE. Verdict: PLAYING (bot perceives RAM, decides, lands accurately). GIF d.uguu.se/BPbkXubV.gif (mirror docs/evidence_gifs/r19_t3_tetrade_bot.gif). Evidence: docs/issue6_r19_report.md T3."
         },
         {
-          "name": "tetrade.cue",
-          "url": null,
-          "note": "generated locally: FILE/TRACK MODE2/2352 INDEX 00:00:00",
-          "bytes": 74
-        }
-      ],
-      "boot_exe": "tetrade.exe",
-      "exe_t_addr": "0x80010000",
-      "exe_t_size": "0x9b000",
-      "status": "ACCEPTED+TESTED 2026-10-22: BOOTED, INPUT_RESPONSIVE (START title->menu; padbuff 00 41 ff ff at 0xBB120/0xBB142), STATE_CHANGE_CONFIRMED, GAMEPLAY_CONFIRMED (CROSS -> Marathon mode, piece moves with LEFT/RIGHT) through the shared beetle core + OpenBIOS with the LOCAL license-patched image. Unpatched release disc boot-loops (see boot_gate_finding). ROUND-7 2026-10-26 LINE-CLEAR CAUSALITY CLOSED through the generalized scripts/playloop.py tool (iterative RAM-truth bot): one-boot calibration ladder pinned the live layout \u2014 matrix 0x1FECA0 (20x10), type 0x1FEFC0, x 0x1FF004, y 0x1FF008, score 0x1FF584, single 0x1FF588, level 0x1FF5A0, over 0x1FF5A8 (LEFT-tap whole-RAM diff = exactly one hit; savestate anchors; soft-drop 1f-tap delta 0 honest negative). Main run: 39 pieces, 8 LINE CLEARS \u2014 cycle 1: singles 0\u21921\u21922 then a TRIPLE (lines 0\u21921\u21922\u21925), natural game over (score 532) \u2192 CONTINUE? refused with CIRCLE \u2192 counters verified reset \u2192 cycle 2: 3 more singles \u2192 natural game over (474). Score stays drop-driven (+2/cell) exactly as source predicts (check_lines adds 0 at level 0). Upstream ground truth: src/main.c v1.0 (board 10x20, struct offsets, BASE_DROP_RATE 30, A=CIRCLE rot CW / B=CROSS rot CCW / UP=hard-drop). Verdict: GAMEPLAY_CONFIRMED + CAUSAL (lines counters single/double/triple). Evidence: issue #6 round-7 report + scratch/issue6_round7_tetrade. ROUND-19 2026-10-27 CLOSED-LOOP BOT (scripts/r19t3_tetrade_bot.py): reads the r7-pinned RAM (board/type/x/y/score/over), plans (rot,col) via height/holes/bumpiness heuristic, steers and drops — cumulative 1,816 pieces, 230 line clears, 81 cycles, max score 11,240, landing accuracy 2,863/2,867 = 99.86% (within +/-1 col), 20 natural game-overs each followed by CONTINUE refused with CIRCLE. Verdict: PLAYING (bot perceives RAM, decides, lands accurately). GIF d.uguu.se/BPbkXubV.gif (mirror docs/evidence_gifs/r19_t3_tetrade_bot.gif). Evidence: docs/issue6_r19_report.md T3."
-    },
-    {
-      "id": "psx-minecraft",
-      "plugin": "GenericPlugin (dedicated plugin pending)",
-      "source": "https://github.com/EngineersBox/PSX-Minecraft",
-      "license": "MIT",
-      "license_file": "LICENSE",
-      "revision": "release infdev_2025_04_18",
-      "artifacts": [
-        {
-          "name": "infdev_release_2025_04_18T04_35_17_.tar.gz",
-          "url": "https://github.com/EngineersBox/PSX-Minecraft/releases/download/infdev_2025_04_18/infdev_release_2025_04_18T04_35_17_.tar.gz",
-          "bytes": 695797,
-          "sha256": "45b076caa2bc6e3bab38d22add3056ad8efe2460a28e9d129d1e89cb2ab0dd74"
+            "id": "psx-minecraft",
+            "plugin": "GenericPlugin (dedicated plugin pending)",
+            "source": "https://github.com/EngineersBox/PSX-Minecraft",
+            "license": "MIT",
+            "license_file": "LICENSE",
+            "revision": "release infdev_2025_04_18",
+            "artifacts": [
+                {
+                    "name": "infdev_release_2025_04_18T04_35_17_.tar.gz",
+                    "url": "https://github.com/EngineersBox/PSX-Minecraft/releases/download/infdev_2025_04_18/infdev_release_2025_04_18T04_35_17_.tar.gz",
+                    "bytes": 695797,
+                    "sha256": "45b076caa2bc6e3bab38d22add3056ad8efe2460a28e9d129d1e89cb2ab0dd74"
+                },
+                {
+                    "name": "PSXMC.bin",
+                    "url": null,
+                    "note": "extracted from the release tar; 329280 bytes; BOOT=cdrom:\\PSXMC.exe",
+                    "bytes": 329280
+                }
+            ],
+            "boot_exe": "PSXMC.exe",
+            "status": "ACCEPTED+TESTED 2026-10-22: BOOTED to world render (PSXMC INFDEV HUD, terrain, hotbar, hearts) through the shared core + OpenBIOS with the LOCAL license-patched image; INPUT_RESPONSIVE (cross/left produce large world/camera deltas 49.8/54.4 mean-abs-diff); STATE_CHANGE_CONFIRMED. padbuff ok41=2. Second input-causality-positive game (A6). ROUND-4 2026-10-25: GAMEPLAY_CONFIRMED \u2014 directional movement causality with 75.5% reversal restoration (LEFT 120f madiff 21.45 -> RIGHT-after-LEFT madiff 5.25); camera look-loop returns BIT-IDENTICAL baseline (madiff 0.0 over 76800 px x3) after down->left->up->right; R2 ATTACK = persistent world change (dig, 30.64/44991 px); R1 JUMP bit-exact landing; START opens inventory UI on RELEASE (mid-hold 0.0); idle windows bit-exact (0 changed px) vs held 15-46 \u2014 clean idle-vs-held separator; button bindings ground-truthed against upstream bindings.c @ infdev_2025_04_18 and verified 1:1. Evidence: issue #6 round-4 report + scratch/issue6_round4_psxmc (report.json, 40 PNGs). ROUND-7 2026-10-26 PLACE CAMPAIGN \u2014 honest INCONCLUSIVE(place), root cause found, use-consumption chain CAUSAL: upstream BINDING_USE=PAD_L2 (src/core/input/bindings.c) verified; the first battery aimed only 2-12 deg below the horizon (90 deg \u2248 228 f at the measured 18432 raw/f) so the crosshair never touched terrain \u2014 even R2 dig went non-persistent in that state; the monotonic pitch-sweep follow-up produced giant full-screen diffs that the sharper place4 iteration identified as the CRAFTING UI overlay (the game ticks \u22652x per frame: tick1 USE acts, tick2 raycasts the just-placed table and opens its modal per block_crafting_table.c:232; the START guard then left the inventory open \u2014 place3's later 'placements' are RETRACTED as UI artifacts). place4 (fine aim err <1 deg, geo gates, UI-recovery): USE taps consume the selected stack with ItemID-context verification \u2014 chain 26\u219225\u219224\u219223 @0x7cda0 (CRAFTING_TABLE, ctx hex 0x54=84=ID 58 word) \u2014 with ZERO visible world placement (world_px 0 in every attempt, confirmed_places 0); attempt 3's raycast then HIT a placed table (UI opened, ui_px 36852) \u2014 evidence the earlier USEs DID modify the world, just out of frame; this run's R2 dig also showed churn without visible change (round-4's 44991-px dig remains the world-modification gold standard). Savestate round-trip on the edited world: RAM bit-exact + frame bit-exact at t+1 + functional re-edit accepted on the restored world. Verdict: INCONCLUSIVE(place) \u2014 stack-consumption CAUSAL, visible placement unproven; next lever: camera framing the target face + post-place world_px gate. Evidence: issue #6 round-7 report + scratch/issue6_round7_psxmc (report_place3.json, report_place4.json). ROUND-19 2026-10-27 VISIBLE PLACE CONFIRMED (closes r7 INCONCLUSIVE(place)): walked off the spawn platform (place cell was out-of-world from it), pitch 66 deg, L2 3f-tap burst -> stack 10->9 @0x7cdf8, world_px=1,269 in the framed region (bbox [94,93,168,236]), negative control (horizon aim) 0 px, persist-60f identical (stable), UI guard clean (inventory/modal 0, no crafting UI). Dig-revert A/B inconclusive (honest, non-gating). GIF h.uguu.se/KuebBbvW.gif (mirror docs/evidence_gifs/r19_t5_psxmc_place.gif). Evidence: docs/issue6_r19_report.md T5."
         },
         {
-          "name": "PSXMC.bin",
-          "url": null,
-          "note": "extracted from the release tar; 329280 bytes; BOOT=cdrom:\\PSXMC.exe",
-          "bytes": 329280
-        }
-      ],
-      "boot_exe": "PSXMC.exe",
-      "status": "ACCEPTED+TESTED 2026-10-22: BOOTED to world render (PSXMC INFDEV HUD, terrain, hotbar, hearts) through the shared core + OpenBIOS with the LOCAL license-patched image; INPUT_RESPONSIVE (cross/left produce large world/camera deltas 49.8/54.4 mean-abs-diff); STATE_CHANGE_CONFIRMED. padbuff ok41=2. Second input-causality-positive game (A6). ROUND-4 2026-10-25: GAMEPLAY_CONFIRMED \u2014 directional movement causality with 75.5% reversal restoration (LEFT 120f madiff 21.45 -> RIGHT-after-LEFT madiff 5.25); camera look-loop returns BIT-IDENTICAL baseline (madiff 0.0 over 76800 px x3) after down->left->up->right; R2 ATTACK = persistent world change (dig, 30.64/44991 px); R1 JUMP bit-exact landing; START opens inventory UI on RELEASE (mid-hold 0.0); idle windows bit-exact (0 changed px) vs held 15-46 \u2014 clean idle-vs-held separator; button bindings ground-truthed against upstream bindings.c @ infdev_2025_04_18 and verified 1:1. Evidence: issue #6 round-4 report + scratch/issue6_round4_psxmc (report.json, 40 PNGs). ROUND-7 2026-10-26 PLACE CAMPAIGN \u2014 honest INCONCLUSIVE(place), root cause found, use-consumption chain CAUSAL: upstream BINDING_USE=PAD_L2 (src/core/input/bindings.c) verified; the first battery aimed only 2-12 deg below the horizon (90 deg \u2248 228 f at the measured 18432 raw/f) so the crosshair never touched terrain \u2014 even R2 dig went non-persistent in that state; the monotonic pitch-sweep follow-up produced giant full-screen diffs that the sharper place4 iteration identified as the CRAFTING UI overlay (the game ticks \u22652x per frame: tick1 USE acts, tick2 raycasts the just-placed table and opens its modal per block_crafting_table.c:232; the START guard then left the inventory open \u2014 place3's later 'placements' are RETRACTED as UI artifacts). place4 (fine aim err <1 deg, geo gates, UI-recovery): USE taps consume the selected stack with ItemID-context verification \u2014 chain 26\u219225\u219224\u219223 @0x7cda0 (CRAFTING_TABLE, ctx hex 0x54=84=ID 58 word) \u2014 with ZERO visible world placement (world_px 0 in every attempt, confirmed_places 0); attempt 3's raycast then HIT a placed table (UI opened, ui_px 36852) \u2014 evidence the earlier USEs DID modify the world, just out of frame; this run's R2 dig also showed churn without visible change (round-4's 44991-px dig remains the world-modification gold standard). Savestate round-trip on the edited world: RAM bit-exact + frame bit-exact at t+1 + functional re-edit accepted on the restored world. Verdict: INCONCLUSIVE(place) \u2014 stack-consumption CAUSAL, visible placement unproven; next lever: camera framing the target face + post-place world_px gate. Evidence: issue #6 round-7 report + scratch/issue6_round7_psxmc (report_place3.json, report_place4.json). ROUND-19 2026-10-27 VISIBLE PLACE CONFIRMED (closes r7 INCONCLUSIVE(place)): walked off the spawn platform (place cell was out-of-world from it), pitch 66 deg, L2 3f-tap burst -> stack 10->9 @0x7cdf8, world_px=1,269 in the framed region (bbox [94,93,168,236]), negative control (horizon aim) 0 px, persist-60f identical (stable), UI guard clean (inventory/modal 0, no crafting UI). Dig-revert A/B inconclusive (honest, non-gating). GIF h.uguu.se/KuebBbvW.gif (mirror docs/evidence_gifs/r19_t5_psxmc_place.gif). Evidence: docs/issue6_r19_report.md T5."
-    },
-    {
-      "id": "hello_pong",
-      "plugin": "GenericPlugin (dedicated plugin pending)",
-      "source": "https://github.com/marconvcm/ps1_dev",
-      "license": "MIT",
-      "license_file": "LICENSE",
-      "revision": "Actions run 34011353452 artifact ps1-build-artifacts (id 9982555693, expires 2026-12-05, head dec2f3f0)",
-      "artifacts": [
-        {
-          "name": "hello_pong.bin",
-          "url": "https://api.github.com/repos/marconvcm/ps1_dev/actions/artifacts/9982555693/zip (token auth; zip sha256 51321870297181c7b4ec45f7841198bd57f604af99554c2694feb16e5e40bc49 matches API digest)",
-          "bytes": 2500176,
-          "sha256": "a592f7edd6fc5f5ee83bd9bcf36ef8861803ba47e5b0e1daa94d7fe5615af247"
+            "id": "hello_pong",
+            "plugin": "GenericPlugin (dedicated plugin pending)",
+            "source": "https://github.com/marconvcm/ps1_dev",
+            "license": "MIT",
+            "license_file": "LICENSE",
+            "revision": "Actions run 34011353452 artifact ps1-build-artifacts (id 9982555693, expires 2026-12-05, head dec2f3f0)",
+            "artifacts": [
+                {
+                    "name": "hello_pong.bin",
+                    "url": "https://api.github.com/repos/marconvcm/ps1_dev/actions/artifacts/9982555693/zip (token auth; zip sha256 51321870297181c7b4ec45f7841198bd57f604af99554c2694feb16e5e40bc49 matches API digest)",
+                    "bytes": 2500176,
+                    "sha256": "a592f7edd6fc5f5ee83bd9bcf36ef8861803ba47e5b0e1daa94d7fe5615af247"
+                },
+                {
+                    "name": "hello_pong.cue",
+                    "url": null,
+                    "note": "generated locally: FILE/TRACK MODE2/2352 INDEX 00:00:00; BOOT=cdrom:\\GAMEPS1.exe;1",
+                    "bytes": 74
+                }
+            ],
+            "boot_exe": "GAMEPS1.exe",
+            "status": "ACCEPTED+BOOTED 2026-10-25 through the shared beetle core + OpenBIOS with the LOCAL license-patched image: static rendered game screen at f1200 (frame_mean 20.24, max 248, identical through f2100), padbuff 00 41 ff ff x2 (pad_id41=2); screen content GAME OVER / PLAYER 1 WINS! / PRESS X TO PLAY AGAIN (game render, VLM+human-verified screenshot). Unpatched control reproduces the OpenBIOS CDChecker boot-loop (animated cube, frame_mean 71.4->49.8, pad_id41=0, EXE never in RAM). ROUND-5 2026-10-25 COMPLETE_LOOP_OBSERVED x2 \u2014 controls ground-truthed from upstream src/libs/game_pad.h (PAD_BUTTON_X=0x4000 = PSX CROSS = libretro B; libretro X=TRIANGLE is the in-play pause, negative control madiff 0.0); X-restart causal (GAME_OVER -> MENU -> PLAYING, madiff 4.223); PLAYER_CONTROLLED \u2014 left paddle UP dy -90.0 / DOWN +169.0 (reversal proven), RIGHT clean no-op, right paddle static with no AI (P1: OK / P2: OK); steered play tracked the ball; ball exit -> natural GAME_OVER bit-identical to the boot screen (madiff 0.0) -> restart -> second cycle. Whole game ~170f (~3 s), ends after ~2 points. Quirks honest: winner text constant, paddle position carries across restarts. SECOND game with a complete played loop (after Tetrade, Issue #8). Evidence: issue #6 round-5 report + scratch/issue6_round5_hellopong (report.json, 26 PNGs). Note: earlier boot_verdict.json BOOT_FAIL (19:49Z) was a missing-openbios.bin workspace mistake, superseded by the 19:57Z timeline; recorded honestly. ROUND-6 2026-10-25: artifact REFETCHED via the documented API procedure (zip sha256 51321870297181c7b4ec45f7841198bd57f604af99554c2694feb16e5e40bc49 == digest above; hello_pong.bin sha256 a592f7edd6fc5f5ee83bd9bcf36ef8861803ba47e5b0e1daa94d7fe5615af247 == above), license-patched image rebuilt locally, and the complete loop ran THROUGH the new scripts/playloop.py tool: boot (padbuff 00 41 ff ff) -> natural game over (madiff 5.61 burst -> 0.0 static) -> X restart -> transition madiff 4.223 (the round-5 causal signature reproduced). Score-region causality INCONCLUSIVE this round (blob steering detector found no ball; paddle control was round-5-proven). Evidence: scratch/issue6_round6_pong_tools/. ROUND-19 2026-10-27 FULL MATCH WON 5-0 through closed-loop play (one boot, 4,848f/61.8s vs disclosed harness sparring bot on pad2): vx==0 frame clobbering last_vx sign root-caused (attribution fixed; contact gap frame-traced f00415..480), per-point RAM left_delta=1 @0x1FFEB4, all 5 points real rallies, play-again loop proven through play (win->MENU->fresh 0-0->one more real point). Verdict: WON. GIF h.uguu.se/FHOVwLRy.gif (mirror docs/evidence_gifs/r19_t4_hellopong_win.gif). Evidence: docs/issue6_r19_report.md T4.",
+            "local_test_evidence": " ROUND-12 2026-10-27 WIN_CAUSAL - the game was finished by WINNING: fresh 0-0 start (post GAME_OVER->MENU->PLAYING restart, reset verified) -> score word 0x1ffeb4 (Paddle{y,score} y=0x1ffeb0 pinned by UP-tap whole-RAM i32 delta -8/+8, in-run control causality) progressed 0->1->2->3->4->5 with per-frame point anchors f1046/f1086/f1165/f1250/f1335/f1420 + PNGs -> GAME_OVER screen -> B-release restart -> MENU -> fresh game score reset 5->0. The 0x1ffea8 neighbour word does not reset (not a score) - dropped honestly. Tool scripts/hellopong_r12_win2.py; evidence scratch/round12_hellopong/win2/. THIRD finished-game milestone (Tetrade DoD r10, hello_pong complete loop r11, WIN r12)."
         },
         {
-          "name": "hello_pong.cue",
-          "url": null,
-          "note": "generated locally: FILE/TRACK MODE2/2352 INDEX 00:00:00; BOOT=cdrom:\\GAMEPS1.exe;1",
-          "bytes": 74
-        }
-      ],
-      "boot_exe": "GAMEPS1.exe",
-      "status": "ACCEPTED+BOOTED 2026-10-25 through the shared beetle core + OpenBIOS with the LOCAL license-patched image: static rendered game screen at f1200 (frame_mean 20.24, max 248, identical through f2100), padbuff 00 41 ff ff x2 (pad_id41=2); screen content GAME OVER / PLAYER 1 WINS! / PRESS X TO PLAY AGAIN (game render, VLM+human-verified screenshot). Unpatched control reproduces the OpenBIOS CDChecker boot-loop (animated cube, frame_mean 71.4->49.8, pad_id41=0, EXE never in RAM). ROUND-5 2026-10-25 COMPLETE_LOOP_OBSERVED x2 \u2014 controls ground-truthed from upstream src/libs/game_pad.h (PAD_BUTTON_X=0x4000 = PSX CROSS = libretro B; libretro X=TRIANGLE is the in-play pause, negative control madiff 0.0); X-restart causal (GAME_OVER -> MENU -> PLAYING, madiff 4.223); PLAYER_CONTROLLED \u2014 left paddle UP dy -90.0 / DOWN +169.0 (reversal proven), RIGHT clean no-op, right paddle static with no AI (P1: OK / P2: OK); steered play tracked the ball; ball exit -> natural GAME_OVER bit-identical to the boot screen (madiff 0.0) -> restart -> second cycle. Whole game ~170f (~3 s), ends after ~2 points. Quirks honest: winner text constant, paddle position carries across restarts. SECOND game with a complete played loop (after Tetrade, Issue #8). Evidence: issue #6 round-5 report + scratch/issue6_round5_hellopong (report.json, 26 PNGs). Note: earlier boot_verdict.json BOOT_FAIL (19:49Z) was a missing-openbios.bin workspace mistake, superseded by the 19:57Z timeline; recorded honestly. ROUND-6 2026-10-25: artifact REFETCHED via the documented API procedure (zip sha256 51321870297181c7b4ec45f7841198bd57f604af99554c2694feb16e5e40bc49 == digest above; hello_pong.bin sha256 a592f7edd6fc5f5ee83bd9bcf36ef8861803ba47e5b0e1daa94d7fe5615af247 == above), license-patched image rebuilt locally, and the complete loop ran THROUGH the new scripts/playloop.py tool: boot (padbuff 00 41 ff ff) -> natural game over (madiff 5.61 burst -> 0.0 static) -> X restart -> transition madiff 4.223 (the round-5 causal signature reproduced). Score-region causality INCONCLUSIVE this round (blob steering detector found no ball; paddle control was round-5-proven). Evidence: scratch/issue6_round6_pong_tools/. ROUND-19 2026-10-27 FULL MATCH WON 5-0 through closed-loop play (one boot, 4,848f/61.8s vs disclosed harness sparring bot on pad2): vx==0 frame clobbering last_vx sign root-caused (attribution fixed; contact gap frame-traced f00415..480), per-point RAM left_delta=1 @0x1FFEB4, all 5 points real rallies, play-again loop proven through play (win->MENU->fresh 0-0->one more real point). Verdict: WON. GIF h.uguu.se/FHOVwLRy.gif (mirror docs/evidence_gifs/r19_t4_hellopong_win.gif). Evidence: docs/issue6_r19_report.md T4.",
-      "local_test_evidence": " ROUND-12 2026-10-27 WIN_CAUSAL - the game was finished by WINNING: fresh 0-0 start (post GAME_OVER->MENU->PLAYING restart, reset verified) -> score word 0x1ffeb4 (Paddle{y,score} y=0x1ffeb0 pinned by UP-tap whole-RAM i32 delta -8/+8, in-run control causality) progressed 0->1->2->3->4->5 with per-frame point anchors f1046/f1086/f1165/f1250/f1335/f1420 + PNGs -> GAME_OVER screen -> B-release restart -> MENU -> fresh game score reset 5->0. The 0x1ffea8 neighbour word does not reset (not a score) - dropped honestly. Tool scripts/hellopong_r12_win2.py; evidence scratch/round12_hellopong/win2/. THIRD finished-game milestone (Tetrade DoD r10, hello_pong complete loop r11, WIN r12)."
-    },
-    {
-      "id": "doukutsupsx",
-      "plugin": null,
-      "source": "https://github.com/fgsfdsfgs/doukutsupsx",
-      "license": "MIT (port); Cave Story (c) Studio Pixel \u2014 freeware",
-      "revision": "release v0.7 (2022-10-13)",
-      "artifacts": [
-        {
-          "name": "doukutsu_r7_us.iso",
-          "url": "https://github.com/fgsfdsfgs/doukutsupsx/releases/download/v0.7/doukutsu_r7_us.iso",
-          "bytes": 32565792,
-          "sha256": "bf15559eef20cded0d728e4c97da6830a1d4f7bb83a5c1e5dffb5fc755c27554"
+            "id": "doukutsupsx",
+            "plugin": null,
+            "source": "https://github.com/fgsfdsfgs/doukutsupsx",
+            "license": "MIT (port); Cave Story (c) Studio Pixel \u2014 freeware",
+            "revision": "release v0.7 (2022-10-13)",
+            "artifacts": [
+                {
+                    "name": "doukutsu_r7_us.iso",
+                    "url": "https://github.com/fgsfdsfgs/doukutsupsx/releases/download/v0.7/doukutsu_r7_us.iso",
+                    "bytes": 32565792,
+                    "sha256": "bf15559eef20cded0d728e4c97da6830a1d4f7bb83a5c1e5dffb5fc755c27554"
+                },
+                {
+                    "name": "doukutsu_lic.bin",
+                    "url": null,
+                    "note": "local MODE2/2352 copy of the release iso; the release already carries the standard US 'Sony Computer Entertainment' license block (byte-identical to the local retail license patch \u2014 overwrite was a no-op, same sha256); cue generated locally",
+                    "bytes": 32565792,
+                    "sha256": "bf15559eef20cded0d728e4c97da6830a1d4f7bb83a5c1e5dffb5fc755c27554"
+                }
+            ],
+            "boot_exe": "doukutsu.ps-exe",
+            "status": "BOOTED_TITLE \u2014 round 13: beetle-psx + OpenBIOS, one boot; shell cube -> LOADING (f~720) -> Studio Pixel intro -> 'Cave Story' title menu New/Load/Options @ f1740 (mean 26.84, anim madiff 15.14), 2 pad buffers detected; PNG evidence scratch/round13_newgames/doukutsu_long/ (report.json + 9 PNGs + long timeline jsonl). Next finish-target."
         },
         {
-          "name": "doukutsu_lic.bin",
-          "url": null,
-          "note": "local MODE2/2352 copy of the release iso; the release already carries the standard US 'Sony Computer Entertainment' license block (byte-identical to the local retail license patch \u2014 overwrite was a no-op, same sha256); cue generated locally",
-          "bytes": 32565792,
-          "sha256": "bf15559eef20cded0d728e4c97da6830a1d4f7bb83a5c1e5dffb5fc755c27554"
+            "id": "flappybirdpsx",
+            "source": "https://github.com/IcePanorama/FlappyBirdPSX",
+            "license": "Unlicense",
+            "artifact": {
+                "file": "flappybirdpsx-v0.1.0.iso",
+                "bytes": 571536,
+                "sha256": "b45871d32c7910784b26128c3f4ed48d181e31dfd693f4e5efa187cf2296f0ed",
+                "format": "MODE2/2352 ISO9660, license sectors present (sector 4 'Licensed by Computer Entertainment Amer')"
+            },
+            "boot": {
+                "route": "direct mount (decision-tree item 1, no patch)",
+                "first_boot": "Get Ready screen at ~f600, zero retries",
+                "workspace": "emu/games_homebrew/ws_r15_flappy"
+            },
+            "controls": {
+                "flap": "B (PSX CROSS, libretro JP_B)",
+                "restart": "START",
+                "note": "ps1play X = PSX TRIANGLE (r15 controller truth table)"
+            },
+            "mechanics_from_source": {
+                "flap_impulse_world": 256,
+                "gravity_rising": -32,
+                "gravity_falling": -4,
+                "gap_px": 70,
+                "bird_px": 20,
+                "score_gate_world_x": -1152,
+                "input": "EDGE-TRIGGERED (i32_last_padd) - hold = one flap"
+            },
+            "play": {
+                "status": "WINNING (PLAYING+WIN, honest taxonomy)",
+                "run": "2176 frames: 1 real death (pipe clip) + START restart + 10 pipe passes, 69 flaps, alive at win",
+                "anchors": [
+                    "pipe pos.x (RAM i16, pool slot 1) crossing the game's own -1152 gate x10",
+                    "score digits drawn '10' at WIN_FRAME",
+                    "pre-death ring logged for the one death"
+                ],
+                "gif": {
+                    "url": "https://n.uguu.se/PGbBVuMY.gif",
+                    "bytes": 3035407,
+                    "sha256": "a292cea2afa22d733561ce0fae5847bf91d7de03c148e52bf183a01467f91da4",
+                    "frames": 725,
+                    "fps": 20
+                },
+                "evidence": "scratch/round15_flappy/play/ (report.json, events.jsonl, WIN_FRAME.png)"
+            },
+            "tools": [
+                "scripts/r15_flappy_boot.py",
+                "scripts/r15_flappy_sensors.py",
+                "scripts/r15_flappy_play.py",
+                "scripts/r15_flappy_inputprobe.py",
+                "scripts/r15_flappy_colprobe.py",
+                "scripts/r15_flappy_sweep.py"
+            ],
+            "acceptance": "ACCEPTED r15: license-clean (Unlicense), boots via route 1, real closed-loop play to the game's own win state with RAM+vision anchors"
+        },
+        {
+            "id": "autogaz",
+            "plugin": "GenericPlugin (dedicated plugin pending)",
+            "source": "https://github.com/egemenkus0/autogaz",
+            "license": "MIT",
+            "license_file": "LICENSE",
+            "revision": "release vStable",
+            "artifacts": [
+                {
+                    "name": "autogaz-ps1.zip",
+                    "url": "https://github.com/egemenkus0/autogaz/releases/download/vStable/autogaz-ps1.zip",
+                    "bytes": 468721,
+                    "sha256": "765f1047b3ab35afd85770e023134c9dc7623c64600a670d41319009f2520a46"
+                },
+                {
+                    "name": "autogaz.bin",
+                    "url": null,
+                    "note": "extracted from the release zip; 3281040 bytes (1395x2352 MODE2); volume AUTOGAZ; BOOT EXE cdrom:\\autogaz.exe;1 pc0 0x80018c6c t_addr 0x80010000 t_size 706560; license sectors ABSENT -> local patch required",
+                    "bytes": 3281040
+                }
+            ],
+            "boot_exe": "autogaz.exe",
+            "exe_t_addr": "0x80010000",
+            "exe_t_size": "0xAC800",
+            "status": "BOOTED_TITLE 2026-10-27 (r20-t2): boots through shared beetle_psx+OpenBIOS with the LOCAL license-patched image (scripts/r20t2_autogaz_patch.py, MSX-disc sectors; patched image never committed); renders its own 320x240 intro/title screen (static Gigachad meme image) from ~f1200, game loop alive (u32 frame counter @0x800BCC00 +1/frame), kernel pad pattern 00 41 ff ff @RAM 0xB008. INPUT NOT RESPONSIVE yet: START/X/O/SQ/TR/SELECT/START+SELECT and 600f X hold produce zero visual/state response across 2 boots; no score/game-over sensor found (gameplay state never reached). Local evidence: scratch/r20t2_autogaz/."
+        },
+        {
+            "id": "zenmai",
+            "plugin": "GenericPlugin (dedicated plugin pending)",
+            "source": "https://github.com/msonrm/zenmai",
+            "license": "MIT + SIL-OFL-1.1 (bundled KH Dot font glyphs, native/glyphs.h) + MIT (Zork I ZIL data, historicalsource/zork1, Microsoft 2025) + zlib (MojoZork)",
+            "license_file": "LICENSE",
+            "revision": "release ps1-v1.5.0",
+            "artifacts": [
+                {
+                    "name": "zenmai-zork.psexe",
+                    "url": "https://github.com/msonrm/zenmai/releases/download/ps1-v1.5.0/zenmai-zork.psexe",
+                    "bytes": 700416,
+                    "sha256": "7f4be544c8d4438b1acf00c0a9be636b3147422e3b3234d6411a7c599cc2e4e2"
+                },
+                {
+                    "name": "zenmai_lic.bin",
+                    "url": null,
+                    "note": "local-only minimal CD wrap (scripts/r20t3_zenmai_wrap.py: SYSTEM.CNF BOOT=cdrom:\\ZENMAI.EXE;1 + EXE via iso9660_min, then MSX license sectors 0..15); raw PS-EXE is not a disc image; never committed",
+                    "bytes": 858480
+                }
+            ],
+            "boot_exe": "zenmai-zork.psexe",
+            "exe_t_addr": "0x80010000",
+            "exe_t_size": "0xAA800",
+            "status": "BOOTED_TEXT 2026-10-27 (r20-t3): raw PS-EXE CD-wrapped with iso9660_min \u2014 boot-gate loop root-caused to the writer itself (header MSF must be LBA+150, VDT must be FF*8+CD001+0x01, subheader submode 0x09; all fixed in scripts/iso9660_min.py + test updated) \u2014 plus MSX license sectors; boots to the zenmai title (Zork I \u2014 a Z-machine for Japanese and a game controller; \u65e5\u672c\u8a9e/ENGLISH menu; RAM ~549KB, 'West of House'/'Frobozz'/Z-machine strings resident) via beetle+OpenBIOS. INPUT_UNPROVEN: START/UP/DOWN/CROSS (15f-120f) give 0 main-RAM deltas and no menu state change on the title; zenmai polls pad via direct SIO (0x1F80104x @ ~0x8001B340, no BIOS InitPAD, no 0041ffff padbuff) \u2014 zenmai-specific under this backend (Tetrade control proves backend input delivery same session). Evidence: scratch/r20t3_zenmai/."
         }
-      ],
-      "boot_exe": "doukutsu.ps-exe",
-      "status": "BOOTED_TITLE \u2014 round 13: beetle-psx + OpenBIOS, one boot; shell cube -> LOADING (f~720) -> Studio Pixel intro -> 'Cave Story' title menu New/Load/Options @ f1740 (mean 26.84, anim madiff 15.14), 2 pad buffers detected; PNG evidence scratch/round13_newgames/doukutsu_long/ (report.json + 9 PNGs + long timeline jsonl). Next finish-target."
-    },
-    {
-      "id": "flappybirdpsx",
-      "source": "https://github.com/IcePanorama/FlappyBirdPSX",
-      "license": "Unlicense",
-      "artifact": {
-        "file": "flappybirdpsx-v0.1.0.iso",
-        "bytes": 571536,
-        "sha256": "b45871d32c7910784b26128c3f4ed48d181e31dfd693f4e5efa187cf2296f0ed",
-        "format": "MODE2/2352 ISO9660, license sectors present (sector 4 'Licensed by Computer Entertainment Amer')"
-      },
-      "boot": {
-        "route": "direct mount (decision-tree item 1, no patch)",
-        "first_boot": "Get Ready screen at ~f600, zero retries",
-        "workspace": "emu/games_homebrew/ws_r15_flappy"
-      },
-      "controls": {
-        "flap": "B (PSX CROSS, libretro JP_B)",
-        "restart": "START",
-        "note": "ps1play X = PSX TRIANGLE (r15 controller truth table)"
-      },
-      "mechanics_from_source": {
-        "flap_impulse_world": 256,
-        "gravity_rising": -32,
-        "gravity_falling": -4,
-        "gap_px": 70,
-        "bird_px": 20,
-        "score_gate_world_x": -1152,
-        "input": "EDGE-TRIGGERED (i32_last_padd) - hold = one flap"
-      },
-      "play": {
-        "status": "WINNING (PLAYING+WIN, honest taxonomy)",
-        "run": "2176 frames: 1 real death (pipe clip) + START restart + 10 pipe passes, 69 flaps, alive at win",
-        "anchors": [
-          "pipe pos.x (RAM i16, pool slot 1) crossing the game's own -1152 gate x10",
-          "score digits drawn '10' at WIN_FRAME",
-          "pre-death ring logged for the one death"
+    ],
+    "rejected": [
+        {
+            "id": "nortis",
+            "source": "https://github.com/jbreckmckye/nortis",
+            "reason": "no LICENSE file anywhere in repo (re-verified 2026-10-22 via API: 88 files scanned, 0 license files; README contains no project license statement) \u2014 redistribution rights unverified; integration blocked",
+            "status": "REPLACED",
+            "local_test_evidence": "LOCAL-ONLY boot+input test 2026-10-22 (license-patched image, binary never committed): BOOTED to NOTRIS title, START -> gameplay HUD (PLAY NOTRIS!, score/lines/controls, falling tetromino, next-piece preview updates). The game itself works through the shared core; only the license blocks acceptance. ROUND-4 2026-10-25 FULL LOCAL CAUSALITY CHAIN (A6-grade, LOCAL-ONLY): START -> gameplay (diff 11.58, session-3 independent 11.66); falling piece motion 7/7 windows; LEFT dx slope -11.0 px/sample, RIGHT +16.0 (control windows 0.0); CROSS hard-drop vertical extent 183 px vs control 31 px; CIRCLE-held suppresses CROSS hard-drop (fall speed 31 vs 175) exactly as upstream pad.c button-priority predicts \u2014 button discrimination proven; START is a no-op mid-game (negative control, matches source). License re-probe 2026-10-25: repo HTTP 200, 98 files, 0 license files \u2014 integration stays blocked. ROUND-5 2026-10-25 COMPLETE LOCAL GAME LOOP (no line clear \u2014 honest): boot -> 16-piece greedy steering run (shallowest-reachable-column policy, piece-masked board perception) -> NATURAL game over (GAME OVER! TRY AGAIN / PRESS START, PNG-verified) -> START restart -> EMPTY board + fresh piece (diff vs entry 0.71, falling blob 204 px, PNG-verified). Line clear NOT achieved across 6 policy iterations on the deterministic RNG \u2014 score/lines causality stays UNPROVEN (counters 0); v1-v5 detector false-positives and an inverted-steering bug are documented in the iteration record. Evidence: issue #6 round-5 report + scratch/issue6_round5_nortis (report.json with iterations, evidence.md). Evidence: issue #6 round-4 report + scratch/issue6_round4_nortis (report.json, 27 PNGs)."
+        },
+        {
+            "id": "buttonmasher",
+            "source": "https://github.com/OfficialMoonlit/ButtonMasher",
+            "reason": "no license; no releases (re-verified 2026-10-22 via API); source-only build requires the Windows-only 2012 PSXSDK toolchain \u2014 not buildable in this CPU-only sandbox",
+            "status": "REPLACED"
+        },
+        {
+            "id": "rps-ps1-v1",
+            "source": "https://github.com/OfficialMoonlit/RPS-PS1-v1",
+            "reason": "no license; no releases (re-verified 2026-10-22 via API); same broken toolchain dependency",
+            "status": "REPLACED"
+        }
+    ],
+    "candidates_pending": [
+        {
+            "id": "psxbreakout",
+            "plugin": null,
+            "source": "https://github.com/NDR008/psxBreakout",
+            "license": "unspecified public release (CS50 final project)",
+            "revision": "release v1.0 (cs50x.exe, 79,872 B)",
+            "artifacts": [
+                {
+                    "name": "cs50x.exe",
+                    "url": "https://github.com/NDR008/psxBreakout/releases/download/v1.0/cs50x.exe",
+                    "bytes": 79872,
+                    "sha256": "822a50e6fe77e5c43caef377acf4363d5f9da35cbd4ef0b8bebbc408d3cc2425"
+                }
+            ],
+            "boot_exe": "cs50x.exe",
+            "status": "CANDIDATE \u2014 honest boot gate: exe header loads (RAM sig @f440) then boot-loop wipe by f640; user RAM all zero at f900; verdict EXE_LOAD_CRASH under OpenBIOS. Two image routes tried: (a) hand-rolled strict-ECMA ISO9660 -> shell cube loop (BIOS never left the shell), (b) hello_pong-container payload swap (dirent size patched LE+BE, verified readback) -> load+crash. Suspects: OpenBIOS A0-table gap vs PSYQ expectations, or exe targets retail BIOS/emulator loaders (ePSXe runs bare exe). Next lever: retry under a retail-BIOS profile or rebuild from source against psn00bsdk.",
+            "round14_note": "boot BLOCKED: OpenBIOS 16-sector single-read cap (measured cliff) + unresolved kernel-phase stale-CD-read anomaly (stale sectors serve hello_pong_lic originals; LD_PRELOAD+atime prove no other file is opened); stage-1 loader v1/v2/v3+exploit attempts documented in docs/evidence/round14/psxbreakout_boot_saga.txt"
+        }
+    ],
+    "round4_addendum": "2026-10-25: hello_pong's recorded 401 blocker was STALE \u2014 the shared sandbox egress IP was GitHub-rate-limited (403 with rate-limit body), not the token lacking Actions:read; with the EXISTING Ps1ai token both listing and zip download return 200, and the zip sha256 matches the API digest field exactly. hello_pong moved to accepted on BOOT evidence; input-causality test (PRESS X TO PLAY AGAIN restart) is the round-5 target.",
+    "round7_addendum": "2026-10-26 round 7 (50/50): MSX M1\u2192M2 gate DECISIVE NEGATIVES \u2014 from the post-banner CONTINUE? gate: a 41-offset tap-timing sweep (24f steps, savestate-restored frame-exact retries) landed in the input-live M1 endzone 41/41 (gs1), and a 5400f quiet watch self-resolved into the attract demo (gs2); combined with m2t8/rg1-rg4 that is 8 documented attempts with ZERO M2 spawns \u2014 the session-6 'one START accepts into M2' record does NOT reproduce from this gate instance and is corrected to 'path-sensitive, mechanism unknown'. Offline candidate mining of the rg1 attract-ladder tracker (1.03M changed bytes) produced candidates.json but the top families decode as the 16-byte-stride entity pool (self-referential pointers), not flags \u2014 the surgical discriminator (M1-end vs M2-side loading diff) needs the m2_train anchor and is the recorded next lever. Tools: playloop.py generalized (--policy/--cue/--workspace) + 3 new tests, suite 485+1xfail.",
+    "round12_addendum": {
+        "date": "2026-10-27",
+        "round": 12,
+        "games_touched": [
+            "hello_pong",
+            "psx-minecraft",
+            "metal-slug-x",
+            "nortis"
         ],
-        "gif": {
-          "url": "https://n.uguu.se/PGbBVuMY.gif",
-          "bytes": 3035407,
-          "sha256": "a292cea2afa22d733561ce0fae5847bf91d7de03c148e52bf183a01467f91da4",
-          "frames": 725,
-          "fps": 20
+        "hello_pong": "WIN_CAUSAL (finished by winning 5-x, sensor-anchored 0->5->restart-reset)",
+        "psxmc": "PLACE_PARTIAL honest: selection (R3/L3 3-frame taps) + USE consumption (1/tap, clean negative control) CAUSAL; world-write localization NOT observed (chunk0 block array bit-identical pre/post; table modal did not open); next lever = engine-ray pitch+yaw sweep for consumed blocks",
+        "msx": "static: mission-select menu EXISTS (17-entry descriptor table @0x80095ef4, menu state machine @0x8007exxx, states byte 0x80095a7d, handler tables 0x80095a70/5a84/5b24, per-mission seq \\ANG\\M1\\MISS01..M4\\MISS16.BIN); live probe = next lever",
+        "nortis": "upstream rechecked 2026-10-27: still no license (MONITORED-NO-CHANGE)"
+    },
+    "round13_addendum": {
+        "date": "2026-10-26",
+        "gif_deliverable": {
+            "game": "hello_pong",
+            "verdict": "GIF_COMPLETE_LOOP",
+            "frames_captured": 1171,
+            "gif_frames": 390,
+            "fps": 20,
+            "bytes": 72594,
+            "sha256": "7fa336065761af992bdce41bba0f2e489ecaa45f4de91bda6fa9570fbdc1de3c",
+            "public_url": "https://h.uguu.se/rcAKDwni.gif",
+            "committed": "docs/evidence/round13/hello_pong_complete_gameplay.gif",
+            "loop": "menu-X -> game1 natural 5-x WIN -> GAME_OVER -> X -> menu -> X -> game2 natural 5-x WIN -> GAME_OVER -> X -> menu; score word 0x1ffeb4 read 2..5 per game; paddle wiggle visible"
         },
-        "evidence": "scratch/round15_flappy/play/ (report.json, events.jsonl, WIN_FRAME.png)"
-      },
-      "tools": [
-        "scripts/r15_flappy_boot.py",
-        "scripts/r15_flappy_sensors.py",
-        "scripts/r15_flappy_play.py",
-        "scripts/r15_flappy_inputprobe.py",
-        "scripts/r15_flappy_colprobe.py",
-        "scripts/r15_flappy_sweep.py"
-      ],
-      "acceptance": "ACCEPTED r15: license-clean (Unlicense), boots via route 1, real closed-loop play to the game's own win state with RAM+vision anchors"
-    }
-  ],
-  "rejected": [
-    {
-      "id": "nortis",
-      "source": "https://github.com/jbreckmckye/nortis",
-      "reason": "no LICENSE file anywhere in repo (re-verified 2026-10-22 via API: 88 files scanned, 0 license files; README contains no project license statement) \u2014 redistribution rights unverified; integration blocked",
-      "status": "REPLACED",
-      "local_test_evidence": "LOCAL-ONLY boot+input test 2026-10-22 (license-patched image, binary never committed): BOOTED to NOTRIS title, START -> gameplay HUD (PLAY NOTRIS!, score/lines/controls, falling tetromino, next-piece preview updates). The game itself works through the shared core; only the license blocks acceptance. ROUND-4 2026-10-25 FULL LOCAL CAUSALITY CHAIN (A6-grade, LOCAL-ONLY): START -> gameplay (diff 11.58, session-3 independent 11.66); falling piece motion 7/7 windows; LEFT dx slope -11.0 px/sample, RIGHT +16.0 (control windows 0.0); CROSS hard-drop vertical extent 183 px vs control 31 px; CIRCLE-held suppresses CROSS hard-drop (fall speed 31 vs 175) exactly as upstream pad.c button-priority predicts \u2014 button discrimination proven; START is a no-op mid-game (negative control, matches source). License re-probe 2026-10-25: repo HTTP 200, 98 files, 0 license files \u2014 integration stays blocked. ROUND-5 2026-10-25 COMPLETE LOCAL GAME LOOP (no line clear \u2014 honest): boot -> 16-piece greedy steering run (shallowest-reachable-column policy, piece-masked board perception) -> NATURAL game over (GAME OVER! TRY AGAIN / PRESS START, PNG-verified) -> START restart -> EMPTY board + fresh piece (diff vs entry 0.71, falling blob 204 px, PNG-verified). Line clear NOT achieved across 6 policy iterations on the deterministic RNG \u2014 score/lines causality stays UNPROVEN (counters 0); v1-v5 detector false-positives and an inverted-steering bug are documented in the iteration record. Evidence: issue #6 round-5 report + scratch/issue6_round5_nortis (report.json with iterations, evidence.md). Evidence: issue #6 round-4 report + scratch/issue6_round4_nortis (report.json, 27 PNGs)."
+        "new_games": [
+            "doukutsupsx (accepted, BOOTED_TITLE)",
+            "psxbreakout (candidate, EXE_LOAD_CRASH)"
+        ],
+        "finding_pvd156": "hello_pong's PSX-flavored PVD puts the root dir record at offset 156 (not ECMA-119's 168) \u2014 and a strict-ECMA hand-rolled ISO falls back to the shell cube under the PSX BIOS, consistent with the BIOS reading the root record at 156. Encoded in r13_breakout_container.find_root_record().",
+        "tools": [
+            "hellopong_r13_gif",
+            "r13_gh_check",
+            "r13_new_games",
+            "r13_breakout_container",
+            "r13_boot_new",
+            "r13_diag_cs50x",
+            "r13_diag_watch",
+            "r13_diag_v1",
+            "r13_doukutsu_long"
+        ]
     },
-    {
-      "id": "buttonmasher",
-      "source": "https://github.com/OfficialMoonlit/ButtonMasher",
-      "reason": "no license; no releases (re-verified 2026-10-22 via API); source-only build requires the Windows-only 2012 PSXSDK toolchain \u2014 not buildable in this CPU-only sandbox",
-      "status": "REPLACED"
+    "round14_addendum": {
+        "date": "2026-10-27",
+        "gif_deliverable": "https://h.uguu.se/VmqXgChs.gif",
+        "correction": "round-13 'complete gameplay' GIF was a zero-input walkover (paddle never moved; 0% ball interception; wiggle was dead code) \u2014 user's accusation confirmed by audit",
+        "real_match": "hello_pong REAL match vs the game's own AI (libretro port 1 disconnected -> upstream AI active): 9000 frames, servo paddle 117 move-steps, 11+ logged returns, 0 misses, score 0-0 eternal rally; upstream src/main.c proves the AI unbeatable (AI speed 3 == max |vel_y| 3, deadband 10, paddle 60px) \u2014 the game cannot be won vs its AI; the r12/r13 'wins' were static-dummy walkovers",
+        "psxbreakout": "boot campaign: 16-sector cap measured; stale-read anomaly open"
     },
-    {
-      "id": "rps-ps1-v1",
-      "source": "https://github.com/OfficialMoonlit/RPS-PS1-v1",
-      "reason": "no license; no releases (re-verified 2026-10-22 via API); same broken toolchain dependency",
-      "status": "REPLACED"
-    }
-  ],
-  "candidates_pending": [
-    {
-      "id": "psxbreakout",
-      "plugin": null,
-      "source": "https://github.com/NDR008/psxBreakout",
-      "license": "unspecified public release (CS50 final project)",
-      "revision": "release v1.0 (cs50x.exe, 79,872 B)",
-      "artifacts": [
-        {
-          "name": "cs50x.exe",
-          "url": "https://github.com/NDR008/psxBreakout/releases/download/v1.0/cs50x.exe",
-          "bytes": 79872,
-          "sha256": "822a50e6fe77e5c43caef377acf4363d5f9da35cbd4ef0b8bebbc408d3cc2425"
-        }
-      ],
-      "boot_exe": "cs50x.exe",
-      "status": "CANDIDATE \u2014 honest boot gate: exe header loads (RAM sig @f440) then boot-loop wipe by f640; user RAM all zero at f900; verdict EXE_LOAD_CRASH under OpenBIOS. Two image routes tried: (a) hand-rolled strict-ECMA ISO9660 -> shell cube loop (BIOS never left the shell), (b) hello_pong-container payload swap (dirent size patched LE+BE, verified readback) -> load+crash. Suspects: OpenBIOS A0-table gap vs PSYQ expectations, or exe targets retail BIOS/emulator loaders (ePSXe runs bare exe). Next lever: retry under a retail-BIOS profile or rebuild from source against psn00bsdk.",
-      "round14_note": "boot BLOCKED: OpenBIOS 16-sector single-read cap (measured cliff) + unresolved kernel-phase stale-CD-read anomaly (stale sectors serve hello_pong_lic originals; LD_PRELOAD+atime prove no other file is opened); stage-1 loader v1/v2/v3+exploit attempts documented in docs/evidence/round14/psxbreakout_boot_saga.txt"
-    }
-  ],
-  "round4_addendum": "2026-10-25: hello_pong's recorded 401 blocker was STALE \u2014 the shared sandbox egress IP was GitHub-rate-limited (403 with rate-limit body), not the token lacking Actions:read; with the EXISTING Ps1ai token both listing and zip download return 200, and the zip sha256 matches the API digest field exactly. hello_pong moved to accepted on BOOT evidence; input-causality test (PRESS X TO PLAY AGAIN restart) is the round-5 target.",
-  "round7_addendum": "2026-10-26 round 7 (50/50): MSX M1\u2192M2 gate DECISIVE NEGATIVES \u2014 from the post-banner CONTINUE? gate: a 41-offset tap-timing sweep (24f steps, savestate-restored frame-exact retries) landed in the input-live M1 endzone 41/41 (gs1), and a 5400f quiet watch self-resolved into the attract demo (gs2); combined with m2t8/rg1-rg4 that is 8 documented attempts with ZERO M2 spawns \u2014 the session-6 'one START accepts into M2' record does NOT reproduce from this gate instance and is corrected to 'path-sensitive, mechanism unknown'. Offline candidate mining of the rg1 attract-ladder tracker (1.03M changed bytes) produced candidates.json but the top families decode as the 16-byte-stride entity pool (self-referential pointers), not flags \u2014 the surgical discriminator (M1-end vs M2-side loading diff) needs the m2_train anchor and is the recorded next lever. Tools: playloop.py generalized (--policy/--cue/--workspace) + 3 new tests, suite 485+1xfail.",
-  "round12_addendum": {
-    "date": "2026-10-27",
-    "round": 12,
-    "games_touched": [
-      "hello_pong",
-      "psx-minecraft",
-      "metal-slug-x",
-      "nortis"
-    ],
-    "hello_pong": "WIN_CAUSAL (finished by winning 5-x, sensor-anchored 0->5->restart-reset)",
-    "psxmc": "PLACE_PARTIAL honest: selection (R3/L3 3-frame taps) + USE consumption (1/tap, clean negative control) CAUSAL; world-write localization NOT observed (chunk0 block array bit-identical pre/post; table modal did not open); next lever = engine-ray pitch+yaw sweep for consumed blocks",
-    "msx": "static: mission-select menu EXISTS (17-entry descriptor table @0x80095ef4, menu state machine @0x8007exxx, states byte 0x80095a7d, handler tables 0x80095a70/5a84/5b24, per-mission seq \\ANG\\M1\\MISS01..M4\\MISS16.BIN); live probe = next lever",
-    "nortis": "upstream rechecked 2026-10-27: still no license (MONITORED-NO-CHANGE)"
-  },
-  "round13_addendum": {
-    "date": "2026-10-26",
-    "gif_deliverable": {
-      "game": "hello_pong",
-      "verdict": "GIF_COMPLETE_LOOP",
-      "frames_captured": 1171,
-      "gif_frames": 390,
-      "fps": 20,
-      "bytes": 72594,
-      "sha256": "7fa336065761af992bdce41bba0f2e489ecaa45f4de91bda6fa9570fbdc1de3c",
-      "public_url": "https://h.uguu.se/rcAKDwni.gif",
-      "committed": "docs/evidence/round13/hello_pong_complete_gameplay.gif",
-      "loop": "menu-X -> game1 natural 5-x WIN -> GAME_OVER -> X -> menu -> X -> game2 natural 5-x WIN -> GAME_OVER -> X -> menu; score word 0x1ffeb4 read 2..5 per game; paddle wiggle visible"
+    "round15_addendum": {
+        "date": "2026-10-27",
+        "headline": "First tiny-game PLAYING+WINNING under the honest taxonomy: FlappyBirdPSX played to score 10 (10 RAM-anchored pipe passes) in ONE round; GIF deliverable https://n.uguu.se/PGbBVuMY.gif",
+        "transfer": "docs/tiny_games_playbook.md: boot-route tree, controller truth table (ps1play X = PSX TRIANGLE), pulse discipline, i16 sensor lesson (pipe pos.x at base+2 is invisible to i32 scans), impulse-derived servo band (flap at ty+14 -> apex ty-22 inside a 70px gap), measured rounds-to-play: hello_pong 4 -> flappy 1",
+        "also_probed": "collision geometry read from RAM pools (boxes match visuals exactly; the author's FIXME phantom-collision suspicion disproved for the shipped build); psxBreakout stays pending (boot route 4)",
+        "suite": "unchanged (additive tools only)"
     },
-    "new_games": [
-      "doukutsupsx (accepted, BOOTED_TITLE)",
-      "psxbreakout (candidate, EXE_LOAD_CRASH)"
-    ],
-    "finding_pvd156": "hello_pong's PSX-flavored PVD puts the root dir record at offset 156 (not ECMA-119's 168) \u2014 and a strict-ECMA hand-rolled ISO falls back to the shell cube under the PSX BIOS, consistent with the BIOS reading the root record at 156. Encoded in r13_breakout_container.find_root_record().",
-    "tools": [
-      "hellopong_r13_gif",
-      "r13_gh_check",
-      "r13_new_games",
-      "r13_breakout_container",
-      "r13_boot_new",
-      "r13_diag_cs50x",
-      "r13_diag_watch",
-      "r13_diag_v1",
-      "r13_doukutsu_long"
-    ]
-  },
-  "round14_addendum": {
-    "date": "2026-10-27",
-    "gif_deliverable": "https://h.uguu.se/VmqXgChs.gif",
-    "correction": "round-13 'complete gameplay' GIF was a zero-input walkover (paddle never moved; 0% ball interception; wiggle was dead code) \u2014 user's accusation confirmed by audit",
-    "real_match": "hello_pong REAL match vs the game's own AI (libretro port 1 disconnected -> upstream AI active): 9000 frames, servo paddle 117 move-steps, 11+ logged returns, 0 misses, score 0-0 eternal rally; upstream src/main.c proves the AI unbeatable (AI speed 3 == max |vel_y| 3, deadband 10, paddle 60px) \u2014 the game cannot be won vs its AI; the r12/r13 'wins' were static-dummy walkovers",
-    "psxbreakout": "boot campaign: 16-sector cap measured; stale-read anomaly open"
-  },
-  "round15_addendum": {
-    "date": "2026-10-27",
-    "headline": "First tiny-game PLAYING+WINNING under the honest taxonomy: FlappyBirdPSX played to score 10 (10 RAM-anchored pipe passes) in ONE round; GIF deliverable https://n.uguu.se/PGbBVuMY.gif",
-    "transfer": "docs/tiny_games_playbook.md: boot-route tree, controller truth table (ps1play X = PSX TRIANGLE), pulse discipline, i16 sensor lesson (pipe pos.x at base+2 is invisible to i32 scans), impulse-derived servo band (flap at ty+14 -> apex ty-22 inside a 70px gap), measured rounds-to-play: hello_pong 4 -> flappy 1",
-    "also_probed": "collision geometry read from RAM pools (boxes match visuals exactly; the author's FIXME phantom-collision suspicion disproved for the shipped build); psxBreakout stays pending (boot route 4)",
-    "suite": "unchanged (additive tools only)"
-  }
+    "round20_addendum": {
+        "date": "2026-10-27",
+        "headline": "r20 intake wave: autogaz BOOTED_TITLE (input unproven, frame counter 0x800BCC00, pad @0xB008); zenmai BOOTED_TEXT (Zork I Japanese Z-machine; direct-SIO pad 0x1F80104x, no BIOS padbuff \u2014 input unproven); plus the iso9660_min writer root-cause fix (MSF LBA+150, VDT FF*8+CD001+0x01, subheader 0x09) that explains the historical CDChecker loops for synthetic discs",
+        "suite": "see repo worklog r20 (full run after merge)"
+    }
 }

@@ -1945,3 +1945,48 @@ not one heavy one"). **Two WON verdicts**:
 manifest r19 status appends (tetrade/psx-minecraft/hello_pong); no game
 bytes; suite 565+1xfail. Full report: docs/issue6_r19_report.md (also posted
 to issue #6).
+
+## 2026-10-27 — Issue #6 round 20 (five trains + README hero + sandbox-rollback recovery)
+
+Five trains ran in parallel on top of 9af9224 (parallel session had already
+pushed the README Achievement-#1 hero + docs/closed_loop_play_howto.md).
+
+- **air_hockey TITLE_INTERACTIVE** (`r20t5`): supersedes r19's ALL_INERT —
+  that was a methodology artifact (240f holds vs 3×-ambient threshold on an
+  animated title). padbuff found @0x09FF58/0x09FF7A (mask 0x09FF5A); 3f-pulse
+  battery → 145,234 B single-frame deltas (ambient 363); VLM: f2400
+  "PLAYER SELECT" menu → f3800 "FIGHT ME! GO THUNDER BOY" = **gameplay
+  through legal inputs**. Title → menu → gameplay proven.
+- **MSX mission-poke root cause** (`r20t1`): `M1_AGAIN` honest verdict. GS
+  poke 800D4210=2 readback-verified but the game still started M1 → static RE:
+  u16@0x800D4210 is the **unlock counter** (4 menu-only readers, zero
+  stage-loader readers), 0x800D4212 single-writer `sh 0xFFFF` = unlock-all.
+  The r19 "mission=1→M1 ⇒ 1-based" conclusion is **retracted at mechanism
+  level** (poke was a no-op; arcade default is M1). True levers: consumer
+  @0x8002CB30 of the (mission,area) table @0x80010EE8, or the legit
+  MISSION SELECT pause menu (strings @0x8001019C).
+- **zenmai BOOTED_TEXT** (`r20t3`): raw PS-EXE CD-wrapped + license-patched →
+  Zork I Japanese Z-machine title @f700 (RAM 549 KB, "West of House"
+  resident). **iso9660_min writer root-cause fix** — the synthetic-disc
+  CDChecker loop was the writer itself (MSF must be LBA+150, VDT
+  FF×8+CD001+0x01, subheader 0x09); fixed + test pinned (6/6). Input
+  unproven: game polls pad via **direct SIO** (no BIOS padbuff) —
+  zenmai/autogaz share the symptom under beetle+OpenBIOS.
+- **autogaz BOOTED_TITLE** (`r20t2`): license-patched boot @f1200, game loop
+  alive (frame counter 0x800BCC00), pad @0xB008; input not responsive yet
+  (2 boots, 7 probes); manifest entry added.
+- **Poy Poy PLAYING** (`r20t4`): live-position slot candidates found
+  behaviorally (0x8009F778 cluster, corr ±0.72 with the moving opponent,
+  transiently 0 at the hit moment); 16 charged throws, 3P hearts 2→1
+  VLM-confirmed; no 2nd retire yet. GIF d.uguu.se/XhQSPUQH.gif.
+- **Manifest**: autogaz + zenmai accepted entries merged (7 games total);
+  round20_addendum.
+- **Sandbox-rollback incident**: mid-round the workspace rolled back to
+  6b97fbe; GitHub remote was intact (all r17-r19 history + parallel session's
+  9af9224). Local reset --hard to origin/main, r20 artifacts rescued from the
+  rolled-back tree (11 scripts + iso fix + manifest entries + r20t2 scratch);
+  lost r20 scratch evidence reconstructed from the trains' final reports
+  (marked RECONSTRUCTED). Shared-worklog r16-r19 sections were lost in the
+  rollback — the repo worklog (committed) is the durable record.
+
+Suite after merge: see below; no game bytes; scratch/ gitignored.
