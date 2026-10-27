@@ -30,6 +30,14 @@ More full-game results from the same recipe (perceive → decide → act → ver
 | **FlappyBird PSX** | WINNING | 10 pipes past the game's own win gate |
 | **PSX-Minecraft** | visible place CONFIRMED | stack 10→9, world_px 1,269, persists 60f ([GIF](docs/evidence_gifs/r19_t5_psxmc_place.gif)) |
 | **psxBreakout** | WON | first closed-loop win: ball tracking + brick clearing |
+| **BKBS (homebrew rhythm)** | RUNNING | per-button pad bits proven, boots into animated gameplay ([GIF](docs/evidence_gifs/r21t1_bkbs_rhythm.gif)) |
+| **air_hockey (retail)** | RUNNING | legal-input gate map title→VS screen→live match, button bitmap proven ([GIF](docs/evidence_gifs/r21t5_airhockey_gates.gif)) |
+| **Poy Poy — RETIRE #2** | PLAYING | 2nd opponent retired by aimed charged throw, hearts 4→1→0 @0x8009DF00, ablation-controlled ([GIF](docs/evidence_gifs/r21_poypoy_retire2.gif)) |
+| **autogaz (homebrew)** | INPUT_RESPONSIVE | CROSS-only 4-state machine decoded, input→screen→reversal proven (MAD 0.0) |
+| **zenmai / Zork I (homebrew)** | INPUT_RESPONSIVE* | SIO root-cause decoded + per-keystroke typing; *requires a disclosed game-side handshake patch |
+
+Round 21 also shipped the source-linked easy→hard ladder for lightweight PSX games:
+**[docs/homebrew_sources_r21.md](docs/homebrew_sources_r21.md)** (60% very-simple / 40% baseline policy).
 
 How it works, step by step: **[docs/closed_loop_play_howto.md](docs/closed_loop_play_howto.md)**
 — the three layers (framework / per-game agent / evidence) and the 7-step

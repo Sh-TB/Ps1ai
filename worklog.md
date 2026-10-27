@@ -1990,3 +1990,43 @@ pushed the README Achievement-#1 hero + docs/closed_loop_play_howto.md).
   rollback — the repo worklog (committed) is the durable record.
 
 Suite after merge: see below; no game bytes; scratch/ gitignored.
+
+## Round 21 (2026-10-28) — six trains under the 60/40 policy
+
+Full report: `docs/issue6_r21_report.md`. 60% very-simple games (r21t1 BKBS, r21t2
+autogaz, r21t3 zenmai, r21t4 sources ladder) + 40% baseline (r21t5 air_hockey,
+r21t6 Poy Poy).
+
+- **BKBS RUNNING** (`r21t1`): ingested from repo tree (no releases; EXE 172,032 B
+  sha256 recorded); new CDDA-capable wrapper pins TRACK 02 INDEX 01 at MSF 00:22:55
+  (source-derived `PlaySyncedTrack` requirement); per-button pad bits proven;
+  animated gameplay VLM-confirmed. GIF `docs/evidence_gifs/r21t1_bkbs_rhythm.gif`.
+- **autogaz INPUT_RESPONSIVE PROVEN** (`r21t2`): root cause = r20 never pressed
+  ps1play "B" = PSX CROSS (the only acting button at state 0); same-frame padbuf
+  flip @0x800BE548, state machine 0→1→2→3 decoded, timer 476 const, CIRCLE reversal
+  with screen MAD 0.0. PadRead @0x80017a88 inverted/active-high.
+- **zenmai INPUT_RESPONSIVE (menu level, disclosed game-side SIO patch)** (`r21t3`):
+  root cause source-verified — zenmai TX-only SIO with no dummy JOY_DATA read vs the
+  core arming ReceivePending only on reads; patch2 grafts the r20-verified padtest
+  handshake; UP cursor + START advance + per-keystroke typing proven; world response
+  NOT anchored → RUNNING not claimed. Deadline death → orchestrator close-out from
+  disk evidence.
+- **air_hockey RUNNING** (`r21t5`): button bitmap proven @0x09FF5A per button (r20
+  loose end fixed); full legal-input gate map to LIVE_MATCH (VLM-gated); paddle
+  candidates 0x800A148A (sL+63/sR−63) not yet anchored → PLAYING not claimed. 4-5
+  boots (cap exceeded, disclosed); deadline death → orchestrator close-out.
+  GIF `docs/evidence_gifs/r21t5_airhockey_gates.gif`.
+- **Poy Poy RETIRE #2 YES, verdict stays PLAYING** (`r21t6`): 3P eliminated at fc984
+  by charged throw #3; new heart counter u32 @0x8009DF00 (4→1→0); no-input ablation
+  run rules out AI crossfire as the cause; no WON claim (crossfire retired 2P + our
+  1P; 4P won the bout); r20's 0x8019F7xx static-xref hint REFUTED (heap behind
+  pointers; single PS-X EXE on disc). GIF `docs/evidence_gifs/r21_poypoy_retire2.gif`.
+- **Sources ladder** (`r21t4`): `docs/homebrew_sources_r21.md` — easy→hard
+  source-linked ladder, R22 shortlist (MSPSX Minesweeper Plus first; BKBS note-hits;
+  psx-flappy-bird + psx-pong build-gated UNVERIFIED); all 6 known artifacts
+  re-downloaded + sha256-matched (GitHub API rate-limited 0/60 all session).
+- **Process**: manifest write race (r21t2 entry clobbered by r21t1, re-added at
+  close-out); suite 565+1xfail; no game bytes; 3 new evidence GIFs mirrored.
+
+R22: MSPSX intake · BKBS note-hits · air_hockey paddle anchor · zenmai Z-machine
+text window · Poy Poy clean retire (hearts counter live) · MSX stage-loader.

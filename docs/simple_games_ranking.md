@@ -1,5 +1,12 @@
 # Simple-PS1-Game Validation Matrix (Coder-2 mission, deliverable 2)
 
+> **SUPERSEDED (r21, 2026-10-27):** the authoritative source-linked
+> easy→hard ladder for lightweight PSX games now lives in
+> **`docs/homebrew_sources_r21.md`** (adds verified source links, 4 new
+> sourced candidates — MSPSX / BKBS_PSX / psx-pong / psx-flappy-bird — and
+> the r22 60/40 intake shortlist). Everything below is the older ranking,
+> kept for history; statuses older than r20 may be stale.
+
 Ranked candidate list for "validate the agent on the simplest PS1
 games first". Selection rules from the mission: simplicity, fast boot,
 low resource use, easily verifiable goals — NOT popularity. Every
