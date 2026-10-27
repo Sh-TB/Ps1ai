@@ -1861,3 +1861,35 @@ PoyPoyPlugin docstring + boot_script rewritten to the verified path
 frames_run — step RELATIVELY via p.core.run(n) after rewinds.
 
 Suite 562 passed + 1 xfail. No game bytes committed; scripts only.
+
+## 2026-10-27 — Issue #6 round 17: Poy Poy real match + HMBTN toolchain proven + MSX menu ladder
+
+**Poy Poy — REAL_MATCH_ENTERED (the r16 tail closed).** START-exit from
+PRACTICE aborts to the boot logo (not the match). The real entry was
+hiding in r16's own evidence: menu23 m23_b0 = STAGE SELECT (3 arenas +
+red PRACTICE label; the earlier B-confirm selected PRACTICE). UP×2 + B →
+live 4-player exhibition (penguin arena), census left_vs_right 47,573 /
+50,049, det 0. The series self-plays: RETIRE!×3 with hearts, LUCK BONUS
+(0/5/4/7 PTS), next arena auto-loads (02:00, everyone back). Tools
+poypoy_r17_{realmatch,stageselect,firsttouch}; 11 PNGs. Closed-loop
+agent = r18 (protect HARRY + pickup/throw servo).
+
+**HMBTN — the community toolchain RUNS here, disc-free.** 4/4 tool tests
+PASS (afile.py round-trip bit-exact; psx_disc.py extract 355 files off
+our MSX disc; PsxExeHeader.parse cross-checks our MSX anchor exactly;
+psx_disc.py build synthetic round-trip bit-exact) + the centerpiece:
+hmbtn-decomp `check` = **"all 14 files match the original"** (EXE + 13
+overlays byte-identical, GCC 2.95.2-psx/PSY-Q 4.7/maspsx/binutils 2.44).
+Sandbox adaptations documented (qemu-i386 for seccomp-SIGSYS'd 1999
+statics; /dev/shm sources for the EOVERFLOW inode wall; local psx_cc.py
+depfile synthesis). docs/hmbtn_tools_round17.md +
+scratch/r17_hmbtn_tools/{report,build_report}.json. Disc-gated remains:
+A_FILE extraction, decorpus at scale, modkit, recomp runtime.
+
+**MSX — menu ladder navigable by pure input.** boot idle strip: states
+byte 0x95A7D 0x0→0x6→0x9; START → main menu; DOWN = highlight moves
+(PNG); full-RAM diff pins the main-menu cursor struct (0x957D8–0x957F8);
+CROSS (not START) confirms via "OK? YES/NO"; chain end = SOLDIER SELECT →
+**live Mission 1** (night desert, credits 3, score 48, px 116.15, php
+116). Checkpoints msel4_* in ws_r17_msel. Suite 562+1xfail; no game
+bytes; scratch/ gitignored.

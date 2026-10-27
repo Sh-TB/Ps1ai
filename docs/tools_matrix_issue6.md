@@ -472,3 +472,54 @@ r14_diag_pvd, r14_boot_watch, r14_size_build/probe (the cliff), r14_bisect,
 r14_screens, r14_forensic{,2,3}, r14_stage1_build{,2}/stage1v2/v3,
 r14_scratch_build, r14_padloader_build, r14_exploit{,2}_build,
 r14_boot_and_play, r14_hellopong_real, preload_log.
+
+## Addendum 7 (2026-10-27) — round 17: Poy Poy real match entered; HMBTN toolchain proven; MSX menu ladder live
+
+**Poy Poy (old game, Issue #6 queue) — REAL_MATCH_ENTERED.** The r16 ladder
+ended at the PRACTICE arena; r17 maps the rest. START-exit from practice
+ABORTS to the boot logo (logo→title→attract demo; the match never starts
+that way). The real entry is menu23's own `m23_b0` checkpoint = **STAGE
+SELECT** (3 arena thumbnails + red PRACTICE label — our earlier B-confirm
+had been selecting PRACTICE itself). From it: UP×2 + B → **live 4-player
+exhibition match** in the penguin arena; direction census left_vs_right
+47,573 / 50,049 differing bytes with det_none 0 (REAL_MATCH at both probe
+states). The match then plays on by itself: 1P/2P/3P RETIRE! with HUD
+hearts draining, **LUCK BONUS** scoring screen (PTS 0/5/4/7), and the
+series rolls into the NEXT arena (timer reset 02:00, everyone re-spawned)
+— the exhibition is a multi-arena series. First scripted touches captured
+(11 PNGs). Closed-loop WIN agent = next round (vision servo to protect
+HARRY + pickup/throw). Tools: poypoy_r17_{realmatch,stageselect,firsttouch};
+evidence in emu/games_psx/evidence/poypoy_r17_{realmatch,stageselect,firsttouch}
+(local).
+
+**HMBTN (the farming game) — community toolchain PROVEN, disc-free.**
+Round 16 audited; round 17 EXECUTES the tools
+(scripts/r17_hmbtn_tooltest.py; docs/hmbtn_tools_round17.md):
+afile.py synthetic unpack+pack **bit-exact**; psx_disc.py extract on our
+own MSX disc → 355 files; PsxExeHeader.parse on the extracted MSX EXE
+cross-checks our disc_intake anchor EXACTLY (pc0 0x80082A44, t_size
+620,544); psx_disc.py build synthetic round-trip **bit-exact**. And the
+centerpiece: **the matching decompilation BUILDS — "all 14 files match
+the original"** (SLUS_011.15 + 13 overlays SHA-1-verified) with GCC
+2.95.2-psx + PSY-Q 4.7 + maspsx + mips binutils 2.44 under three
+documented sandbox adaptations (qemu-i386 wrappers for the 1999 static
+binaries [native run = seccomp SIGSYS], tmpfs sources [overlayfs 64-bit
+inodes = EOVERFLOW in cpp's stat], local psx_cc.py depfile synthesis).
+When the user's disc arrives, every HMBTN step is unblocked. No game
+bytes committed; reports = facts only (scratch/r17_hmbtn_tools/).
+
+**MSX (main game, Issues #5/#7) — the menu system is NAVIGABLE by pure
+input.** 4 probes (msx_r17_msel{,2,3,4}, one boot each): fresh boot idle
+strip maps states byte 0x95A7D 0x0→0x6→0x9; START → main menu (ARCADE
+MISSION / COMBAT SCHOOL / SETTINGS / OPTION); DOWN moves the highlight
+(COMBAT SCHOOL PNG — cursor not in the 18 tracked table words, pinned
+instead by full-RAM diff at u32 run 0x957D8–0x957F8 for the main menu);
+**START does NOT confirm, CROSS does** (CROSS opens "OK? YES/NO"); the
+confirmed chain boot→4800f→START→CROSS→OK?YES→**SOLDIER SELECT**
+(Marco/Eri/Tarma/Fio)→select→OK?YES→**LIVE MISSION 1 GAMEPLAY** (night
+desert, HUD: credits 3, 1UP=2, score 48, px 116.15, php 116). The whole
+menu ladder is now input-mapped and checkpointed (ws_r17_msel
+msel4_* states) — the deterministic M1→M2/M3 gate hunting no longer needs
+attract-mode alchemy; the next lever is the per-mission sequencer path
+(MISS01..MISS16.BIN) via the same ladder discipline. Suite 562 passed +
+1 xfailed; no game bytes; scratch/ gitignored.
