@@ -13,9 +13,23 @@ Examples:
 """
 import argparse
 import json
+import os
 import sys
 
-sys.path.insert(0, "/home/z/my-project")
+_HERE = os.path.dirname(os.path.abspath(__file__))
+sys.path.insert(0, os.path.dirname(_HERE))          # repo root (ps1play)
+sys.path.insert(0, _HERE)                            # scripts (helpers)
+
+# knowledge-surface delegation (Issue #10 addendum): capsule/cache/intake
+# subcommands live in ps1play_knowledge.py; this CLI stays the gameplay
+# surface and forwards the knowledge commands so the proposed
+# `ps1play_cli.py intake-game ...` interface works.
+_K = {"capsule-validate", "capsule-query", "capsule-build",
+      "cache-stat", "intake-game"}
+if len(sys.argv) > 1 and sys.argv[1] in _K:
+    import ps1play_knowledge
+    sys.exit(ps1play_knowledge.main(sys.argv[1:]))
+
 from ps1play.api import PS1Play  # noqa: E402
 
 DEFAULT_GAME = "/home/z/my-project/ps1-test/emu/games/Metal Slug X (USA).cue"
