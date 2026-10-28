@@ -576,5 +576,35 @@
    },
    "not_claimed": "WIN (160 reveals), chord mechanic (CROSS on revealed numbered cell with flags==required)"
   }
+ },
+ "round30_addendum": {
+  "date": "2026-10-28",
+  "headline": "Round 30: R29 mspSX PLAYING_BOT (accepted #9); R30 buzzybee deep BLOCKED by an environment-level input regression: the whole ChangeClearPAD(0)-class (doukutsu + buzzybee input.c family) lost button delivery after the 5th filesystem rollback, while Tetrade (ChangeClearPAD(1)) and direct-SIO (MSPSX) still work on the same binaries. 9 disclosed boots across 4 ledgers; image/BIOS/host verified byte-identical; both core binaries + ReARMed ruled out; parked per user directive (do not get stuck).",
+  "r29_mspsx": {
+   "rung": "RUNNING -> PLAYING (RAM-guided bot, ALL_PHASES_OK in one clean boot, 1254f)",
+   "details": "source ground truth (main.c: Cell board[24][16], offset cursorX*192+cursorY*12 - closes the r22/r23 layout ambiguity); board decode exact 192/32; 2-tap step-verified navigation; 6-cell flood (REVT 0->6); CIRCLE flag mine_count 32->31; PREDICTED mine-loss {lost:1,ctrl_dis:1}==observed + GAME OVER PNG; START restart loop; asset re-fetched byte-identical d35a189b after the 5th rollback; boot-1 script-bug stop (flood>=8 assert vs valid 6-cell flood) disclosed",
+   "accepted": "#9 with full provenance (Unlicense + MPL-2.0 vendored spi.c note)"
+  },
+  "r30_buzzybee_blocked": {
+   "rung": "stays GAMEPLAY_CONFIRMED (r23) - no rung change claimed",
+   "boots": 9,
+   "matrix": {
+    "buzzybee_beetle_orig": "input DEAD (2 boots + 1 diag: input_pad/held/trig all zero through 40f holds; kernel padbuf IS actively polled - valid released state, not stuck)",
+    "buzzybee_beetle_rebuilt": "input DEAD (core rebuilt from vendored df2b53b source, md5 447b7ebf; also: rollback binary 79f8fac0 and documented self-built f3b4a4be lost in rollback)",
+    "buzzybee_rearmed": "input DEAD (fresh per-backend ledger)",
+    "buzzybee_padbuf_injection": "direct padbuf write does NOT reach the game - kernel rewrites the buffer every frame from its own poll",
+    "tetrade_class_probe": "input ALIVE (padbuff 0041ffbf during CROSS hold, START vis 83.58)",
+    "doukutsu_class_probe": "input DEAD NOW (menu mean 34.81 == r24 anchor; DOWN cursor move does not reproduce; was ALIVE this morning pre-rollback r24/r25)"
+   },
+   "verified_identical": "image sha 042b94bb re-fetched byte-identical; BIOS md5 664ee444; host code per git unchanged; logshim present (fallback path)",
+   "class_split": "ChangeClearPAD(1) (Tetrade) works; ChangeClearPAD(0) (doukutsu/BuzzyBee family) broken - on BOTH beetle binaries AND ReARMed; doukutsu flipped OK->dead exactly at the rollback with byte-identical assets",
+   "honest_unknown": "the root cause of the morning-vs-now flip is NOT identified; every verifiable artifact is identical",
+   "next_levers": [
+    "instrumented beetle build from the vendored df2b53b tree (present, builds clean in ~3min) with SIO/interrupt trace pins",
+    "ChangeClearPAD(1)-equivalent game-side patch for BuzzyBee (call-site RE needed: compiled sites are a 0-3 mode switch)",
+    "rebuild BuzzyBee from source if a MIPS toolchain appears",
+    "PCSX-Redux build (r26 lever)"
+   ]
+  }
  }
 }

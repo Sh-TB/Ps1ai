@@ -2185,3 +2185,24 @@ Stage Summary:
 - First of the two user-priority games complete to its honest ceiling (WIN = 160 reveals, recorded as not attempted; chord mechanic recorded as next lever).
 - Library rungs after R29: tetrade PLAYING(99.86%), hello_pong WON 5-0, mspSX PLAYING(bot), doukutsu GAMEPLAY_CONFIRMED, buzzybee GAMEPLAY_CONFIRMED, flappybird deep-complete, air_hockey COMPLETE_LOOP_OBSERVED, autogaz FULL_CYCLE_CAUSAL, psx-minecraft place-confirmed, zenmai PARKED.
 - Next: R30 buzzybee deep (sustained play, health/timer systems), then R31 psx-minecraft deeper.
+
+---
+Task ID: R30
+Agent: orchestrator (main)
+Task: Round 30 train - buzzybee deep systems (user priority: the two r23 games)
+
+Work Log:
+- Asset rebuild (zero boots): BuzzyBee.ps-exe re-fetched from upstream master - sha 9b0bfc08 BYTE-IDENTICAL; r23t2_ntsc_patch_and_wrap re-run - image sha 042b94bb BYTE-IDENTICAL to r23's decisive boot-5 image. Source cloned for mechanics ground truth: health init 5999, -3/frame passive drain, -1500 enemy contact (edge), +1000 flower (edge), death -> clamp 0 + bestScore=max + gameState 5, auto-return to title (score reset, bestScore persists), START restarts.
+- Boot 1-2 (beetle, orig ledger; boot 1 = disclosed script-bug title-gate): START does not transition gameState 0->1 - r23's proven input DOES NOT REPRODUCE on the byte-identical image.
+- Boot 3 (beetle diag, cap 2->3 disclosed): input_pad/held/trig (0x8005881C/20/24) stay ZERO through a 40f START hold + double-taps; kernel padbuf IS actively polled (released-state FF FF written every frame - not stuck). Button bits never reach the game.
+- ReARMed boot (fresh backend ledger): SAME zero - not beetle-internal.
+- Core rebuild (zero boots, environment repair): ps1-test/cores/mednafen_psx_libretro.so was reverted by the 5th rollback to the Oct-19 binary (md5 79f8fac0) and the documented self-built core (md5 f3b4a4be + *.orig.so) is GONE. Rebuilt from the vendored df2b53b tree (md5 447b7ebf, GIT_VERSION " 83b8cfc"; f3b4a4be unreproducible - build nondeterminism) and swapped in; rollback binary retained as mednafen_psx_libretro_79f8fac0_rollback.so.
+- Boots 1-3 (rebuilt-core ledger; boot 2 crash disclosed: numpy RAM-write API misuse; boot 3 = padbuf-injection isolation, cap 2->3 disclosed): rebuilt core ALSO dead. Direct padbuf injection does NOT reach the game - the kernel rewrites the buffer every frame from its own SIO poll, which always reports "digital pad, no buttons".
+- Class probes (1 boot each, disclosed as class probes): TETRADE (ChangeClearPAD(1) family) input ALIVE on the same binary+host (padbuff 0041ffbf during CROSS hold = exact CROSS bit; START vis 83.58); DOUKUTSU (BYTE-EQUIVALENT input.c to BuzzyBee, diff-verified vs upstream master) input DEAD NOW (menu mean 34.81 == the r24 anchor - we are on the real menu; DOWN cursor move does not reproduce; doukutsu input was ALIVE THIS MORNING in r24/r25, pre-rollback).
+- VERDICT: environment-level input regression for the ChangeClearPAD(0)-class after the 5th rollback; every verifiable artifact is byte-identical (image sha, BIOS md5 664ee444, host code per git, logshim present) yet the class flipped OK->dead. Root cause NOT identified - recorded honestly. BuzzyBee PARKED at GAMEPLAY_CONFIRMED (no rung inflation); R31 pivots to games whose input class works today.
+
+Stage Summary:
+- 9 boots this round, every cap amendment and both script crashes disclosed. The r29 mspSX PLAYING_BOT (accepted #9) is the round's rung change; the R30 investigation matrix is the round's backend finding.
+- Library rungs after R30: tetrade PLAYING (input verified alive today), hello_pong WON 5-0, mspSX PLAYING(bot), doukutsu GAMEPLAY_CONFIRMED (input class blocked), buzzybee GAMEPLAY_CONFIRMED (input class blocked), flappybird deep-complete, air_hockey COMPLETE_LOOP_OBSERVED, autogaz FULL_CYCLE_CAUSAL, psx-minecraft place-confirmed, zenmai PARKED.
+- Next levers (recorded in round30_addendum): instrumented beetle build (vendored tree builds clean ~3min), ChangeClearPAD(1)-equivalent game patch, MIPS toolchain for BuzzyBee from source, PCSX-Redux.
+- Next: R31 psx-minecraft (input-class probe first - its padbuff pattern suggests the same kernel class).
