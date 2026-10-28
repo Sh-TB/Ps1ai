@@ -1,0 +1,520 @@
+{
+ "schema": "ps1play.r40-boot3/1",
+ "generated": "2026-10-28T21:11:38Z",
+ "commit": "2e28581b59cb13c02d1e3ead663d6178233c6c4c",
+ "checkpoint": "r38_ckpt",
+ "runs": [
+  {
+   "arm": "trialL1",
+   "outcome": "budget",
+   "end_chunk": 299,
+   "deaths": 0,
+   "wall_s": 12.8,
+   "throws": 15,
+   "score_events": [
+    {
+     "chunk": 2,
+     "from": 0,
+     "to": 100
+    },
+    {
+     "chunk": 5,
+     "from": 100,
+     "to": 200
+    },
+    {
+     "chunk": 11,
+     "from": 200,
+     "to": 300
+    },
+    {
+     "chunk": 14,
+     "from": 300,
+     "to": 400
+    },
+    {
+     "chunk": 15,
+     "from": 400,
+     "to": 600
+    },
+    {
+     "chunk": 16,
+     "from": 600,
+     "to": 700
+    },
+    {
+     "chunk": 17,
+     "from": 700,
+     "to": 800
+    },
+    {
+     "chunk": 18,
+     "from": 800,
+     "to": 1000
+    },
+    {
+     "chunk": 19,
+     "from": 1000,
+     "to": 1100
+    },
+    {
+     "chunk": 20,
+     "from": 1100,
+     "to": 1200
+    },
+    {
+     "chunk": 32,
+     "from": 1200,
+     "to": 1300
+    },
+    {
+     "chunk": 34,
+     "from": 1300,
+     "to": 1400
+    },
+    {
+     "chunk": 52,
+     "from": 1400,
+     "to": 1600
+    },
+    {
+     "chunk": 54,
+     "from": 1600,
+     "to": 1700
+    },
+    {
+     "chunk": 55,
+     "from": 1700,
+     "to": 1800
+    },
+    {
+     "chunk": 56,
+     "from": 1800,
+     "to": 1900
+    },
+    {
+     "chunk": 57,
+     "from": 1900,
+     "to": 2000
+    },
+    {
+     "chunk": 58,
+     "from": 2000,
+     "to": 2100
+    },
+    {
+     "chunk": 61,
+     "from": 2100,
+     "to": 2200
+    },
+    {
+     "chunk": 65,
+     "from": 2200,
+     "to": 2300
+    },
+    {
+     "chunk": 66,
+     "from": 2300,
+     "to": 2400
+    },
+    {
+     "chunk": 68,
+     "from": 2400,
+     "to": 2500
+    },
+    {
+     "chunk": 70,
+     "from": 2500,
+     "to": 2600
+    },
+    {
+     "chunk": 100,
+     "from": 2600,
+     "to": 2900
+    },
+    {
+     "chunk": 175,
+     "from": 2900,
+     "to": 3000
+    },
+    {
+     "chunk": 183,
+     "from": 3000,
+     "to": 3100
+    },
+    {
+     "chunk": 184,
+     "from": 3100,
+     "to": 3200
+    },
+    {
+     "chunk": 185,
+     "from": 3200,
+     "to": 3300
+    },
+    {
+     "chunk": 199,
+     "from": 3300,
+     "to": 3400
+    },
+    {
+     "chunk": 200,
+     "from": 3400,
+     "to": 3500
+    },
+    {
+     "chunk": 201,
+     "from": 3500,
+     "to": 3600
+    },
+    {
+     "chunk": 202,
+     "from": 3600,
+     "to": 3700
+    },
+    {
+     "chunk": 216,
+     "from": 3700,
+     "to": 3800
+    },
+    {
+     "chunk": 219,
+     "from": 3800,
+     "to": 3900
+    },
+    {
+     "chunk": 268,
+     "from": 3900,
+     "to": 4000
+    },
+    {
+     "chunk": 282,
+     "from": 4000,
+     "to": 4100
+    },
+    {
+     "chunk": 283,
+     "from": 4100,
+     "to": 4200
+    }
+   ],
+   "score_final": 4200,
+   "pol_stats": {
+    "engage": 90,
+    "clamp_clear": 67,
+    "advance": 9,
+    "grenade": 41,
+    "jump": 4,
+    "front_engage": 1350,
+    "dodge": 78,
+    "budget_walkthrough": 10,
+    "proj_dodge": 125,
+    "proj_unverified": 622,
+    "advance_silent": 2,
+    "armor_hold": 37,
+    "section_pin": 7,
+    "section_pin_release": 6,
+    "aa_priority_takeover": 79,
+    "aa_kill": 97,
+    "d7_zone_latch": 1,
+    "aa_miss": 11,
+    "aa_connect": 1,
+    "aa_bail": 4
+   },
+   "final": {
+    "px": 0.0,
+    "score": 4200,
+    "gren": 0,
+    "php": 0,
+    "sec": [
+     0,
+     0
+    ],
+    "prog": 2147483648
+   },
+   "hp_drops": 1,
+   "continues": 0
+  },
+  {
+   "arm": "trialL2",
+   "outcome": "budget",
+   "end_chunk": 299,
+   "deaths": 0,
+   "wall_s": 12.8,
+   "throws": 15,
+   "score_events": [
+    {
+     "chunk": 2,
+     "from": 0,
+     "to": 100
+    },
+    {
+     "chunk": 5,
+     "from": 100,
+     "to": 200
+    },
+    {
+     "chunk": 11,
+     "from": 200,
+     "to": 300
+    },
+    {
+     "chunk": 14,
+     "from": 300,
+     "to": 400
+    },
+    {
+     "chunk": 15,
+     "from": 400,
+     "to": 600
+    },
+    {
+     "chunk": 16,
+     "from": 600,
+     "to": 700
+    },
+    {
+     "chunk": 17,
+     "from": 700,
+     "to": 800
+    },
+    {
+     "chunk": 18,
+     "from": 800,
+     "to": 1000
+    },
+    {
+     "chunk": 19,
+     "from": 1000,
+     "to": 1100
+    },
+    {
+     "chunk": 20,
+     "from": 1100,
+     "to": 1200
+    },
+    {
+     "chunk": 32,
+     "from": 1200,
+     "to": 1300
+    },
+    {
+     "chunk": 34,
+     "from": 1300,
+     "to": 1400
+    },
+    {
+     "chunk": 52,
+     "from": 1400,
+     "to": 1600
+    },
+    {
+     "chunk": 54,
+     "from": 1600,
+     "to": 1700
+    },
+    {
+     "chunk": 55,
+     "from": 1700,
+     "to": 1800
+    },
+    {
+     "chunk": 56,
+     "from": 1800,
+     "to": 1900
+    },
+    {
+     "chunk": 57,
+     "from": 1900,
+     "to": 2000
+    },
+    {
+     "chunk": 58,
+     "from": 2000,
+     "to": 2100
+    },
+    {
+     "chunk": 61,
+     "from": 2100,
+     "to": 2200
+    },
+    {
+     "chunk": 65,
+     "from": 2200,
+     "to": 2300
+    },
+    {
+     "chunk": 66,
+     "from": 2300,
+     "to": 2400
+    },
+    {
+     "chunk": 68,
+     "from": 2400,
+     "to": 2500
+    },
+    {
+     "chunk": 70,
+     "from": 2500,
+     "to": 2600
+    },
+    {
+     "chunk": 100,
+     "from": 2600,
+     "to": 2900
+    },
+    {
+     "chunk": 175,
+     "from": 2900,
+     "to": 3000
+    },
+    {
+     "chunk": 183,
+     "from": 3000,
+     "to": 3100
+    },
+    {
+     "chunk": 184,
+     "from": 3100,
+     "to": 3200
+    },
+    {
+     "chunk": 185,
+     "from": 3200,
+     "to": 3300
+    },
+    {
+     "chunk": 199,
+     "from": 3300,
+     "to": 3400
+    },
+    {
+     "chunk": 200,
+     "from": 3400,
+     "to": 3500
+    },
+    {
+     "chunk": 201,
+     "from": 3500,
+     "to": 3600
+    },
+    {
+     "chunk": 202,
+     "from": 3600,
+     "to": 3700
+    },
+    {
+     "chunk": 216,
+     "from": 3700,
+     "to": 3800
+    },
+    {
+     "chunk": 219,
+     "from": 3800,
+     "to": 3900
+    },
+    {
+     "chunk": 268,
+     "from": 3900,
+     "to": 4000
+    },
+    {
+     "chunk": 282,
+     "from": 4000,
+     "to": 4100
+    },
+    {
+     "chunk": 283,
+     "from": 4100,
+     "to": 4200
+    }
+   ],
+   "score_final": 4200,
+   "pol_stats": {
+    "engage": 90,
+    "clamp_clear": 67,
+    "advance": 9,
+    "grenade": 41,
+    "jump": 4,
+    "front_engage": 1350,
+    "dodge": 78,
+    "budget_walkthrough": 10,
+    "proj_dodge": 125,
+    "proj_unverified": 622,
+    "advance_silent": 2,
+    "armor_hold": 37,
+    "section_pin": 7,
+    "section_pin_release": 6,
+    "aa_priority_takeover": 79,
+    "aa_kill": 97,
+    "d7_zone_latch": 1,
+    "aa_miss": 11,
+    "aa_connect": 1,
+    "aa_bail": 4
+   },
+   "final": {
+    "px": 0.0,
+    "score": 4200,
+    "gren": 0,
+    "php": 0,
+    "sec": [
+     0,
+     0
+    ],
+    "prog": 2147483648
+   },
+   "hp_drops": 1,
+   "continues": 0
+  }
+ ],
+ "comparison": {
+  "census_base_boot1": {
+   "policy": "legacy v2.2 (queue_priority=False)",
+   "throws": 13,
+   "connects": 1,
+   "engage": 118,
+   "aa_kill": 76,
+   "outcome": "budget",
+   "end_chunk": 299,
+   "score_final": 5701
+  },
+  "treatment_v31": [
+   {
+    "tag": "trialL1",
+    "policy": "R40 v3.1 (priority+lead)",
+    "throws": 15,
+    "hp_drops": 1,
+    "connects": 1,
+    "kill_connects": 0,
+    "misses": 11,
+    "bails": 4,
+    "takeovers": 79,
+    "engage": 90,
+    "aa_kill": 97,
+    "outcome": "budget",
+    "end_chunk": 299,
+    "deaths": 0,
+    "continues": 0,
+    "score_final": 4200
+   },
+   {
+    "tag": "trialL2",
+    "policy": "R40 v3.1 (priority+lead)",
+    "throws": 15,
+    "hp_drops": 1,
+    "connects": 1,
+    "kill_connects": 0,
+    "misses": 11,
+    "bails": 4,
+    "takeovers": 79,
+    "engage": 90,
+    "aa_kill": 97,
+    "outcome": "budget",
+    "end_chunk": 299,
+    "deaths": 0,
+    "continues": 0,
+    "score_final": 4200
+   }
+  ]
+ }
+}

@@ -44,7 +44,7 @@ sys.path.insert(0, _REPO)
 from ps1play.agent.combat import (  # noqa: E402
     CombatPolicy, find_chopper, AA_CYCLE, AA_MAX_MISS, AA_BAIL_COOLDOWN,
     AA_THROW_DX, AA_ANCHOR_PX, AA_WALK_FRAMES, AA_COMMIT_T,
-    AA_RELEASE_T, CHOPPER_ST,
+    AA_RELEASE_T, CHOPPER_ST, ENGAGE_BUDGET,
 )
 
 
@@ -298,8 +298,220 @@ def test_chopper_gone_resolves_without_firing():
     segs = pol.decide(15, 1164.0, [chopper_entry()], grenades=10,
                       hp=100)
     assert pol.mode == "aa_kill"
-    # next chunk: the chopper is dead/absent -> quiet, resolved
+    # next chunks: the chopper is dead/absent. R40: the committed
+    # window (grenade out, t < AA_COMMIT_T) finishes its lob tail
+    # first — the R39 atomic-delivery rule (the grenade is already
+    # in flight; the old mid-commit resolve wasted it) — and the
+    # campaign resolves at the first post-commit frame.
+    resolved_at = None
+    for _ in range(4):
+        pol.decide(15, 1164.0, [], grenades=10, hp=100)
+        if pol.stats.get("aa_resolved", 0) >= 1:
+            resolved_at = True
+            break
+    assert resolved_at
+    # the POST-resolve chunk is the quiet defensive clear
     segs = pol.decide(15, 1164.0, [], grenades=10, hp=100)
-    assert pol.stats.get("aa_resolved", 0) >= 1
+    assert pol.mode != "aa_kill"
     assert all(not (b & {"Y", "A"}) for b in
                frames_of(segs))           # no fire into the release
+
+
+# ----------------------------------------------------------------
+# R40 queue-priority (throw-opportunity share) tests
+# ----------------------------------------------------------------
+
+def mortarman_entry(slot=7, dx=95.0):
+    """The wall mortarman (st 0xE17C): NOT a soldier-family member and
+    not a queue entity - the R39 census suspect for the engage steal."""
+    px = 1164.0
+    return {"slot": slot, "x_px": round(px + dx, 1), "dx_px": dx,
+            "hp": 150, "sx": 150, "h": 64, "st": 0xE17C, "hp_a4": 0,
+            "kind": "enemy"}
+
+
+def armored_entry(slot=9, dx=80.0):
+    """A ground armored foe (hp_a4 >= ARMOR_HP_MIN)."""
+    px = 1164.0
+    return {"slot": slot, "x_px": round(px + dx, 1), "dx_px": dx,
+            "hp": 120, "sx": 120, "h": 64, "st": 0x9E88, "hp_a4": 300,
+            "kind": "enemy"}
+
+
+def test_queue_priority_beats_front_engage():
+    """R40: in the pin context a live chopper (the pending-queue
+    blocker) outranks a front non-queue threat (the wall mortarman).
+    The R39 boot-6 campaign: engage held 118/300 chunks - 71 of them
+    at px>=1050 with the chopper visible - while only 13 throws landed
+    (2/3 connects needed)."""
+    pol = pinned_policy()
+    segs = pol.decide(15, 1164.0, [chopper_entry(dx=-28.0),
+                                   mortarman_entry()], grenades=10,
+                      hp=100)
+    assert pol.mode == "aa_kill"          # the blocker holds priority
+    assert pol.stats.get("aa_priority_takeover", 0) == 1
+    fr = frames_of(segs)
+    assert any({"UP", "A"} <= b for b in fr[8:20])   # the J1 recipe
+    assert all("Y" not in b for b in fr)   # not a bullet engage
+
+
+def test_queue_priority_beats_armor_hold():
+    """R40: the takeover also outranks armor_hold in the pin context
+    (an armored ground foe used to steal the mode before the aa
+    branch; the chopper is the queue release condition, the truck is
+    already dead at r38_ckpt)."""
+    pol = pinned_policy()
+    pol.decide(15, 1164.0, [chopper_entry(dx=-28.0),
+                            armored_entry()], grenades=10, hp=100)
+    assert pol.mode == "aa_kill"
+    assert pol.stats.get("aa_priority_takeover", 0) >= 1
+
+
+def test_queue_priority_respects_the_soldier_family():
+    """The queue discipline (R38) is NOT relaxed: a soldier-family
+    member still blocks the aa campaign - the takeover only fires on
+    NON-queue front threats (the mortarman), never on the family."""
+    pol = pinned_policy()
+    pol.decide(15, 1164.0, [chopper_entry(dx=-28.0), soldier_entry()],
+               grenades=10, hp=100)
+    assert pol.mode != "aa_kill"
+    assert "aa_priority_takeover" not in pol.stats
+
+
+def test_queue_priority_outside_pin_context_is_noop():
+    """Mid-run (no clamp/pin/d7 latch) nothing changes: the chopper is
+    never a takeover candidate outside the pin context."""
+    pol = CombatPolicy()
+    pol.decide(15, 900.0, [chopper_entry(dx=-28.0), mortarman_entry()],
+               grenades=10, hp=100)
+    assert pol.mode != "aa_kill"
+    assert "aa_priority_takeover" not in pol.stats
+
+
+def test_engage_budget_frozen_during_takeover():
+    """A budget walkthrough fired mid-campaign would burn clamp_clear
+    frames in the D7 zone - throw windows the blocker needs. The
+    engage-budget bookkeeping is frozen while the chopper holds
+    priority."""
+    pol = pinned_policy()
+    for _ in range(ENGAGE_BUDGET + 4):
+        pol.decide(15, 1164.0, [chopper_entry(dx=-28.0),
+                                mortarman_entry()], grenades=10,
+                   hp=100)
+    assert pol.stats.get("budget_walkthrough", 0) == 0
+    assert pol.force_advance == 0
+    assert pol.mode == "aa_kill"
+
+
+def test_bail_cooldown_still_gates_the_takeover():
+    """The bounded-bail rule (R38) outranks the queue priority: the
+    takeover holds until AA_MAX_MISS no-progress cycles, then freezes
+    for the cooldown and resumes after it (bounded, not dead)."""
+    pol = pinned_policy()
+    for _ in range(AA_MAX_MISS * (AA_CYCLE // 15 + 1) + 2):
+        pol.decide(15, 1164.0, [chopper_entry(), mortarman_entry()],
+                   grenades=10, hp=100)
+    assert pol.stats.get("aa_bail", 0) >= 1
+    assert pol.mode != "aa_kill"          # cooldown: clamp_clear
+    taken = pol.stats.get("aa_priority_takeover", 0)
+    assert taken >= 1                     # priority held pre-bail
+    # one chunk INSIDE the cooldown: the takeover stays frozen
+    pol.decide(15, 1164.0, [chopper_entry(), mortarman_entry()],
+               grenades=10, hp=100)
+    assert pol.stats.get("aa_priority_takeover", 0) == taken
+    assert pol.mode != "aa_kill"
+    # after the cooldown the blocker re-takes priority
+    pol.fc += AA_BAIL_COOLDOWN + 1
+    pol.decide(15, 1164.0, [chopper_entry(), mortarman_entry()],
+               grenades=10, hp=100)
+    assert pol.mode == "aa_kill"
+
+
+def test_last_scan_census_summary():
+    """The read-only census summary (R40 boot-1 trace) is updated on
+    every decide() with the takeover booleans and threat identity."""
+    pol = pinned_policy()
+    pol.decide(15, 1164.0, [chopper_entry(dx=-28.0), mortarman_entry()],
+               grenades=10, hp=100)
+    ls = pol.last_scan
+    assert ls["pin_ctx"] is True
+    assert ls["aa_takeover"] is True
+    assert ls["chopper"]["st"] in CHOPPER_ST
+    assert ls["near"]["st"] == 0xE17C     # who would have stolen the mode
+    assert ls["fam"] == 0
+    pol2 = CombatPolicy()
+    pol2.decide(15, 900.0, [chopper_entry(dx=-20.0)], grenades=10,
+                hp=100)
+    assert pol2.last_scan["pin_ctx"] is False
+    assert pol2.last_scan["chopper"] is None   # not a candidate mid-run
+
+
+def test_legacy_flag_reproduces_pre_r40_behavior():
+    """queue_priority=False = the exact v2.2 behavior for matched A/B
+    census runs: the front mortarman steals the mode into engage (the
+    R39 starvation), the aa_kill entry only when the chain reaches the
+    clamp branch, and a mid-commit vanish wipes the campaign."""
+    pol = CombatPolicy(queue_priority=False)
+    pol.observe(1164.0, 0.0, False)
+    pol.observe_section({"state": 10, "flags": 67}, px_now=1164.0)
+    pol.observe_section({"state": 10, "flags": 67}, px_now=1164.0)
+    pol.decide(15, 1164.0, [chopper_entry(dx=-28.0), mortarman_entry()],
+               grenades=10, hp=100)
+    assert pol.mode == "engage"           # the pre-R40 starvation
+    assert "aa_priority_takeover" not in pol.stats
+    # legacy aa entry still works with no front threat in range
+    pol2 = CombatPolicy(queue_priority=False)
+    pol2.observe(1164.0, 0.0, False)
+    pol2.observe_section({"state": 10, "flags": 67}, px_now=1164.0)
+    pol2.observe_section({"state": 10, "flags": 67}, px_now=1164.0)
+    segs = pol2.decide(15, 1164.0, [chopper_entry(dx=-28.0)],
+                       grenades=10, hp=100)
+    assert pol2.mode == "aa_kill"
+    assert any({"UP", "A"} <= b for b in frames_of(segs)[8:20])
+
+
+# ----------------------------------------------------------------
+# R40 v3.1 arrival-band (lead) gate tests
+# ----------------------------------------------------------------
+
+def test_lead_gate_throws_on_closing_target():
+    """The ONLY moving-chopper connect (r40 boot-1 c270: release dx
+    -51.7, chopper closing at ~1.5 px/f) is IN-BAND under the arrival
+    gate: dx_arr = dx + v*AA_LEAD_T = -21.7. The v2.2 release band
+    would have held (|dx| > 35) - the connect was accidental."""
+    pol = pinned_policy()
+    far = chopper_entry(dx=-165.7)         # x 998.3
+    pol.decide(AA_CYCLE, 1164.0, [far], grenades=10, hp=100)
+    assert pol.aa_plan != "throw"          # first sighting: v unknown
+    closing = chopper_entry(dx=-51.7)      # x 1112.3: v = 114/76f = +1.5
+    pol.decide(15, 1164.0, [closing], grenades=10, hp=100)
+    assert pol.last_scan["ch_v"] == 1.5
+    assert pol.aa_plan == "throw"          # the lead says in-band
+    assert pol.aa_aim == "LEFT"
+
+
+def test_lead_gate_holds_on_receding_target():
+    """A target currently in-band but receding at 1.5 px/f will be at
+    |dx| ~50 when the lob crosses its altitude: HOLD (the v2.2 gate
+    would have wasted the grenade)."""
+    pol = pinned_policy()
+    near = chopper_entry(dx=62.3)          # x 1226.3
+    pol.decide(AA_CYCLE, 1164.0, [near], grenades=10, hp=100)
+    receding = chopper_entry(dx=-51.7)     # v = -114/76f = -1.5 px/f
+    pol.decide(15, 1164.0, [receding], grenades=10, hp=100)
+    assert pol.aa_plan != "throw"          # out of band at arrival
+    assert pol.last_scan["ch_v"] == -1.5
+
+
+def test_lead_gate_parked_matches_v22():
+    """A parked hover (v == 0: identical sightings) reduces the
+    arrival gate to the v2.2 release band exactly - the five verified
+    parked connects (release dx 13.7-29) are unaffected."""
+    pol = pinned_policy()
+    pol.decide(15, 1164.0, [chopper_entry(dx=-28.0)], grenades=10,
+               hp=100)
+    pol.decide(15, 1164.0, [chopper_entry(dx=-28.0)], grenades=10,
+               hp=100)
+    assert pol.last_scan["ch_v"] == 0.0
+    assert pol.aa_plan == "throw"          # same as v2.2
+    assert pol.aa_aim == "LEFT"

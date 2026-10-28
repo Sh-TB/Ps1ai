@@ -1,0 +1,86 @@
+{
+ "schema": "ps1play.r40-boot4/1",
+ "generated": "2026-10-28T21:22:00Z",
+ "commit": "2e28581b59cb13c02d1e3ead663d6178233c6c4c",
+ "checkpoint": "r38_ckpt",
+ "runs": [
+  {
+   "arm": "PATIENT",
+   "outcome": "budget",
+   "end_chunk": 1199,
+   "throws": 20,
+   "pol_stats": {
+    "engage": 165,
+    "clamp_clear": 841,
+    "advance": 9,
+    "grenade": 146,
+    "jump": 6,
+    "front_engage": 2475,
+    "dodge": 135,
+    "budget_walkthrough": 16,
+    "proj_dodge": 210,
+    "proj_unverified": 3351,
+    "advance_silent": 2,
+    "armor_hold": 37,
+    "section_pin": 10,
+    "section_pin_release": 10,
+    "aa_priority_takeover": 115,
+    "aa_kill": 146,
+    "d7_zone_latch": 1,
+    "aa_miss": 13,
+    "aa_connect": 3,
+    "aa_bail": 5,
+    "aa_kill_connect": 1,
+    "aa_resolved": 1
+   },
+   "score_final": 6901,
+   "final": {
+    "px": 1238.0,
+    "score": 6901,
+    "gren": 6,
+    "php": 28,
+    "sec": [
+     11,
+     1
+    ],
+    "prog": 4294967295
+   }
+  }
+ ],
+ "comparison": {
+  "legacy_300": {
+   "throws": 13,
+   "connects": 1,
+   "score": 5701
+  },
+  "v31_300": {
+   "throws": 15,
+   "connects": 1,
+   "score": 4200
+  },
+  "v31_1200": {
+   "throws": 20,
+   "hp_drops": 2,
+   "connects": 3,
+   "kill_connects": 1,
+   "bails": 5,
+   "takeovers": 115,
+   "outcome": "budget",
+   "end_chunk": 1199,
+   "deaths": 2,
+   "continues": 1,
+   "score_final": 6901,
+   "final": {
+    "px": 1238.0,
+    "score": 6901,
+    "gren": 6,
+    "php": 28,
+    "sec": [
+     11,
+     1
+    ],
+    "prog": 4294967295
+   }
+  }
+ }
+}

@@ -305,6 +305,17 @@ AA_COMMIT_T = 19             # the full J1 window (B x3 + rise x8 +
                              # cycle finishes atomically
 AA_RELEASE_T = 11            # the press frame - dodge/hop overrides
                              # are suppressed only BEFORE this
+AA_LEAD_T = 20               # R40 v3.1: the lob's time-to-altitude
+                             # (frames from release to the grenade
+                             # crossing the chopper's height). Derived
+                             # from the ONLY moving-chopper connect:
+                             # r40 boot-1 c270 release dx -51.7 with the
+                             # chopper closing at ~1.5 px/f connected -
+                             # |dx + v*T| in [10,35] needs T in
+                             # [11.1, 27.8]; T=20 is robust across the
+                             # v 1.2-1.8 uncertainty. The R39 frame
+                             # capture measured the patrol at ~1.5 px/f
+                             # (x 1115 -> 1132.3 over 26f, then parked).
 AA_MAX_MISS = 6              # no-progress THROWN cycles before bail
 AA_BAIL_COOLDOWN = 600       # frames clamp_clear resumes after bail
 
@@ -598,7 +609,14 @@ class CombatPolicy:
     engaged; the derived end-clamp switches to rear-clear; otherwise
     the proven RIGHT+fire backbone advances."""
 
-    def __init__(self):
+    def __init__(self, queue_priority=True):
+        """queue_priority: the R40 throw-opportunity-share lever. True
+        (default, shipped): in the pin context a live chopper (the
+        pending-queue blocker) outranks engage/armor_hold. False: the
+        exact pre-R40 v2.2 behavior (front threats steal the mode
+        first) - kept for matched A/B census runs and honest
+        baselining, never as a silent behavior fork."""
+        self.queue_priority = queue_priority
         self.fc = 0
         self.hop_hold = 0
         self.hop_cd = JUMP_PERIOD
@@ -633,6 +651,9 @@ class CombatPolicy:
         self.aa_last_a4 = None         # hp_a4 at the last THROWN cycle end
         self.aa_miss = 0               # consecutive no-progress cycles
         self.aa_bail_until = -1        # fc until which aa is suspended
+        self._ch_prev = None           # (fc, x_px) at the last chopper
+                                       # sighting - the R40 v3.1 velocity
+                                       # estimate for the arrival gate
         # R39 sub-rule state (atomic delivery + anchor positioning)
         self.aa_plan = None            # locked at cycle start: throw |
                                        # hold | walk_r
@@ -959,8 +980,75 @@ class CombatPolicy:
                     near = e
                     break
 
+        # ---- R40 QUEUE-PRIORITY (throw-opportunity share lever) -----
+        # R39 boot-6 campaign (scratch/r39/r39_boot2.jsonl): engage held
+        # 118/300 chunks vs aa_kill 76 while the chopper was the
+        # pending-queue blocker - and in EVERY engage chunk at px>=1050
+        # the chopper was visible (71/71, st 0xAA94/0xABDC). The
+        # mode-priority chain let a front soldier/mortarman steal the
+        # mode into engage BEFORE the aa_kill branch ever ran: the
+        # queue blocker starved of throw opportunities (13 throws per
+        # campaign, 2/3 connects needed). The fix mirrors the human
+        # strategy (IGN/TrueAchievements: "destroy the red [helicopter]
+        # first"): in the pin context the queue blocker outranks
+        # engage AND armor_hold. The same guard set as the clamp
+        # branch below (no soldier family, bail cooldown, committed
+        # release window) applies unchanged - this only reorders WHO
+        # wins when both want the mode. Outside the pin context
+        # nothing changes (ch_pin is None there by construction).
+        pin_ctx = bool(clamped or self.section_pinned or self.d7_zone)
+        ch_pin = find_chopper(enemies) if pin_ctx else None
+        # R40 v3.1: the chopper's patrol velocity from the last two
+        # sightings (the R39 frame capture: ~1.5 px/f while moving,
+        # parked at the hover anchor). Feeds the arrival-band gate:
+        # the grenade crosses the chopper's altitude ~AA_LEAD_T frames
+        # after release, so the connect geometry is where the chopper
+        # WILL BE, not where it is.
+        ch_v = 0.0
+        if ch_pin is not None:
+            x_now = ch_pin.get("x_px")
+            if self._ch_prev is not None:
+                fc0, x0 = self._ch_prev
+                dt = self.fc - fc0
+                if 0 < dt <= 120:
+                    ch_v = max(-3.0, min(3.0, (x_now - x0) / dt))
+            self._ch_prev = (self.fc, x_now)
+        else:
+            self._ch_prev = None
+        fam_pin = ([e for e in foes
+                    if e.get("st") in SOLDIER_FAMILY_ST]
+                   if pin_ctx else [])
+        committed_pin = (self.aa_slot is not None
+                         and self.aa_plan == "throw"
+                         and self._aa_threw
+                         and self._aa_t < AA_COMMIT_T)
+        aa_takeover = bool(self.queue_priority and pin_ctx and
+                           ((ch_pin is not None and not fam_pin
+                             and self.fc >= self.aa_bail_until)
+                            or committed_pin))
+        # census summary (R40 boot-1 read-only trace; the runner
+        # records it verbatim - a pure diagnostic, no behaviour).
+        # .get() throughout: hand-built test fixtures predate the
+        # full scan schema (ps1play-combat-scan/1).
+        self.last_scan = {
+            "pin_ctx": pin_ctx,
+            "chopper": (None if ch_pin is None else
+                        {k: ch_pin.get(k) for k in
+                         ("slot", "st", "x_px", "dx_px", "hp_a4", "h")}),
+            "fam": len(fam_pin),
+            "near": (None if near is None else
+                     {k: near.get(k) for k in ("slot", "st", "dx_px")}),
+            "armor": (None if armor_threat is None else
+                      armor_threat.get("slot")),
+            "aa_takeover": aa_takeover,
+            "committed": committed_pin,
+            "ch_v": round(ch_v, 3)}
+
         # engage budget: never lock onto one slot forever
-        if near is not None:
+        # R40: frozen while the chopper holds priority (a budget
+        # walkthrough fired mid-campaign would burn clamp_clear
+        # frames in the D7 zone - throw windows the blocker needs)
+        if near is not None and not aa_takeover:
             if near["slot"] == self.engage_slot:
                 self.engage_streak += 1
             else:
@@ -1000,6 +1088,27 @@ class CombatPolicy:
             # no input) — the queue entities must be KILLED, not passed
             mode = "clamp_clear"
             self.force_advance -= 1
+        elif aa_takeover:
+            # the chopper outranks engage/armor_hold in the pin
+            # context (see the R40 block above); the re-lock and
+            # resolve bookkeeping is IDENTICAL to the clamp branch's
+            # aa_kill entry that used to be reachable only when no
+            # front threat stole the mode first.
+            mode = "aa_kill"
+            if near is not None or armor_threat is not None:
+                # the R40 lever telemetry: chunks the queue blocker
+                # took AWAY from a would-be engage/armor_hold (the
+                # throw-opportunity share this rule buys)
+                self.stats["aa_priority_takeover"] = \
+                    self.stats.get("aa_priority_takeover", 0) + 1
+            if ch_pin is not None and \
+                    self.aa_slot != ch_pin.get("slot"):
+                self.aa_slot = ch_pin.get("slot")
+                self.aa_last_a4 = None
+                self.aa_miss = 0
+                self._aa_t = 0
+                self._aa_threw = False
+                self.aa_plan = None
         elif not clamped and armor_threat is not None:
             # §8/§9-E/F CLAMP-ROOT fix: an armored foe (hp >= 200) in
             # range = STOP AND SHOOT (user directive "at least stop
@@ -1029,6 +1138,8 @@ class CombatPolicy:
             # clamp a rear threat goes to the DEFENSIVE clear (below),
             # never a walk-toward (walking into the pursuit pack is
             # the instrumented death pattern)
+            # (the per-frame fire body lives in the frame loop below,
+            # where `burst`/dodge are defined)
             mode = "engage"
         elif (not clamped and not self.d7_zone and near is None
               and self.force_advance <= 0):
@@ -1090,36 +1201,47 @@ class CombatPolicy:
             # pin cycle (advance re-enters the clamp and re-arms the
             # pending queue — the trial's kill/walk/repin loop)
             # R38: a LIVE CHOPPER in the pin window is the last
-            # pending-queue entity (trialA1/A2: truck dead, chopper
-            # hp_a4 300 at every pin observation) — the proven hop+lob
-            # takes priority over the UP-bullet alternation, but
-            # ONLY after the soldier family (queue discipline) and
-            # only when the bail cooldown is not active.
-            ch = find_chopper(enemies)
-            if self.aa_slot is not None and ch is None:
-                # the campaign's target died/vanished between chunks:
-                # resolve cleanly (quiet frame favors the release)
+            # pending-queue entity. R40: the aa_kill ENTRY was hoisted
+            # ABOVE the engage/armor_hold branches (queue priority —
+            # the boot-6 campaign starved the blocker of throw
+            # opportunities while engage held 118/300 chunks), so this
+            # branch only handles the NON-takeover cases: family-
+            # blocked, bail cooldown, or a vanished target.
+            if not self.queue_priority and self.aa_slot is not None \
+                    and ch_pin is None:
+                # legacy (pre-R40): resolve UNCONDITIONALLY on a
+                # vanish - even mid-commit (the grenade-wasting
+                # behavior, preserved verbatim for A/B fidelity)
                 self._aa_resolve()
-            fam_now = [e for e in (enemies or [])
-                       if e.get("st") in SOLDIER_FAMILY_ST]
-            # R39: a committed release window (grenade already out,
-            # t < AA_COMMIT_T of a locked throw) finishes atomically
-            # even if the chunk scan flickers (soldier appears /
-            # chopper leaves the window) - the chunked-delivery lesson
-            committed = (self.aa_slot is not None
-                         and self.aa_plan == "throw"
-                         and self._aa_threw
-                         and self._aa_t < AA_COMMIT_T)
-            if (ch is not None and not fam_now
-                    and self.fc >= self.aa_bail_until) or committed:
-                mode = "aa_kill"
-                if ch is not None and self.aa_slot != ch.get("slot"):
-                    self.aa_slot = ch.get("slot")
-                    self.aa_last_a4 = None
-                    self.aa_miss = 0
-                    self._aa_t = 0
-                    self._aa_threw = False
-                    self.aa_plan = None
+            elif self.aa_slot is not None and ch_pin is None \
+                    and not committed_pin:
+                # R40: the committed window (grenade already out) is
+                # kept - it finishes via the takeover branch's quiet
+                # 'hold' plan instead of being discarded mid-commit
+                self._aa_resolve()
+            if not self.queue_priority:
+                # legacy (pre-R40 v2.2) entry, verbatim: committed is
+                # recomputed AFTER the legacy resolve (which just wiped
+                # it on a vanish), so a mid-commit vanish lands in
+                # clamp_clear exactly as it did before R40
+                committed_legacy = (self.aa_slot is not None
+                                    and self.aa_plan == "throw"
+                                    and self._aa_threw
+                                    and self._aa_t < AA_COMMIT_T)
+                if (ch_pin is not None and not fam_pin
+                        and self.fc >= self.aa_bail_until) \
+                        or committed_legacy:
+                    mode = "aa_kill"
+                    if ch_pin is not None and \
+                            self.aa_slot != ch_pin.get("slot"):
+                        self.aa_slot = ch_pin.get("slot")
+                        self.aa_last_a4 = None
+                        self.aa_miss = 0
+                        self._aa_t = 0
+                        self._aa_threw = False
+                        self.aa_plan = None
+                else:
+                    mode = "clamp_clear"
             else:
                 mode = "clamp_clear"
         else:
@@ -1234,12 +1356,23 @@ class CombatPolicy:
                             self.aa_last_a4 = ch.get("hp_a4",
                                                      self.aa_last_a4)
                             dx = ch["dx_px"]
-                            if (AA_THROW_DX_MIN <= abs(dx) <= AA_THROW_DX
-                                    and grenades > 0):
+                            # R40 v3.1 arrival-band gate: lead the
+                            # target. The v2.2 release-band connected
+                            # only on PARKED hovers (v~0: dx_arr == dx);
+                            # the boot-1 c270 moving connect (release
+                            # dx -51.7, chopper closing at ~1.5 px/f)
+                            # proves the arrival geometry is the real
+                            # gate. The boot-2 treatment scattered 0/12
+                            # throwing at the CURRENT position while
+                            # the chopper patrolled.
+                            dx_arr = dx + ch_v * AA_LEAD_T
+                            if (AA_THROW_DX_MIN <= abs(dx_arr)
+                                    <= AA_THROW_DX and grenades > 0):
                                 # the S3 recipe: throw on the proven
-                                # cadence inside the connect band
+                                # cadence when the chopper will be in
+                                # the connect band at arrival
                                 self.aa_plan = "throw"
-                                self.aa_aim = ("LEFT" if dx < 0
+                                self.aa_aim = ("LEFT" if dx_arr < 0
                                                else "RIGHT")
                             elif px is not None and \
                                     px < AA_ANCHOR_PX:

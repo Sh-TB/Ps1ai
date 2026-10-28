@@ -1,0 +1,314 @@
+{
+ "schema": "ps1play.r40-boot1/1",
+ "generated": "2026-10-28T21:04:06Z",
+ "commit": "2e28581b59cb13c02d1e3ead663d6178233c6c4c",
+ "checkpoint": "r38_ckpt",
+ "policy": "legacy v2.2 (queue_priority=False)",
+ "base": {
+  "arm": "CENSUS-BASE",
+  "outcome": "budget",
+  "end_chunk": 299,
+  "deaths": 1,
+  "wall_s": 16.6,
+  "throws": 13,
+  "score_events": [
+   {
+    "chunk": 2,
+    "from": 0,
+    "to": 100
+   },
+   {
+    "chunk": 5,
+    "from": 100,
+    "to": 200
+   },
+   {
+    "chunk": 11,
+    "from": 200,
+    "to": 300
+   },
+   {
+    "chunk": 14,
+    "from": 300,
+    "to": 400
+   },
+   {
+    "chunk": 15,
+    "from": 400,
+    "to": 600
+   },
+   {
+    "chunk": 16,
+    "from": 600,
+    "to": 700
+   },
+   {
+    "chunk": 17,
+    "from": 700,
+    "to": 800
+   },
+   {
+    "chunk": 18,
+    "from": 800,
+    "to": 1000
+   },
+   {
+    "chunk": 19,
+    "from": 1000,
+    "to": 1100
+   },
+   {
+    "chunk": 20,
+    "from": 1100,
+    "to": 1200
+   },
+   {
+    "chunk": 32,
+    "from": 1200,
+    "to": 1300
+   },
+   {
+    "chunk": 34,
+    "from": 1300,
+    "to": 1400
+   },
+   {
+    "chunk": 52,
+    "from": 1400,
+    "to": 1600
+   },
+   {
+    "chunk": 54,
+    "from": 1600,
+    "to": 1700
+   },
+   {
+    "chunk": 55,
+    "from": 1700,
+    "to": 1800
+   },
+   {
+    "chunk": 56,
+    "from": 1800,
+    "to": 1900
+   },
+   {
+    "chunk": 57,
+    "from": 1900,
+    "to": 2000
+   },
+   {
+    "chunk": 58,
+    "from": 2000,
+    "to": 2100
+   },
+   {
+    "chunk": 61,
+    "from": 2100,
+    "to": 2200
+   },
+   {
+    "chunk": 65,
+    "from": 2200,
+    "to": 2300
+   },
+   {
+    "chunk": 66,
+    "from": 2300,
+    "to": 2400
+   },
+   {
+    "chunk": 68,
+    "from": 2400,
+    "to": 2500
+   },
+   {
+    "chunk": 70,
+    "from": 2500,
+    "to": 2600
+   },
+   {
+    "chunk": 71,
+    "from": 2600,
+    "to": 2900
+   },
+   {
+    "chunk": 93,
+    "from": 2900,
+    "to": 3100
+   },
+   {
+    "chunk": 96,
+    "from": 3100,
+    "to": 3400
+   },
+   {
+    "chunk": 152,
+    "from": 3400,
+    "to": 3500
+   },
+   {
+    "chunk": 180,
+    "from": 3500,
+    "to": 3501
+   },
+   {
+    "chunk": 184,
+    "from": 3501,
+    "to": 3601
+   },
+   {
+    "chunk": 190,
+    "from": 3601,
+    "to": 3901
+   },
+   {
+    "chunk": 192,
+    "from": 3901,
+    "to": 4001
+   },
+   {
+    "chunk": 198,
+    "from": 4001,
+    "to": 4101
+   },
+   {
+    "chunk": 199,
+    "from": 4101,
+    "to": 4301
+   },
+   {
+    "chunk": 209,
+    "from": 4301,
+    "to": 4401
+   },
+   {
+    "chunk": 217,
+    "from": 4401,
+    "to": 4501
+   },
+   {
+    "chunk": 233,
+    "from": 4501,
+    "to": 4701
+   },
+   {
+    "chunk": 241,
+    "from": 4701,
+    "to": 4801
+   },
+   {
+    "chunk": 242,
+    "from": 4801,
+    "to": 4901
+   },
+   {
+    "chunk": 249,
+    "from": 4901,
+    "to": 5001
+   },
+   {
+    "chunk": 250,
+    "from": 5001,
+    "to": 5101
+   },
+   {
+    "chunk": 271,
+    "from": 5101,
+    "to": 5401
+   },
+   {
+    "chunk": 280,
+    "from": 5401,
+    "to": 5501
+   },
+   {
+    "chunk": 281,
+    "from": 5501,
+    "to": 5601
+   },
+   {
+    "chunk": 283,
+    "from": 5601,
+    "to": 5701
+   }
+  ],
+  "score_final": 5701,
+  "pol_stats": {
+   "engage": 118,
+   "clamp_clear": 51,
+   "advance": 12,
+   "grenade": 65,
+   "jump": 5,
+   "front_engage": 1770,
+   "dodge": 82,
+   "budget_walkthrough": 15,
+   "proj_dodge": 145,
+   "proj_unverified": 706,
+   "advance_silent": 2,
+   "armor_hold": 37,
+   "section_pin": 6,
+   "section_pin_release": 6,
+   "aa_kill": 76,
+   "d7_zone_latch": 1,
+   "aa_miss": 9,
+   "aa_bail": 2,
+   "aa_connect": 1
+  },
+  "final": {
+   "px": 1164.0,
+   "score": 5701,
+   "gren": 6,
+   "php": 291,
+   "sec": [
+    0,
+    0
+   ],
+   "prog": 2147483648
+  },
+  "hp_drops": 1
+ },
+ "repro_gate": {
+  "r39_ref": {
+   "engage": 118,
+   "aa_kill": 76,
+   "clamp_clear": 51,
+   "armor_hold": 37,
+   "advance": 12,
+   "throws": 13,
+   "aa_connect": 1
+  },
+  "r40_stats": {
+   "engage": 118,
+   "aa_kill": 76,
+   "clamp_clear": 51,
+   "armor_hold": 37
+  },
+  "match": true
+ },
+ "census": {
+  "census_chunks": 294,
+  "engage_at_pin": 81,
+  "engage_near_states": {
+   "57756": 2,
+   "26416": 1,
+   "2056": 4,
+   "20828": 1,
+   "40584": 4,
+   "46308": 2,
+   "42060": 67
+  },
+  "engage_chopper_visible": 79,
+  "engage_fam_counts": {
+   "0": 81
+  },
+  "throws": 13,
+  "verified_drops": 1,
+  "flight_cycle_gaps": [
+   {
+    "drop_cycle": 271,
+    "last_throw_cycle": 270
+   }
+  ]
+ }
+}

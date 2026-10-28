@@ -1,0 +1,53 @@
+{
+ "schema": "ps1play.r40-boot6/1",
+ "generated": "2026-10-28T21:28:22Z",
+ "commit": "2e28581b59cb13c02d1e3ead663d6178233c6c4c",
+ "checkpoint": "r38_ckpt",
+ "run": {
+  "arm": "STAND",
+  "outcome": "budget",
+  "end_chunk": 1199,
+  "deaths": 2,
+  "wall_s": 52.2,
+  "throws": 20,
+  "resolved_at": 421,
+  "stand_chunks": 0,
+  "score_final": 5601,
+  "pol_stats": {
+   "engage": 687,
+   "clamp_clear": 319,
+   "advance": 9,
+   "grenade": 82,
+   "jump": 42,
+   "front_engage": 10305,
+   "dodge": 116,
+   "budget_walkthrough": 125,
+   "proj_dodge": 198,
+   "proj_unverified": 1739,
+   "advance_silent": 2,
+   "armor_hold": 37,
+   "section_pin": 10,
+   "section_pin_release": 10,
+   "aa_priority_takeover": 115,
+   "aa_kill": 146,
+   "d7_zone_latch": 1,
+   "aa_miss": 13,
+   "aa_connect": 3,
+   "aa_bail": 5,
+   "aa_kill_connect": 1,
+   "aa_resolved": 1
+  },
+  "final": {
+   "px": 1021.8,
+   "score": 5601,
+   "gren": 8,
+   "php": 28,
+   "sec": [
+    11,
+    1
+   ],
+   "prog": 4294967295
+  },
+  "hp_drops": 2
+ }
+}
