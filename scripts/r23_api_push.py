@@ -39,7 +39,7 @@ tree_items = []
 for f in files:
     path = os.path.join(REPO_DIR, f)
     data = open(path, "rb").read()
-    s, blob = req(f"/repos/{REPO}/git/blobs", payload={
+    s, blob = req(f"/repos/{REPO}/git/blobs", method="POST", payload={
         "content": base64.b64encode(data).decode(),
         "encoding": "base64"})
     assert s == 201, (f, blob)
@@ -47,12 +47,12 @@ for f in files:
                        "type": "blob", "sha": blob["sha"]})
     print("blob", f, len(data), "bytes")
 
-s, tree = req(f"/repos/{REPO}/git/trees", payload={
+s, tree = req(f"/repos/{REPO}/git/trees", method="POST", payload={
     "base_tree": base_tree, "tree": tree_items})
 assert s == 201, tree
 print("tree", tree["sha"][:12])
 
-s, new = req(f"/repos/{REPO}/git/commits", payload={
+s, new = req(f"/repos/{REPO}/git/commits", method="POST", payload={
     "message": msg, "tree": tree["sha"],
     "parents": [REMOTE_MAIN]})
 assert s == 201, new

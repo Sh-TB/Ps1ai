@@ -2151,3 +2151,20 @@ Work Log:
 Stage Summary:
 - autogaz upgraded INPUT_RESPONSIVE -> FULL_CYCLE_CAUSAL (its maximum honest rung), 3 boots all disclosed.
 - Next: R28 air_hockey (RUNNING; goal/PLAYING anchors from r22 candidates).
+
+---
+Task ID: R28
+Agent: orchestrator (main)
+Task: Round 28 train - air_hockey RUNNING -> goal/PLAYING anchors (10-train plan)
+
+Work Log:
+- Context: boots 1-5 ran before the session cutoff (1: entry PNG-verified live match, anchor methods failed; 2: KeyError crash after entry; 3: pin=garbage word; 4: vision chase blind, CPU 01->06; 5: word-space, INTERRUPTED no verdict, partial pins 0x8009be3e/40/56 corr -0.84..-0.9 logged). Backlog committed first (a32deca -> remote 2482d59 via the fixed Git Data API helper - the r23 helper silently sent GET-with-body on blob POSTs, deterministic 404; method="POST" added to blob/tree/commit calls).
+- Boot 6 (r28t3, cap 5->6 disclosed): seeded-pin chase from boot-5 data. PNG-verified COMPLETE LOOP: score digits live (00%01 entry -> 02%02 @rally900 -> 03%07 @rally2700), natural match end with CONTINUE? countdown "2" (@f11533), fresh match in a NEW arena (@f16933, 01%00). Chase pin 0x8009be3e INVALID (probe range [239,384] vs chase 3563..10247) - our-goal agency unproven, honestly noted.
+- Boot 7 (r28t4, cap 6->7 disclosed, round-final): the remaining plausible seed 0x8009be40 (probe [4434,4706] ~= x<<4) is ALSO an accumulator (chase 7905..12021, monotonic +60/6f under RIGHT calibration). Word-space paddle-pin class REJECTED for this game.
+- Ledger hygiene: r28t3 appended its log entry without incrementing count (found via r28t4 assert); fixed with a disclosed note; boot-5 outcome refined post-PNG.
+- VERDICT: air_hockey RUNNING -> COMPLETE_LOOP_OBSERVED (score system live through the PNG chain; match -> natural end -> CONTINUE? -> new match in a new arena). Byte-diff score-box counter over-triggers (crop catches the COM meter edge) - PNG chain is the evidence, not the 88-91 counter. 231 PNGs in scratch/r28/airhockey/shots.
+
+Stage Summary:
+- air_hockey at its honest ceiling this round; PARKED per user directive (do not get stuck). Next levers recorded in round28_addendum (PNG-calibrated vision chase, u32 cluster view, small-magnitude monotonic diff scan).
+- Library rungs after R28: doukutsu GAMEPLAY_CONFIRMED, tetrade PLAYING(99.86% landing), hello_pong WON 5-0, flappybird deep-complete, mspSX RUNNING, buzzybee GAMEPLAY_CONFIRMED, autogaz FULL_CYCLE_CAUSAL, air_hockey COMPLETE_LOOP_OBSERVED, psx-minecraft place-confirmed, zenmai PARKED.
+- Next: R29 psx-minecraft (deeper systems), R30 mspSX (multi-reveal/flags/win-lose), R31 buzzybee (sustained play) per the 10-train plan.
