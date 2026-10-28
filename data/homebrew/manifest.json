@@ -401,5 +401,39 @@
       "scripts": "scripts/r21t5_airhockey_causality.py, _run3.py, _run4.py, _run5.py",
       "gif": "docs/evidence_gifs/r21t5_airhockey_gates.gif"
     }
+  },
+  "round22_addendum": {
+    "date": "2026-10-28",
+    "headline": "Round 22: infra-cut round (7/7 launch failures + 2 relay deaths; all close-outs from disk). MSPSX intake -> INPUT_RESPONSIVE (boot-1 decode prediction honestly REFUTED: beetle TXEN route makes RXEN unnecessary; board init + cursor moves RAM+VLM anchored). zenmai honestly DEMOTED to INPUT_DEAD_AT_MENU (r21 'opening @f910' was a false positive - f910 was still the language menu; START never launched; beetle frontio.c TX-only stall now source-proven with line numbers; PCSX-Redux drives pads off the WRITE side = the clean fix candidate). BKBS stays RUNNING (pool locked: stride 0x28, first spawn f785, y+=2/Update; hit-flag/desat offsets unresolved; relay died pre-servo). MSX stage-loader static map delivered (menu BSS cluster 0x800D496C..4A72, 7 candidates, single-boot falsifiable plan). Sources ladder +196-line r22 addendum (BuzzyBee held+hashed; Nortis = BIOS class; direct-SIO = two classes, explained).",
+    "mspsx_intake": {
+      "verdict": "INPUT_RESPONSIVE (2/2 boots)",
+      "boot1": "decode prediction REFUTED: pad_buff 41 5A FF FF idle, title stable f542->1620 (no auto-exit), board never created; mechanism: beetle frontio.c:805-820 - TXEN trigger route admits ReceivePending branch, so MSPSX's dummy-read + TX latch aligns RX; RXEN unnecessary on 0.9.44.1",
+      "boot2": "START 2f pulse -> board init @f665 (mine_count=32, FIRST_CLICK=1, board_nonzero=474); RIGHT -> cursorX 0->1 (pad SW1=0xDF, RAM+VLM); DOWN -> cursorY 0->1 (SW1=0xBF)",
+      "cross_probe_failed": "two disclosed causes: libretro 'X'=Triangle not Cross (beetle input.c map); SPI poll cadence ~33 frames (2f hold missed the tick). Next relay: hold >=35f + joypad B -> RUNNING (reveal at (2,1))",
+      "images": "mspsx_lic.bin/.cue (booted); mspsx_lic_rxen.bin/.cue built+byte-verified, NOT booted (gate closed after refutation)",
+      "evidence": "scratch/r22t1_mspsx/ (evidence.md s0-s4, boot1/boot2 logs, 32 PNGs, VLM jsons, 772KB); scripts r22t1_mspsx_re/patch + r22t1R_*"
+    },
+    "zenmai_demotion": {
+      "verdict": "INPUT_DEAD_AT_MENU (downgrades r21 INPUT_RESPONSIVE - honest correction)",
+      "correction": "r21 'opening @f910' = false positive: f910 was the language menu; default cursor on NIHONGO, ENGLISH below (selection key = DOWN, not UP); START x3 (4f press, 1200f poll) never launched; forensic census f4600 string-identical to pre-VM",
+      "verified": "disc zenmai_lic_r21b.bin correct (patch2 bytes in ZENMAI.EXE;1 @LBA23 after 2352 de-interleave); patched pad_exchange live in RAM @0x8001B360; libretro input_state delivery OK",
+      "root_cause_lead": "menu spins pad_read() unpaced (main.c:613-618); pad_read_ex returns -1 unless a complete 5-byte response with rx[1]==0x41 arrives; padtest recipe does not complete a valid response inside zenmai's synchronous exchange under this core",
+      "source_proof": "beetle frontio.c: JOY_DATA write only sets TransmitPending (:861-865); read arms ReceivePending (:959-966); transfer needs (ReceivePending&&RXEN)||(TransmitPending&&TXEN) (:802) - TX-only-wait-RXRDY class blocked on Beetle; PCSX-Redux sio.cc writePad sets RX_FIFONOTEMPTY on the WRITE side (:108-111) -> zenmai class expected to work on Redux (live re-test pending)",
+      "evidence": "scratch/r22t3_zenmai/ (relay_boot1/, census npz, VLM cursor checks); scripts r22t3R_*"
+    },
+    "bkbs_notehits": {
+      "verdict": "RUNNING (unchanged; relay died after miss-control, before servo presses)",
+      "locked_live": "30-slot pool stride 0x28, y0 @0x8003973E (static base -124B), first spawn @f785, y+=2 per 30Hz Update, frame counter @0x80038C8C +1/run_frame (60Hz)",
+      "unresolved": "active/hit flag offsets (control miss flipped nothing); desat @0x80038CA0 reads 0 not decode's init 80; x-field not at expected offset",
+      "evidence": "scratch/r22t2_bkbs/ (evidence.md incremental, run json, shots/, ws/)"
+    },
+    "msx_stage_loader": {
+      "verdict": "research-only RE delivered (zero boots) - docs/msx_stage_loader_r22.md",
+      "findings": "BSS 0x800C9A50..0x800FA6B0; gp=0x80010000; setter @0x8002CB30 via [0x800D9A98] -> +0x9E/+0x130; state structs 0x800CA268/0x800CA3B4; menu BSS cluster 0x800D496C..0x800D4A72 (7 candidates); filename blob stride 0x18; 'STAGE %d' @0x80011160",
+      "r23_plan": "single instrumented boot: per-frame diff of the cluster while selecting MISSION 2 in the pause menu; positive signal = MISS06/ST02 file open; refutation = banner stays 1-1 -> diff the two structs",
+      "scripts": "scripts/r22t7_msx_re.py; EXE local-only emu/msx_usa/SLUS_012.12"
+    },
+    "sources_r22_addendum": "r22t4 delivered a 196-line addendum to docs/homebrew_sources_r21.md: new candidate BuzzyBee (MIT, artifact held+hashed), MSPSX source map, BKBS timing constants, Nortis = BIOS InitPAD class (ingestable if license ever cured), direct-SIO = two classes explained with core line numbers; r23 shortlist: BuzzyBee, MSPSX, psx-snake",
+    "process": "infra-cut round: 7/7 initial launch failures (adapter timeouts) + 2 relay deaths; every close-out graded from disk evidence; orchestrator-only manifest writes (no repeat of the r21 race); suite 565+1xfail green throughout"
   }
 }

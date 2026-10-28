@@ -34,7 +34,8 @@ More full-game results from the same recipe (perceive → decide → act → ver
 | **air_hockey (retail)** | RUNNING | legal-input gate map title→VS screen→live match, button bitmap proven ([GIF](docs/evidence_gifs/r21t5_airhockey_gates.gif)) |
 | **Poy Poy — RETIRE #2** | PLAYING | 2nd opponent retired by aimed charged throw, hearts 4→1→0 @0x8009DF00, ablation-controlled ([GIF](docs/evidence_gifs/r21_poypoy_retire2.gif)) |
 | **autogaz (homebrew)** | INPUT_RESPONSIVE | CROSS-only 4-state machine decoded, input→screen→reversal proven (MAD 0.0) |
-| **zenmai / Zork I (homebrew)** | INPUT_RESPONSIVE* | SIO root-cause decoded + per-keystroke typing; *requires a disclosed game-side handshake patch |
+| **MSPSX Minesweeper (homebrew)** | INPUT_RESPONSIVE | board init + cursor moves RAM+VLM-anchored; reveal probe next |
+| **zenmai / Zork I (homebrew)** | INPUT_DEAD_AT_MENU | r21 menu claim retracted as false positive; SIO TX-only stall source-proven (beetle frontio.c) |
 
 Round 21 also shipped the source-linked easy→hard ladder for lightweight PSX games:
 **[docs/homebrew_sources_r21.md](docs/homebrew_sources_r21.md)** (60% very-simple / 40% baseline policy).

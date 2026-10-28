@@ -256,3 +256,199 @@ artifact-backed game (MSPSX) + 1 candidate promoted to PLAYING (BKBS) +
 2 build-gated candidates (psx-flappy-bird, psx-pong) = the 60% side; the
 40% side keeps MSX + air_hockey moving with zero new intake. Nortis and
 every no-license repo stay out. All game bytes remain local-only.
+
+---
+
+# Round 22 addendum (2026-10-28) — r22t4 web scout, round 2
+
+Research-only (no emulator boots). Extends §1-§5 above without rewriting them.
+Method: GitHub API core was again 0/60 on the shared egress IP all session, so
+discovery used the **search API (separate 10/min quota, ~22 calls)**, raw file
+fetches, `releases.atom`/`expanded_assets`, and shallow `git clone` (12 repos,
+pinned commits below). itch.io only loads in a real browser (Cloudflare blocks
+curl; PS1 has no platform facet — the discovery facet is the **tag**
+`itch.io/games/tag-psx`, which is dominated by PS1-*aesthetic* horror games,
+not homebrew). **psxdev.net is temporarily shut down (announced Oct 2025,
+server migration)** — scene-forum lists were NOT crawlable this round; the
+live scene mirror `psx.arthus.net` was crawled instead.
+
+## 22.1 New candidates (round-2 search)
+
+| # | Game | Repo | License (raw file / body verified) | Artifact | Genre | Why easy | Input class (grep, exact) | Boot route | Release evidence |
+|---|------|------|------------------------------------|----------|-------|----------|---------------------------|------------|------------------|
+| N22-1 | **BuzzyBee** | github.com/NDR008/BuzzyBee | **MIT (c) 2021 NDR008 — file-header license in main.c:1-25; NO standalone LICENSE file (flagged)** | in-tree `BuzzyBee.ps-exe` 299,008 B — parsed: `PS-X EXE`, pc0 0x80010000, t_addr 0x80010000, t_size 296,960, sp 0x801FFF00 ✓ | 1-button flappy-like arcade (X accelerates, SELECT pauses, energy drains / flowers / wasps) | 1 action key + pause; flappy playbook §2-§5 transfers 1:1; open-world energy economy = RAM-friendly | **BIOS class**: `engine/input.c:59 InitPAD(padbuf[0],34,padbuf[1],34)` + StartPAD (doukutsupsx-derived driver, same as flappy) | route 2: CD-wrap the PS-EXE + local license sectors (>32 KB, so NOT the container route) | itch.io page (ndr008.itch.io/buzzy-bee), YouTube gameplay r3NW8sTUX1c, v1.1 image mirrored at psx.arthus.net/homebrew/BuzzyBee_v1.1_image/ — **downloaded + hashed** (22.2) |
+| N22-2 | LostPlumber | github.com/NDR008/LostPlumber | **MIT (c) 2021 NDR008 — same in-header-only pattern (flagged)** | in-tree `LostPlumber.ps-exe` 86,016 B — parsed ✓ (pc0 0x80010000, t_size 83,968, sp 0x801FFF00) | jam prototype: scroll-right world walker (Lost Cartridge Jam 2021) | minimal loop (RIGHT scroll only), tiny binary | **BIOS class**: `engine/input.c:59 InitPAD` (same driver) | route 2 (same as N22-1) | repo build only; no itch page found (weak evidence) — **downloaded + hashed**, ranked BELOW BuzzyBee |
+| N22-3 | psx-snake | github.com/mfotzler/psx-snake | **MIT (c) 2023 mfotzler — standalone LICENSE verified** | **none — source-only (releases.atom empty)** | snake: 4-dir, wall/tail death, START restart | grid game, 4 keys + START, explicit GAME OVER text | **BIOS class**: `main.c:59-61 InitPAD/StartPAD/ChangeClearPAD` (padbuff[2][34]) | needs a PSn00bSDK build first (psn00bsdk-builder UNVERIFIED in sandbox); iso.xml ships license tag **commented out** → route 2 after build | README build steps only — **artifact UNVERIFIED** |
+| N22-4 | psx-simple-pong | github.com/jlbeard84/psx-simple-pong | **MIT (c) 2021 Josh Beard — standalone LICENSE verified** | none — source-only; PSY-Q/libgs build (Wituz-derived framework) | pong, but **1P vs a static wall — no AI, no scoring** (main.c: playerTwo never moves; ball resets at x<0) | 2 keys; deterministic geometry | **BIOS class**: `source/controller.h:40 PadInit(0)`, `:49 PadRead(0)` (+ SysPadT edge helper) | PSY-Q toolchain build (blocked, same class as psx-pong) | none — source-modeled exercise only |
+| N22-5 | VoXide v0.1.11 | game: github.com/EBonura/voxide (Rust); audited distribution: github.com/tuuchen/ai-game-portal-ps1 | game code **GPL-2.0-or-later** (LICENSE inside release zip verified), assets **CC0 per the portal's own audit doc**, portal wrapper MIT, emulator PSoXide GPL-2.0-or-later | release `voxide-v0.1.11.zip` 384 KB → `voxide.bin` 2,511,936 B — parsed: MODE2/2352 sync ✓, PVD volume `VOXIDE`, SYSTEM.CNF `BOOT=cdrom:\PSX.EXE`, **license sectors 0..15 EMPTY → route 2** | Minecraft-style voxel survival sandbox (PSX-Minecraft sibling) | not "very simple" — 40%-side-adjacent candidate | Rust psx-sdk-rs (BIOS or custom pad — UNVERIFIED at source level) | route 2 (empty license sectors) | GitHub release tag `ps1-homebrew-2026-09-14` + exemplary per-game license audits (LICENSE-AUDIT-VOXIDE.md) — **downloaded + hashed** |
+| N22-6 | Cortex Ignition Tech Demo | bonnie-studios.itch.io/cortex-ignition (source: PSoXide-editor @0f12f4d) | **GPL-2.0 release** (per portal audit); **provenance gap on author voice/weapon recordings disclosed by the audit itself** | release `cortex-ignition-2026.09.05.zip` 23.2 MB (not downloaded this round) | 3D action tech demo — too heavy for the 60% track | — | — | ships with PSoXide notice + SHA-256 receipt | official itch + release — noted, not intake |
+
+Flag-only (no license in tree — never ingestable; raw LICENSE 404 verified via clone trees): **vivi168/mrbskb** (Sokoban on PSX via mruby — turn-based grid puzzle, EXACTLY our genre, PSY-Q+mkpsxiso build, no release; **if upstream ever grants a license this jumps near the top**), reaksiyon/Psy-Q-SDK-Nyorai-PSX-Game (endless RPG; ships `NYORAI/cdimage/game.iso` in-tree but no license), Hidden0-prj/PSX-Snake-Alpha-V2, squidnugget07/flappybird-psx, martpalder/psx-pong (PSn00bSDK), grundhofer/pong-psx "7Pong" (PSY-Q, 2P-only), itsAfeat/PSX-bong, jasonknoll/PSX-Pong (PsyQo C++), NewNova88/PSXPong, StanislavSeregin/ps1-rs-game (Rust demo), Jarwesbub/un-game-psx-demo.
+
+Rejected false positives (name-matched but not PSX games): Becker-LG/Sudoku-PS1 (PowerShell scripts), Selim20011/Time_Warp_II (Python grading tool), M-Matthew/PS1-Memory (Android app), Dr3pz/BlackJack.ps1 (PowerShell), silentroadgame/afterlight (Unity PC game). Noted-not-intake: fgsfdsfgs/rawpsx (Another World port, MIT, PSn00bSDK — cinematic, heavier than "very simple"; future 40%-side candidate).
+
+## 22.2 Downloaded + hashed (candidates_r22, local-only, never committed)
+
+`/home/z/my-project/emu/games_homebrew/candidates_r22/` + `sha256_candidates_r22.txt`:
+
+| File | Bytes | SHA-256 | Live structural checks (parse only) |
+|------|-------|---------|-------------------------------------|
+| `BuzzyBee.ps-exe` (raw GitHub HEAD) | 299,008 | `9b0bfc08…c909a8ba` | `PS-X EXE` magic ✓ pc0 0x80010000 t_size 296,960 sp 0x801FFF00 ✓ |
+| `LostPlumber.ps-exe` (raw GitHub HEAD) | 86,016 | `413d315a…fbc863f8` | `PS-X EXE` magic ✓ pc0 0x80010000 t_size 83,968 sp 0x801FFF00 ✓ |
+| `buzzy_v11_scene.bin` (psx.arthus.net v1.1 mirror) | 38,692,752 | `d5d7a629…f7acc32d` | sync ✓, PVD volume `BUZZYBEE`, SYSTEM.CNF `BOOT=cdrom:\BUZZYBEE.EXE` @LBA23, 1 CDDA track; **license sectors are CUSTOM ("32bit Jam / PSX Development / Scene is Alive" + waveform blob), NOT "Licensed by Sony" → expect the OpenBIOS CDChecker loop; patch locally (route 2) or use the PS-EXE** |
+| `buzzy_v11_scene.cue` | 133 | `fe9e76a6…7168f7e07` | TRACK 01 MODE2/2352 + TRACK 02 AUDIO (pregap 00:02:00) |
+| `voxide_v0.1.11.zip` (portal release) | 393,263 | `a9f20b0d…45dd12bb` | zip-inner: LICENSE (GPL-2.0-or-later text), voxide.bin 2,511,936 B (sync ✓ PVD `VOXIDE`, SYSTEM.CNF `BOOT=cdrom:\PSX.EXE`, license sectors EMPTY), voxide.cue |
+
+Inner-file hashes (voxide zip) are in `sha256_candidates_r22.txt` too. Honesty
+notes: the buzzy scene-mirror bytes are reference-only (NDR008's own game, MIT
+code; image provenance = scene mirror); BuzzyBee/LostPlumber licenses live as
+file headers, not LICENSE files — fine for local research, flag before any
+redistribution.
+
+## 22.3 Deepened entries (what the internet added)
+
+### (a) MSPSX — exact source map for the intake train (repo @6d92714, 2026-08-15)
+- **Pad driver = spicyjpeg PSn00bSDK SPI example, `src/spi.c` (MPL-2.0 header
+  :1-4), custom direct-SIO, takes over the whole SPI bus (spi.h docstring)**:
+  - `SPI_Init` **:168-185**: EnterCriticalSection, `ChangeClearRCnt(2,0)`,
+    `InterruptCallback(6, _spi_poll_irq_handler)`, `InterruptCallback(7,
+    _spi_ack_irq_handler)` (:172-176), `SIO_CTRL(0)=0x0040` reset (:178),
+    `SIO_MODE(0)=0x000d` (:179), `SIO_BAUD(0)=0x0088` =250 kbps (:180),
+    `SPI_SetPollRate(30)` (:182 — 30 Hz poll; RCnt2-based, `TIMER_CTRL(2)=0x0258`
+    :160-165).
+  - `_spi_poll_irq_handler` **:70-100**: drains the last RX byte iff
+    `SIO_STAT(0)&0x0002` (:73-74), fires the callback (:76-77), then re-arms:
+    `SIO_CTRL(0)=0x0010` (:89) → 1000-iter delay → `SIO_CTRL(0)=0x1003|port<<13`
+    (:93; 0x1003 = RXIRQen|TXEN|DTR — **no RXEN bit**) → 2000-iter delay →
+    sends byte 0x01 (:99).
+  - `_spi_ack_irq_handler` **:102-132**: waits `while (SIO_STAT(0)&0x0080)`
+    (/ACK low, :106-107), `SIO_CTRL(0)=0x1013|port` (:111; +IRQ-ack), then
+    **dummy `SIO_DATA(0)` read on the FIRST byte** (:113-118 — flushes the FIFO
+    AND, on Beetle, arms ReceivePending), real byte read :120-123, sends the
+    next TX byte or 0x00 (:127-131). Poll TX packet `[01 42 00 00]` (:32-44).
+  - Game side `src/pad.c`: custom `pad_buff[2][34]` :10 (**NOT the BIOS
+    padbuff**), `poll_cb` :53-59, `Pad_Update` :74-86 (needs
+    `pad_buff_len[0]>=4`; `held=~btn` :80; pressed/released edges :82-85),
+    `dualshock_init_cb` :35-51 (unused by default), **`DebugOutput()` :103-110
+    prints `LEN=… XX XX XX XX` (first 4 SIO response bytes) — drawn on the
+    TITLE SCREEN by main.c:542** → the title screen is a live SIO debug
+    display for backend bring-up.
+- **Board memory layout (`src/main.c` @646 lines)**:
+  - `Cell{u8 mine; u8 revealed; u8 flagged; int neighbors; bool
+    hasNeighborMines; u8 active; u8 processed}` :78-87 → **16 B/cell** (MIPS
+    o32: 3×u8 +3 pad +int(4) +bool(1) +2×u8 +1 pad), `Cell board[24][16]`
+    :75-76, :88 → **6,144 B, column-major `board[x][y]`** (x=col 0..23, column
+    stride 0x100; y=row 0..15). `RevealNode reveal_queue[384]` (8 B each)
+    :94-95.
+  - Scalars: `GRID_W=16, GRID_H=12, MINES=32` :97-99; `mine_count` :100;
+    `reveal_mode` :101 (0=BFS); `control_disable` :103 (input lock +
+    end-state); `lost` :104; `revealed_total` :106; `valid_total` :107;
+    `cursorX/cursorY` :109-110; `off_x/off_y=12` :429-430; `FIRST_CLICK` :494.
+  - Win: `WinCheck` **:176-208** — `revealed_total>=valid_total` →
+    `control_disable=1`, `mine_count=0`, mines auto-flagged. Lose: `lost=1`
+    in `RevealIterative` :235-240, `RevealRecursive` :279-284, `Chord`
+    :334-339. Restart: START when disabled :628-640 (cursor reset :635-636).
+  - Loop: title gate "PRESS START" :536-551 (with "Did controls fix?" :540);
+    seed `srand(GetRCnt(RCntCNT2))` :553-554 (**RCnt2 is also the SPI poll
+    timer**); edge-triggered cursor :581-584; CROSS reveal/chord :586-605
+    (FIRST_CLICK safe-first-click regen :590-598); CIRCLE 3-cycle flag
+    :607-620; CDDA `PlayTrack` :496-515, track 2+(rand%4) :560-561/:638-639.
+- **Source-derived prediction (UNVERIFIED — needs one boot)**: MSPSX is
+  direct-SIO but its handshake is **read-per-byte** (dummy read then TX per
+  byte, spi.c:113-131). On Beetle (see (e)) each JOY_DATA *read* arms
+  ReceivePending, so the MSPSX pattern may deliver real bytes on
+  beetle+OpenBIOS — unlike zenmai's TX-only-then-wait-RXRDY loop. If it does,
+  MSPSX needs **no mednafen backend**; if it doesn't, DebugOutput on the
+  title screen shows the raw response immediately.
+
+### (b) zenmai — upstream tracker state (all 57 closed PRs searched, incl. bodies)
+- **Zero mention of SIO, pad handshake, /ACK quirks, or any emulator pad
+  compatibility** (searched pad/SIO/コントローラ/実機 across all PR bodies;
+  no open issues exist). The author tests on a hand-written R3000 sim +
+  **real hardware** (PS1, PS2/FreeMcBoot+POPStarter, R36H) — emulators are not
+  in their test matrix, so our r21t3 Beetle-vs-TX-only finding is new
+  information to upstream (courtesy-issue candidate; not filed by us).
+- Closest upstream signals: **PR #12** (memory-card save over the same SIO,
+  device 0x81; author: "/ACK の間合いや書き込み待ちは [sim が] 模していない。
+  実機が最後の砦" — /ACK timing not modeled, real HW is the final arbiter);
+  **PR #30** (real-PS2 "No Disk!" fixed by `.VCD` uppercase naming + burning
+  license data; author explicitly suspects POPS checks the license region —
+  corroborates our license-sector discipline); **PR #13** (the author's own
+  pad_prev edge bug — "keep pad reading in ONE place").
+
+### (c) BKBS — note/judgment timing constants (repo @6b96f6b, `BKBS/MAIN.C`)
+- `#define GOAL_Y 90` :34; **hit window `arrowSprite.y > 83 && < 102`** :651
+  (19-px ≈ 316 ms @60 fps — author: "this game is not very picky about
+  timing", Audio.c:99). Notes spawn at `y=-240+frameLagTotal` :577 and move
+  `y+=frameDiff` with frameDiff≈2 :563-565/:648 (ArrowUpdate ticks at 30 Hz;
+  note speed = **1 px/frame @60**; spawn→window = 323 frames ≈ 5.4 s).
+- `frameDelay=12` :77 (lead-in before the chart starts); `endingFrame=6060`
+  :149 (≈101 s; **win = reaching EndingScreen**); **no score/miss/combo
+  counter exists** (grep: none) — a hit only flips `note.hit`, spawns
+  effects, and whitens the arrow → r22/r23 PLAYING evidence = per-note
+  `hit` bytes/effect state; WINNING = surviving to endingFrame.
+- Button map (edge-triggered `padCheckPressed`, Controller.c:7 `SysPadT`):
+  u=0 LEFT = Pad1Left|Pad1Square :654; u=16 DOWN = Pad1Down|Pad1Cross :714;
+  u=32 UP = Pad1Up|Pad1Triangle :775; u=48 RIGHT = Pad1Right|Pad1Circle
+  :811. Chart: 4 nibbles/byte per tick (`ReadChart` :569-576), 30-note pool
+  :33/:120. README: "Emulator and real hardware should be essentially
+  flawless, assuming your emulator does CD emu properly!" + full playthrough
+  video pl0-Lkwz1Hw.
+
+### (d) Nortis — license re-check (fresh clone @8c348e2, 2026-10-28)
+- **Still NO LICENSE file** (tree listing + grep; README:550-557 documents the
+  author's own license_data.dat gitignore practice). Release zip unchanged
+  (local r13 copy). **Stays non-ingestable.**
+- NEW fact: Nortis input = **BIOS class** — `psx/game/pad.c:24 InitPAD(pads[2]
+  [34])`, `:26 StartPAD()`, `:28 ChangeClearPAD(1)`. Semantics (pad.c:44-66):
+  CIRCLE rotate / CROSS drop / START restart fire only on press
+  (`btnHeldFor==0`); LEFT/RIGHT auto-repeat every 15 held frames. ⇒ if the
+  license gap is ever cured, Nortis lands on the current backend with zero
+  input work.
+
+### (e) Direct-SIO block, explained by core sources (fetched raw; parse-only)
+- **beetle-psx-libretro @2ba074e (2026-10-27), `mednafen/psx/frontio.c`**:
+  JOY_DATA *write* 0x1F801040 only sets `TransmitPending=true` (:861-865);
+  JOY_DATA *read* clears RXRDY (`ReceiveBufferAvail=false`) and
+  **arms `ReceivePending=true`** (:959-966); transfer starts on
+  `(ReceivePending && CTRL&0x4 /*RXEN*/) || (TransmitPending && CTRL&0x1
+  /*TXEN*/)` (:802, :799-841); the receive half — bit latch into
+  ReceiveBuffer and `ReceiveBufferAvail=true` (:1089) — executes **only if
+  `ReceiveInProgress`** (:1067-1092). DTR/port routing by CTRL bit 0x2000
+  (:894-899). ⇒ **A TX-only game that waits on STAT&2 (RXRDY) without ever
+  reading 0x1F801040 never sees RXRDY** — zenmai's exact stall, now
+  source-proven with line numbers. A read arms the next byte's receive path
+  (that is why BIOS-pad games work).
+- **PCSX-Redux `src/core/sio.cc`**: a TX write runs `transmitData()` :179-199
+  → `writePad()` :108 which on IDLE **sets `RX_FIFONOTEMPTY`** ("Transfer is
+  Ready") :111 and polls the pad; every response byte is pushed to `m_rxFIFO`
+  (:196, :246); JOY_DATA read pops it (`read8` :336-339). ⇒ **Redux drives
+  the pad off the WRITE side — TX-only games work there.** (The manifest's
+  stale "PCSX-Redux pad scan" note can be expected to succeed for
+  zenmai-class games on that core — still needs a live re-test to claim.)
+- Net: "direct SIO" is two different classes — **TX-only-wait-RXRDY**
+  (zenmai: blocked on Beetle, fine on Redux/real HW) vs
+  **read-per-byte full-duplex** (MSPSX/spicyjpeg, BIOS InitPAD handlers:
+  expected to work on Beetle — UNVERIFIED prediction). The standalone-
+  mednafen backend remains the clean fix for the first class only.
+
+## 22.4 r23 intake shortlist (60/40 policy)
+
+60% lightweight track (easy→hard):
+1. **BuzzyBee** (MIT, 1-button flappy-like, BIOS pad class) — artifact held +
+   hashed; boot = PS-EXE wrap + local license sectors; playbook §2-§5
+   transfers 1:1; sensor = game-side input_held/btn mirror + position u16s.
+2. **MSPSX** (Unlicense, turn-based minesweeper) — full source map in 22.3(a);
+   its first boot doubles as the (e) prediction test for the read-per-byte
+   SIO class; board/cursor/flags are RAM-localizable integers.
+3. **psx-snake** (MIT, BIOS pad class) — needs a PSn00bSDK build first
+   (psn00bsdk-builder UNVERIFIED); 4-file source, artifact UNVERIFIED until
+   built.
+
+40% baseline: MSX stage-loader lever (unchanged), air_hockey paddle anchor
+(unchanged), Poy Poy clean retire (unchanged); optional new: **VoXide**
+(GPL-2.0+CC0, artifact held) as the PSX-Minecraft sibling if a 40% slot frees
+up. Build-gated keeps: psx-simple-pong, psx-pong (stuartaharrison). Watch:
+mrbskb (sokoban — request a license upstream; top turn-based candidate if
+granted). Nortis and every no-license repo stay out. All game bytes remain
+local-only.
