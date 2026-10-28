@@ -2067,3 +2067,87 @@ text window · Poy Poy clean retire (hearts counter live) · MSX stage-loader.
 - T4 BKBS honestly deferred to r24 (session budget; no half-runs).
 - Orchestrator-only manifest update (+buzzybee, round23_addendum); report
   docs/issue6_r23_report.md; suite 565+1xfail green; no game bytes.
+
+---
+Task ID: R23-repair
+Agent: orchestrator (main)
+Task: 4th filesystem rollback repair + Round 24-33 directive intake
+
+Work Log:
+- Found local repo rolled back to 6b97fbe (r7-era, 315-passed baseline); origin/main fetched = 08e8688 (Round 23 close-out incl. a8c01ab full Round 23 + Issue #6 report issuecomment-6464991491).
+- git reset --hard origin/main -> HEAD 08e8688. No local changes to save.
+- capstone pip package lost in rollback -> reinstalled; suite re-verified 565 passed + 1 xfail.
+- emu/games_homebrew/patched/ partially rolled back (only PSXMC/TETRADE/nortis assets survive); candidates_r21/, candidates_r23/, /tmp/BuzzyBee, scratch/ gone. Per-train SHA-verified rebuild protocol applies (same as r23).
+- USER DIRECTIVE (Round 24-33, 10 trains): complete the previously accepted games fully; do NOT get stuck on new games that won't run -> MSX stage-loader T3 and BKBS T4 are shelved. Priority by current rung: doukutsupsx (BOOTED_TITLE since r13), zenmai (INPUT_DEAD_AT_MENU), autogaz (INPUT_RESPONSIVE), air_hockey (RUNNING unanchored), psx-minecraft (PLACE_PARTIAL), mspSX (RUNNING), buzzybee (GAMEPLAY_CONFIRMED), polish trains for tetrade/flappybird/hello_pong.
+
+Stage Summary:
+- Baseline green (565+1xfail) at 08e8688. Round 23 is durably on origin + reported on Issue #6.
+- 10-train plan: R24/R25 doukutsupsx, R26 zenmai, R27 autogaz, R28 air_hockey, R29 psx-minecraft, R30 mspSX, R31 buzzybee, R32 polish, R33 close-out (manifest+docs+push+Issue report).
+
+---
+Task ID: R24
+Agent: orchestrator (main)
+Task: Round 24 train - doukutsupsx (Cave Story) out of its r13 ceiling
+
+Work Log:
+- Asset rebuilt via scripts/r24t0_doukutsu_asset.py: v0.7 release iso re-downloaded, sha256 bf15559e...7554 == manifest; license overwrite no-op -> doukutsu_lic.bin byte-identical to r13.
+- Boot 1 (r24t1): settle-heuristic bug (bright shell @f60 read as title; probes hit intro) -> FAILED recorded honestly; cap amended 1->2 disclosed pre-run.
+- Boot 2 (r24t1 fixed): bright phase @f1860 = INTRO CUTSCENE (platform PNG), not the title menu; CROSS skip -> real Cave Story menu (PNG f2760); 0x9098 RAM cluster RETRACTED as menu anchor (it is the kernel pad driver prev/cur state - button-delivery proof only). Verdicts BOOTED_TITLE + cutscene->menu state change.
+- Boot 3 (r24t2, cap 2->3 disclosed pre-run): menu gate (near-static mean 34.81, idle ctrl<=0.15) -> DOWN/UP set-algebra (55 reverted / 51 retouch) + PNG-verified cursor Load->New -> CROSS on New -> 'From somewhere, a transmission...' intro dialog (ram_flip 107,413).
+- VERDICT: BOOTED_TITLE + INPUT_RESPONSIVE + STATE_CHANGE_CONFIRMED (honest correction of r13's title@f1740 = same cutscene misread, corrected with PNGs).
+- Evidence: scripts/r24_evidence.py -> docs/evidence_gifs/r24_doukutsu_menu_newgame.gif (assembled from captured frames, disclosed) + manifest doukutsupsx status + round24_addendum.
+
+Stage Summary:
+- doukutsupsx advanced 2 rungs in one round (BOOTED_TITLE -> STATE_CHANGE_CONFIRMED), game #4 (Cave Story) out of its 15-round-old ceiling.
+- 3 boots used (cap ledger clean, all disclosed). Next: R25 in-game movement (intro dialogs -> first room -> LEFT/RIGHT anchors).
+
+---
+Task ID: R25
+Agent: orchestrator (main)
+Task: Round 25 train - doukutsupsx (Cave Story) to GAMEPLAY_CONFIRMED
+
+Work Log:
+- Boot 4 (r25t1): 26 dialog-advance CROSS pulses insufficient - PNGs show the terminal scene ('Connecting to network...'); NO_MOVE_ANCHOR recorded honestly; ledger carried forward from r24 (per-game single ledger, seeded+asserted).
+- Boot 5 (r25t2): NameError crash (A1->A_idle1) AFTER data collection -> counted honestly, cap 5->6.
+- Boot 6 (r25t2 fixed): batch-0 detector false positive (typewriter dialog noise reproduces across two rounds!); idle_overlap 81/84 proved movers time-driven; no gameplay claim. Lesson: idle-subtraction + two-round agreement still pass typewriter noise.
+- Boot 7 (r25t3 hammer): 100 CROSS pulses no mid-run detection. Pulse ~80 lands the START POINT room (Quote + Lv0/3-hearts HUD PNG). End probes knocked Quote into the water pool: AIR 70 drowning counter engaged (PNG) - game systems react to our inputs. Narrow input-driven cand set: 12 words, 4 revert-class (0xbd072 0xbd07f 0xbd10b 0xcf357).
+- Boot 8 (r25t4, cap 7->8 disclosed): 84-pulse reproduction + clean direction protocol. 0xbd072/0xbd07f deltas [-16,+16,-16,+16] x2 (x-position/camera class); legs vis 0.47-0.53 vs ctrl<=0.157; PNGs show Quote walking left/right on the ledge.
+- VERDICT: GAMEPLAY_CONFIRMED. GIF r25_doukutsu_movement.gif (continuous capture). Manifest + round25_addendum updated.
+
+Stage Summary:
+- Cave Story (game #4 accepted) at GAMEPLAY_CONFIRMED - the round's headline. 8 boots cumulative, every amendment disclosed. Honest limits: no weapon/level anchors, air/water observed not localized, no WON claim.
+- Next: R26 zenmai (INPUT_DEAD_AT_MENU since r22; TX-only SIO; world-response target).
+
+---
+Task ID: R26
+Agent: orchestrator (main)
+Task: Round 26 train - zenmai world-response attempt (TIMEBOXED, parked)
+
+Work Log:
+- Assets rebuilt sha-verified: psexe 7f4be544...e4e2; patch chain r21 (patch1+patch2) re-applied byte-asserted; boot 1 (r26t1, cap 1): menu @f660, DOWN pulse -> ram_changed=0 across 2MB; 5 launch tries (START/CROSS x short/long, JP-default) -> no z3/story signature. MENU_REACHED only.
+- Boot 2 (r26t2, cap 1->2): held-button probe (40f holds, constant-mid discriminator) -> ZERO bytes for DOWN/UP/START/CROSS = PAD_DELIVERED=false. Definitive.
+- ReARMed backend lever executed (r26t3, fresh per-backend counter, core sha16 f202985eae74498b from libretro buildbot): boot 1 PAD_DELIVERED=false; boot 2 (cap 1->2) with pcsx_rearmed_pad1type=standard (digital 41 hypothesis) + alternating 3-round probe (catches edge-latches) + passive auto-launch wait -> STILL PAD_DELIVERED=false. Two independent SIO implementations, same result.
+- Static RE (r26t4, zero boots): full disassembly of zenmai pad_exchange. Decoded: per-byte TX->wait STAT&1->TX write->wait STAT&2(2000 iters)->read; adaptive length from pad ID ((id&0xf)*2+3, clamp 9); 60-iteration (~360-cycle) delay loop between RX read and next TX write. frontio.c analysis: JOY_DATA read RESTARTS the receive transfer and ReceiveInProgress clocks the pad WITHOUT transmit -> gap > 1 bit corrupts pad byte framing -> ID reads 0x43-class -> adaptive logic mis-sizes -> buttons never land.
+- Patch #3 (r26t5, disclosed): NOP the 15 delay slots (byte-asserted). Boot 3 (r26t6, cap 2->3): STILL PAD_DELIVERED=false. Gap analysis says ~15 insns should be < 1 bit period, but I/O read latency may still cross it; ALSO the padtest premise itself was unverified today.
+- padtest A/B (r26t7, fresh counter cap 2): boot 1 disc route -> magic=0 (payload never dispatched; hw payload is designed for the RAW EXE load path). Boot 2 raw EXE load -> magic=0 AGAIN. The r21 "proven against this exact core build" premise is STALE/unreproducible today - both routes fail to dispatch the payload.
+- DECISION (per user directive "don't get stuck on games that won't run"): zenmai PARKED at INPUT_DEAD_AT_MENU with the r26 investigation recorded. 8 boots total this round (3 beetle zenmai + 2 ReARMed + 1 beetle patch3 + 2 padtest AB), every amendment disclosed. Recorded next levers: (a) instrumented breadcrumb graft INSIDE the zenmai process (patch the timeout paths to write magics), (b) compare MSPSX's PROVEN direct-SIO driver pattern (r23 RUNNING) and graft its exact handshake, (c) PCSX-Redux build from source if cmake becomes available.
+
+Stage Summary:
+- No rung change for zenmai (honest negative round). Real assets: full pad_exchange disassembly decoded, adaptive-ID logic understood, core SIO re-arm semantics mapped, padtest premise invalidated.
+- Library rungs after R26: doukutsu GAMEPLAY_CONFIRMED (r24/r25), tetrade/hello_pong/flappybird deep-complete, mspSX RUNNING, buzzybee GAMEPLAY_CONFIRMED, autogaz INPUT_RESPONSIVE, air_hockey RUNNING, psx-minecraft STATE_CHANGE, zenmai INPUT_DEAD_AT_MENU (parked).
+
+---
+Task ID: R27
+Agent: orchestrator (main)
+Task: Round 27 train - autogaz to its honest ceiling (FULL_CYCLE_CAUSAL)
+
+Work Log:
+- Asset rebuilt: release zip sha-verified 765f1047...a46, extracted, license-patched via r20t2_autogaz_patch.py (paths fixed for the post-rollback layout).
+- Boot 1: state0 gate fired at f120 (STATE==0 from init) -> presses hit shell/loading; only the late CROSS reached state 2. FAILED recorded, cap 1->2.
+- Boot 2: mean-gated title (f>1100, mean 121.29 == r21 anchor 121.3) -> CROSS -> state2 (mean 133.66, vis 54.65) -> state3 at timer EXACTLY 476 (source-predicted) -> reversal attempt with ps1play "X" stayed at state3: r23 map correction says X=TRIANGLE, not CIRCLE. Cap 2->3 disclosed.
+- Boot 3: reversal with "O" (JP_A = PSX CIRCLE) -> state0 (vis 78.2) -> CROSS -> state2 again. VERDICT: FULL_CYCLE_CAUSAL (the game's honest ceiling - a 4-screen meme app with no score/gameplay system per r20 search).
+- Evidence: 5 state PNGs + docs/evidence_gifs/r27_autogaz_full_cycle.gif; manifest round27_addendum.
+
+Stage Summary:
+- autogaz upgraded INPUT_RESPONSIVE -> FULL_CYCLE_CAUSAL (its maximum honest rung), 3 boots all disclosed.
+- Next: R28 air_hockey (RUNNING; goal/PLAYING anchors from r22 candidates).

@@ -99,7 +99,9 @@
     }
    ],
    "boot_exe": "doukutsu.ps-exe",
-   "status": "BOOTED_TITLE \u2014 round 13: beetle-psx + OpenBIOS, one boot; shell cube -> LOADING (f~720) -> Studio Pixel intro -> 'Cave Story' title menu New/Load/Options @ f1740 (mean 26.84, anim madiff 15.14), 2 pad buffers detected; PNG evidence scratch/round13_newgames/doukutsu_long/ (report.json + 9 PNGs + long timeline jsonl). Next finish-target."
+   "status": "ACCEPTED+TESTED 2026-10-28 (r24+r25): GAMEPLAY_CONFIRMED through the shared beetle core + OpenBIOS with the local image (sha256 bf15559e...7554). r24 (3 boots): BOOTED_TITLE + INPUT_RESPONSIVE (menu cursor PNG-verified Load/New) + STATE_CHANGE (New Game -> intro dialog). r25 (5 boots, cumulative 8): the intro chain needed ~80 dialog-advance CROSS pulses (hammer approach after 3 disclosed detector failures); boot 7 PNG'd the Start Point room (Quote + Lv0/3-hearts HUD @pulse80) and its end probes knocked Quote into the water pool engaging the AIR 70 drowning counter; boot 8 clean direction protocol on 4 revert-class words: 0xbd072/0xbd07f deltas [-16,+16,-16,+16] (x-position/camera class, direction-consistent x2), legs vis 0.47-0.53 vs ctrl<=0.157. GIF: docs/evidence_gifs/r25_doukutsu_movement.gif (continuous capture). Detector lessons disclosed: typewriter dialog noise passes naive idle-subtraction AND two-round agreement; only the narrow revert-class set is input-driven.",
+   "boots_used_r24": 3,
+   "boots_used_r24_r25": 8
   },
   {
    "id": "flappybirdpsx",
@@ -181,7 +183,7 @@
    "boot_exe": "autogaz.exe",
    "exe_t_addr": "0x80010000",
    "exe_t_size": "0xAC800",
-   "status": "BOOTED_TITLE 2026-10-27 (r20-t2): boots through shared beetle_psx+OpenBIOS with the LOCAL license-patched image (scripts/r20t2_autogaz_patch.py, MSX-disc sectors; patched image never committed); renders its own 320x240 intro/title screen (static Gigachad meme image) from ~f1200, game loop alive (u32 frame counter @0x800BCC00 +1/frame), kernel pad pattern 00 41 ff ff @RAM 0xB008. INPUT NOT RESPONSIVE yet: START/X/O/SQ/TR/SELECT/START+SELECT and 600f X hold produce zero visual/state response across 2 boots; no score/game-over sensor found (gameplay state never reached). Local evidence: scratch/r20t2_autogaz/.",
+   "status": "ACCEPTED+TESTED 2026-10-28 (r27): FULL_CYCLE_CAUSAL - the games honest maximum rung (4-screen meme app, no score/gameplay system exists per r20 search). Full cycle closed twice through the shared beetle core + OpenBIOS: state0 title (mean 121.29) -> CROSS(ps1play B) -> state2 after (mean 133.66, vis 54.65) -> Timer() exactly 476f -> state3 polat (mean 67.22, PNG) -> CIRCLE(ps1play O=JP_A; the r23 map correction - X=TRIANGLE) -> state0 (vis 78.2) -> CROSS -> state2 again (vis 54.65). GIF: docs/evidence_gifs/r27_autogaz_full_cycle.gif. 3 disclosed boots (1: presses hit shell/loading; 2: reversal used wrong button name; 3: full pass).",
    "round21_addendum": {
     "date": "2026-10-27",
     "verdict": "INPUT_RESPONSIVE proven (r21-t2, 2 boots, scripts/r21t2_autogaz_input.py + r21t2_autogaz_input2.py)",
@@ -216,7 +218,7 @@
    "boot_exe": "zenmai-zork.psexe",
    "exe_t_addr": "0x80010000",
    "exe_t_size": "0xAA800",
-   "status": "BOOTED_TEXT 2026-10-27 (r20-t3): raw PS-EXE CD-wrapped with iso9660_min \u2014 boot-gate loop root-caused to the writer itself (header MSF must be LBA+150, VDT must be FF*8+CD001+0x01, subheader submode 0x09; all fixed in scripts/iso9660_min.py + test updated) \u2014 plus MSX license sectors; boots to the zenmai title (Zork I \u2014 a Z-machine for Japanese and a game controller; \u65e5\u672c\u8a9e/ENGLISH menu; RAM ~549KB, 'West of House'/'Frobozz'/Z-machine strings resident) via beetle+OpenBIOS. INPUT_UNPROVEN: START/UP/DOWN/CROSS (15f-120f) give 0 main-RAM deltas and no menu state change on the title; zenmai polls pad via direct SIO (0x1F80104x @ ~0x8001B340, no BIOS InitPAD, no 0041ffff padbuff) \u2014 zenmai-specific under this backend (Tetrade control proves backend input delivery same session). Evidence: scratch/r20t3_zenmai/."
+   "status": "BOOTED_TEXT 2026-10-27 (r20-t3): raw PS-EXE CD-wrapped with iso9660_min \u2014 boot-gate loop root-caused to the writer itself (header MSF must be LBA+150, VDT must be FF*8+CD001+0x01, subheader submode 0x09; all fixed in scripts/iso9660_min.py + test updated) \u2014 plus MSX license sectors; boots to the zenmai title (Zork I \u2014 a Z-machine for Japanese and a game controller; \u65e5\u672c\u8a9e/ENGLISH menu; RAM ~549KB, 'West of House'/'Frobozz'/Z-machine strings resident) via beetle+OpenBIOS. INPUT_UNPROVEN: START/UP/DOWN/CROSS (15f-120f) give 0 main-RAM deltas and no menu state change on the title; zenmai polls pad via direct SIO (0x1F80104x @ ~0x8001B340, no BIOS InitPAD, no 0041ffff padbuff) \u2014 zenmai-specific under this backend (Tetrade control proves backend input delivery same session). Evidence: scratch/r20t3_zenmai/. | r26 (2026-10-28) PARKED: input still dead after a timeboxed 8-boot investigation - beetle (2 probe classes), PCSX-ReARMed (pad1type=standard), static RE of pad_exchange (adaptive-ID + 60-iter delay loop found; delay-loop NOP patch #3 disclosed, insufficient), padtest A/B: the r21 proven premise is STALE (payload never dispatches today via disc OR raw EXE load). Next levers recorded: in-process breadcrumb graft, MSPSX-driver-pattern transplant, PCSX-Redux build."
   },
   {
    "id": "buzzybee",
@@ -481,5 +483,47 @@
    "indexing_bug": "r23t2 boot-2 forensics: host ram[] is PHYSICAL (0x10000 == 0x80010000 KUSEG); the 0x80010000 slice was out-of-bounds (empty) \u2014 corrected, evidence re-derived",
    "asset_rollback": "3rd filesystem rollback wiped scratch/; MSPSX + BuzzyBee artifacts re-fetched and SHA-256 re-verified against r21/r22 scout hashes (bit-identical)"
   }
+ },
+ "round24_addendum": {
+  "date": "2026-10-28",
+  "headline": "Round 24 train 1: Cave Story (doukutsupsx) breaks its r13 ceiling - BOOTED_TITLE + INPUT_RESPONSIVE + STATE_CHANGE_CONFIRMED with PNG-verified menu cursor and New Game -> intro dialog",
+  "process": {
+   "rollback": "4th filesystem rollback repaired from origin (08e8688); capstone reinstalled; suite 565+1xfail",
+   "user_directive": "next 10 trains = complete previously accepted games; new-game intake struggles shelved (MSX stage-loader + BKBS parked)",
+   "boots": "3 for doukutsu, every amendment and misread disclosed in boots_used.json"
+  },
+  "doukutsupsx": {
+   "verdict": "STATE_CHANGE_CONFIRMED (menu cursor + New Game -> intro)",
+   "boot1": "settle heuristic bug: bright shell frame @f60 read as title; probes hit the intro; FAILED recorded",
+   "boot2": "bright phase @f1860 = intro cutscene (PNG), NOT the title menu; CROSS skip -> real menu (PNG f2760); 0x9098 RAM cluster retracted (kernel pad prev/cur state, not a menu cursor)",
+   "boot3": "menu gate (static, mean 34.81) -> DOWN/UP cursor PNG-verified (Load/New) + 55/51 set-algebra -> New Game -> 'From somewhere, a transmission...' (ram_flip 107,413)",
+   "correction": "r13's 'title @f1740' was the same cutscene misread; corrected with PNG evidence"
+  }
+ },
+ "round25_addendum": {
+  "date": "2026-10-28",
+  "headline": "Round 25: Cave Story reaches GAMEPLAY_CONFIRMED - the first PSX port rung above r13's BOOTED_TITLE; ~80-pulse intro chain measured, Start Point room entered, player movement anchored direction-consistently",
+  "doukutsupsx": {
+   "verdict": "GAMEPLAY_CONFIRMED (boots 4-8, cumulative 8)",
+   "intro_chain": "menu -> New -> ~80 CROSS-advanced dialogs (transmission -> island scenes -> terminal 'Connecting to network' -> ...) -> Start Point",
+   "boot7": "Start Point PNG (Quote + HUD) @pulse80; movement probes knocked Quote into the water: AIR 70 drowning counter engaged (game systems react)",
+   "boot8": "clean direction protocol: 0xbd072 [-16,+16,-16,+16], 0xbd07f identical, legs vd 0.47-0.53 vs ctrl<=0.157",
+   "detector_lessons": "typewriter-reveal noise passes idle subtraction and two-round agreement; revert-class + direction protocol is the reliable discriminator",
+   "honest": "no WON claim, no weapon/level anchors yet; air/water system observed but not RAM-localized"
+  }
+ },
+ "round26_addendum": {
+  "date": "2026-10-28",
+  "headline": "Round 26: zenmai honest negative - 8-boot timeboxed investigation across two backends + static RE + padtest A/B; parked per the user no-stuck directive; no rung change claimed",
+  "findings": [
+   "PAD_DELIVERED=false on beetle AND PCSX-ReARMed (independent SIO implementations), 4 probe classes (held-constancy, alternating 3-round, passive wait, launch attempts)",
+   "static RE: pad_exchange decoded (TX->STAT&1->TX->STAT&2 x2000->read; adaptive length (id&0xf)*2+3 clamp 9; 60-iter inter-byte delay loop)",
+   "patch #3 (NOP delay loop) disclosed and insufficient",
+   "padtest A/B: r21 proven premise stale - magic=0 via disc AND raw EXE load today"
+  ]
+ },
+ "round27_addendum": {
+  "date": "2026-10-28",
+  "headline": "Round 27: autogaz FULL_CYCLE_CAUSAL (all 4 states x2, timer-476 anchor exact) - its honest ceiling; button-map correction O=JP_A=CIRCLE applied mid-train and disclosed"
  }
 }
