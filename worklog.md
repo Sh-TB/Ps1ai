@@ -2221,3 +2221,19 @@ Work Log:
 Stage Summary:
 - 2 boots (of cap 3), both disclosed. R30's parked class now has a proven repair path.
 - Next: R32 patch rollout - doukutsu first (simple call site), then buzzybee (RE the mode-switch), then resume their deep programs (doukutsu weapon/level anchors; buzzybee health/damage/death systems).
+
+---
+Task ID: R32
+Agent: orchestrator (main)
+Task: Round 32 train - CCP(1) patch rollout to doukutsu + buzzybee (the class unlock attempt)
+
+Work Log:
+- doukutsu locator (zero boots): PSN00bSDK CCP stub = B(0x5B) trampoline (bytes b0000a24/08004001/5b000924, ground-truthed from the minecraft ELF where ChangeClearPAD @0x80035664); sector-aware VA mapping over the MODE2/2352 ISO (EXE header sector 24, text from sector 25) validated by finding an InitPAD caller at the computed jal word; in_init chain found at VA 0x80010524-0x80010554 (padbuf +0x2920/+0x2942, addiu $a1,0x22, ARG IN THE JAL DELAY SLOT - why the first adjacency scan missed it).
+- Patch v1 (2 delay-slot sites) -> probe FAILED (down_vis 0.32). Patch v2 (extended 12-insn arg window, addu-encoding move found) -> 8/9 sites -> STILL FAILED. Patch v3 (+ the pad-mode dispatcher sltiu $s0,$s2,1 forced to always-CCP(1) - the runtime re-break path) -> 9 sites total -> STILL FAILED (down_vis 0.32 identical in all three states). doukutsu_ccp1.iso sha c2a9ee9d (LOCAL; pristine bf15559e intact). 3 probe boots, all disclosed in the r32 ledger (cap amendments pre-run).
+- THE CONTROL (boot 3 of the r31 ledger, cap 3->4 disclosed pre-run): UNPATCHED minecraft probe with the identical recipe -> input ALIVE (pitch ring moved, LEFT -2.88 blocks). RETRACTION: r31's "CCP(1) PATCH WORKS" causality is WITHDRAWN - minecraft was alive without the patch; the patch was not the cause (control-first lesson, recorded).
+- VERDICT: the CCP flag is NOT the mechanism. Real post-rollback split: minecraft + Tetrade BIOS-pad inputs ALIVE; doukutsu + buzzybee (same input.c family) DEAD - per-game, mechanism unknown, and the morning-vs-now flip remains unexplained despite byte-identical everything. No rung changes this round; the two parked games stay parked honestly.
+
+Stage Summary:
+- What the round actually bought: a retracted wrong conclusion (replaced by a control-verified one), the full CCP-call map of two games, and a clean negative that kills the cheap-fix branch. The one recorded lever left for the doukutsu/buzzybee class: instrumented beetle build (vendored df2b53b tree builds clean in ~3 min) with SIO/interrupt trace pins.
+- Library rungs unchanged: tetrade PLAYING, hello_pong WON 5-0, mspSX PLAYING(bot), doukutsu GAMEPLAY_CONFIRMED (class-blocked), buzzybee GAMEPLAY_CONFIRMED (class-blocked), flappybird deep-complete, air_hockey COMPLETE_LOOP_OBSERVED, autogaz FULL_CYCLE_CAUSAL, psx-minecraft place-confirmed, zenmai PARKED.
+- Next: R33 = Issue #6 batch report (R28-R32) + instrumented beetle build (if budget) or polish trains.

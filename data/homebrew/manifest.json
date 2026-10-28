@@ -617,5 +617,33 @@
    "not_claimed": "no new minecraft rung (already place-confirmed r19); the patch is an input-delivery repair, not a gameplay shortcut",
    "rollout": "same patch pattern applies to doukutsu (same in_init source) and buzzybee (mode-switch call sites need call-site RE) - R32 plan"
   }
+ },
+ "round32_addendum": {
+  "date": "2026-10-28",
+  "headline": "Round 32: CCP(1) rollout to doukutsu FAILED (2->8->9 sites + dispatcher force-1, input still dead) AND the unpatched-minecraft CONTROL retracted r31's patch causality - unpatched minecraft input is ALIVE post-rollback. Real class split: minecraft + Tetrade alive, doukutsu + buzzybee dead (mechanism unknown; the r23->r30 flip remains unexplained). Remaining lever: instrumented beetle build (vendored tree builds clean).",
+  "corrections": {
+   "r31_retraction": "r31t1 'CCP(1) PATCH WORKS' is RETRACTED: the unpatched control (r32t2, same probe recipe, same session) shows input alive WITHOUT the patch. The minecraft patch image (PSXMC_lic_ccp1.bin) is harmless but not evidenced as the cause. Honest-control lesson recorded.",
+   "doukutsu_rollout": "CCP stub = PSN00bSDK B(0x5B) trampoline (byte-verified vs minecraft ELF); 9 call sites found via sector-aware VA mapping (validated by an InitPAD caller); 8 zero-arg sites patched (2 delay slots + 6 window-found, incl. addu-encoding) + the pad-mode dispatcher (sltiu $s0,$s2,1) forced to always-CCP(1); input STILL dead (down_vis 0.32 identical across all three patch states). doukutsu_ccp1.iso sha c2a9ee9d (LOCAL; original bf15559e intact)."
+  },
+  "matrix_after_r32": {
+   "alive": [
+    "minecraft (BIOS-pad, unpatched AND patched)",
+    "tetrade (BIOS-pad, CCP(1))",
+    "mspsx (direct SIO)",
+    "air_hockey (retail, button bitmap r21 - class untested post-rollback but complete-loop observed r28)"
+   ],
+   "dead": [
+    "doukutsupsx (input.c family)",
+    "buzzybee (same input.c)"
+   ],
+   "parked": [
+    "zenmai (direct SIO, r26 investigation)"
+   ]
+  },
+  "next_levers": [
+   "instrumented beetle build from the vendored df2b53b tree (SIO/interrupt trace pins) - THE lever for the doukutsu/buzzybee class",
+   "compare minecraft vs doukutsu padbuf addresses/kernel-visible state in the same boot class",
+   "PCSX-Redux build"
+  ]
  }
 }
