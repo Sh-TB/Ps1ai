@@ -247,7 +247,7 @@ WALL_SOLDIER_ST = 0xE17C     # wall mortarman (the faller thrower)
 CORPSE_ST = (0x4BE4, 0x5CC8)
 SOLDIER_FAMILY_ST = (0x4054, 0x41FC)
 
-# ---- R38 anti-air (the D7 release blocker) --------------------------
+# ---- R38/R39 anti-air (the D7 release blocker) -----------------------
 # R38 trial evidence (r38_ckpt, trialA1/A2 deterministic): the truck
 # was KILLED by the shipped policy (hp_a4 240 -> -10 fire chips ->
 # 150, grenade -100 -> 50, wreck 0xA44C; control arm held a4=300
@@ -261,18 +261,52 @@ SOLDIER_FAMILY_ST = (0x4054, 0x41FC)
 # x8 -> UP+A+aim x8, per throw. Plugin-level mode 'aa_kill', soldiers
 # keep priority (the queue discipline), fallers never trigger it,
 # and a no-progress streak bails to clamp_clear (bounded recovery).
+# R39 rule (v2.2, boot-1/2/3 evidence): the PROVEN Session-3 atomic
+# recipe at its PROVEN cadence, plus exactly the additions the live
+# evidence supports:
+#   1. ATOMIC delivery - the lob aim is locked at cycle start; the 19f
+#      J1 window runs to completion once the grenade is out (the
+#      matched anchor A/B: chunked delivery 0/8 vs atomic 2/12).
+#   2. ANCHOR positioning - the player walks back to the clamp
+#      (px >= AA_ANCHOR_PX): the chopper HOVERS at x 1132-1155 near
+#      the clamp wall (frame capture: frozen at 1132.3; census:
+#      x=1155.1 for 75f) so an anchored player sees dx -9..-32 every
+#      patrol period. Boot-3's walk-TOWARD-the-chopper dragged the
+#      player into the wave zone - wrong direction, reverted.
+#   3. Soft band gate AA_THROW_DX=35 - throws inside the verified
+#      connect band + hover margin (connects 13.7-29; 0/5+ beyond
+#      30); outside it the cycle holds at the anchor. Boot-3 lesson:
+#      a hard gate on a starved grid fires 0 throws - this gate sits
+#      on the S3 cadence (1 attempt/76f) that live-connected 4/9.
+#   4. Queue discipline (soldiers first), quiet resolution with
+#      kill-connect accounting, bounded bail - all R38-proven.
+#   5. Survival: the R38 cooldown rain-hop (fc%90 < JUMP_HOLD for
+#      t >= 19) - the R38 gated run died without it. The boot-3
+#      grounded-start guard (AA_BFREE) is REMOVED: its interaction
+#      with the hold plan's own rain-hop self-blocked every re-lock
+#      (12 chunks of perfect dx -8.7..-27 geometry, zero throws).
+#      Occasional airborne cycle starts are the accepted cost - the
+#      Session-3 recipe ran with no guard at all and connected 4/9.
 CHOPPER_ST = (0xAA94, 0xABDC)
-AA_CYCLE = 76                # throw cycle: 3+8+8 throw + 57f cooldown
+AA_CYCLE = 76                # the S3-equivalent cadence: 19f J1
+                             # window + 57f cooldown (1 throw/76f)
+AA_WALK_CYCLE = 30           # anchor-walk / hold re-lock cadence
+AA_THROW_DX = 35.0           # soft band ceiling (connects 13.7-29
+                             # plus the 1132-1155 hover margin)
+AA_THROW_DX_MIN = 10.0       # soft band floor - EVERY verified
+                             # connect sat at |dx| >= 13.7 (S3 4x,
+                             # boot-1 2x, boot-4 1x) while the close
+                             # hovers at |dx| 3-8.6 missed 4/4; the
+                             # UP-lob arcs OVER a too-close target
+AA_ANCHOR_PX = 1140.0        # walk back to the clamp below this
+AA_WALK_FRAMES = 10          # bounded anchor walk per cycle
+AA_COMMIT_T = 19             # the full J1 window (B x3 + rise x8 +
+                             # lob x8): once the grenade is out, the
+                             # cycle finishes atomically
+AA_RELEASE_T = 11            # the press frame - dodge/hop overrides
+                             # are suppressed only BEFORE this
 AA_MAX_MISS = 6              # no-progress THROWN cycles before bail
 AA_BAIL_COOLDOWN = 600       # frames clamp_clear resumes after bail
-# R38 live falsification note: a |dx|<=40 throw gate was tried and
-# REVERTED - the ungated J1 pattern connected (1/10 throws, chopper
-# 300->200 live) while the gated run went 0/6 and died earlier
-# (aa_trials.jsonl, both deterministic). The proven band 7-29 is a
-# POST-HOC statistic of successful throws, not a pre-throw gate the
-# agent can rely on while the chopper patrols dx -9..-51; geometry
-# gating is recorded as the R39 lever (positioning sub-rule), not a
-# throw gate.
 
 
 def find_chopper(enemies):
@@ -592,13 +626,22 @@ class CombatPolicy:
         self.armor_no_progress = False
         self._armor_t = 0              # frames since armor campaign start
         self.no_progress = False       # hp unchanged across checks
-        # R38 anti-air campaign state
+        # R38/R39 anti-air campaign state
         self._aa_t = 0                 # frames inside the throw cycle
         self._aa_threw = False         # a grenade left the hand this cycle
         self.aa_slot = None            # campaign slot (follow-through)
         self.aa_last_a4 = None         # hp_a4 at the last THROWN cycle end
         self.aa_miss = 0               # consecutive no-progress cycles
         self.aa_bail_until = -1        # fc until which aa is suspended
+        # R39 sub-rule state (atomic delivery + anchor positioning)
+        self.aa_plan = None            # locked at cycle start: throw |
+                                       # hold | walk_r
+        self.aa_aim = None             # locked lob aim (LEFT/RIGHT)
+        self.aa_cycle_len = AA_CYCLE   # locked per plan (76f throw /
+                                       # 30f walk-hold re-lock)
+        self.last_b_fc = -10000        # fc of the last emitted B (any
+                                       # source; diagnostic only since
+                                       # the boot-3 guard removal)
         self.prev_h = {}               # slot -> height at last sighting
         # D7 instrument pin (scan_section correlation, Issue #9)
         self.section_pinned = False    # instrument pin actively believed
@@ -1056,23 +1099,27 @@ class CombatPolicy:
             if self.aa_slot is not None and ch is None:
                 # the campaign's target died/vanished between chunks:
                 # resolve cleanly (quiet frame favors the release)
-                self.stats["aa_resolved"] = \
-                    self.stats.get("aa_resolved", 0) + 1
-                self.aa_slot = None
-                self._aa_t = 0
-                self.aa_last_a4 = None
-                self.aa_miss = 0
+                self._aa_resolve()
             fam_now = [e for e in (enemies or [])
                        if e.get("st") in SOLDIER_FAMILY_ST]
-            if ch is not None and not fam_now and \
-                    self.fc >= self.aa_bail_until:
+            # R39: a committed release window (grenade already out,
+            # t < AA_COMMIT_T of a locked throw) finishes atomically
+            # even if the chunk scan flickers (soldier appears /
+            # chopper leaves the window) - the chunked-delivery lesson
+            committed = (self.aa_slot is not None
+                         and self.aa_plan == "throw"
+                         and self._aa_threw
+                         and self._aa_t < AA_COMMIT_T)
+            if (ch is not None and not fam_now
+                    and self.fc >= self.aa_bail_until) or committed:
                 mode = "aa_kill"
-                if self.aa_slot != ch.get("slot"):
+                if ch is not None and self.aa_slot != ch.get("slot"):
                     self.aa_slot = ch.get("slot")
                     self.aa_last_a4 = None
                     self.aa_miss = 0
                     self._aa_t = 0
                     self._aa_threw = False
+                    self.aa_plan = None
             else:
                 mode = "clamp_clear"
         else:
@@ -1158,65 +1205,121 @@ class CombatPolicy:
                 elif self._hop():
                     btns.add("B")
             elif mode == "aa_kill":
-                # R38: the session-3 J1 recipe, verbatim frame pattern
-                # (chopper_kill.py arm J1, GAMEPLAY_VERIFIED): B x3
-                # (hop) -> neutral x8 (rise to apex) -> UP+A+aim x8
-                # (the lob) -> cooldown to AA_CYCLE. Connect evidence
-                # = the chopper's hp_a4 drop at cycle end (-100);
-                # AA_MAX_MISS no-progress cycles bail to clamp_clear
-                # for AA_BAIL_COOLDOWN frames (bounded recovery).
+                # R39 v2.2: the Session-3 J1 recipe at its PROVEN
+                # cadence with atomic delivery (aim locked at cycle
+                # start; the 19f window finishes once the grenade is
+                # out), the soft connect-band gate (|dx| <= 35),
+                # ANCHOR positioning (walk back to the clamp - the
+                # chopper hovers at 1132-1155 there), the R38
+                # cooldown rain-hop, and the R38 queue discipline +
+                # bail. Full evidence chain in the constant block
+                # above.
                 ch = find_chopper(enemies)
-                if ch is None:
+                if ch is None and not (
+                        self.aa_plan == "throw" and self._aa_threw
+                        and self._aa_t < AA_COMMIT_T):
                     # killed or gone: campaign resolved cleanly
-                    self.stats["aa_resolved"] = \
-                        self.stats.get("aa_resolved", 0) + 1
-                    self.aa_slot = None
-                    self._aa_t = 0
+                    # (the kill-connect accounting sits in
+                    # _aa_resolve)
+                    self._aa_resolve()
                     btns = set()      # quiet — the queue may release
                 else:
-                    aim = "LEFT" if ch["dx_px"] < 0 else "RIGHT"
                     t = self._aa_t
-                    if t < 3:
-                        btns = {"B"}
-                    elif t < 11:
-                        btns = set()
-                    elif t < 19:
-                        if grenades > 0:
-                            btns = {"UP", "A", aim}
-                            self._aa_threw = True
+                    if t == 0:
+                        # ---- cycle-start lock (once per cycle) ----
+                        if ch is None:
+                            self.aa_plan, self.aa_aim = \
+                                "hold", None      # finish committed, quiet
                         else:
-                            btns = {"UP", aim}
-                    else:
+                            self.aa_last_a4 = ch.get("hp_a4",
+                                                     self.aa_last_a4)
+                            dx = ch["dx_px"]
+                            if (AA_THROW_DX_MIN <= abs(dx) <= AA_THROW_DX
+                                    and grenades > 0):
+                                # the S3 recipe: throw on the proven
+                                # cadence inside the connect band
+                                self.aa_plan = "throw"
+                                self.aa_aim = ("LEFT" if dx < 0
+                                               else "RIGHT")
+                            elif px is not None and \
+                                    px < AA_ANCHOR_PX:
+                                # anchor positioning: the chopper
+                                # hovers at 1132-1155 near the clamp
+                                # wall - walk back and wait there
+                                self.aa_plan, self.aa_aim = \
+                                    "walk_r", None
+                            else:
+                                self.aa_plan, self.aa_aim = \
+                                    "hold", None
+                        # throws keep the full S3 cycle; anchor walks
+                        # and holds re-lock on the short cadence
+                        self.aa_cycle_len = (AA_CYCLE
+                                             if self.aa_plan == "throw"
+                                             else AA_WALK_CYCLE)
+                    plan, aim = self.aa_plan, self.aa_aim
+                    if plan == "throw":
+                        if t < 3:
+                            btns = {"B"}
+                        elif t < 11:
+                            btns = set()
+                        elif t < 19:
+                            # the grenade releases on the FIRST
+                            # UP+A+aim frame (boot-1 frame capture);
+                            # these frames run to completion once
+                            # locked (no overrides below t AA_COMMIT_T)
+                            if grenades > 0:
+                                btns = {"UP", "A", aim}
+                                self._aa_threw = True
+                            else:
+                                btns = {"UP", aim}
+                        else:
+                            # R38-proven cooldown rain hop: the pin
+                            # window has FALLER BOMBS overhead and a
+                            # direct hit is a one-shot death through
+                            # full HP (the R38 gated run died php
+                            # 291->0 waiting a cycle without it)
+                            btns = set()
+                            if self.fc % 90 < JUMP_HOLD:
+                                btns.add("B")
+                    elif plan == "walk_r":
+                        btns = {"RIGHT"} if t < AA_WALK_FRAMES else set()
+                        if t >= AA_WALK_FRAMES and \
+                                self.fc % 90 < JUMP_HOLD:
+                            btns.add("B")
+                    else:                 # hold: quiet + rain hop only
                         btns = set()
-                        # rain-hop between throws: the pin window has
-                        # FALLER BOMBS overhead and a direct hit is a
-                        # one-shot death through full HP (R38 gated
-                        # run died php 291->0 at c161 while waiting
-                        # out a gated cycle - the aa branch had
-                        # dropped clamp_clear's hop protection)
                         if self.fc % 90 < JUMP_HOLD:
                             btns.add("B")
                     self._aa_t += 1
-                    if self._aa_t >= AA_CYCLE:
+                    if self._aa_t >= self.aa_cycle_len:
                         self._aa_t = 0
-                        a4 = ch.get("hp_a4", 0)
+                        a4 = ch.get("hp_a4", 0) if ch is not None \
+                            else None
                         if self._aa_threw:
-                            if self.aa_last_a4 is not None and \
-                                    a4 < self.aa_last_a4:
-                                self.stats["aa_connect"] = \
-                                    self.stats.get("aa_connect", 0) + 1
-                                self.aa_miss = 0
-                            else:
-                                self.aa_miss += 1
-                                self.stats["aa_miss"] = \
-                                    self.stats.get("aa_miss", 0) + 1
-                                if self.aa_miss >= AA_MAX_MISS:
-                                    self.aa_bail_until = \
-                                        self.fc + AA_BAIL_COOLDOWN
-                                    self.stats["aa_bail"] = \
-                                        self.stats.get("aa_bail", 0) + 1
-                            self.aa_last_a4 = a4
+                            if a4 is not None:
+                                if self.aa_last_a4 is not None and \
+                                        a4 < self.aa_last_a4:
+                                    self.stats["aa_connect"] = \
+                                        self.stats.get("aa_connect",
+                                                       0) + 1
+                                    self.aa_miss = 0
+                                else:
+                                    self.aa_miss += 1
+                                    self.stats["aa_miss"] = \
+                                        self.stats.get("aa_miss", 0) + 1
+                                    if self.aa_miss >= AA_MAX_MISS:
+                                        self.aa_bail_until = \
+                                            self.fc + AA_BAIL_COOLDOWN
+                                        self.stats["aa_bail"] = \
+                                            self.stats.get("aa_bail",
+                                                           0) + 1
+                                self.aa_last_a4 = a4
+                            # a4 unavailable (chopper out of the scan
+                            # window at cycle end): the observation is
+                            # NOT a miss - the next sighting settles
+                            # the connect/miss via aa_last_a4 compare
                         self._aa_threw = False
+                        self.aa_plan = None
             elif mode == "clamp_clear":
                 # DEFENSIVE stage-end clear: hold the line, fire INTO
                 # the pending section entities (they ARE the release
@@ -1306,16 +1409,27 @@ class CombatPolicy:
                         and self.fc % GRENADE_PERIOD < 4):
                     btns = {"A"}
                     self.stats["grenade"] += 1
-            if proj_dodge and fi < JUMP_HOLD:
+            if proj_dodge and fi < JUMP_HOLD and not (
+                    mode == "aa_kill" and self.aa_plan == "throw"
+                    and (self._aa_t - 1) <= AA_RELEASE_T):
                 # verified airborne shell within dodge radius: MOVING
                 # dodge NOW — hop + lateral escape AWAY from the
                 # faller (user directive: never a straight-up hop in
                 # place; heli must-move mechanic). The imminent shell
                 # outranks the mode's own facing for these frames;
                 # firing forward while escaping right is free.
+                # R39: the aa_kill PRE-RELEASE frames (t <= 11 of a
+                # locked throw, INCLUDING the press frame itself) are
+                # exempt — the hop+press must run atomically or the
+                # proven J1 geometry breaks; after the press (the
+                # grenade is out) dodges resume.
                 btns = {"B", dodge_move}
                 if burst and dodge_move == "RIGHT":
                     btns.add("Y")
+            if "B" in btns:
+                # R39 grounded guard: the aa cycle start requires a
+                # B-free window, so EVERY B source is recorded
+                self.last_b_fc = self.fc
             self.fc += 1
             emit(1, btns)
         if mode == "rear_check":
@@ -1332,6 +1446,26 @@ class CombatPolicy:
         return segs
 
     # ----------------------------------------------------------------
+    def _aa_resolve(self):
+        """Resolve the anti-air campaign (chopper gone). Counts the
+        kill-connect when a thrown grenade's -100 step completed the
+        kill (last observed hp_a4 <= 100 = the verified -100 pattern),
+        then clears every piece of campaign state."""
+        if self._aa_threw and self.aa_last_a4 is not None \
+                and self.aa_last_a4 <= 100:
+            self.stats["aa_connect"] = \
+                self.stats.get("aa_connect", 0) + 1
+            self.stats["aa_kill_connect"] = \
+                self.stats.get("aa_kill_connect", 0) + 1
+            self.aa_miss = 0
+        self.stats["aa_resolved"] = self.stats.get("aa_resolved", 0) + 1
+        self.aa_slot = None
+        self._aa_t = 0
+        self.aa_last_a4 = None
+        self.aa_miss = 0
+        self.aa_plan = None
+        self._aa_threw = False
+
     def notify_escalate(self, px):
         """Runner calls when a clamp_clear round finished without
         un-clamping: deepen the walk-back budget."""

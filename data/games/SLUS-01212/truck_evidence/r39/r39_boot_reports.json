@@ -1,0 +1,1464 @@
+{
+ "schema": "ps1play.r39-evidence/1",
+ "commit_base": "1fa362b0d407e56a6d3793638d4d66a037bd0b56",
+ "disc_sha256": "45cde149878fe945d0219fd0f61ca09856aee66bdcc9119de21c0583f1d0667d",
+ "core": "Beetle PSX 0.9.44.1 (openbios, checkpoint r38_ckpt frame 13577)",
+ "ledger": {
+  "cap": 6,
+  "count": 6,
+  "disclosed_before_first_boot": true,
+  "budget_plan": {
+   "boot_1": "baseline reproduction + in-policy vs atomic delivery diagnostics from one in-run anchor (checkpoint-restored, labeled diagnostic)",
+   "boot_2": "treatment verification of the positioning/delivery sub-rule under the same encounter conditions"
+  },
+  "amendments": [
+   {
+    "ts": "2026-10-28T20:25:00Z",
+    "change": "cap 2->3",
+    "reason": "Boot-2 trialT1 gave strong discriminating evidence (the 96f plan-lock throttled attempts to 2/run; both throws in-band so the gate works) AND revealed the trialT2 harness bug (no per-run CKPT reload -> invalid run). Boot 3 re-runs the corrected harness with the v2.1 short-re-lock policy. Amended BEFORE the run per the boot-cap convention."
+   },
+   {
+    "ts": "2026-10-28T20:55:00Z",
+    "change": "cap 3->4",
+    "reason": "Boot-3 trialT1/T2 (deterministic pair) isolated the failure precisely: every re-lock with perfect in-band geometry (dx -8.7..-27, 12 chunks) chose HOLD because the grounded guard was re-armed by the hold plan own rain-hop (self-block). v2.2 strips the design to the live-proven S3 cadence + anchor positioning + soft band gate. Amended BEFORE the run per the boot-cap convention."
+   },
+   {
+    "ts": "2026-10-28T21:10:00Z",
+    "change": "cap 4->5",
+    "reason": "HARNESS BUG FOUND AND FIXED: every R38/R39 banner_expired_restart outcome was actually a mid-chunk DEATH (px=0.0 in RESTART_SEEN, deaths counter bypassed) - the trials measured time-to-first-death, not the campaign; the death handler (respawn at 992, grenade refill, re-anchor) never ran. Boot 5 re-runs the SAME v2.2 policy (+ the evidence-backed band floor |dx|>=10) with the fixed harness to measure the full multi-death campaign. Amended BEFORE the run."
+   },
+   {
+    "ts": "2026-10-28T21:30:00Z",
+    "change": "cap 5->6",
+    "reason": "Boot-5 hit the game continue screen at c179 (lives exhausted from the reach run) - wait_alive cannot pass it. Adding the established recover_v2 START-tap continue handler (issue-4 mechanism, legal gameplay input, counted + disclosed separately from deaths). Boot 6 = the SAME v2.2+floor policy with the continue-capable harness: the first full multi-life campaign measurement. Amended BEFORE the run."
+   }
+  ],
+  "log": [
+   {
+    "n": 1,
+    "ts": "2026-10-28T19:51:27Z",
+    "script": "r39t1_baseline.py",
+    "reason": "BOOT1: baseline reproduction + delivery A/B diagnostics (BASE from r38_ckpt; DIAG-CHUNK and DIAG-ATOMIC from in-run anchor r39_anchor)"
+   },
+   {
+    "n": 2,
+    "ts": "2026-10-28T20:03:12Z",
+    "script": "r39t2_treatment.py",
+    "reason": "BOOT2: treatment trial - the R39 aa_kill v2 sub-rule x2 runs from r38_ckpt (same protocol as the Boot-1 BASE arm)"
+   },
+   {
+    "n": 3,
+    "ts": "2026-10-28T20:07:26Z",
+    "script": "r39t2_treatment.py",
+    "reason": "BOOT2: treatment trial - the R39 aa_kill v2 sub-rule x2 runs from r38_ckpt (same protocol as the Boot-1 BASE arm)"
+   },
+   {
+    "n": 4,
+    "ts": "2026-10-28T20:12:58Z",
+    "script": "r39t2_treatment.py",
+    "reason": "BOOT2: treatment trial - the R39 aa_kill v2 sub-rule x2 runs from r38_ckpt (same protocol as the Boot-1 BASE arm)"
+   },
+   {
+    "n": 5,
+    "ts": "2026-10-28T20:15:58Z",
+    "script": "r39t2_treatment.py",
+    "reason": "BOOT2: treatment trial - the R39 aa_kill v2 sub-rule x2 runs from r38_ckpt (same protocol as the Boot-1 BASE arm)"
+   },
+   {
+    "n": 6,
+    "ts": "2026-10-28T20:18:29Z",
+    "script": "r39t2_treatment.py",
+    "reason": "BOOT2: treatment trial - the R39 aa_kill v2 sub-rule x2 runs from r38_ckpt (same protocol as the Boot-1 BASE arm)"
+   }
+  ]
+ },
+ "boot1": {
+  "schema": "ps1play.r39-boot1/1",
+  "generated": "2026-10-28T19:52:06Z",
+  "commit": "1fa362b0d407e56a6d3793638d4d66a037bd0b56",
+  "checkpoint": "r38_ckpt",
+  "anchor": "r39_anchor",
+  "base": {
+   "arm": "BASE",
+   "outcome": "banner_expired_restart",
+   "end_chunk": 227,
+   "deaths": 0,
+   "wall_s": 10.4,
+   "throws": 10,
+   "score_events": [
+    {
+     "chunk": 2,
+     "from": 0,
+     "to": 100
+    },
+    {
+     "chunk": 5,
+     "from": 100,
+     "to": 200
+    },
+    {
+     "chunk": 11,
+     "from": 200,
+     "to": 300
+    },
+    {
+     "chunk": 14,
+     "from": 300,
+     "to": 400
+    },
+    {
+     "chunk": 15,
+     "from": 400,
+     "to": 600
+    },
+    {
+     "chunk": 16,
+     "from": 600,
+     "to": 700
+    },
+    {
+     "chunk": 17,
+     "from": 700,
+     "to": 800
+    },
+    {
+     "chunk": 18,
+     "from": 800,
+     "to": 1000
+    },
+    {
+     "chunk": 19,
+     "from": 1000,
+     "to": 1100
+    },
+    {
+     "chunk": 20,
+     "from": 1100,
+     "to": 1200
+    },
+    {
+     "chunk": 32,
+     "from": 1200,
+     "to": 1300
+    },
+    {
+     "chunk": 34,
+     "from": 1300,
+     "to": 1400
+    },
+    {
+     "chunk": 52,
+     "from": 1400,
+     "to": 1600
+    },
+    {
+     "chunk": 54,
+     "from": 1600,
+     "to": 1700
+    },
+    {
+     "chunk": 55,
+     "from": 1700,
+     "to": 1800
+    },
+    {
+     "chunk": 56,
+     "from": 1800,
+     "to": 1900
+    },
+    {
+     "chunk": 57,
+     "from": 1900,
+     "to": 2000
+    },
+    {
+     "chunk": 58,
+     "from": 2000,
+     "to": 2100
+    },
+    {
+     "chunk": 61,
+     "from": 2100,
+     "to": 2200
+    },
+    {
+     "chunk": 65,
+     "from": 2200,
+     "to": 2300
+    },
+    {
+     "chunk": 66,
+     "from": 2300,
+     "to": 2400
+    },
+    {
+     "chunk": 68,
+     "from": 2400,
+     "to": 2500
+    },
+    {
+     "chunk": 70,
+     "from": 2500,
+     "to": 2600
+    },
+    {
+     "chunk": 71,
+     "from": 2600,
+     "to": 2900
+    },
+    {
+     "chunk": 93,
+     "from": 2900,
+     "to": 3100
+    },
+    {
+     "chunk": 96,
+     "from": 3100,
+     "to": 3400
+    },
+    {
+     "chunk": 151,
+     "from": 3400,
+     "to": 3500
+    },
+    {
+     "chunk": 152,
+     "from": 3500,
+     "to": 3600
+    },
+    {
+     "chunk": 153,
+     "from": 3600,
+     "to": 3700
+    },
+    {
+     "chunk": 156,
+     "from": 3700,
+     "to": 3800
+    },
+    {
+     "chunk": 161,
+     "from": 3800,
+     "to": 3900
+    },
+    {
+     "chunk": 162,
+     "from": 3900,
+     "to": 4000
+    },
+    {
+     "chunk": 187,
+     "from": 4000,
+     "to": 4100
+    }
+   ],
+   "score_final": 4100,
+   "pol_stats": {
+    "engage": 87,
+    "clamp_clear": 31,
+    "advance": 12,
+    "grenade": 46,
+    "jump": 4,
+    "front_engage": 1305,
+    "dodge": 57,
+    "budget_walkthrough": 11,
+    "proj_dodge": 96,
+    "proj_unverified": 456,
+    "advance_silent": 2,
+    "armor_hold": 37,
+    "section_pin": 7,
+    "section_pin_release": 6,
+    "aa_kill": 56,
+    "d7_zone_latch": 1,
+    "aa_miss": 10,
+    "aa_bail": 1,
+    "aa_connect": 1
+   },
+   "final": {
+    "px": 0.0,
+    "score": 4100,
+    "gren": 0,
+    "php": 0,
+    "sec": [
+     0,
+     0
+    ],
+    "prog": 2147483648
+   }
+  },
+  "arms": {
+   "DIAG-CHUNK": {
+    "arm": "DIAG-CHUNK",
+    "outcome": "banner_expired_restart",
+    "end_chunk": 122,
+    "deaths": 0,
+    "wall_s": 5.4,
+    "throws": 8,
+    "score_events": [
+     {
+      "chunk": 7,
+      "from": 3400,
+      "to": 3500
+     },
+     {
+      "chunk": 64,
+      "from": 3500,
+      "to": 3600
+     },
+     {
+      "chunk": 74,
+      "from": 3600,
+      "to": 3700
+     }
+    ],
+    "score_final": 3700,
+    "pol_stats": {
+     "engage": 45,
+     "clamp_clear": 42,
+     "grenade": 17,
+     "jump": 1,
+     "front_engage": 675,
+     "dodge": 34,
+     "budget_walkthrough": 9,
+     "proj_dodge": 64,
+     "proj_unverified": 239,
+     "section_pin": 5,
+     "section_pin_release": 4,
+     "d7_zone_latch": 1,
+     "aa_kill": 36,
+     "aa_miss": 7,
+     "aa_bail": 2
+    },
+    "final": {
+     "px": 0.0,
+     "score": 3700,
+     "gren": 0,
+     "php": 0,
+     "sec": [
+      0,
+      0
+     ],
+     "prog": 2147483648
+    },
+    "hp_drops": 0
+   },
+   "DIAG-ATOMIC": {
+    "arm": "DIAG-ATOMIC",
+    "outcome": "death",
+    "frames": 858,
+    "cycles": 23,
+    "throws": 12,
+    "score_delta": 500,
+    "score_events": [
+     {
+      "cycle": 2,
+      "from": 3400,
+      "to": 3600
+     },
+     {
+      "cycle": 12,
+      "from": 3600,
+      "to": 3900
+     }
+    ],
+    "chopper_final": {
+     "slot": 4,
+     "x": 1020.5,
+     "f8e": 148,
+     "a4": 100,
+     "st": 43996,
+     "h": 206
+    },
+    "final": {
+     "px": 0.0,
+     "score": 3900,
+     "gren": 0,
+     "php": 0,
+     "sec": [
+      0,
+      0
+     ],
+     "prog": 2147483648
+    },
+    "hp_drops": 2
+   }
+  },
+  "comparison": {
+   "base_aa": {
+    "aa_kill": 56,
+    "aa_miss": 10,
+    "aa_connect": 1,
+    "aa_bail": 1
+   },
+   "chunk_throws": 8,
+   "chunk_hp_drops": 0,
+   "atomic_throws": 12,
+   "atomic_hp_drops": 2
+  }
+ },
+ "boot2_6": {
+  "schema": "ps1play.r39-boot2/1",
+  "generated": "2026-10-28T20:19:29Z",
+  "commit": "1fa362b0d407e56a6d3793638d4d66a037bd0b56",
+  "checkpoint": "r38_ckpt",
+  "runs": [
+   {
+    "arm": "trialT1",
+    "outcome": "budget",
+    "end_chunk": 299,
+    "deaths": 1,
+    "wall_s": 15.7,
+    "throws": 13,
+    "score_events": [
+     {
+      "chunk": 2,
+      "from": 0,
+      "to": 100
+     },
+     {
+      "chunk": 5,
+      "from": 100,
+      "to": 200
+     },
+     {
+      "chunk": 11,
+      "from": 200,
+      "to": 300
+     },
+     {
+      "chunk": 14,
+      "from": 300,
+      "to": 400
+     },
+     {
+      "chunk": 15,
+      "from": 400,
+      "to": 600
+     },
+     {
+      "chunk": 16,
+      "from": 600,
+      "to": 700
+     },
+     {
+      "chunk": 17,
+      "from": 700,
+      "to": 800
+     },
+     {
+      "chunk": 18,
+      "from": 800,
+      "to": 1000
+     },
+     {
+      "chunk": 19,
+      "from": 1000,
+      "to": 1100
+     },
+     {
+      "chunk": 20,
+      "from": 1100,
+      "to": 1200
+     },
+     {
+      "chunk": 32,
+      "from": 1200,
+      "to": 1300
+     },
+     {
+      "chunk": 34,
+      "from": 1300,
+      "to": 1400
+     },
+     {
+      "chunk": 52,
+      "from": 1400,
+      "to": 1600
+     },
+     {
+      "chunk": 54,
+      "from": 1600,
+      "to": 1700
+     },
+     {
+      "chunk": 55,
+      "from": 1700,
+      "to": 1800
+     },
+     {
+      "chunk": 56,
+      "from": 1800,
+      "to": 1900
+     },
+     {
+      "chunk": 57,
+      "from": 1900,
+      "to": 2000
+     },
+     {
+      "chunk": 58,
+      "from": 2000,
+      "to": 2100
+     },
+     {
+      "chunk": 61,
+      "from": 2100,
+      "to": 2200
+     },
+     {
+      "chunk": 65,
+      "from": 2200,
+      "to": 2300
+     },
+     {
+      "chunk": 66,
+      "from": 2300,
+      "to": 2400
+     },
+     {
+      "chunk": 68,
+      "from": 2400,
+      "to": 2500
+     },
+     {
+      "chunk": 70,
+      "from": 2500,
+      "to": 2600
+     },
+     {
+      "chunk": 71,
+      "from": 2600,
+      "to": 2900
+     },
+     {
+      "chunk": 93,
+      "from": 2900,
+      "to": 3100
+     },
+     {
+      "chunk": 96,
+      "from": 3100,
+      "to": 3400
+     },
+     {
+      "chunk": 152,
+      "from": 3400,
+      "to": 3500
+     },
+     {
+      "chunk": 180,
+      "from": 3500,
+      "to": 3501
+     },
+     {
+      "chunk": 184,
+      "from": 3501,
+      "to": 3601
+     },
+     {
+      "chunk": 190,
+      "from": 3601,
+      "to": 3901
+     },
+     {
+      "chunk": 192,
+      "from": 3901,
+      "to": 4001
+     },
+     {
+      "chunk": 198,
+      "from": 4001,
+      "to": 4101
+     },
+     {
+      "chunk": 199,
+      "from": 4101,
+      "to": 4301
+     },
+     {
+      "chunk": 209,
+      "from": 4301,
+      "to": 4401
+     },
+     {
+      "chunk": 217,
+      "from": 4401,
+      "to": 4501
+     },
+     {
+      "chunk": 233,
+      "from": 4501,
+      "to": 4701
+     },
+     {
+      "chunk": 241,
+      "from": 4701,
+      "to": 4801
+     },
+     {
+      "chunk": 242,
+      "from": 4801,
+      "to": 4901
+     },
+     {
+      "chunk": 249,
+      "from": 4901,
+      "to": 5001
+     },
+     {
+      "chunk": 250,
+      "from": 5001,
+      "to": 5101
+     },
+     {
+      "chunk": 271,
+      "from": 5101,
+      "to": 5401
+     },
+     {
+      "chunk": 280,
+      "from": 5401,
+      "to": 5501
+     },
+     {
+      "chunk": 281,
+      "from": 5501,
+      "to": 5601
+     },
+     {
+      "chunk": 283,
+      "from": 5601,
+      "to": 5701
+     }
+    ],
+    "score_final": 5701,
+    "pol_stats": {
+     "engage": 118,
+     "clamp_clear": 51,
+     "advance": 12,
+     "grenade": 65,
+     "jump": 5,
+     "front_engage": 1770,
+     "dodge": 82,
+     "budget_walkthrough": 15,
+     "proj_dodge": 145,
+     "proj_unverified": 706,
+     "advance_silent": 2,
+     "armor_hold": 37,
+     "section_pin": 6,
+     "section_pin_release": 6,
+     "aa_kill": 76,
+     "d7_zone_latch": 1,
+     "aa_miss": 9,
+     "aa_bail": 2,
+     "aa_connect": 1
+    },
+    "final": {
+     "px": 1164.0,
+     "score": 5701,
+     "gren": 6,
+     "php": 291,
+     "sec": [
+      0,
+      0
+     ],
+     "prog": 2147483648
+    },
+    "hp_drops": 1,
+    "continues": 1
+   },
+   {
+    "arm": "trialT2",
+    "outcome": "budget",
+    "end_chunk": 299,
+    "deaths": 1,
+    "wall_s": 15.8,
+    "throws": 13,
+    "score_events": [
+     {
+      "chunk": 2,
+      "from": 0,
+      "to": 100
+     },
+     {
+      "chunk": 5,
+      "from": 100,
+      "to": 200
+     },
+     {
+      "chunk": 11,
+      "from": 200,
+      "to": 300
+     },
+     {
+      "chunk": 14,
+      "from": 300,
+      "to": 400
+     },
+     {
+      "chunk": 15,
+      "from": 400,
+      "to": 600
+     },
+     {
+      "chunk": 16,
+      "from": 600,
+      "to": 700
+     },
+     {
+      "chunk": 17,
+      "from": 700,
+      "to": 800
+     },
+     {
+      "chunk": 18,
+      "from": 800,
+      "to": 1000
+     },
+     {
+      "chunk": 19,
+      "from": 1000,
+      "to": 1100
+     },
+     {
+      "chunk": 20,
+      "from": 1100,
+      "to": 1200
+     },
+     {
+      "chunk": 32,
+      "from": 1200,
+      "to": 1300
+     },
+     {
+      "chunk": 34,
+      "from": 1300,
+      "to": 1400
+     },
+     {
+      "chunk": 52,
+      "from": 1400,
+      "to": 1600
+     },
+     {
+      "chunk": 54,
+      "from": 1600,
+      "to": 1700
+     },
+     {
+      "chunk": 55,
+      "from": 1700,
+      "to": 1800
+     },
+     {
+      "chunk": 56,
+      "from": 1800,
+      "to": 1900
+     },
+     {
+      "chunk": 57,
+      "from": 1900,
+      "to": 2000
+     },
+     {
+      "chunk": 58,
+      "from": 2000,
+      "to": 2100
+     },
+     {
+      "chunk": 61,
+      "from": 2100,
+      "to": 2200
+     },
+     {
+      "chunk": 65,
+      "from": 2200,
+      "to": 2300
+     },
+     {
+      "chunk": 66,
+      "from": 2300,
+      "to": 2400
+     },
+     {
+      "chunk": 68,
+      "from": 2400,
+      "to": 2500
+     },
+     {
+      "chunk": 70,
+      "from": 2500,
+      "to": 2600
+     },
+     {
+      "chunk": 71,
+      "from": 2600,
+      "to": 2900
+     },
+     {
+      "chunk": 93,
+      "from": 2900,
+      "to": 3100
+     },
+     {
+      "chunk": 96,
+      "from": 3100,
+      "to": 3400
+     },
+     {
+      "chunk": 152,
+      "from": 3400,
+      "to": 3500
+     },
+     {
+      "chunk": 180,
+      "from": 3500,
+      "to": 3501
+     },
+     {
+      "chunk": 184,
+      "from": 3501,
+      "to": 3601
+     },
+     {
+      "chunk": 190,
+      "from": 3601,
+      "to": 3901
+     },
+     {
+      "chunk": 192,
+      "from": 3901,
+      "to": 4001
+     },
+     {
+      "chunk": 198,
+      "from": 4001,
+      "to": 4101
+     },
+     {
+      "chunk": 199,
+      "from": 4101,
+      "to": 4301
+     },
+     {
+      "chunk": 209,
+      "from": 4301,
+      "to": 4401
+     },
+     {
+      "chunk": 217,
+      "from": 4401,
+      "to": 4501
+     },
+     {
+      "chunk": 233,
+      "from": 4501,
+      "to": 4701
+     },
+     {
+      "chunk": 241,
+      "from": 4701,
+      "to": 4801
+     },
+     {
+      "chunk": 242,
+      "from": 4801,
+      "to": 4901
+     },
+     {
+      "chunk": 249,
+      "from": 4901,
+      "to": 5001
+     },
+     {
+      "chunk": 250,
+      "from": 5001,
+      "to": 5101
+     },
+     {
+      "chunk": 271,
+      "from": 5101,
+      "to": 5401
+     },
+     {
+      "chunk": 280,
+      "from": 5401,
+      "to": 5501
+     },
+     {
+      "chunk": 281,
+      "from": 5501,
+      "to": 5601
+     },
+     {
+      "chunk": 283,
+      "from": 5601,
+      "to": 5701
+     }
+    ],
+    "score_final": 5701,
+    "pol_stats": {
+     "engage": 118,
+     "clamp_clear": 51,
+     "advance": 12,
+     "grenade": 65,
+     "jump": 5,
+     "front_engage": 1770,
+     "dodge": 82,
+     "budget_walkthrough": 15,
+     "proj_dodge": 145,
+     "proj_unverified": 706,
+     "advance_silent": 2,
+     "armor_hold": 37,
+     "section_pin": 6,
+     "section_pin_release": 6,
+     "aa_kill": 76,
+     "d7_zone_latch": 1,
+     "aa_miss": 9,
+     "aa_bail": 2,
+     "aa_connect": 1
+    },
+    "final": {
+     "px": 1164.0,
+     "score": 5701,
+     "gren": 6,
+     "php": 291,
+     "sec": [
+      0,
+      0
+     ],
+     "prog": 2147483648
+    },
+    "hp_drops": 1,
+    "continues": 1
+   }
+  ],
+  "comparison": {
+   "baseline_BASE_boot1": {
+    "throws": 11,
+    "connects": 1,
+    "outcome": "banner_expired_restart",
+    "end_chunk": 227,
+    "score_final": 4100
+   },
+   "treatment": [
+    {
+     "tag": "trialT1",
+     "throws": 13,
+     "hp_drops": 1,
+     "connects": 1,
+     "kill_connects": 0,
+     "misses": 9,
+     "bails": 2,
+     "outcome": "budget",
+     "end_chunk": 299,
+     "deaths": 1,
+     "continues": 1,
+     "score_final": 5701,
+     "chopper_dead": false
+    },
+    {
+     "tag": "trialT2",
+     "throws": 13,
+     "hp_drops": 1,
+     "connects": 1,
+     "kill_connects": 0,
+     "misses": 9,
+     "bails": 2,
+     "outcome": "budget",
+     "end_chunk": 299,
+     "deaths": 1,
+     "continues": 1,
+     "score_final": 5701,
+     "chopper_dead": false
+    }
+   ]
+  }
+ },
+ "throws_boot1": [
+  {
+   "arm": "BASE",
+   "c": 79,
+   "dx": -30.3,
+   "a4": 300,
+   "st": 43668,
+   "gren0": 7
+  },
+  {
+   "arm": "BASE",
+   "c": 104,
+   "dx": -65.4,
+   "a4": 300,
+   "st": 43668,
+   "gren0": 9
+  },
+  {
+   "arm": "BASE",
+   "c": 108,
+   "dx": -21.3,
+   "a4": 300,
+   "st": 43668,
+   "gren0": 8
+  },
+  {
+   "arm": "BASE",
+   "c": 113,
+   "dx": -8.9,
+   "a4": 300,
+   "st": 43996,
+   "gren0": 8
+  },
+  {
+   "arm": "BASE",
+   "c": 118,
+   "dx": -8.9,
+   "a4": 300,
+   "st": 43996,
+   "gren0": 7
+  },
+  {
+   "arm": "BASE",
+   "c": 126,
+   "dx": -112.5,
+   "a4": 300,
+   "st": 43668,
+   "gren0": 7
+  },
+  {
+   "arm": "BASE",
+   "c": 140,
+   "dx": -35.4,
+   "a4": 300,
+   "st": 43668,
+   "gren0": 10
+  },
+  {
+   "arm": "BASE",
+   "c": 197,
+   "dx": -21.9,
+   "a4": 200,
+   "st": 43668,
+   "gren0": 7
+  },
+  {
+   "arm": "BASE",
+   "c": 216,
+   "dx": -11.1,
+   "a4": 200,
+   "st": 43668,
+   "gren0": 6
+  },
+  {
+   "arm": "BASE",
+   "c": 221,
+   "dx": -66.3,
+   "a4": 200,
+   "st": 43668,
+   "gren0": 6
+  },
+  {
+   "arm": "DIAG-CHUNK",
+   "c": 0,
+   "dx": -41.6,
+   "a4": 300,
+   "st": 43668,
+   "gren0": 8
+  },
+  {
+   "arm": "DIAG-CHUNK",
+   "c": 1,
+   "dx": -28.4,
+   "a4": 300,
+   "st": 43668,
+   "gren0": 7
+  },
+  {
+   "arm": "DIAG-CHUNK",
+   "c": 14,
+   "dx": -46.6,
+   "a4": 300,
+   "st": 43668,
+   "gren0": 7
+  },
+  {
+   "arm": "DIAG-CHUNK",
+   "c": 15,
+   "dx": -49.6,
+   "a4": 300,
+   "st": 43668,
+   "gren0": 7
+  },
+  {
+   "arm": "DIAG-CHUNK",
+   "c": 19,
+   "dx": -11.0,
+   "a4": 300,
+   "st": 43668,
+   "gren0": 6
+  },
+  {
+   "arm": "DIAG-CHUNK",
+   "c": 24,
+   "dx": -12.5,
+   "a4": 300,
+   "st": 43668,
+   "gren0": 5
+  },
+  {
+   "arm": "DIAG-CHUNK",
+   "c": 39,
+   "dx": -117.8,
+   "a4": 300,
+   "st": 43668,
+   "gren0": 5
+  },
+  {
+   "arm": "DIAG-CHUNK",
+   "c": 98,
+   "dx": -68.8,
+   "a4": 300,
+   "st": 43668,
+   "gren0": 10
+  },
+  {
+   "arm": "DIAG-ATOMIC",
+   "c": 0,
+   "dx": -41.6,
+   "a4": 300,
+   "st": 43668,
+   "gren0": 8
+  },
+  {
+   "arm": "DIAG-ATOMIC",
+   "c": 2,
+   "dx": 14.5,
+   "a4": 300,
+   "st": 43668,
+   "gren0": 7
+  },
+  {
+   "arm": "DIAG-ATOMIC",
+   "c": 4,
+   "dx": -11.8,
+   "a4": 200,
+   "st": 43668,
+   "gren0": 6
+  },
+  {
+   "arm": "DIAG-ATOMIC",
+   "c": 6,
+   "dx": -35.6,
+   "a4": 200,
+   "st": 43668,
+   "gren0": 6
+  },
+  {
+   "arm": "DIAG-ATOMIC",
+   "c": 8,
+   "dx": 25.2,
+   "a4": 200,
+   "st": 43668,
+   "gren0": 10
+  },
+  {
+   "arm": "DIAG-ATOMIC",
+   "c": 10,
+   "dx": -18.8,
+   "a4": 200,
+   "st": 43668,
+   "gren0": 9
+  },
+  {
+   "arm": "DIAG-ATOMIC",
+   "c": 12,
+   "dx": 21.2,
+   "a4": 200,
+   "st": 43668,
+   "gren0": 8
+  },
+  {
+   "arm": "DIAG-ATOMIC",
+   "c": 14,
+   "dx": -20.2,
+   "a4": 100,
+   "st": 43668,
+   "gren0": 7
+  },
+  {
+   "arm": "DIAG-ATOMIC",
+   "c": 16,
+   "dx": 20.8,
+   "a4": 100,
+   "st": 43668,
+   "gren0": 6
+  },
+  {
+   "arm": "DIAG-ATOMIC",
+   "c": 18,
+   "dx": -20.5,
+   "a4": 100,
+   "st": 43668,
+   "gren0": 5
+  },
+  {
+   "arm": "DIAG-ATOMIC",
+   "c": 20,
+   "dx": -20.1,
+   "a4": 100,
+   "st": 43996,
+   "gren0": 4
+  },
+  {
+   "arm": "DIAG-ATOMIC",
+   "c": 22,
+   "dx": -29.5,
+   "a4": 100,
+   "st": 43996,
+   "gren0": 4
+  }
+ ],
+ "throws_boot2_6": [
+  {
+   "arm": "trialT1",
+   "c": 79,
+   "dx": -30.3,
+   "a4": 300,
+   "st": 43668,
+   "gren0": 7
+  },
+  {
+   "arm": "trialT1",
+   "c": 104,
+   "dx": -65.4,
+   "a4": 300,
+   "st": 43668,
+   "gren0": 9
+  },
+  {
+   "arm": "trialT1",
+   "c": 108,
+   "dx": -21.3,
+   "a4": 300,
+   "st": 43668,
+   "gren0": 8
+  },
+  {
+   "arm": "trialT1",
+   "c": 142,
+   "dx": -18.1,
+   "a4": 300,
+   "st": 43668,
+   "gren0": 10
+  },
+  {
+   "arm": "trialT1",
+   "c": 147,
+   "dx": -13.3,
+   "a4": 300,
+   "st": 43668,
+   "gren0": 10
+  },
+  {
+   "arm": "trialT1",
+   "c": 148,
+   "dx": -10.0,
+   "a4": 300,
+   "st": 43668,
+   "gren0": 10
+  },
+  {
+   "arm": "trialT1",
+   "c": 161,
+   "dx": -37.3,
+   "a4": 300,
+   "st": 43668,
+   "gren0": 8
+  },
+  {
+   "arm": "trialT1",
+   "c": 166,
+   "dx": -9.0,
+   "a4": 300,
+   "st": 43996,
+   "gren0": 8
+  },
+  {
+   "arm": "trialT1",
+   "c": 212,
+   "dx": 8.5,
+   "a4": 300,
+   "st": 43996,
+   "gren0": 9
+  },
+  {
+   "arm": "trialT1",
+   "c": 270,
+   "dx": -51.7,
+   "a4": 300,
+   "st": 43668,
+   "gren0": 8
+  },
+  {
+   "arm": "trialT1",
+   "c": 275,
+   "dx": -26.8,
+   "a4": 200,
+   "st": 43668,
+   "gren0": 7
+  },
+  {
+   "arm": "trialT1",
+   "c": 292,
+   "dx": -21.1,
+   "a4": 200,
+   "st": 43668,
+   "gren0": 6
+  },
+  {
+   "arm": "trialT1",
+   "c": 299,
+   "dx": -29.6,
+   "a4": 200,
+   "st": 43668,
+   "gren0": 6
+  },
+  {
+   "arm": "trialT2",
+   "c": 79,
+   "dx": -30.3,
+   "a4": 300,
+   "st": 43668,
+   "gren0": 7
+  },
+  {
+   "arm": "trialT2",
+   "c": 104,
+   "dx": -65.4,
+   "a4": 300,
+   "st": 43668,
+   "gren0": 9
+  },
+  {
+   "arm": "trialT2",
+   "c": 108,
+   "dx": -21.3,
+   "a4": 300,
+   "st": 43668,
+   "gren0": 8
+  },
+  {
+   "arm": "trialT2",
+   "c": 142,
+   "dx": -18.1,
+   "a4": 300,
+   "st": 43668,
+   "gren0": 10
+  },
+  {
+   "arm": "trialT2",
+   "c": 147,
+   "dx": -13.3,
+   "a4": 300,
+   "st": 43668,
+   "gren0": 10
+  },
+  {
+   "arm": "trialT2",
+   "c": 148,
+   "dx": -10.0,
+   "a4": 300,
+   "st": 43668,
+   "gren0": 10
+  },
+  {
+   "arm": "trialT2",
+   "c": 161,
+   "dx": -37.3,
+   "a4": 300,
+   "st": 43668,
+   "gren0": 8
+  },
+  {
+   "arm": "trialT2",
+   "c": 166,
+   "dx": -9.0,
+   "a4": 300,
+   "st": 43996,
+   "gren0": 8
+  },
+  {
+   "arm": "trialT2",
+   "c": 212,
+   "dx": 8.5,
+   "a4": 300,
+   "st": 43996,
+   "gren0": 9
+  },
+  {
+   "arm": "trialT2",
+   "c": 270,
+   "dx": -51.7,
+   "a4": 300,
+   "st": 43668,
+   "gren0": 8
+  },
+  {
+   "arm": "trialT2",
+   "c": 275,
+   "dx": -26.8,
+   "a4": 200,
+   "st": 43668,
+   "gren0": 7
+  },
+  {
+   "arm": "trialT2",
+   "c": 292,
+   "dx": -21.1,
+   "a4": 200,
+   "st": 43668,
+   "gren0": 6
+  },
+  {
+   "arm": "trialT2",
+   "c": 299,
+   "dx": -29.6,
+   "a4": 200,
+   "st": 43668,
+   "gren0": 6
+  }
+ ],
+ "hp_drops_boot1": [
+  {
+   "arm": "BASE",
+   "cycle": 192,
+   "from": 300,
+   "to": 200
+  },
+  {
+   "arm": "DIAG-ATOMIC",
+   "cycle": 3,
+   "from": 300,
+   "to": 200
+  },
+  {
+   "arm": "DIAG-ATOMIC",
+   "cycle": 13,
+   "from": 200,
+   "to": 100
+  }
+ ],
+ "hp_drops_boot2_6": [
+  {
+   "arm": "trialT1",
+   "cycle": 271,
+   "from": 300,
+   "to": 200
+  },
+  {
+   "arm": "trialT2",
+   "cycle": 271,
+   "from": 300,
+   "to": 200
+  }
+ ]
+}
