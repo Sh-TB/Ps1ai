@@ -2237,3 +2237,17 @@ Stage Summary:
 - What the round actually bought: a retracted wrong conclusion (replaced by a control-verified one), the full CCP-call map of two games, and a clean negative that kills the cheap-fix branch. The one recorded lever left for the doukutsu/buzzybee class: instrumented beetle build (vendored df2b53b tree builds clean in ~3 min) with SIO/interrupt trace pins.
 - Library rungs unchanged: tetrade PLAYING, hello_pong WON 5-0, mspSX PLAYING(bot), doukutsu GAMEPLAY_CONFIRMED (class-blocked), buzzybee GAMEPLAY_CONFIRMED (class-blocked), flappybird deep-complete, air_hockey COMPLETE_LOOP_OBSERVED, autogaz FULL_CYCLE_CAUSAL, psx-minecraft place-confirmed, zenmai PARKED.
 - Next: R33 = Issue #6 batch report (R28-R32) + instrumented beetle build (if budget) or polish trains.
+
+---
+Task ID: R33
+Agent: orchestrator (main)
+Task: Round 33 - batch close-out (Issue #6 report for R28-R32)
+
+Work Log:
+- Suite re-verified: 565 passed + 1 xfailed (8.36s).
+- docs/issue6_r28_r32_report.md written and posted to Issue #6: comment 6469496718 (https://github.com/Sh-TB/Ps1ai/issues/6#issuecomment-6469496718). The report includes the air_hockey complete loop, the mspSX bot promotion + acceptance, the full r30 input-regression matrix, the r31 claim and its r32 retraction with the control experiment, and the recorded lever (instrumented beetle build).
+- All 5 rounds of the session closed with per-round commits + Git-Data-API pushes: 2482d59 (r24-27 recovery + r28 WIP), 69dfbf3 (r28), d88eaf8 (r29), 90b7653 (r30), ce267df (r31), 647fe2c (r32).
+
+Stage Summary:
+- Session totals: 23 disclosed boots, 1 rung promotion (mspSX PLAYING, accepted #9), 1 complete-loop observation (air_hockey), 1 honest park (buzzybee, class-blocked), 1 retraction done right (r31 patch claim killed by its own control), 2 environment repairs (push helper POST fix, beetle core rebuild from vendored source).
+- Next: R34+ = instrumented beetle build (SIO/interrupt trace pins) for the doukutsu/buzzybee class, or polish trains on the alive-input games (tetrade deep-cycles, hello_pong sparring rematches).
