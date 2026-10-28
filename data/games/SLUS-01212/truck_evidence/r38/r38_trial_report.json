@@ -1,0 +1,759 @@
+{
+ "schema": "ps1play.r38-d7-trial/1",
+ "generated": "2026-10-28T19:13:35Z",
+ "commit_head": "8ac9a64584096a14593cf612027a3ab9abc952e3",
+ "checkpoint": "r38_ckpt",
+ "oracle": "score events + walker 0xC / pre-banner (0,8)->(0xC,9) + banner PNG; +0x8E excluded (R38 rule)",
+ "runs": [
+  {
+   "tag": "trialA1",
+   "arm": "policy",
+   "outcome": "banner_expired_restart",
+   "end_chunk": 268,
+   "deaths": 0,
+   "frames_budget": 7200,
+   "wall_s": 13.8,
+   "score_events": [
+    {
+     "chunk": 2,
+     "from": 0,
+     "to": 100
+    },
+    {
+     "chunk": 5,
+     "from": 100,
+     "to": 200
+    },
+    {
+     "chunk": 11,
+     "from": 200,
+     "to": 300
+    },
+    {
+     "chunk": 14,
+     "from": 300,
+     "to": 400
+    },
+    {
+     "chunk": 15,
+     "from": 400,
+     "to": 600
+    },
+    {
+     "chunk": 16,
+     "from": 600,
+     "to": 700
+    },
+    {
+     "chunk": 17,
+     "from": 700,
+     "to": 800
+    },
+    {
+     "chunk": 18,
+     "from": 800,
+     "to": 1000
+    },
+    {
+     "chunk": 19,
+     "from": 1000,
+     "to": 1100
+    },
+    {
+     "chunk": 20,
+     "from": 1100,
+     "to": 1200
+    },
+    {
+     "chunk": 32,
+     "from": 1200,
+     "to": 1300
+    },
+    {
+     "chunk": 34,
+     "from": 1300,
+     "to": 1400
+    },
+    {
+     "chunk": 52,
+     "from": 1400,
+     "to": 1600
+    },
+    {
+     "chunk": 54,
+     "from": 1600,
+     "to": 1700
+    },
+    {
+     "chunk": 55,
+     "from": 1700,
+     "to": 1800
+    },
+    {
+     "chunk": 56,
+     "from": 1800,
+     "to": 1900
+    },
+    {
+     "chunk": 57,
+     "from": 1900,
+     "to": 2000
+    },
+    {
+     "chunk": 58,
+     "from": 2000,
+     "to": 2100
+    },
+    {
+     "chunk": 61,
+     "from": 2100,
+     "to": 2200
+    },
+    {
+     "chunk": 65,
+     "from": 2200,
+     "to": 2300
+    },
+    {
+     "chunk": 66,
+     "from": 2300,
+     "to": 2400
+    },
+    {
+     "chunk": 68,
+     "from": 2400,
+     "to": 2500
+    },
+    {
+     "chunk": 70,
+     "from": 2500,
+     "to": 2600
+    },
+    {
+     "chunk": 71,
+     "from": 2600,
+     "to": 2900
+    },
+    {
+     "chunk": 93,
+     "from": 2900,
+     "to": 3100
+    },
+    {
+     "chunk": 96,
+     "from": 3100,
+     "to": 3400
+    },
+    {
+     "chunk": 118,
+     "from": 3400,
+     "to": 3500
+    },
+    {
+     "chunk": 119,
+     "from": 3500,
+     "to": 3600
+    },
+    {
+     "chunk": 121,
+     "from": 3600,
+     "to": 3700
+    },
+    {
+     "chunk": 137,
+     "from": 3700,
+     "to": 3800
+    },
+    {
+     "chunk": 143,
+     "from": 3800,
+     "to": 3900
+    },
+    {
+     "chunk": 161,
+     "from": 3900,
+     "to": 4000
+    },
+    {
+     "chunk": 178,
+     "from": 4000,
+     "to": 4100
+    },
+    {
+     "chunk": 179,
+     "from": 4100,
+     "to": 4200
+    },
+    {
+     "chunk": 194,
+     "from": 4200,
+     "to": 4300
+    },
+    {
+     "chunk": 202,
+     "from": 4300,
+     "to": 4400
+    },
+    {
+     "chunk": 203,
+     "from": 4400,
+     "to": 4500
+    },
+    {
+     "chunk": 252,
+     "from": 4500,
+     "to": 4600
+    }
+   ],
+   "score_final": 4600,
+   "truck_trace_tail": [
+    {
+     "chunk": 93,
+     "a4": 10,
+     "gren": 10,
+     "x": 1126.5,
+     "st": 40584
+    },
+    {
+     "chunk": 94,
+     "a4": 10,
+     "gren": 10,
+     "x": 1126.5,
+     "st": 40584
+    },
+    {
+     "chunk": 95,
+     "a4": 10,
+     "gren": 9,
+     "x": 1126.5,
+     "st": 40584
+    },
+    {
+     "chunk": 96,
+     "a4": 30,
+     "gren": 9,
+     "x": 952.0,
+     "st": 2056
+    },
+    {
+     "chunk": 97,
+     "a4": 30,
+     "gren": 9,
+     "x": 948.8,
+     "st": 2056
+    },
+    {
+     "chunk": 104,
+     "a4": 30,
+     "gren": 9,
+     "x": 1035.9,
+     "st": 2056
+    },
+    {
+     "chunk": 105,
+     "a4": 30,
+     "gren": 9,
+     "x": 1057.1,
+     "st": 2056
+    },
+    {
+     "chunk": 228,
+     "a4": 30,
+     "gren": 10,
+     "x": 1058.2,
+     "st": 2056
+    },
+    {
+     "chunk": 229,
+     "a4": 30,
+     "gren": 10,
+     "x": 1049.1,
+     "st": 2056
+    },
+    {
+     "chunk": 236,
+     "a4": 30,
+     "gren": 9,
+     "x": 1015.8,
+     "st": 2056
+    },
+    {
+     "chunk": 237,
+     "a4": 30,
+     "gren": 9,
+     "x": 1017.1,
+     "st": 2056
+    },
+    {
+     "chunk": 238,
+     "a4": 30,
+     "gren": 9,
+     "x": 1017.1,
+     "st": 20828
+    }
+   ],
+   "truck_a4_min": 10,
+   "grenades_spent": -1,
+   "pol_stats": {
+    "engage": 110,
+    "clamp_clear": 105,
+    "advance": 12,
+    "grenade": 57,
+    "jump": 4,
+    "front_engage": 1650,
+    "dodge": 77,
+    "budget_walkthrough": 12,
+    "proj_dodge": 134,
+    "proj_unverified": 552,
+    "advance_silent": 2,
+    "armor_hold": 37,
+    "section_pin": 3,
+    "section_pin_release": 2,
+    "d7_zone_latch": 1
+   },
+   "final": {
+    "px": 0.0,
+    "score": 4600,
+    "gren": 0,
+    "php": 0,
+    "sec": [
+     0,
+     0
+    ],
+    "prog": 2147483648
+   }
+  },
+  {
+   "tag": "trialA2",
+   "arm": "policy",
+   "outcome": "banner_expired_restart",
+   "end_chunk": 268,
+   "deaths": 0,
+   "frames_budget": 7200,
+   "wall_s": 13.8,
+   "score_events": [
+    {
+     "chunk": 2,
+     "from": 0,
+     "to": 100
+    },
+    {
+     "chunk": 5,
+     "from": 100,
+     "to": 200
+    },
+    {
+     "chunk": 11,
+     "from": 200,
+     "to": 300
+    },
+    {
+     "chunk": 14,
+     "from": 300,
+     "to": 400
+    },
+    {
+     "chunk": 15,
+     "from": 400,
+     "to": 600
+    },
+    {
+     "chunk": 16,
+     "from": 600,
+     "to": 700
+    },
+    {
+     "chunk": 17,
+     "from": 700,
+     "to": 800
+    },
+    {
+     "chunk": 18,
+     "from": 800,
+     "to": 1000
+    },
+    {
+     "chunk": 19,
+     "from": 1000,
+     "to": 1100
+    },
+    {
+     "chunk": 20,
+     "from": 1100,
+     "to": 1200
+    },
+    {
+     "chunk": 32,
+     "from": 1200,
+     "to": 1300
+    },
+    {
+     "chunk": 34,
+     "from": 1300,
+     "to": 1400
+    },
+    {
+     "chunk": 52,
+     "from": 1400,
+     "to": 1600
+    },
+    {
+     "chunk": 54,
+     "from": 1600,
+     "to": 1700
+    },
+    {
+     "chunk": 55,
+     "from": 1700,
+     "to": 1800
+    },
+    {
+     "chunk": 56,
+     "from": 1800,
+     "to": 1900
+    },
+    {
+     "chunk": 57,
+     "from": 1900,
+     "to": 2000
+    },
+    {
+     "chunk": 58,
+     "from": 2000,
+     "to": 2100
+    },
+    {
+     "chunk": 61,
+     "from": 2100,
+     "to": 2200
+    },
+    {
+     "chunk": 65,
+     "from": 2200,
+     "to": 2300
+    },
+    {
+     "chunk": 66,
+     "from": 2300,
+     "to": 2400
+    },
+    {
+     "chunk": 68,
+     "from": 2400,
+     "to": 2500
+    },
+    {
+     "chunk": 70,
+     "from": 2500,
+     "to": 2600
+    },
+    {
+     "chunk": 71,
+     "from": 2600,
+     "to": 2900
+    },
+    {
+     "chunk": 93,
+     "from": 2900,
+     "to": 3100
+    },
+    {
+     "chunk": 96,
+     "from": 3100,
+     "to": 3400
+    },
+    {
+     "chunk": 118,
+     "from": 3400,
+     "to": 3500
+    },
+    {
+     "chunk": 119,
+     "from": 3500,
+     "to": 3600
+    },
+    {
+     "chunk": 121,
+     "from": 3600,
+     "to": 3700
+    },
+    {
+     "chunk": 137,
+     "from": 3700,
+     "to": 3800
+    },
+    {
+     "chunk": 143,
+     "from": 3800,
+     "to": 3900
+    },
+    {
+     "chunk": 161,
+     "from": 3900,
+     "to": 4000
+    },
+    {
+     "chunk": 178,
+     "from": 4000,
+     "to": 4100
+    },
+    {
+     "chunk": 179,
+     "from": 4100,
+     "to": 4200
+    },
+    {
+     "chunk": 194,
+     "from": 4200,
+     "to": 4300
+    },
+    {
+     "chunk": 202,
+     "from": 4300,
+     "to": 4400
+    },
+    {
+     "chunk": 203,
+     "from": 4400,
+     "to": 4500
+    },
+    {
+     "chunk": 252,
+     "from": 4500,
+     "to": 4600
+    }
+   ],
+   "score_final": 4600,
+   "truck_trace_tail": [
+    {
+     "chunk": 93,
+     "a4": 10,
+     "gren": 10,
+     "x": 1126.5,
+     "st": 40584
+    },
+    {
+     "chunk": 94,
+     "a4": 10,
+     "gren": 10,
+     "x": 1126.5,
+     "st": 40584
+    },
+    {
+     "chunk": 95,
+     "a4": 10,
+     "gren": 9,
+     "x": 1126.5,
+     "st": 40584
+    },
+    {
+     "chunk": 96,
+     "a4": 30,
+     "gren": 9,
+     "x": 952.0,
+     "st": 2056
+    },
+    {
+     "chunk": 97,
+     "a4": 30,
+     "gren": 9,
+     "x": 948.8,
+     "st": 2056
+    },
+    {
+     "chunk": 104,
+     "a4": 30,
+     "gren": 9,
+     "x": 1035.9,
+     "st": 2056
+    },
+    {
+     "chunk": 105,
+     "a4": 30,
+     "gren": 9,
+     "x": 1057.1,
+     "st": 2056
+    },
+    {
+     "chunk": 228,
+     "a4": 30,
+     "gren": 10,
+     "x": 1058.2,
+     "st": 2056
+    },
+    {
+     "chunk": 229,
+     "a4": 30,
+     "gren": 10,
+     "x": 1049.1,
+     "st": 2056
+    },
+    {
+     "chunk": 236,
+     "a4": 30,
+     "gren": 9,
+     "x": 1015.8,
+     "st": 2056
+    },
+    {
+     "chunk": 237,
+     "a4": 30,
+     "gren": 9,
+     "x": 1017.1,
+     "st": 2056
+    },
+    {
+     "chunk": 238,
+     "a4": 30,
+     "gren": 9,
+     "x": 1017.1,
+     "st": 20828
+    }
+   ],
+   "truck_a4_min": 10,
+   "grenades_spent": -1,
+   "pol_stats": {
+    "engage": 110,
+    "clamp_clear": 105,
+    "advance": 12,
+    "grenade": 57,
+    "jump": 4,
+    "front_engage": 1650,
+    "dodge": 77,
+    "budget_walkthrough": 12,
+    "proj_dodge": 134,
+    "proj_unverified": 552,
+    "advance_silent": 2,
+    "armor_hold": 37,
+    "section_pin": 3,
+    "section_pin_release": 2,
+    "d7_zone_latch": 1
+   },
+   "final": {
+    "px": 0.0,
+    "score": 4600,
+    "gren": 0,
+    "php": 0,
+    "sec": [
+     0,
+     0
+    ],
+    "prog": 2147483648
+   }
+  },
+  {
+   "tag": "trialB_control",
+   "arm": "right",
+   "outcome": "banner_expired_restart",
+   "end_chunk": 45,
+   "deaths": 0,
+   "frames_budget": 7200,
+   "wall_s": 8.0,
+   "score_events": [],
+   "score_final": 0,
+   "truck_trace_tail": [
+    {
+     "chunk": 34,
+     "a4": 300,
+     "gren": 10,
+     "x": 937.5,
+     "st": 40584
+    },
+    {
+     "chunk": 35,
+     "a4": 300,
+     "gren": 10,
+     "x": 937.5,
+     "st": 40584
+    },
+    {
+     "chunk": 36,
+     "a4": 300,
+     "gren": 10,
+     "x": 937.5,
+     "st": 40584
+    },
+    {
+     "chunk": 37,
+     "a4": 300,
+     "gren": 10,
+     "x": 937.5,
+     "st": 40584
+    },
+    {
+     "chunk": 38,
+     "a4": 300,
+     "gren": 10,
+     "x": 937.5,
+     "st": 40584
+    },
+    {
+     "chunk": 39,
+     "a4": 300,
+     "gren": 10,
+     "x": 937.5,
+     "st": 40584
+    },
+    {
+     "chunk": 40,
+     "a4": 300,
+     "gren": 10,
+     "x": 937.5,
+     "st": 40584
+    },
+    {
+     "chunk": 41,
+     "a4": 300,
+     "gren": 10,
+     "x": 937.5,
+     "st": 40584
+    },
+    {
+     "chunk": 42,
+     "a4": 300,
+     "gren": 10,
+     "x": 937.5,
+     "st": 40584
+    },
+    {
+     "chunk": 43,
+     "a4": 300,
+     "gren": 10,
+     "x": 937.5,
+     "st": 40584
+    },
+    {
+     "chunk": 44,
+     "a4": 300,
+     "gren": 10,
+     "x": 937.5,
+     "st": 40584
+    },
+    {
+     "chunk": 45,
+     "a4": 300,
+     "gren": 0,
+     "x": 937.5,
+     "st": 40584
+    }
+   ],
+   "truck_a4_min": 300,
+   "grenades_spent": 10,
+   "pol_stats": {
+    "d7_zone_latch": 1
+   },
+   "final": {
+    "px": 0.0,
+    "score": 0,
+    "gren": 0,
+    "php": 0,
+    "sec": [
+     0,
+     0
+    ],
+    "prog": 2147483648
+   }
+  }
+ ],
+ "wall_s_total": 35.6
+}

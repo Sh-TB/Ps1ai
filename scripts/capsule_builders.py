@@ -189,10 +189,46 @@ def build_msx():
                 {"source": "Issue #5 A/B (hp_pair_freeze) + r24/25 live "
                            "probes",
                  "evidence": "worklog r-b256b17: stride 0x14C, HP+0x8E, "
-                             "spawn+0xA0; damage-entry enemy_800A41D8"})
-    c.add_field(0x800CA2F6, 2, "P1_entity_HP (base+0x8E)", "VERIFIED",
-                {"source": "Issue #5 in-run A/B anchor framework",
-                 "evidence": "hp 56 dmg baseline vs freeze treatment"})
+                             "spawn+0xA0; damage-entry enemy_800A41D8 "
+                             "(R38 note: the HP+0x8E part of that worklog "
+                             "line is the SUPERSEDED label — see the "
+                             "CONTRADICTED event; the stride/base stand "
+                             "on independent evidence)"})
+    # R38 contradiction fix: the old role "P1_entity_HP (base+0x8E)"
+    # VERIFIED claim is retained ONLY as an address observation under a
+    # new honest role; the semantic label is recorded as a CONTRADICTED
+    # event (supersedes_role) so the guard in capsule.py rejects any
+    # silent re-promotion.
+    c.add_field(0x800CA2F6, 2, "entity_field_+0x8E (slot0 address "
+                "observation; semantics UNRESOLVED — see CONTRADICTED "
+                "event)", "OBSERVED",
+                {"source": "Issue #5 pair-freeze A/B (b256b17) + Issue #10 "
+                           "Gate B no-fire control (fab6538) + pincorr1 "
+                           "telemetry",
+                 "evidence": "A/B froze the PAIR 0x800CA2F6+0x800CA2FE "
+                             "(mediator word NOT isolated); Gate B no-fire "
+                             "decay 3/3 identical (raw JSON local-wiped; "
+                             "committed records: docs/tools_matrix_issue10"
+                             ".md caveat + combat.py note); pincorr1 "
+                             "slot0+0x8E swings 291->81 damage-correlated "
+                             "with regen-like recoveries while px-scroll "
+                             "~0 (download/mission2_section_pin/pincorr1/"
+                             "result.json); R38 reader census: 5 EXE "
+                             "read-hits, ZERO halfword stores to +0x8E "
+                             "(death_path.json + capstone decode; "
+                             "r38_function_shortlist.json); EXCLUDED from "
+                             "success oracles per R38 policy"})
+    c.add_field(0x800CA30C, 2, "armored_entity_HP (entity_base+0xA4; "
+                "truck live-verified)", "VERIFIED",
+                {"source": "Issue #5 truck campaign (d99db899..b19ad97, "
+                           "uplob6-12 + sessions 1-4)",
+                 "evidence": "truck hp_a4 300->200->100->0 under grenades "
+                             "(100 dmg/hit) with +400/+800 score events; "
+                             "kill GAMEPLAY_VERIFIED 16x across sessions; "
+                             "docs/truck_blocker_resolution.md; NOTE same "
+                             "address as the cheatcc 'Invisible P1' poke "
+                             "(cheat_leads[2]) — P1-slot +0xA4 semantics "
+                             "remain UNKNOWN"})
     c.add_field(0x800D4210, 2, "mission_unlock_counter (u16)", "OBSERVED",
                 {"source": "r20-t1 probe",
                  "evidence": "worklog r20: unlock counter, NOT stage "
@@ -212,12 +248,6 @@ def build_msx():
     c.add_field(0x800D4213, 1, "unlock_another_mission byte (300-format "
                 "code pokes it) — high byte of unlock u16", "INFERRED",
                 dict(CHEAT_SRC, note="corroborates the 0x800D4210 block"))
-    c.add_field(0x800CA30C, 2, "P1 entity base+0xA4 (cheat 'Invisible P1' "
-                "writes 0x0068 here)", "INFERRED", dict(
-                    CHEAT_SRC,
-                    note="independently consistent with the VERIFIED "
-                         "entity table at 0x800CA268 (offset inside "
-                         "stride 0x14C)"))
     c["cheat_leads"] = [
         {"source": "gamehacking.org/game/89284",
          "code": "8003273E 2400 / 80032764 00C8 / 80032766 2405",
@@ -257,24 +287,130 @@ def build_msx():
                 "wiped", "OBSERVED",
                 {"source": "scripts/r37t1_msx_cheat_anchors.py",
                  "evidence": "scratch/r37/msx_anchors/verdicts.json"})
+    # --- R38 contradiction record: the '+0x8E = entity HP' label ---
+    c.add_event(
+        "The '+0x8E = entity HP' semantic label is CONTRADICTED for world "
+        "entities and UNRESOLVED for slot 0. Contradicting evidence: (a) "
+        "parked truck +0x8E stayed 254->254 under standing fire while its "
+        "+0xA4 fell 300->0 under grenades (the historical '254->207 "
+        "grenade damage' was the truck MOVING — screen-x shrink); (b) "
+        "chopper +0x8E decayed 148->2 with NO player fire (camera advance, "
+        "Gate B no-fire control, 3/3 identical); (c) static: writer "
+        "0x80064674 adds camera-scroll deltas to +0x8C/+0x90 per entity "
+        "(+0x8E = screen-x integer half); (d) the Issue #5 freeze A/B "
+        "held the PAIR 0x800CA2F6+0x800CA2FE, so word-level causality was "
+        "never isolated, and pincorr1 slot-0 readings (291->81, "
+        "damage-correlated, regen-like recoveries, px-scroll ~0) do not "
+        "distinguish player-HP from other per-entity state. RESOLUTION "
+        "RULE: +0x8E is EXCLUDED from success oracles; armored-entity HP "
+        "evidence is +0xA4; the address observation stays under role "
+        "entity_field_+0x8E.",
+        "CONTRADICTED",
+        {"source": "Issue #5 truck campaign worklog (r-d99db899..b19ad97) "
+                   "+ Issue #10 Gate B (fab6538) + R38 pincorr1 "
+                   "re-analysis",
+         "evidence": "docs/truck_blocker_resolution.md (SUPERSEDED section) "
+                     "+ docs/tools_matrix_issue10.md caveat + "
+                     "download/mission2_section_pin/pincorr1/result.json + "
+                     "ps1play/agent/combat.py corrected-semantics block"},
+        supersedes_role="P1_entity_HP (base+0x8E)")
+    c.add_event(
+        "Truck campaign semantics (Oct 25, GAMEPLAY_VERIFIED): armored "
+        "truck HP = u16 at entity_base+0xA4 (300 fresh; grenade = 100 "
+        "dmg; death state word0 = 0xA304); truck identity = ground "
+        "contact (h=64) + state 0x9E88 + hp_a4 in [100,600]; truck seen "
+        "in slot 14 (Oct 24 phase) and slot 33 (Oct 25 phase) — scans "
+        "must cover >=36 slots", "VERIFIED",
+        {"source": "scripts uplob6-12 + truck_resolution_session*.json "
+                   "+ ps1play/agent/combat.py truck_kill_segments",
+         "evidence": "data/games/SLUS-01212/truck_evidence/ "
+                     "+ docs/truck_blocker_resolution.md (8/8+5+3 kills)"})
+    c.add_event(
+        "D7 release condition: the section VM's pending-entity queue "
+        "CLEARING releases the pin — walker state 0xB -> 0xC, flags 0x1 "
+        "-> 0x8, progress word leaves 0xFFFFFFFF (PROVEN 3/3 + policy "
+        "banner 3/3 from the Oct-25 pin_ckpt phase, MISSION 1 banner "
+        "6/6 total); NOT yet reproduced from a post-rollback rebuilt "
+        "checkpoint (R35's 4 custom policies died at the pin with zero "
+        "kills — checkpoint-phase variance, worklog 2026-10-23 note); "
+        "release REQUIRES the section entities dead (chopper hop-lob "
+        "|dx| 7-29; frozen 0x4054 soldiers = 2 AIMED bullets from px "
+        "~992 side; truck via grenade lob |dx| 53-135)", "VERIFIED",
+        {"source": "scripts/release_test.py rel1-3 + policy_chain_trial.py "
+                   "(session 4) vs r35a_attack*.py (R35)",
+         "evidence": "truck_evidence/session3/ + session4/ PNGs+JSONs; "
+                     "worklog 2026-10-25 sessions 3-4; R35 report "
+                     "issue6_r35_report.md"})
+    c.add_event(
+        "R38 TRUCK KILLED BY THE SHIPPED POLICY (matched live trial from "
+        "the rebuilt r38_ckpt, deterministic x2): hp_a4 240 at engage -> "
+        "-10 steps under sustained standing fire -> 150, one grenade "
+        "-100 (counter 8->7) -> 50 -> wreck residual 30 -> 10 -> row "
+        "gone by c95; wreck state 0xA44C at slot 9; the pure-RIGHT "
+        "control arm held hp_a4 = 300 FROZEN for 45 chunks (no "
+        "self-decay — the damage is input-caused). Score 0 -> 4600 "
+        "(25+ kill events) with 0 combat deaths vs control score 0. "
+        "The Oct-23 'forward fire does not kill armor (254->254)' "
+        "reading is hereby corrected: that field was +0x8E screen-x; "
+        "the REAL hp_a4 DOES chip under sustained fire", "VERIFIED",
+        {"source": "scripts/r38t1_reach.py + r38t2_trials.py "
+                   "(trialA1/A2 vs trialB_control)",
+         "evidence": "truck_evidence/r38/r38_trial_report.json + "
+                     "scratch/r38/trials.jsonl; boot ledger 2/5 "
+                     "disclosed"})
+    c.add_event(
+        "R38 D7 PIN STILL HOLDS FROM THE REBUILT PHASE — blocker "
+        "ISOLATED to the chopper: at every pin observation the census "
+        "keeps slot 4 = chopper (st 0xAA94/0xABDC cycle, hp_a4 300, h "
+        "207-210) ALIVE while the truck is a wreck (0xA44C) and the "
+        "soldier wave is dead; the walker cycles (0xA,0x43) <-> (0,0) "
+        "and no 0xC appears. The new aa_kill rule (J1 hop + UP-lob) "
+        "CONNECTED once live per run (hp_a4 300 -> 200, the -100 "
+        "grenade signature, deterministic x2) but the kill needs 3 "
+        "connects and the connect rate is ~1/10 throws (chopper "
+        "patrols dx -9..-51 vs the proven 7-29 band). A |dx|<=40 "
+        "pre-throw gate was tried and FALSIFIED (0/6 connects, earlier "
+        "one-shot bomb death php 291->0 because the first build had "
+        "dropped the rain-hop); ungated + rain-hop restored = stable. "
+        "Runs end at the death->restart wall; F6 respawn refills "
+        "grenades (8->10 observed). Cheats stayed OUT of all success "
+        "claims", "OBSERVED",
+        {"source": "scripts/r38t3_aa_trial.py (boots 3-5, ledger "
+                   "amendments 3->4->5 disclosed pre-run; one aborted "
+                   "launch corrected in the ledger)",
+         "evidence": "truck_evidence/r38/r38_aa_trial_report.json + "
+                     "scratch/r38/aa_trials.jsonl + png/trialA1_pin_0a_43.png"})
     if os.path.exists(RECOMP_TSV):
         c.add_artifact("msxrecomp_functions", RECOMP_TSV)
     if os.path.exists(RECOMP_EDGES):
         c.add_artifact("msxrecomp_edges", RECOMP_EDGES)
     c["unknowns"] = [
-        "D7 pin release condition (state machine owner unknown)",
+        "slot-0 +0x8E semantics (player-HP-like vs other per-entity "
+        "state) UNRESOLVED — pair-freeze A/B did not isolate the mediator "
+        "word; excluded from oracles",
+        "chopper kill rate: 1 connect/10 throws live; the positioning "
+        "sub-rule that walks the player INTO the 7-29 band is the R39 "
+        "lever (the pre-throw gate was falsified)",
+        "the +0xA4 damage-delivery write site (EXE-side) not located",
         "score/prisoners/unlock cheat addresses not validated in-game "
-        "(ladder BLOCKED this round)",
+        "(menu ladder still not re-walked post-rollback)",
         "lives counter data address (both DBs give code patches only)",
         "ENEMY.BIN overlay not covered by external recomp analysis",
         "boss HP outside 0x14C table or phase-gated (Issue #5 BLOCKED)"]
     c["next_experiment"] = {
-        "hypothesis": "menu-ladder re-walk with DOWN-highlight steps "
-                      "reaches Mission 1 and enables the cheat-anchor "
-                      "validation windows (H1/H4)",
-        "method": "single boot, state-byte-driven ladder with cursor-"
-                  "struct polling (0x957D8-0x957F8), then W1/W2 windows",
-        "budget": "1-2 boots, ~8k frames"}
+        "hypothesis": "R39: a positioning sub-rule (walk/hold to keep "
+                      "the tracked chopper within the 7-29 band at "
+                      "throw time, then the proven J1 hop+UP-lob) "
+                      "raises the connect rate enough to land 3 "
+                      "connects inside one mission window -> the "
+                      "pending-entity queue clears -> the pin releases "
+                      "(0xB->0xC) -> the MISSION 1 banner through the "
+                      "shipped policy from a REBUILT checkpoint",
+        "method": "boot 1 reach rebuild (r38t1 recipe); boot 2: "
+                  "matched trial AA-v3 (positioning sub-rule) vs the "
+                  "recorded r38 aa trials as baseline; oracle = chopper "
+                  "hp_a4 300->0 + walker 0xC + banner PNG (never +0x8E)",
+        "budget": "2 boots, ~20k frames"}
     return c
 
 

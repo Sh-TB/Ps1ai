@@ -246,6 +246,46 @@ WALL_SOLDIER_ST = 0xE17C     # wall mortarman (the faller thrower)
 # the mechanism behind session-3 F9's "Y-bursts did not kill".
 CORPSE_ST = (0x4BE4, 0x5CC8)
 SOLDIER_FAMILY_ST = (0x4054, 0x41FC)
+
+# ---- R38 anti-air (the D7 release blocker) --------------------------
+# R38 trial evidence (r38_ckpt, trialA1/A2 deterministic): the truck
+# was KILLED by the shipped policy (hp_a4 240 -> -10 fire chips ->
+# 150, grenade -100 -> 50, wreck 0xA44C; control arm held a4=300
+# frozen) yet the pin NEVER released - the pending-entity queue kept
+# slot 4 = the CHOPPER (st 0xAA94/0xABDC cycle, hp_a4 300, h 207-210)
+# alive at every pin observation. clamp_clear's UP-bullet alternation
+# cannot connect at h~210 (session-2 negative) and armor_hold
+# correctly refuses airborne rows (h != GROUND_HEIGHT). The proven
+# kill is the session-3 hop + UP-lob AT APEX (chopper_kill.py arm J1,
+# GAMEPLAY_VERIFIED 3/3 connects to dead, |dx| 7-29): B x3 -> neutral
+# x8 -> UP+A+aim x8, per throw. Plugin-level mode 'aa_kill', soldiers
+# keep priority (the queue discipline), fallers never trigger it,
+# and a no-progress streak bails to clamp_clear (bounded recovery).
+CHOPPER_ST = (0xAA94, 0xABDC)
+AA_CYCLE = 76                # throw cycle: 3+8+8 throw + 57f cooldown
+AA_MAX_MISS = 6              # no-progress THROWN cycles before bail
+AA_BAIL_COOLDOWN = 600       # frames clamp_clear resumes after bail
+# R38 live falsification note: a |dx|<=40 throw gate was tried and
+# REVERTED - the ungated J1 pattern connected (1/10 throws, chopper
+# 300->200 live) while the gated run went 0/6 and died earlier
+# (aa_trials.jsonl, both deterministic). The proven band 7-29 is a
+# POST-HOC statistic of successful throws, not a pre-throw gate the
+# agent can rely on while the chopper patrols dx -9..-51; geometry
+# gating is recorded as the R39 lever (positioning sub-rule), not a
+# throw gate.
+
+
+def find_chopper(enemies):
+    """Return the live chopper entry from a scan_entities list, or
+    None. Identity (chopper_kill.py F8 + R38 trial census): state word0
+    in the 0xAA94/0xABDC cycle, AIRBORNE (h > GROUND_HEIGHT) and
+    +0xA4 HP > 0. Fallers (0xB4E4, hp_a4 30) and corpses never match;
+    an hp_a4 == 0 wreck never matches."""
+    for e in enemies or []:
+        if e.get("st") in CHOPPER_ST and e.get("h", 0) > GROUND_HEIGHT \
+                and e.get("hp_a4", 0) > 0:
+            return e
+    return None
 # Mission-end sequence: the walker leaves the pin family and lands
 # in state 0xC while the player sits at px 26.4 — the "MISSION 1 /
 # CLEAR TIME / PRESS START" banner (chain_a_full x3/3, PNG evidence;
@@ -552,6 +592,13 @@ class CombatPolicy:
         self.armor_no_progress = False
         self._armor_t = 0              # frames since armor campaign start
         self.no_progress = False       # hp unchanged across checks
+        # R38 anti-air campaign state
+        self._aa_t = 0                 # frames inside the throw cycle
+        self._aa_threw = False         # a grenade left the hand this cycle
+        self.aa_slot = None            # campaign slot (follow-through)
+        self.aa_last_a4 = None         # hp_a4 at the last THROWN cycle end
+        self.aa_miss = 0               # consecutive no-progress cycles
+        self.aa_bail_until = -1        # fc until which aa is suspended
         self.prev_h = {}               # slot -> height at last sighting
         # D7 instrument pin (scan_section correlation, Issue #9)
         self.section_pinned = False    # instrument pin actively believed
@@ -753,8 +800,14 @@ class CombatPolicy:
         """Return segments [{'frames','btns'}] covering `chunk` frames.
 
         px: player world px. enemies: scan_entities() output.
-        grenades: current grenade count. hp: current player HP (enables
-        the damage-triggered dodge reflex)."""
+        grenades: current grenade count. hp: current player reading
+        (slot0+0x8E) feeding the damage-triggered dodge reflex.
+        R38 PROVENANCE CAVEAT: the slot-0 +0x8E semantics are UNRESOLVED
+        (pair-freeze A/B never isolated the mediator word; see the MSX
+        capsule CONTRADICTED event). This argument is a damage
+        INDICATOR for a defensive hop only — it is never a success
+        oracle, never termination/reward evidence, and hp_a4 is the
+        only HP word used for engagement decisions."""
         segs = []
         prev = None
 
@@ -993,7 +1046,35 @@ class CombatPolicy:
             # session-4: the D7 zone latch keeps the clear through the
             # pin cycle (advance re-enters the clamp and re-arms the
             # pending queue — the trial's kill/walk/repin loop)
-            mode = "clamp_clear"
+            # R38: a LIVE CHOPPER in the pin window is the last
+            # pending-queue entity (trialA1/A2: truck dead, chopper
+            # hp_a4 300 at every pin observation) — the proven hop+lob
+            # takes priority over the UP-bullet alternation, but
+            # ONLY after the soldier family (queue discipline) and
+            # only when the bail cooldown is not active.
+            ch = find_chopper(enemies)
+            if self.aa_slot is not None and ch is None:
+                # the campaign's target died/vanished between chunks:
+                # resolve cleanly (quiet frame favors the release)
+                self.stats["aa_resolved"] = \
+                    self.stats.get("aa_resolved", 0) + 1
+                self.aa_slot = None
+                self._aa_t = 0
+                self.aa_last_a4 = None
+                self.aa_miss = 0
+            fam_now = [e for e in (enemies or [])
+                       if e.get("st") in SOLDIER_FAMILY_ST]
+            if ch is not None and not fam_now and \
+                    self.fc >= self.aa_bail_until:
+                mode = "aa_kill"
+                if self.aa_slot != ch.get("slot"):
+                    self.aa_slot = ch.get("slot")
+                    self.aa_last_a4 = None
+                    self.aa_miss = 0
+                    self._aa_t = 0
+                    self._aa_threw = False
+            else:
+                mode = "clamp_clear"
         else:
             mode = "advance"
         self.mode = mode
@@ -1076,6 +1157,66 @@ class CombatPolicy:
                     btns.add("B")
                 elif self._hop():
                     btns.add("B")
+            elif mode == "aa_kill":
+                # R38: the session-3 J1 recipe, verbatim frame pattern
+                # (chopper_kill.py arm J1, GAMEPLAY_VERIFIED): B x3
+                # (hop) -> neutral x8 (rise to apex) -> UP+A+aim x8
+                # (the lob) -> cooldown to AA_CYCLE. Connect evidence
+                # = the chopper's hp_a4 drop at cycle end (-100);
+                # AA_MAX_MISS no-progress cycles bail to clamp_clear
+                # for AA_BAIL_COOLDOWN frames (bounded recovery).
+                ch = find_chopper(enemies)
+                if ch is None:
+                    # killed or gone: campaign resolved cleanly
+                    self.stats["aa_resolved"] = \
+                        self.stats.get("aa_resolved", 0) + 1
+                    self.aa_slot = None
+                    self._aa_t = 0
+                    btns = set()      # quiet — the queue may release
+                else:
+                    aim = "LEFT" if ch["dx_px"] < 0 else "RIGHT"
+                    t = self._aa_t
+                    if t < 3:
+                        btns = {"B"}
+                    elif t < 11:
+                        btns = set()
+                    elif t < 19:
+                        if grenades > 0:
+                            btns = {"UP", "A", aim}
+                            self._aa_threw = True
+                        else:
+                            btns = {"UP", aim}
+                    else:
+                        btns = set()
+                        # rain-hop between throws: the pin window has
+                        # FALLER BOMBS overhead and a direct hit is a
+                        # one-shot death through full HP (R38 gated
+                        # run died php 291->0 at c161 while waiting
+                        # out a gated cycle - the aa branch had
+                        # dropped clamp_clear's hop protection)
+                        if self.fc % 90 < JUMP_HOLD:
+                            btns.add("B")
+                    self._aa_t += 1
+                    if self._aa_t >= AA_CYCLE:
+                        self._aa_t = 0
+                        a4 = ch.get("hp_a4", 0)
+                        if self._aa_threw:
+                            if self.aa_last_a4 is not None and \
+                                    a4 < self.aa_last_a4:
+                                self.stats["aa_connect"] = \
+                                    self.stats.get("aa_connect", 0) + 1
+                                self.aa_miss = 0
+                            else:
+                                self.aa_miss += 1
+                                self.stats["aa_miss"] = \
+                                    self.stats.get("aa_miss", 0) + 1
+                                if self.aa_miss >= AA_MAX_MISS:
+                                    self.aa_bail_until = \
+                                        self.fc + AA_BAIL_COOLDOWN
+                                    self.stats["aa_bail"] = \
+                                        self.stats.get("aa_bail", 0) + 1
+                            self.aa_last_a4 = a4
+                        self._aa_threw = False
             elif mode == "clamp_clear":
                 # DEFENSIVE stage-end clear: hold the line, fire INTO
                 # the pending section entities (they ARE the release

@@ -10,7 +10,12 @@ Schema (JSON-serializable dict):
                   notes?}]
   functions     [{va, name?, role, status, provenance, notes?}]
   cheat_leads   [{source, code, va, meaning, validation}]
-  events        [{what, frame?, status, provenance}]
+  events        [{what, frame?, status, provenance,
+                  supersedes_role?, resolved_by?, id?}]
+                  (a CONTRADICTED event may name the semantic claim it
+                  kills via supersedes_role; while unresolved, no
+                  memory_field may retain that role as VERIFIED unless
+                  resolved_by points at a VERIFIED event)
   unknowns      [str]
   next_experiment  {hypothesis, method, budget}
   artifacts     [{id, path, sha256, bytes}]   (references only, no payloads)
@@ -108,6 +113,7 @@ class Capsule(dict):
                     raise CapsuleError(
                         f"{sec}[{i}] status {st} requires provenance with "
                         f"non-empty {list(_PROV_KEYS)}")
+        self._check_contradiction_guard()
         for i, a in enumerate(self.get("artifacts", [])):
             if not a.get("sha256") or not a.get("path"):
                 raise CapsuleError(f"artifacts[{i}] needs path+sha256 "
@@ -118,6 +124,82 @@ class Capsule(dict):
                 f"capsule {size} B > hard limit {CAPSULE_MAX_BYTES} B — "
                 "move bulk data to the cache and reference it")
         return size
+
+    # ---------- contradiction guard (R38) ----------
+    def _check_contradiction_guard(self):
+        """A CONTRADICTED event may name the semantic claim it kills via
+        `supersedes_role`. While that contradiction stands, no
+        memory_field with the SAME role may be retained as VERIFIED —
+        re-promotion requires an explicit `resolved_by` reference to a
+        VERIFIED event (which itself needs full provenance). Silent
+        retention is a loud error, never a warning."""
+        events = self.get("events", [])
+        for i, e in enumerate(events):
+            if e.get("status") != "CONTRADICTED":
+                continue
+            role = e.get("supersedes_role")
+            if not role:
+                continue
+            if self._contradiction_resolved(e, events):
+                continue
+            for f in self.get("memory_fields", []):
+                if f.get("role") == role and \
+                        f.get("game_status") == "VERIFIED":
+                    raise CapsuleError(
+                        f"contradiction guard: role {role!r} is "
+                        "CONTRADICTED by events[" + str(i) + "] but a "
+                        "memory_field still retains it as VERIFIED "
+                        "without resolved_by evidence")
+
+    @staticmethod
+    def _contradiction_resolved(event, events):
+        ref = event.get("resolved_by")
+        if ref is None:
+            return False
+        for j, other in enumerate(events):
+            ident = other.get("id", j)
+            if ident == ref and other.get("status") == "VERIFIED":
+                return True
+        return False
+
+    def contradicted_roles(self):
+        """Roles currently under an unresolved CONTRADICTED event."""
+        events = self.get("events", [])
+        out = set()
+        for i, e in enumerate(events):
+            if e.get("status") == "CONTRADICTED" and \
+                    e.get("supersedes_role") and \
+                    not self._contradiction_resolved(e, events):
+                out.add(e["supersedes_role"])
+        return out
+
+    def artifact_fs_path(self, artifact, root=None):
+        """Resolve an artifact reference to a filesystem path. Shipped
+        capsules carry REPO-RELATIVE paths (portable across machines);
+        absolute legacy paths still resolve unchanged."""
+        p = artifact["path"] if isinstance(artifact, dict) else artifact
+        if os.path.isabs(p):
+            return p
+        base = root or os.path.dirname(os.path.dirname(
+            os.path.dirname(os.path.abspath(__file__))))
+        return os.path.join(base, p)
+
+    def verify_artifacts(self, root=None):
+        """Recompute sha256 of every referenced artifact. Raises on any
+        mismatch/absence (loud provenance failure)."""
+        import hashlib as _h
+        for a in self.get("artifacts", []):
+            fp = self.artifact_fs_path(a, root)
+            if not os.path.exists(fp):
+                raise CapsuleError(f"artifact {a.get('id')} missing: {fp}")
+            h = _h.sha256()
+            with open(fp, "rb") as fh:
+                for chunk in iter(lambda: fh.read(1 << 20), b""):
+                    h.update(chunk)
+            if h.hexdigest() != a["sha256"]:
+                raise CapsuleError(
+                    f"artifact {a.get('id')} sha256 mismatch: {fp}")
+        return len(self.get("artifacts", []))
 
     def size_bytes(self):
         return len(self.to_json().encode())
@@ -140,16 +222,32 @@ class Capsule(dict):
                                   "status": status, "provenance": provenance,
                                   "notes": notes})
 
-    def add_event(self, what, status, provenance, frame=None):
-        self["events"].append({"what": what, "status": status,
-                               "provenance": provenance, "frame": frame})
+    def add_event(self, what, status, provenance, frame=None,
+                  supersedes_role=None, resolved_by=None, eid=None):
+        e = {"what": what, "status": status,
+             "provenance": provenance, "frame": frame}
+        if supersedes_role is not None:
+            e["supersedes_role"] = supersedes_role
+        if resolved_by is not None:
+            e["resolved_by"] = resolved_by
+        if eid is not None:
+            e["id"] = eid
+        self["events"].append(e)
 
-    def add_artifact(self, aid, path):
+    def add_artifact(self, aid, path, root=None):
+        """Record an artifact reference. Paths under `root` (default: the
+        repo root) are stored REPO-RELATIVE so capsules stay portable
+        across machines; the sha256 pins the content either way."""
+        base = root or os.path.dirname(os.path.dirname(
+            os.path.dirname(os.path.abspath(__file__))))
+        ap = os.path.abspath(path)
+        if ap.startswith(base + os.sep):
+            ap = os.path.relpath(ap, base)
         h = hashlib.sha256()
         with open(path, "rb") as f:
             for chunk in iter(lambda: f.read(1 << 20), b""):
                 h.update(chunk)
-        self["artifacts"].append({"id": aid, "path": path,
+        self["artifacts"].append({"id": aid, "path": ap,
                                   "sha256": h.hexdigest(),
                                   "bytes": os.path.getsize(path)})
 
@@ -157,6 +255,12 @@ class Capsule(dict):
     def fields_by_role(self, role, min_status=None):
         out = [f for f in self["memory_fields"] if f["role"] == role]
         if min_status:
+            if role in self.contradicted_roles():
+                # ground-truth request on a role under an unresolved
+                # contradiction: loud failure even before validate()
+                raise CapsuleError(
+                    f"role {role!r} is CONTRADICTED and cannot supply "
+                    "ground truth (see the supersedes_role event)")
             out = [f for f in out
                    if f["game_status"] in OBSERVABLE_STATUSES]
             if not out:

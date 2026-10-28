@@ -1,0 +1,83 @@
+{
+ "schema": "ps1play.r38-aa-trial/1",
+ "generated": "2026-10-28T19:30:01Z",
+ "commit_head": "8ac9a64584096a14593cf612027a3ab9abc952e3",
+ "checkpoint": "r38_ckpt",
+ "policy_change": "aa_kill mode (J1 hop+UP-lob recipe) in ps1play/agent/combat.py",
+ "baseline": [
+  {
+   "tag": "trialA1",
+   "outcome": "banner_expired_restart",
+   "end_chunk": 268,
+   "score_final": 4600,
+   "deaths": 0
+  },
+  {
+   "tag": "trialA2",
+   "outcome": "banner_expired_restart",
+   "end_chunk": 268,
+   "score_final": 4600,
+   "deaths": 0
+  }
+ ],
+ "treatment": [
+  {
+   "tag": "trialAA1",
+   "outcome": "banner_expired_restart",
+   "end_chunk": 227,
+   "deaths": 0,
+   "score_final": 4100,
+   "truck_a4_min": 10,
+   "pol_stats": {
+    "engage": 87,
+    "clamp_clear": 31,
+    "advance": 12,
+    "grenade": 46,
+    "jump": 4,
+    "front_engage": 1305,
+    "dodge": 57,
+    "budget_walkthrough": 11,
+    "proj_dodge": 96,
+    "proj_unverified": 456,
+    "advance_silent": 2,
+    "armor_hold": 37,
+    "section_pin": 7,
+    "section_pin_release": 6,
+    "aa_kill": 56,
+    "d7_zone_latch": 1,
+    "aa_miss": 10,
+    "aa_bail": 1,
+    "aa_connect": 1
+   }
+  },
+  {
+   "tag": "trialAA2",
+   "outcome": "banner_expired_restart",
+   "end_chunk": 227,
+   "deaths": 0,
+   "score_final": 4100,
+   "truck_a4_min": 10,
+   "pol_stats": {
+    "engage": 87,
+    "clamp_clear": 31,
+    "advance": 12,
+    "grenade": 46,
+    "jump": 4,
+    "front_engage": 1305,
+    "dodge": 57,
+    "budget_walkthrough": 11,
+    "proj_dodge": 96,
+    "proj_unverified": 456,
+    "advance_silent": 2,
+    "armor_hold": 37,
+    "section_pin": 7,
+    "section_pin_release": 6,
+    "aa_kill": 56,
+    "d7_zone_latch": 1,
+    "aa_miss": 10,
+    "aa_bail": 1,
+    "aa_connect": 1
+   }
+  }
+ ]
+}

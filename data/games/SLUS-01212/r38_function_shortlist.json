@@ -1,0 +1,138 @@
+{
+  "schema": "ps1play.r38-shortlist/1",
+  "generated": "2026-10-29",
+  "commit": "8ac9a64+R38",
+  "question": "D7 pin release + truck damage path: the smallest set of functions that the R38 live experiment must discriminate",
+  "inputs": {
+    "exe": "work/msx_recomp/SLUS_012.12.full (sha 1508b532 canonical per death_path.json)",
+    "external_tsv": "data/knowledge/msx/external/msxrecomp_functions.tsv (2,930 EXE fns)",
+    "external_edges": "data/knowledge/msx/external/msxrecomp_edges.json (7,720 edges)",
+    "overlay_ghidra": "data/games/SLUS-01212/ghidra/ghidra_overlay_functions.json (468 fns)",
+    "m2c": "data/games/SLUS-01212/m2c/*.m2c.c",
+    "death_path": "data/games/SLUS-01212/death_path.json"
+  },
+  "new_r38_facts": [
+    "death_path.json re-analysis: 0x800CA2F6 (+0x8E) has 5 EXE read-hits and ZERO halfword stores anywhere in the EXE scan - consistent with the +0x8C u32 screen-x writer, inconsistent with an independently maintained HP counter",
+    "all five EXE readers of +0x8E disassembled (R38, capstone): pairwise ordering (func_80063794), 3-entity abs-difference arithmetic (func_8004B950), aim-flag-keyed consumption (func_80056564), copy-out serialization (func_8002ACE4), arg-passed-with-section-state (func_80051D88, AMBIGUOUS). NO damage-subtract-store pattern exists",
+    "FUN_8009de68 else-branch dead-code proof sharpened: the dispatch value is (entity->unkEB & 0x80) >> 4 which is in {0,8}, always < 9, so the arg-0x12/0x800AB094 retarget path cannot execute from this call site (matches the truck-campaign live finding that 0x8009decc was dead)",
+    "func_80056564 reads the +0xEA byte (written by FUN_8009de68's comparison) before consuming slot0 +0x8E - the two functions form an aim-flag producer/consumer pair"
+  ],
+  "candidates": [
+    {
+      "id": "S1",
+      "name": "FUN_800a41d8",
+      "va": "0x800A41D8", "size": 84, "module": "ENEMY.BIN overlay",
+      "artifacts": ["m2c/800a41d8.m2c.c", "m2c/800a41d8.asm", "ghidra_overlay_functions.json"],
+      "callers": "0 static (state-pointer dispatched)", "callees": "X_800af1b0, X_800b1a4c, X_800b13a0 (outside overlay corpus)",
+      "excerpt": "if (hub_entity->unk28 & 0x80) { b1a4c(); b13a0(); return; } if (af1b0() != 0) hub_entity->unk0 = 0x800151DC;",
+      "hypothesis": "damage-ELIGIBILITY gate: +0x28 bit 0x80 = invulnerable/no-hit state; af1b0 = hit-registration; success retargets the entity handler to the shared EXE death handler",
+      "status": "OBSERVED",
+      "smallest_experiment": "read the engaged truck slot +0x28 (u16 at slot_base+0x28) 30f before/after each grenade connect during the R38 trial; predict bit 0x80 clear on connect-eligible frames"
+    },
+    {
+      "id": "S2",
+      "name": "FUN_8009de68",
+      "va": "0x8009DE68", "size": 500, "module": "ENEMY.BIN overlay",
+      "artifacts": ["m2c/8009de68.m2c.c", "ghidra_overlay_functions.json"],
+      "callers": "0 static (state-pointer dispatched)", "callees": "X_800a964c (20B, 38 callers), X_800ab060, X_800ab094 (12B stub)",
+      "excerpt": "hub->unkEB = (slot0->unk8E < hub->unk8E) << 7; v1=(unkEB&0x80)>>4; if (v1 < 9) { ab060(0x11,0x80); return; } /* else dead: v1 in {0,8} */",
+      "hypothesis": "screen-position RELATION dispatch (aiming/formation), not a damage routine; the historical 'damage path' label came from the dead else-branch; +0xEA/+0xEB = aim-direction latch",
+      "status": "OBSERVED",
+      "smallest_experiment": "log slot0+0x8E and the engaged soldier's +0x8E at 60f; predict +0xEB bit7 flips exactly when the soldier crosses the player's +0x8E value"
+    },
+    {
+      "id": "S3",
+      "name": "FUN_800151DC",
+      "va": "0x800151DC", "size": 48, "module": "EXE",
+      "artifacts": ["msxrecomp_functions.tsv (addr_taken, 4 refs)", "msxrecomp_edges.json"],
+      "callers": "4 address-taken refs: 0x8004f3c8, 0x8005e67c, 0x8005e6bc (EXE) + overlay write of the constant at pc 0x800a4c94 (fn 0x800a4c50)", "callees": "2 (TSV)",
+      "excerpt": "entry point written into entity->unk0 by overlay damage/init paths; the shared death-transition handler candidate",
+      "hypothesis": "entities whose damage path completes are retargeted here (death/transition handler)",
+      "status": "OBSERVED",
+      "smallest_experiment": "read-only: after a verified 2-bullet soldier kill in the R38 trial, the corpse slot's word0 should read 0x800151DC-family pointers at the transition frame"
+    },
+    {
+      "id": "S4",
+      "name": "func_8004B950",
+      "va": "0x8004B950", "size": 200, "module": "EXE",
+      "artifacts": ["msxrecomp_functions.tsv", "death_path.json (lhu 0x8004b980)", "R38 capstone decode"],
+      "callers": "0 recorded", "callees": "-",
+      "excerpt": "a0=lhu 0x8e(table+0); a1=lhu 0x8e(*0x800C9A98); v1=lhu 0x8e(table+0x14C); a0=abs(a0-a1); v1=v1-a1; ...",
+      "hypothesis": "THREE-entity +0x8E distance arithmetic (slot0 vs active vs slot1) - spacing/aiming; incompatible with an HP field (HP is never differenced across entities)",
+      "status": "OBSERVED",
+      "smallest_experiment": "none needed for semantics (arithmetic is decisive); behaviour visible in R38 trial entity telemetry as position-sensitive engagement"
+    },
+    {
+      "id": "S5",
+      "name": "func_80056564",
+      "va": "0x80056564", "size": 232, "module": "EXE",
+      "artifacts": ["msxrecomp_functions.tsv (caller 0x80060E04)", "death_path.json (lhu 0x800565f8)", "R38 capstone decode"],
+      "callers": "0x80060E04", "callees": "tail-jump 0x8004d404",
+      "excerpt": "v1 = active->unkEA; if (!v1) { v1 = lhu 0x800CA2F6; j 0x8004d404 } ...",
+      "hypothesis": "consumes the S2 aim-flag (+0xEA) and slot0 +0x8E together - the producer/consumer pair that pins +0x8E as a position value",
+      "status": "OBSERVED",
+      "smallest_experiment": "same 60f window as S2: +0xEA non-zero exactly while the aim latch is set"
+    },
+    {
+      "id": "S6",
+      "name": "func_80063794",
+      "va": "0x80063794", "size": 140, "module": "EXE",
+      "artifacts": ["msxrecomp_functions.tsv", "death_path.json (lh 0x800637e8)", "R38 capstone decode"],
+      "callers": "0 recorded", "callees": "tail-jump 0x80058aa8",
+      "excerpt": "v1 = lh 0x8e($s1); v0 = lh 0x8e($s0); return (v1 < v0);  /* pairwise ordering, guarded by s2/s3 bounds */",
+      "hypothesis": "entity ORDERING by +0x8E (target prioritization / sort)",
+      "status": "OBSERVED",
+      "smallest_experiment": "none needed (comparison semantics self-evident)"
+    },
+    {
+      "id": "S7",
+      "name": "func_8002ACE4",
+      "va": "0x8002ACE4", "size": 580, "module": "EXE",
+      "artifacts": ["msxrecomp_functions.tsv (caller 0x8002ECF8)", "death_path.json (lhu 0x8002ae44)", "R38 capstone decode"],
+      "callers": "0x8002ECF8", "callees": "0x80014e4c",
+      "excerpt": "if (s0->unkD1) { v0=lhu 0x8e($s0); sh v0,($s1); } if (s0->unkD2) { v0=lhu 0x92($s0); sh v0,2($s1); }",
+      "hypothesis": "copy-out serializer of the (+0x8E, +0x92) position pair, gated by per-entity enable bytes +0xD1/+0xD2",
+      "status": "OBSERVED",
+      "smallest_experiment": "none needed (copy semantics self-evident)"
+    },
+    {
+      "id": "S8",
+      "name": "func_80051D88",
+      "va": "0x80051D88", "size": 860, "module": "EXE",
+      "artifacts": ["msxrecomp_functions.tsv (10 callers)", "death_path.json (lh 0x80051ddc)", "R38 capstone decode"],
+      "callers": "0x80037B94, 0x8005427C, 0x8005BEDC, 0x8005E0F8, 0x80062CB4, 0x800633E0, 0x800648F0, 0x80064ACC, 0x80069BA8, 0x8006A09C", "callees": "0x8004938c, 0x80052958",
+      "excerpt": "a3 = lh 0x856($s0)  /* = +0x8E read */; v0 = lh 0x85a($s0); jal 0x8004938c  /* arg pass-through */",
+      "hypothesis": "UNKNOWN use: +0x8E passed as an argument alongside the section flags/progress pair (s0+0x856 == 0x800EB5D0 flags, s0+0x85A == 0x800EB5D4 progress)",
+      "status": "UNKNOWN",
+      "smallest_experiment": "static: disassemble 0x8004938c's a3 consumption (cheap, offline); classify before any runtime claim"
+    },
+    {
+      "id": "S9",
+      "name": "FUN_80064674",
+      "va": "0x80064674", "size": null, "module": "EXE",
+      "artifacts": ["worklog r-d99db899 (campaign disasm, committed 2026-10-25)"],
+      "callers": "not re-verified this round", "callees": "-",
+      "excerpt": "lw 0x8c(a0)/addu/sw per entity = camera-scroll deltas -> +0x8C/+0x90 are screen x/y",
+      "hypothesis": "THE anchor of the corrected +0x8E semantics: per-entity screen-coordinate maintenance",
+      "status": "OBSERVED",
+      "smallest_experiment": "covered: Gate B no-fire decay signature (3/3, committed record) already matches"
+    },
+    {
+      "id": "S10",
+      "name": "section-VM trio: FUN_80021128 / FUN_800230e0 / ticker 0x80022500",
+      "va": "0x80021128 | 0x800230E0 | 0x80022500", "size": null, "module": "EXE",
+      "artifacts": ["evidence/issue5_session3_static/ (committed disassemblies)", "worklog 2026-10-25 session 2-3"],
+      "callers": "computed jumps only (0 static callers; queue walker 0x80020444 jal's into handler bodies 0x800216bc/0x80021830)", "callees": "-",
+      "excerpt": "requests != 8 set flags |= 0x42 (ori at 0x800212a8/0x800215a0/0x80021700/0x800218cc); advance store 0x80023308 needs signed PROGRESS(0x800EB5D4) < a0 (live = -1, passes)",
+      "hypothesis": "the D7 pin lives in the computed-jump dispatch chain: the pin releases when the section pending-entity queue clears (session-3 PROVEN 3/3 from the Oct-25 phase)",
+      "status": "OBSERVED",
+      "smallest_experiment": "R38 live trial: sec_state/flags telemetry per chunk while corridor entities die - predict 0xB -> 0xC (or the (0,8) reset -> (0xC,9) banner path) exactly when the last section entity dies"
+    }
+  ],
+  "excluded": [
+    {"name": "FUN_800A87F8 (in-overlay caller hub, 8 callers)", "reason": "already in the R37 capsule as OBSERVED; no new decode this round"},
+    {"name": "FUN_800a4588 (entity field initializer)", "reason": "init write-set (+0xB6/+0x26/+0x66/+0xA8/+0x7A/+0x7E) does not touch +0x8E or +0xA4 - no discriminating power for the two open questions; kept as context"},
+    {"name": "score helpers 0x8005C430", "reason": "score oracle already VERIFIED; no new role"}
+  ],
+  "guard": "no function is claimed to be the truck's damage handler on plausibility alone: the damage-delivery write site for +0xA4 remains UNLOCATED (overlay subtract-store scan was negative; damage is applied EXE-side per the campaign scan) - locating it is the follow-up static task, and the R38 live trial is designed to produce the connect-window telemetry that narrows it"
+}

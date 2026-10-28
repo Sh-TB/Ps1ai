@@ -8,7 +8,12 @@ from the right and despawn behind the player while the ride advances.
 
 Design (evidence-first, no game hack):
   * Poll the VERIFIED entity table (base 0x800CA268, stride 0x14C,
-    HP +0x8E u16 — Issues #3/#5) every `every` frames.
+    R38 note: the u16 at +0x8E is the historical 'HP' address whose
+    semantic label was later CONTRADICTED for world entities — see the
+    MSX capsule; occupancy telemetry only treats NON-ZERO as
+    'slot occupied', which is semantics-agnostic at this level, with a
+    recorded blind spot for entities within ~1px of the camera edge)
+    every `every` frames.
   * Occupancy rule is recorded, never hard-guessed: a slot is occupied
     when its HP word is non-zero AND its fingerprint (stable head
     bytes) is non-trivial; the raw HP series for every slot is logged
@@ -35,7 +40,9 @@ RAM_MASK = 0x1FFFFF
 TABLE = TABLE_VA & RAM_MASK          # 0x0CA268
 STRIDE = 0x14C
 SLOTS = 24                            # polled window; real population
-HP_OFF = 0x8E                         # verified HP field offset
+HP_OFF = 0x8E                         # occupancy word (historical 'HP'
+                                      # address; semantics corrected —
+                                      # see MSX capsule CONTRADICTED event)
 FP_LEN = 0x10                         # fingerprint head bytes
 
 
