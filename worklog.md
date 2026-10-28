@@ -2168,3 +2168,20 @@ Stage Summary:
 - air_hockey at its honest ceiling this round; PARKED per user directive (do not get stuck). Next levers recorded in round28_addendum (PNG-calibrated vision chase, u32 cluster view, small-magnitude monotonic diff scan).
 - Library rungs after R28: doukutsu GAMEPLAY_CONFIRMED, tetrade PLAYING(99.86% landing), hello_pong WON 5-0, flappybird deep-complete, mspSX RUNNING, buzzybee GAMEPLAY_CONFIRMED, autogaz FULL_CYCLE_CAUSAL, air_hockey COMPLETE_LOOP_OBSERVED, psx-minecraft place-confirmed, zenmai PARKED.
 - Next: R29 psx-minecraft (deeper systems), R30 mspSX (multi-reveal/flags/win-lose), R31 buzzybee (sustained play) per the 10-train plan.
+
+---
+Task ID: R29
+Agent: orchestrator (main)
+Task: Round 29 train - mspSX RUNNING -> deep-complete (user priority: the two r23 games)
+
+Work Log:
+- Asset rebuild (5th-rollback recovery, zero boots): release v0.1 mspsx.bin re-downloaded from github.com/AcidGunner/MSPSX - 117,891,648 B, sha256 d35a189b...a4c5fa BYTE-IDENTICAL to the r22/r23-verified pristine; license route-2 re-applied (patched/mspsx_lic.bin, EXE untouched).
+- Source ground truth (zero boots): fetched main.c from upstream main - Cell board[24][16] (12B cells: mine/revealed/flagged/pad/i32 neighbors/hasNeighborMines/active/processed), offset(cursorX,cursorY) = cursorX*192 + cursorY*12 (CLOSES the r22/r23 layout ambiguity - the old A/B candidates were both transposed; they only agreed at the (1,1) probe point); CROSS=reveal (chord on revealed), CIRCLE=flag 0->1->0 with mine_count --/++; first-click-on-mine regenerates; loss = control_disable=1 + lost=1 + "GAME OVER." at (200,4); START = full restart.
+- Boot 1 (r29t1): script-bug stop AFTER the flood data - my assert demanded flood>=8; the valid zero-cell flood was 6 cells (REVT 0->6, vis 1.47). Disclosed in ledger; boot 2 = the pre-run-disclosed script-bug retry.
+- Boot 2 (r29t1 fixed): PLAYING_BOT ALL_PHASES_OK in 1254f/3.6s wall: decode exact (192 active/32 mines) -> navigate (2 taps, step-verified) -> flood 6 cells (PNG: numbered borders "2 1/3 1 2") -> flag at (4,0) (flagged+1, MINC 32->31) -> navigate to decoded mine (4,1) -> CROSS 40f -> PREDICTED {lost:1, ctrl_dis:1} == OBSERVED, "GAME OVER." PNG (vis 30.42 in the text crop) with full-board mine reveal -> START restart (fresh board, cursor 0,0, lost=0). 
+- VERDICT: mspSX RUNNING -> PLAYING (bot perceives RAM, plans, executes, outcome predicted exactly). Promoted to manifest accepted (#9) with full provenance (Unlicense + MPL-2.0 vendored-file note). 231->7 PNGs this round in scratch/r29/mspsx/shots.
+
+Stage Summary:
+- First of the two user-priority games complete to its honest ceiling (WIN = 160 reveals, recorded as not attempted; chord mechanic recorded as next lever).
+- Library rungs after R29: tetrade PLAYING(99.86%), hello_pong WON 5-0, mspSX PLAYING(bot), doukutsu GAMEPLAY_CONFIRMED, buzzybee GAMEPLAY_CONFIRMED, flappybird deep-complete, air_hockey COMPLETE_LOOP_OBSERVED, autogaz FULL_CYCLE_CAUSAL, psx-minecraft place-confirmed, zenmai PARKED.
+- Next: R30 buzzybee deep (sustained play, health/timer systems), then R31 psx-minecraft deeper.

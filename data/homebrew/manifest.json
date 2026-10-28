@@ -243,6 +243,20 @@
    "boot_exe": "BUZZYBEE.EXE",
    "exe_t_addr": "0x80010000",
    "status": "ACCEPTED+TESTED 2026-10-28 (r23): GAMEPLAY_CONFIRMED through the shared beetle core + OpenBIOS with a DISCLOSED 2-instruction game-side NTSC patch (SCREEN_HEIGHT 256->240 @0x80011C24, SetVideoMode 1->0 @0x80011C44; the game compiles setScreenMode into PAL-only code). Anchors from the upstream map, cross-validated live: gameState 0x80058830 (0->1 on START, 1->99 on SELECT, back on resume), score 0x8005883C climbing +1/frame during play, bee moves/vis-diff 122.4 (START scene) and 20.6 (flap). PAL ROOT CAUSE (honest): boots 1-3 rendered BLACK while the input state machine ran (gameState transitions anchored in boot 3) — the PAL display path (SetVideoMode(1) + SCREEN_HEIGHT=256) is broken on beetle+OpenBIOS for this libgs game; NTSC-forced renders perfectly. First PAL-forcing game in the program. Boot history fully logged in scratch-local boots_used.json (5 boots, every cap amendment disclosed). Unpatched-EXE intake on beetle = INPUT_RESPONSIVE-equivalent with black display (not claimed as a ladder rung)."
+  },
+  {
+   "id": "mspsx",
+   "plugin": "GenericPlugin (dedicated plugin pending)",
+   "source": "https://github.com/AcidGunner/MSPSX (branch main)",
+   "license": "Unlicense (public domain); vendored exception: src/spi.c is spicyjpeg's PSn00bSDK polling example (C) 2021 spicyjpeg MPL-2.0 (file-level copyleft, noted)",
+   "revision": "release v0.1",
+   "artifact": {
+    "file": "mspsx.bin",
+    "bytes": 117891648,
+    "sha256": "d35a189b1ed14b7f07bf4cc31423ca43d8f34e35e8c3cb40c11bc6d3d0a4c5fa",
+    "format": "MODE2/2352 disc, 1 data + 4 CDDA tracks; license sectors EMPTY in release -> local route-2 patch from the user's own retail MSX disc (patched/mspsx_lic.bin, EXE byte-identical, never committed)"
+   },
+   "status": "ACCEPTED+TESTED 2026-10-28 (r22 intake + r23 + r29): PLAYING (RAM-guided bot) through the shared beetle core + OpenBIOS with the local license-patched image. r22 intake: INPUT_RESPONSIVE 2/2 boots (START board init mine_count=32, cursor deltas RAM+VLM; CROSS probe failed on two disclosed causes: libretro X=TRIANGLE + 33f SPI poll cadence). r23 (1 boot): RUNNING - ps1play B (=PSX CROSS) held 40f > 33f poll cadence -> revealed_total 0->1 at cursor (1,1); layout ambiguity left open (x==y intersection). r29 (2 boots, 1 script-bug stop disclosed + 1 clean): PLAYING_BOT ALL_PHASES_OK - source ground truth fetched (main.c: Cell board[24][16], 12B cells, offset = cursorX*192 + cursorY*12; CROSS=reveal, CIRCLE=flag 0->1->0 with mine_count --/++; first-click-on-mine regenerates; loss -> control_disable=1 lost=1 + 'GAME OVER.' at (200,4); START restarts) and verified live in ONE pass: board decode exact (192 active, 32 mines - closes the r22/r23 layout ambiguity with the true x*192+y*12 stride), 2-tap navigation step-verified, zero-cell flood reveal 6 cells (REVT 0->6, PNG numbered borders), CIRCLE flag (flagged+1, mine_count 32->31, PNG), mine navigation + CROSS -> PREDICTED lost=1/ctrl_dis=1 == observed + 'GAME OVER.' PNG with full-board reveal, START restart -> fresh board (lost=0, cursor 0,0, board bytes changed). Boot ledger: cap 2 pre-run (boot 2 = script-bug retry only; flood>=8 assert was too strict for a valid 6-cell flood - disclosed). No WIN claim (160 reveals not attempted)."
   }
  ],
  "rejected": [
@@ -543,6 +557,24 @@
     "12f-hold u32 monotonic small-magnitude diff scan (coordinate class)"
    ],
    "ledger_note": "count-field bug found+fixed (r28t3 appended log without incrementing count; corrected with this note); boot-5 outcome refined post-PNG (interrupted, no verdict, partial pins reused as seeds)"
+  }
+ },
+ "round29_addendum": {
+  "date": "2026-10-28",
+  "headline": "Round 29: mspSX RUNNING -> PLAYING (RAM-guided bot, ALL_PHASES_OK in one clean boot). Board perception from RAM (192 active cells, 32 mines, true x*192+y*12 stride closes the r22/r23 layout ambiguity), step-verified navigation, zero-cell flood (6 cells), CIRCLE flag with mine_count 32->31, PREDICTED mine-loss exact (lost/ctrl_dis + GAME OVER PNG), START restart loop. Asset rebuilt byte-identical after the 5th rollback (release v0.1 sha d35a189b re-verified on download). mspSX promoted to accepted (#9) with full provenance.",
+  "mspsx_r29": {
+   "rung_before": "RUNNING (r23)",
+   "rung_after": "PLAYING (bot: perceive -> plan -> act -> predicted outcome)",
+   "boots": 2,
+   "phases": {
+    "A_boot_title_start": "f542 title pad-live, board init f605",
+    "B_decode": "active=192 mines=32 revealed=0 flagged=0",
+    "C_flood": "zero-cell (2,0) -> 6 cells (REVT 0->6, vis 1.47)",
+    "D_flag": "cell (4,0): flagged+1, mine_count 32->31",
+    "E_predicted_loss": "mine (4,1): predicted {lost:1,ctrl_dis:1} == observed; GAME OVER text vis 30.42",
+    "F_restart": "lost=0 ctrl_dis=0 cursor (0,0) board_changed=true mines=32"
+   },
+   "not_claimed": "WIN (160 reveals), chord mechanic (CROSS on revealed numbered cell with flags==required)"
   }
  }
 }
