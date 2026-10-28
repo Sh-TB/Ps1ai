@@ -2206,3 +2206,18 @@ Stage Summary:
 - Library rungs after R30: tetrade PLAYING (input verified alive today), hello_pong WON 5-0, mspSX PLAYING(bot), doukutsu GAMEPLAY_CONFIRMED (input class blocked), buzzybee GAMEPLAY_CONFIRMED (input class blocked), flappybird deep-complete, air_hockey COMPLETE_LOOP_OBSERVED, autogaz FULL_CYCLE_CAUSAL, psx-minecraft place-confirmed, zenmai PARKED.
 - Next levers (recorded in round30_addendum): instrumented beetle build (vendored tree builds clean ~3min), ChangeClearPAD(1)-equivalent game patch, MIPS toolchain for BuzzyBee from source, PCSX-Redux.
 - Next: R31 psx-minecraft (input-class probe first - its padbuff pattern suggests the same kernel class).
+
+---
+Task ID: R31
+Agent: orchestrator (main)
+Task: Round 31 train - psx-minecraft on the CCP(1) patched image (+ the class unlock)
+
+Work Log:
+- Source check (zero boots): PSX-Minecraft src/core/input/input.c uses InitPAD/StartPAD/ChangeClearPAD(0) = the R30-dead class. Tetrade's working (1) + its own "Avoid VSync: Timeout" comment motivated the game-side 1-instruction patch (r31t0): inputInit @VA 0x800104F0 move $a0,$zero -> addiu $a0,$zero,1 right before jal ChangeClearPAD (0x80035664, ELF-symbol located via PSN00bSDK; byte-context jal-StartPAD/nop/move/jal-CCP verified in the image; two script byte-order stumbles fixed before any boot). Image: patched/PSXMC_lic_ccp1.bin (sha 7b83b306..., LOCAL only; unpatched PSXMC_lic.bin = reference).
+- Boot 1 probe (cap 3 pre-run: 2=deep on pass, 3=script-bug): CCP(1) PATCH WORKS - world ready f930; LOOK_DOWN pitch ring 0->122880 (vis 11.44); LEFT -2.88 blocks / RIGHT reversal +2.579. Input ALIVE on the patched image.
+- Boot 2 deep: walk-off OK (pos z=7.19, feet 4.0), crafting-table selected (id 58, stack 26 @0x7cd98 -> stack_addr 0x7cda0); place at 5 pitch angles consumed NOTHING (stack held 26) - INCONCLUSIVE: the r19 geometry gates (sense_hit/hit_geometry/in-reach) were skipped and the taps likely hit out-of-reach or own-column cells; no craft-UI attempt (gated on a confirmed place). Honest negative, no claim.
+- VERDICT: no new minecraft rung (already place-confirmed r19; the patch is an input-delivery repair, not a gameplay shortcut). THE HEADLINE is the class unlock: the same patch pattern now applies to doukutsu (identical in_init source) and buzzybee (call-site RE needed for its compiled mode-switch) - the two user-priority games blocked in R30.
+
+Stage Summary:
+- 2 boots (of cap 3), both disclosed. R30's parked class now has a proven repair path.
+- Next: R32 patch rollout - doukutsu first (simple call site), then buzzybee (RE the mode-switch), then resume their deep programs (doukutsu weapon/level anchors; buzzybee health/damage/death systems).

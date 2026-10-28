@@ -606,5 +606,16 @@
     "PCSX-Redux build (r26 lever)"
    ]
   }
+ },
+ "round31_addendum": {
+  "date": "2026-10-28",
+  "headline": "Round 31: the disclosed 1-instruction ChangeClearPAD(0)->(1) game-side patch VALIDATED on PSX-Minecraft - input restored (pitch ring + movement + reversal alive) on an image byte-identical except the patched immediate. This unlocks the whole CCP(0) class lost in the R30 regression (minecraft/doukutsu/buzzybee). Place+craft-UI attempt inconclusive (no stack consumption at 5 pitch angles without the r19 geometry gates; walk-off + table selection worked).",
+  "psxmc_r31": {
+   "patch": "inputInit @VA 0x800104F0: move $a0,$zero (0x00002025) -> addiu $a0,$zero,1 (0x24040001) immediately before jal ChangeClearPAD (0x80035664, ELF-symbol located; PSN00bSDK sys.s:313); image PSXMC_lic_ccp1.bin sha256 7b83b306... (LOCAL), unpatched PSXMC_lic.bin 5262f511... remains reference; motivation = R30 matrix + Tetrade's working CCP(1) class",
+   "boot1_probe": "world ready f930; LOOK_DOWN pitch ring 0->122880 (vis 11.44); LEFT -2.88 blocks, RIGHT reversal +2.579 -> INPUT ALIVE",
+   "boot2_deep": "walk-off + table selection OK (id 58 stack 26 @0x7cd98, pos z=7.19); place at 5 pitch angles (34-58 deg) consumed NOTHING (stack 26 held) - INCONCLUSIVE without r19's sense_hit/hit_geometry in-reach gates; no craft-UI attempt (gated on a confirmed place)",
+   "not_claimed": "no new minecraft rung (already place-confirmed r19); the patch is an input-delivery repair, not a gameplay shortcut",
+   "rollout": "same patch pattern applies to doukutsu (same in_init source) and buzzybee (mode-switch call sites need call-site RE) - R32 plan"
+  }
  }
 }
