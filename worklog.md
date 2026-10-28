@@ -2030,3 +2030,40 @@ r21t6 Poy Poy).
 
 R22: MSPSX intake · BKBS note-hits · air_hockey paddle anchor · zenmai Z-machine
 text window · Poy Poy clean retire (hearts counter live) · MSX stage-loader.
+
+## 2026-10-28 — Round 23 (session 4): MSPSX RUNNING + BuzzyBee GAMEPLAY_CONFIRMED (game #10) + PAL root cause
+
+- Sandbox recovery: 3rd filesystem rollback found local at 6b97fbe while
+  origin sat at dea4ccf (r22 close-out); hard-reset to origin/main, suite
+  re-verified 565 passed + 1 xfail. All consumed artifacts re-fetched and
+  sha256 re-verified bit-identical to the r21/r22 scout hashes
+  (MSPSX d35a189b…, BuzzyBee EXE 9b0bfc08…, v1.1 image d5d7a629…, MSX disc
+  MD5 37d9e117…).
+- T1 MSPSX (1 boot, hard cap 1): ps1play B (=PSX CROSS) held 40f > 33f SPI
+  poll cadence -> revealed_total 0->1, board flip @0xCD, cursor (1,1)
+  revealed (layout B_y192_x12 confirmed live: mine 0, neighbors 3).
+  RUNNING closed; the r22 rung is done. GIF mirrored.
+- T2 BuzzyBee intake (5 boots, caps 2->3->4->5 all disclosed pre-run):
+  boots 1-3 black screen with EXE loaded + input state machine anchored
+  (boot-2 forensics caught our own ram[] PHYSICAL-indexing bug — disclosed;
+  boot 3 anchored gameState 0x80058830 by 0->1->99 set algebra);
+  static RE (capstone + upstream map): setScreenMode compiles PAL-only
+  (SCREEN_HEIGHT=256 unconditional @0x80011C24, SetVideoMode(1)
+  @0x80011C44) -> 2-instruction disclosed NTSC patch -> boot 5 renders
+  (SCREEN_H=240 live, vis-diff 122.4/20.6, score 0x8005883C +1/frame,
+  map symbols cross-validate the boot-3 anchor exactly).
+  GAMEPLAY_CONFIRMED; manifest accepted[buzzybee] with full disclosure.
+  BACKEND FINDING: PAL-forcing libgs games render black on
+  beetle+OpenBIOS while logic/input run. GIF mirrored.
+- T3 MSX stage-loader (4 boots, caps 2->3->4 disclosed): PRESS START lands
+  ~f7000 here (r19 attract timings fired early twice); boot-3 census ran on
+  TIME OVER (cutscene live-gate); boot-4 v2 gate reached the REAL pause
+  (php 120 held, timer frozen 59). PAUSE-UI hypothesis FALSIFIED: the
+  visible pause screen has no mission list; cluster still reacts to DOWN
+  (u16@0x800D4A6C 280->490 then +60/DOWN; 0x4A68 toggles 0x54/0x4C with the
+  PAUSE label). r22 step-3 banner experiment pending the real
+  mission-select screen (next: CONTINUE-after-TIME-OVER path).
+  Disc MD5 re-verified. One boot-3 counter write-back bug repaired+logged.
+- T4 BKBS honestly deferred to r24 (session budget; no half-runs).
+- Orchestrator-only manifest update (+buzzybee, round23_addendum); report
+  docs/issue6_r23_report.md; suite 565+1xfail green; no game bytes.
