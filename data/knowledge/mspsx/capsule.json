@@ -1,1 +1,194 @@
-{"artifacts":[],"cheat_leads":[],"controls":[{"button":"B (CROSS)","effect":"reveal/chord — needs hold 40f > 33f SPI poll cadence","provenance":{"evidence":"issue6_r23_report.md","source":"worklog+docs issue6_r23_report.md"},"status":"VERIFIED"},{"button":"A (CIRCLE)","effect":"flag 3-cycle","provenance":{"evidence":"source map","source":"r22.3(a) main.c :607-620"},"status":"VERIFIED"},{"button":"START","effect":"restart after end-state","provenance":{"evidence":"source map","source":"main.c :628-640"},"status":"VERIFIED"}],"events":[{"frame":null,"provenance":{"evidence":"issue6_r35_report.md","source":"worklog+docs issue6_r35_report.md"},"status":"VERIFIED","what":"FULL BOARD WIN (r35): 59-click flood plan, WinCheck auto-flags all 32 mines, YOU WIN! RAM+PNG+source"},{"frame":null,"provenance":{"evidence":"issue6_r35_report.md","source":"worklog+docs issue6_r35_report.md"},"status":"OBSERVED","what":"Win-quirk: revealed_total stays stale after START regen (GenerateBoard does not reset it)"}],"functions":[],"identity":{"exe_sha256":"d35a189b1ed14b7f07bf4cc31423ca43d8f34e35e8c3cb40c11bc6d3d0a4c5fa","fingerprint":{"license":"Unlicense (spi.c MPL-2.0 vendored)","repo":"github.com/AcidGunner/MSPSX"},"game_id":"mspsx","region":"NTSC","serial":"homebrew disc v0.1","title":"Minesweeper Plus (MSPSX)"},"memory_fields":[{"endian":"little","game_status":"VERIFIED","provenance":{"evidence":"scratch/r23 symbols + reveal trace","source":"scripts/r23t1_mspsx_boot.py + r22.3(a) source map"},"role":"cursor_y (phys off)","signed":false,"va":101584,"width":4},{"endian":"little","game_status":"VERIFIED","provenance":{"evidence":"scratch/r23 symbols + reveal trace","source":"scripts/r23t1_mspsx_boot.py + r22.3(a) source map"},"role":"cursor_x (phys off)","signed":false,"va":101588,"width":4},{"endian":"little","game_status":"VERIFIED","provenance":{"evidence":"scratch/r23 symbols + reveal trace","source":"scripts/r23t1_mspsx_boot.py + r22.3(a) source map"},"role":"revealed_total","signed":false,"va":101596,"width":4},{"endian":"little","game_status":"VERIFIED","provenance":{"evidence":"scratch/r23 symbols + reveal trace","source":"scripts/r23t1_mspsx_boot.py + r22.3(a) source map"},"role":"valid_total","signed":false,"va":101592,"width":4},{"endian":"little","game_status":"VERIFIED","provenance":{"evidence":"scratch/r23 symbols + reveal trace","source":"scripts/r23t1_mspsx_boot.py + r22.3(a) source map"},"role":"lost flag","signed":false,"va":101600,"width":4},{"endian":"little","game_status":"VERIFIED","provenance":{"evidence":"scratch/r23 symbols + reveal trace","source":"scripts/r23t1_mspsx_boot.py + r22.3(a) source map"},"role":"control_disable","signed":false,"va":101604,"width":4},{"endian":"little","game_status":"VERIFIED","provenance":{"evidence":"scratch/r23 symbols + reveal trace","source":"scripts/r23t1_mspsx_boot.py + r22.3(a) source map"},"role":"mines_left","signed":false,"va":101612,"width":4},{"endian":"little","game_status":"VERIFIED","provenance":{"evidence":"scratch/r23 symbols + reveal trace","source":"scripts/r23t1_mspsx_boot.py + r22.3(a) source map"},"role":"board base (phys off, 16B/cell)","signed":false,"va":104924,"width":4}],"meta":{"built_at":"2026-10-28T19:32:28Z"},"next_experiment":{"budget":"0 boots (offline)","hypothesis":"usable as intake-calibration benchmark (known-good sensors + known win)","method":"intake-game --game mspsx dry run"},"prior_art":[{"classification":"DIRECTLY_REUSABLE","inspected":true,"kind":"upstream repo (full source)","license":"Unlicense","name":"AcidGunner/MSPSX","url":"https://github.com/AcidGunner/MSPSX"}],"schema":"ps1play.capsule/1","unknowns":[]}
+{
+ "artifacts": [],
+ "cheat_leads": [],
+ "controls": [
+  {
+   "button": "B (CROSS)",
+   "effect": "reveal/chord — needs hold 40f > 33f SPI poll cadence",
+   "provenance": {
+    "evidence": "issue6_r23_report.md",
+    "source": "worklog+docs issue6_r23_report.md"
+   },
+   "status": "VERIFIED"
+  },
+  {
+   "button": "A (CIRCLE)",
+   "effect": "flag 3-cycle",
+   "provenance": {
+    "evidence": "source map",
+    "source": "r22.3(a) main.c :607-620"
+   },
+   "status": "VERIFIED"
+  },
+  {
+   "button": "START",
+   "effect": "restart after end-state",
+   "provenance": {
+    "evidence": "source map",
+    "source": "main.c :628-640"
+   },
+   "status": "VERIFIED"
+  }
+ ],
+ "events": [
+  {
+   "frame": null,
+   "provenance": {
+    "evidence": "issue6_r35_report.md",
+    "source": "worklog+docs issue6_r35_report.md"
+   },
+   "status": "VERIFIED",
+   "what": "FULL BOARD WIN (r35): 59-click flood plan, WinCheck auto-flags all 32 mines, YOU WIN! RAM+PNG+source"
+  },
+  {
+   "frame": null,
+   "provenance": {
+    "evidence": "issue6_r35_report.md",
+    "source": "worklog+docs issue6_r35_report.md"
+   },
+   "status": "OBSERVED",
+   "what": "Win-quirk: revealed_total stays stale after START regen (GenerateBoard does not reset it)"
+  },
+  {
+   "what": "R42-B the recorded 0-boot lever executed: intake-game --game mspsx dry run - the 10-stage offline intake pipeline ran clean (assets=local, blocked=null, elapsed 0.0s, 10 cache MISS), and the confirmation re-run returned 10/10 cache HIT = the --resume observability contract holds; the game is confirmed usable as the intake-calibration benchmark (known-good sensors + the r35 full-board win) without consuming any boot.",
+   "status": "VERIFIED",
+   "frame": null,
+   "provenance": {
+    "evidence": "scripts/ps1play_knowledge.py cmd_intake_game output (2 runs: 10 MISS then 10 HIT) + docs/issue6_r35_report.md (the known-good win baseline)",
+    "source": "R42-B offline calibration dry-run"
+   }
+  }
+ ],
+ "functions": [],
+ "identity": {
+  "exe_sha256": "d35a189b1ed14b7f07bf4cc31423ca43d8f34e35e8c3cb40c11bc6d3d0a4c5fa",
+  "fingerprint": {
+   "license": "Unlicense (spi.c MPL-2.0 vendored)",
+   "repo": "github.com/AcidGunner/MSPSX"
+  },
+  "game_id": "mspsx",
+  "region": "NTSC",
+  "serial": "homebrew disc v0.1",
+  "title": "Minesweeper Plus (MSPSX)"
+ },
+ "memory_fields": [
+  {
+   "endian": "little",
+   "game_status": "VERIFIED",
+   "provenance": {
+    "evidence": "scratch/r23 symbols + reveal trace",
+    "source": "scripts/r23t1_mspsx_boot.py + r22.3(a) source map"
+   },
+   "role": "cursor_y (phys off)",
+   "signed": false,
+   "va": 101584,
+   "width": 4
+  },
+  {
+   "endian": "little",
+   "game_status": "VERIFIED",
+   "provenance": {
+    "evidence": "scratch/r23 symbols + reveal trace",
+    "source": "scripts/r23t1_mspsx_boot.py + r22.3(a) source map"
+   },
+   "role": "cursor_x (phys off)",
+   "signed": false,
+   "va": 101588,
+   "width": 4
+  },
+  {
+   "endian": "little",
+   "game_status": "VERIFIED",
+   "provenance": {
+    "evidence": "scratch/r23 symbols + reveal trace",
+    "source": "scripts/r23t1_mspsx_boot.py + r22.3(a) source map"
+   },
+   "role": "revealed_total",
+   "signed": false,
+   "va": 101596,
+   "width": 4
+  },
+  {
+   "endian": "little",
+   "game_status": "VERIFIED",
+   "provenance": {
+    "evidence": "scratch/r23 symbols + reveal trace",
+    "source": "scripts/r23t1_mspsx_boot.py + r22.3(a) source map"
+   },
+   "role": "valid_total",
+   "signed": false,
+   "va": 101592,
+   "width": 4
+  },
+  {
+   "endian": "little",
+   "game_status": "VERIFIED",
+   "provenance": {
+    "evidence": "scratch/r23 symbols + reveal trace",
+    "source": "scripts/r23t1_mspsx_boot.py + r22.3(a) source map"
+   },
+   "role": "lost flag",
+   "signed": false,
+   "va": 101600,
+   "width": 4
+  },
+  {
+   "endian": "little",
+   "game_status": "VERIFIED",
+   "provenance": {
+    "evidence": "scratch/r23 symbols + reveal trace",
+    "source": "scripts/r23t1_mspsx_boot.py + r22.3(a) source map"
+   },
+   "role": "control_disable",
+   "signed": false,
+   "va": 101604,
+   "width": 4
+  },
+  {
+   "endian": "little",
+   "game_status": "VERIFIED",
+   "provenance": {
+    "evidence": "scratch/r23 symbols + reveal trace",
+    "source": "scripts/r23t1_mspsx_boot.py + r22.3(a) source map"
+   },
+   "role": "mines_left",
+   "signed": false,
+   "va": 101612,
+   "width": 4
+  },
+  {
+   "endian": "little",
+   "game_status": "VERIFIED",
+   "provenance": {
+    "evidence": "scratch/r23 symbols + reveal trace",
+    "source": "scripts/r23t1_mspsx_boot.py + r22.3(a) source map"
+   },
+   "role": "board base (phys off, 16B/cell)",
+   "signed": false,
+   "va": 104924,
+   "width": 4
+  }
+ ],
+ "meta": {
+  "built_at": "2026-10-28T19:32:28Z",
+  "last_updated": "R42-B",
+  "last_commit_note": "R42-B: the 0-boot intake-calibration dry run VERIFIED (10-stage pipeline clean + 10/10 cache HIT on resume); next round = the r35 win regression in 1 boot."
+ },
+ "next_experiment": {
+  "budget": "0 boots (offline)",
+  "hypothesis": "the intake-calibration benchmark role is CLOSED (verified); the next mspsx round (when the 60/40 budget allocates it) can reuse the r35 win recipe (59-click flood plan + WinCheck auto-flag) as a regression harness - e.g. re-verify the win end-to-end on the current core/build in 1 boot.",
+  "method": "regression: 1 boot, replay the r35c click plan from a fresh board, oracle REVT 0->160 monotone + the auto-flagged win screen; offline until then."
+ },
+ "prior_art": [
+  {
+   "classification": "DIRECTLY_REUSABLE",
+   "inspected": true,
+   "kind": "upstream repo (full source)",
+   "license": "Unlicense",
+   "name": "AcidGunner/MSPSX",
+   "url": "https://github.com/AcidGunner/MSPSX"
+  }
+ ],
+ "schema": "ps1play.capsule/1",
+ "unknowns": []
+}
