@@ -123,6 +123,14 @@
     "source": "r48b_committed_seek.py (offline checks + restore-only arms) + scratch/r48b/boots_used.json (cap 1)",
     "evidence": "scratch/r48b/ (metrics_r48b.json + frames_A1700.jsonl + frames_B1700.jsonl + boot_log_r48b.json)"
    }
+  },
+  {
+   "what": "R49 the caused >= 2 pass REPLICATED at CAP_F 1800 (the capsule lever verbatim): arm A (bot_policy5 verbatim @1800) 1701 / 0 hits / 7 passes / caused 1 = the 7th independent policy5 reproduction and EXACTLY the R47 A1800 control line (cross-boot determinism held); arm B (bot_policy8 verbatim @1800) 1701 / 0 HITS / 7-of-7 / caused 2 - the FULL ORACLE (score >= 1550 AND hits 0 AND caused >= 2) TRUE for the SECOND consecutive round = bot_policy8 is NOT a one-cap fluke.  The score = f - 99 prediction EXACT (1800 - 99 = 1701, both arms).  The commitment mechanism CONFIRMED as the caused bottleneck again: the decisive pickup attributes seek_dur 134 (>= the 20f window) in flower mode (the R48 signature replicated) plus one seek_dur 8 opportunistic; no margin floor needed (B took 0 hits, the R45-B revert never fired).  Pass-density table: 7 passes at 1800f (the 8th did not arrive before cap) - density stable, the planner held.  Honest note: the score axis is STRUCTURALLY TIED (score = f - 99 - both arms 1701); the caused gain is the ONLY delta, exactly as the capsule predicted.  Environment re-verified internet-first sha-verified 0 boots (9b0bfc08/042b94bb); the r47b gs1 checkpoint SURVIVED on disk (READ-ONLY restore); cap 1 disclosed pre-run, boot 1 = the core+rom load only; 9 offline policy checks passed BEFORE the boot (the R48 precedent); 10.7s wall.",
+   "status": "VERIFIED",
+   "provenance": {
+    "source": "r49b_capf1800_replication.py (boot 1) + scratch/r49b/boots_used.json (cap 1, no amendments) + offline_checks 9/9 pre-boot",
+    "evidence": "scratch/r49b/metrics_r49b.json + frames_A1800.jsonl + frames_B1800.jsonl"
+   }
   }
  ],
  "functions": [],
@@ -310,13 +318,14 @@
  "meta": {
   "built_at": "2026-10-28T19:32:27Z",
   "last_updated": "2026-10-29T10:21:40Z",
-  "last_commit_note": "R44 (40% track): score-superiority NEGATIVE (tie 1401; caused 1<2; bail shape = partial-column positionable, 0 full-column sweeps); dominance stands; next R45 = seek-timing pre-position + tiered margin (8 pre-danger / 12 in-window)."
+  "last_commit_note": "R44 (40% track): score-superiority NEGATIVE (tie 1401; caused 1<2; bail shape = partial-column positionable, 0 full-column sweeps); dominance stands; next R45 = seek-timing pre-position + tiered margin (8 pre-danger / 12 in-window).",
+  "updated": "2026-10-29T18:20:51Z"
  },
  "next_experiment": {
-  "id": "R49",
-  "budget": "0-1 boots (restore-only from the r48b-eligible r47b gs1 checkpoint while it survives)",
-  "hypothesis": "the caused >= 2 pass REPLICATES (bot_policy8 is not a one-checkpoint fluke): the same restore-only protocol at CAP_F 1800 (the R47 clause) reaches caused >= 2 AGAIN with hits 0 and score >= 1701 predicted by score = f - 99; the pass-density vs commitment table decides whether the commitment mechanism scales with wasp density (the 8th/9th wasp passes)",
-  "method": "arm A = bot_policy5 verbatim @1800 (the control line, protocol parity); arm B = bot_policy8 @1800 (the committed seek verbatim); the oracle line (score >= 1550 AND hits 0 AND caused >= 2) evaluated on B; if B takes a hit the margin floor files (the R45-B revert protocol); offline checks BEFORE any boot (the R48 precedent)",
+  "id": "R50",
+  "budget": "0-1 boots (restore-only from the r47b gs1 checkpoint while it survives)",
+  "hypothesis": "the dominance recipe SCALES to CAP_F 2000 (the third extension): arm B (bot_policy8 verbatim @2000) holds hits 0 AND caused >= 2 (the third caused-replication) with score >= 1901 predicted by score = f - 99; the REAL RISK is late-game wasp density vs the guarantee planner (the pass count grows 7 -> ~8-9; a hit at GM8 files the margin floor per the R45-B revert protocol); arm A = policy5 verbatim @2000 (the control line and the 8th reproduction check)",
+  "method": "offline checks BEFORE any boot (the R48/R49 precedent) -> boot 1 core+rom load -> restore the r47b gs1 checkpoint -> arm A2000 -> arm B2000 -> arm B2 (tier 12/12) only on a B hit -> the oracle line (score >= 1550 AND hits 0 AND caused >= 2) evaluated on B + the score = f - 99 prediction check at 2000 + the pass-density vs commitment table (the 8th/9th passes)",
   "m2_gate_note": "the score-superiority line stays within the dodge axis; no scoring-policy changes"
  },
  "prior_art": [

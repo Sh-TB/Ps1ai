@@ -1,0 +1,243 @@
+{
+ "schema": "ps1play.r49-analysis/2",
+ "input": "/home/z/my-project/ps1ai/data/games/SLUS-01212/truck_evidence/r49/r49_boot1.jsonl",
+ "generated": "2026-10-29T18:18:39Z",
+ "passes": [],
+ "events": [
+  {
+   "pass": "a",
+   "gf": 27,
+   "d": 500,
+   "sc": 7202,
+   "tap": 1,
+   "intent": "CONNECT",
+   "class": "CONNECT",
+   "holders_0x42bc": [
+    20
+   ]
+  },
+  {
+   "pass": "a",
+   "gf": 48,
+   "d": 100,
+   "sc": 7302,
+   "tap": 2,
+   "intent": "CONNECT",
+   "class": "KILL_REG",
+   "regs": [
+    {
+     "slot": 20,
+     "lag": 2,
+     "x": 1285.7
+    },
+    {
+     "slot": 22,
+     "lag": 4,
+     "x": 0.0
+    },
+    {
+     "slot": 31,
+     "lag": 2,
+     "x": 1199.7
+    },
+    {
+     "slot": 33,
+     "lag": 0,
+     "x": 1284.2
+    }
+   ]
+  },
+  {
+   "pass": "a",
+   "gf": 81,
+   "d": 100,
+   "sc": 7402,
+   "tap": 3,
+   "intent": "CONNECT",
+   "class": "KILL_REG",
+   "regs": [
+    {
+     "slot": 23,
+     "lag": 0,
+     "x": 1351.2
+    }
+   ]
+  },
+  {
+   "pass": "a",
+   "gf": 119,
+   "d": 100,
+   "sc": 7502,
+   "tap": 5,
+   "intent": "CONNECT",
+   "class": "KILL_REG",
+   "regs": [
+    {
+     "slot": 10,
+     "lag": 0,
+     "x": 1293.2
+    },
+    {
+     "slot": 22,
+     "lag": 6,
+     "x": 1348.5
+    }
+   ]
+  },
+  {
+   "pass": "b",
+   "gf": 28,
+   "d": 1000,
+   "sc": 7702,
+   "tap": 1,
+   "intent": "CONNECT",
+   "class": "CONNECT",
+   "holders_0x42bc": [
+    20
+   ]
+  },
+  {
+   "pass": "b",
+   "gf": 55,
+   "d": 100,
+   "sc": 7802,
+   "tap": 2,
+   "intent": "CONNECT",
+   "class": "KILL_REG",
+   "regs": [
+    {
+     "slot": 9,
+     "lag": 0,
+     "x": 1343.8
+    },
+    {
+     "slot": 22,
+     "lag": -2,
+     "x": 0.0
+    },
+    {
+     "slot": 29,
+     "lag": -2,
+     "x": 0.0
+    }
+   ]
+  }
+ ],
+ "unpaid_regs": [
+  {
+   "pass": "a",
+   "slot": 8,
+   "gf": 12,
+   "x": 1083.7,
+   "from_st": 60768,
+   "note": "no co-landing payment in-window"
+  },
+  {
+   "pass": "a",
+   "slot": 13,
+   "gf": 12,
+   "x": 1104.7,
+   "from_st": 60768,
+   "note": "no co-landing payment in-window"
+  },
+  {
+   "pass": "a",
+   "slot": 18,
+   "gf": 161,
+   "x": 1293.8,
+   "from_st": 26416,
+   "note": "no co-landing payment in-window"
+  },
+  {
+   "pass": "a",
+   "slot": 29,
+   "gf": 163,
+   "x": 0.0,
+   "from_st": 23752,
+   "note": "no co-landing payment in-window"
+  },
+  {
+   "pass": "b",
+   "slot": 18,
+   "gf": 51,
+   "x": 1290.7,
+   "from_st": 23308,
+   "note": "no co-landing payment in-window"
+  },
+  {
+   "pass": "b",
+   "slot": 18,
+   "gf": 70,
+   "x": 1346.8,
+   "from_st": 45944,
+   "note": "no co-landing payment in-window"
+  },
+  {
+   "pass": "b",
+   "slot": 18,
+   "gf": 93,
+   "x": 1477.8,
+   "from_st": 43356,
+   "note": "no co-landing payment in-window"
+  },
+  {
+   "pass": "b",
+   "slot": 20,
+   "gf": 51,
+   "x": 1285.7,
+   "from_st": 23308,
+   "note": "no co-landing payment in-window"
+  },
+  {
+   "pass": "b",
+   "slot": 23,
+   "gf": 9,
+   "x": 1447.9,
+   "from_st": 43356,
+   "note": "no co-landing payment in-window"
+  },
+  {
+   "pass": "b",
+   "slot": 31,
+   "gf": 38,
+   "x": 1199.7,
+   "from_st": 60768,
+   "note": "no co-landing payment in-window"
+  },
+  {
+   "pass": "b",
+   "slot": 33,
+   "gf": 24,
+   "x": 1309.6,
+   "from_st": 44668,
+   "note": "no co-landing payment in-window"
+  }
+ ],
+ "ledger": {
+  "r47_frontier_a": {
+   "aimed_taps": 161,
+   "score_start": 6702,
+   "score_end": 7502,
+   "delta": 800
+  },
+  "r47_frontier_b": {
+   "aimed_taps": 92,
+   "score_start": 6702,
+   "score_end": 7802,
+   "delta": 1100
+  }
+ },
+ "verdict": {
+  "kill_reg_uniform_100": true,
+  "kill_reg_n": 4,
+  "connect_uniform_500": false,
+  "connect_n": 2,
+  "mixed_n": 0,
+  "mixed_detail": [],
+  "unattributed_n": 0,
+  "churn_jumps_n": 0,
+  "unpaid_regs_n": 11,
+  "leading_model": "PLAYER-BULLET-VICTIM-LOCKED payments: the +100s co-land on the flight-consistent registrations of freshly-spawned soldiers in the bullet corridor; the zone/wound registrations (the spawner zone x~1277-1310 churn) pay 0 \u2014 R48's death-registration lock refined to the bullet's victim",
+  "strict_class_keyed": "NOT DECIDABLE this round: the kill group never ran as a clean group (the census thinned \u2014 the spawner-zone churn dominates the windows) and the connect group caught 2 events with 1 mixed (+1000) \u2014 the strong 'magnitude reads off the class' form is FALSIFIED in its identical-context reading (the same 0x42bc connect context paid +500 once and +1000 once); the weak form (per-class magnitudes +500 connect / +100 bullet-victim kill) stands on unconfounded n=1 + n=2"
+ }
+}

@@ -397,6 +397,22 @@
     "source": "r48_analysis_correct.py (offline, no boot; the 0x515c-entry frame match is exact in 3/4 payments, the +500 matches the only state change at its frame)",
     "evidence": "data/games/SLUS-01212/truck_evidence/r48/ r48_frame_exact_events.json"
    }
+  },
+  {
+   "what": "R49 the CLASS-KEYED tap protocol executed (the capsule lever verbatim: the R48 direct-read telemetry + taps GROUPED by target class - CONNECT taps = ONE bullet on a fresh soft target then the slot is NEVER fired at again, vs KILL taps on fresh soldiers).  NO sandbox rollback: the R47 frontiers r47_frontier_a/b SURVIVED on disk (verified pre-boot); cap 1 disclosed pre-run (the core+rom load ONLY, both passes restore-only), boot 1 clean 29s wall, ledger 1/1 spent, no amendments.  GROUP SHORTFALL recorded honestly: CONNECT group 2/4 (a-tap1 + b-tap1 both on the frontier-frozen slot20 mid-0x42bc; 6 connect taps missed - no 0x42bc entry), KILL group 0/3 (the census thinned: the spawner zone x~1277-1351 churns cycling entities - 0xaec8 spawn -> walk -> 0x515c -> 0x4be4 - and the aimed fresh soldiers ONE-HIT-registered instead of connecting: slots 22/18 died to the single bullet with the full 0x515c->0x4be4 chain).  The two no-follow-up connect targets did NOT survive to walk end (slot20 died of the wound 1-3 taps later, dated frame-exact) - but the connect payment itself landed while the target was ALIVE in 0x42bc.",
+   "status": "VERIFIED",
+   "provenance": {
+    "source": "r49t1_class_keyed.py (boot 1) + scratch/r49/boots_used.json (cap 1, no amendments)",
+    "evidence": "data/games/SLUS-01212/truck_evidence/r49/ (r49_boot1.jsonl + r49_boot1_report.json)"
+   }
+  },
+  {
+   "what": "R49 CORRECTED VERDICT (r49_analysis_correct.py v2, offline, authoritative - GLOBAL-frame per-slot matcher, the v1 target-slot-only check was blind to concurrent entity cycles):  (1) the SURVIVING-CONNECT +500 REPLICATED (a-tap1: the +500 lands with slot20 in 0x42bc at the pay frame and ZERO registrations within the flight lag window [-2,+6]; slot20 then RECOVERS to 0x5b0c and walks on - n=2 across R48/R49);  (2) the +100 kill payments replicated n=4, and ALL FOUR co-land EXACTLY (lag 0) on a 0x515c registration - BUT none of the four victims is the AIMED target: all four are CYCLING ZONE ENTITIES registered in the bullet corridor (slot33-re@1284.2, slot23@1351.2, slot10-re@1293.2, slot9@1343.8) = the payment model is REFINED to PLAYER-BULLET-VICTIM-LOCKED: only the bullet's actual victim pays; the 11 zone/wound registrations (slot22, slot18, slot20's wound death, slot33's zone death, ...) all paid 0, and the ZERO-INPUT control walks show 0 jumps again (the churn baseline);  (3) UNRESOLVED RESIDUAL n=1: the IDENTICAL connect context paid +1000 once (b-tap1) - the +500 extra co-lands 2-4 rows AFTER slot33's zone registration/corpse (outside the lag window); candidates: the 0xae7c-class kill paying +500 / connect magnitude non-determinism / a hidden second pay event.  The STRONG class-keyed form (the magnitude reads off the class deterministically) is FALSIFIED by the +500-vs-+1000 identical-context pair; the WEAK form (connect +500 / bullet-victim kill +100) stands on unconfounded n=1 + n=4.  Session ledger +1900 across 11 aimed taps (a: +800, b: +1100).",
+   "status": "VERIFIED",
+   "provenance": {
+    "source": "r49_analysis_correct.py (offline, no boot) over the r49_boot1.jsonl global-frame sequence",
+    "evidence": "data/games/SLUS-01212/truck_evidence/r49/ r49_class_keyed_table.json"
+   }
   }
  ],
  "functions": [
@@ -540,13 +556,14 @@
   "r39_reconciled": "R39: delivery-fidelity A/B, connect band [10,35] with the 13.7 floor, hover/anchor fact, the death-misreport correction of the R38 trial outcomes, in-policy atomic connects; next_experiment replaced (the blocker is the throw-opportunity share, not the delivery)",
   "last_updated": "2026-10-29T10:39:34Z",
   "last_commit_note": "R44 (60% track): stage-1 FALSIFIED (the c86/87 armor-zone death is deterministic 3/3 across R43/R44 - bit-identical worlds through the divergence; deaths=0 unreachable from the shallow anchor; r42t1's clean rebuild came from the LOST deep anchor) + harness lessons (sensor order both chunk ends, the px 65494-65535 wrap signature, sane-world clamp, wrap-junk frontier invalidated) + fallback (b): 900-chunk push from the tainted posture, 8 continue-rescued deaths disclosed, no latch (the R43 negative re-confirmed), FRONTIERS SAVED px 1275.2 + 1341.2 (the boot-7 loss repaired); next_experiment = R45 fallback (a) the 0x4054 HP-word readout from the frontiers.",
-  "r43_reconciled": "R43: the stale-stat gate lesson (world-depth condition on any stat-gated save), the dynamic restart guard requirement, the from-start village capability CONFIRMED for the current policy, the post-restart posture NEGATIVE for the end chain, next_experiment replaced (R44 = the clean-resolve chain with deaths=0 validity + frontier saves)"
+  "r43_reconciled": "R43: the stale-stat gate lesson (world-depth condition on any stat-gated save), the dynamic restart guard requirement, the from-start village capability CONFIRMED for the current policy, the post-restart posture NEGATIVE for the end chain, next_experiment replaced (R44 = the clean-resolve chain with deaths=0 validity + frontier saves)",
+  "updated": "2026-10-29T18:20:51Z"
  },
  "next_experiment": {
-  "id": "R49",
+  "id": "R50",
   "budget": "cap 1 disclosed pre-run (restore-only from the SAVED r47_frontier_a/b while they survive; the boot is the core+rom load only)",
-  "hypothesis": "the TWO PAY CLASSES are CLASS-KEYED: the +100 death-registration payment is the soldier-class kill reward (0x515c entry, already 3/3 frame-exact), while the +500 surviving-connect payment keys on a DIFFERENT target class (slot 20's 0x42bc hit-reaction) - aimed taps DEDICATED to 0x42bc-class targets that are then left alive (no follow-up kill) should reproduce +500-class payments with the target surviving to walk end, and taps dedicated to 0x4054/0x5b0c soldiers should yield +100-class only; the payment magnitude reads off the class, not off kill vs hit",
-  "method": "boot -> restore r47_frontier_a -> the direct-read telemetry VERBATIM (the R48 recording) -> taps GROUPED by target class: >= 3 dedicated 0x42bc connects (no kill follow-up) vs >= 3 soldier kills -> the frame-exact event table per group -> the class-keyed magnitude table; the burning states stay excluded AS TARGETS, RECORDED",
+  "hypothesis": "the payment model is PLAYER-BULLET-VICTIM-LOCKED with per-class magnitudes (+100 the soft-soldier kill reward, +500 the 0x42bc surviving-connect) - a CONTROLLED-CORRIDOR tap protocol (fire ONLY when the census shows the aimed target as the ONLY mortal entity in the bullet corridor, i.e. no cycling zone entity between player and target; prefer targets dx > 100 beyond the x~1277-1351 spawner cluster) yields n >= 3 clean per-class payments with ZERO co-landing ambiguity and settles the magnitude table; the movement-only control (walk 3f + 20f idle, no Y) tests whether the corridor churn alone can pay; the 0xae7c-class census (slot33's class) dates its kills to settle the +1000 residual",
+  "method": "boot -> restore r47_frontier_a -> the R48/R49 direct-read telemetry verbatim -> the corridor census gate before EVERY tap (skip the tap and re-census when the corridor is occupied) -> CONNECT group (no follow-up) AND KILL group until n >= 3 clean each or the census thins -> r49-style offline global-frame analysis -> the magnitude table",
   "m2_gate_note": "the INTERACTIVE M2 entry remains gated on a clean (deaths=0, no-restart) deep resolve posture - unchanged"
  },
  "prior_art": [
