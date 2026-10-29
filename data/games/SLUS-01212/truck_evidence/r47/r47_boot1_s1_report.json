@@ -1,0 +1,27 @@
+{
+ "schema": "ps1play.r47-singletap/1",
+ "stage": 1,
+ "generated": "2026-10-29T16:06:07Z",
+ "commit": "001095423d6841688df407656728578fd80662f5",
+ "anchor": "issue5_m1_start",
+ "run": {
+  "push": {
+   "outcome": "frontiers_saved",
+   "deaths": 6,
+   "rescues": 6,
+   "frontiers": 2,
+   "frontier_px": 1254.8
+  },
+  "final": {
+   "px": 1254.8,
+   "score": 6702,
+   "gren": 8,
+   "php": 146,
+   "sec": [
+    11,
+    1
+   ],
+   "prog": 4294967295
+  }
+ }
+}

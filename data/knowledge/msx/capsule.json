@@ -365,6 +365,22 @@
     "source": "r46_analysis_correct.py (the corrected kill table over r45+r46 jsonl)",
     "evidence": "data/games/SLUS-01212/truck_evidence/r46/corrected_kill_table.json"
    }
+  },
+  {
+   "what": "R47 the SINGLE-BULLET TAP PROTOCOL executed (the R45 two-stage FOREGROUND protocol, cap disclosed pre-run).  SANDBOX ROLLBACK DISCLOSED: the R45 frontiers (r45_frontier_a/b) were LOST to the sandbox filesystem reset - the capsule contingency applied verbatim (a rebuild boot, disclosed); issue5_m1_start (Oct 20) survived.  Stage 1 (boot 1): the tainted frontier rebuild DETERMINISTIC ACROSS ROUNDS - r47_frontier_a px 1224.9 census 13 + r47_frontier_b px 1254.8, 6 deaths/6 continue-rescues counted and disclosed, TAINTED lineage - the SAME postures as R45's rebuild (1224.9/1254.8, restore score 6702) = the 4th independent reproduction of the rebuild trajectory. Stage 2 (boot 2->3): boot 2 crashed AFTER the control tap (a harness defect: the post-tap entity scan can DROP a slot that died inside the 3f tap; the per-tap delta build hit a missing key) - REFUNDED + cap amended 2->3 DISCLOSED (the r46b precedent); two gate-blocked no-boot attempts also refunded (the R45 refund precedent).  Boot 3 clean: 12 FULL-kind taps (1 control + 11 single-bullet 3f Y) from r47_frontier_a, 28s wall.",
+   "status": "VERIFIED",
+   "provenance": {
+    "source": "r47t1_singletap_taps.py (stages 1-2) + scratch/r47/boots_used.json (3 entries, 2 refunds, same-entry outcome corrections)",
+    "evidence": "data/games/SLUS-01212/truck_evidence/r47/ (r47_boot1_s1_report.json + r47_boot3_s2_report.json + 2 jsonl)"
+   }
+  },
+  {
+   "what": "R47 CORRECTED VERDICT - PER-KILL (kill-locked) scoring: the cumulative score ledger moved +600 (6702 -> 7302) while ALL 12 per-tap window deltas read 0 - the 3f tap window ends before the bullet ARRIVES (flight ~8-15f at dx ~+50; the R45/R46 24f bursts masked this by containing the flight).  The +600 is EXACTLY 6 dated corpse transitions x +100 (uniform=True; deaths in read-windows 2/2/4/5/7/10 = slots 19,13,23,27,33,34; three deaths cluster at x ~1275 = where the bullets converge; st 0x515c respawned at the SAME x 1274.5 with h 91->90).  ZERO surviving-hit payment observed: 11 single bullets, 6 deaths, no +100 that is not a corpse; the soft soldier slot20 NEVER died AND never paid. The R45 '+100-no-death' confound (taps 3/9) is EXPLAINED: R45 recorded corpses only inside the x-window (out-of-window/out-of-scan kills invisible); the R47 full-kind tables close it.  The per-hit alternative survives only in the unfalsifiable corner (every no-death bullet missed AND every connect killed).  Harness lessons: (1) the tap window must contain the bullet FLIGHT; (2) per-tap score deltas are INVALID for delayed-pay weapons - the cumulative ledger + corpse dating is the readout; (3) the entity scan can drop a slot inside the tap (union_post direct-table re-reads, fixed in-round).",
+   "status": "VERIFIED",
+   "provenance": {
+    "source": "r47_analysis_correct.py (offline, no boot; the control-baseline + corpse-dating rules)",
+    "evidence": "data/games/SLUS-01212/truck_evidence/r47/corrected_score_table.json"
+   }
   }
  ],
  "functions": [
@@ -511,10 +527,10 @@
   "r43_reconciled": "R43: the stale-stat gate lesson (world-depth condition on any stat-gated save), the dynamic restart guard requirement, the from-start village capability CONFIRMED for the current policy, the post-restart posture NEGATIVE for the end chain, next_experiment replaced (R44 = the clean-resolve chain with deaths=0 validity + frontier saves)"
  },
  "next_experiment": {
-  "id": "R47",
-  "budget": "cap 1 disclosed pre-run (restore-only from the SAVED r45_frontier_a/b while they survive; the boot is the core+rom load only)",
-  "hypothesis": "the score system is PER-HIT, not per-kill: a single-bullet tap protocol (TAP_FRAMES ~3 = about one bullet per tap) from the frontier postures yields score deltas of exactly +100 per bullet CONNECT on a ground soldier (surviving hits included), which would reclassify the R45/R46 'one-hit' reading as PER-HIT SCORING (the soldier dies at the first connect because it is one-hit AND every connect pays +100 - the two models agree at the death tap and diverge on surviving hits); if instead connects score 0 and only the death pays +100, the one-hit reading stands; the +500/+1000 first-tap events become attributable (multi-connect bursts)",
-  "method": "boot -> restore r45_frontier_a -> FULL-kind census per tap (air included - the R46 ground-only filter discarded the attribution evidence) -> single-bullet taps (3f Y) at the nearest ground enemy with per-tap corpse/score/word tables -> restore r45_frontier_b if the census thins -> the per-connect score table decides per-hit vs per-kill; the burning-ground states (0xa264/0xa414 and the landed-shell family) are excluded as unkillable scenery",
+  "id": "R48",
+  "budget": "cap 1 disclosed pre-run (restore-only from the SAVED r47_frontier_a/b while they survive; the boot is the core+rom load only)",
+  "hypothesis": "per-event score attribution is DECIDED by composing the r46b per-frame score telemetry with the single-bullet tap protocol: the exact frame of each +100 event lands at (a) the bullet-impact frame on a corpse-to-be (per-KILL, locked to the death moment) or (b) a connect frame with the target surviving (per-HIT); the identity of each paying entity (the x~1275 cluster: falling-shell mid-air shoots vs ground soldiers) is read off the same frames",
+  "method": "boot -> restore r47_frontier_a -> per-frame 0x8005883C-style score reads around each single-bullet tap (TAP_FRAMES 3, then a 20f readout tail covering the flight window; FULL-kind census per read) -> the frame-exact event table decides (a) vs (b) per event -> restore r47_frontier_b if the census thins; the burning-ground states stay excluded AS TARGETS, RECORDED",
   "m2_gate_note": "the INTERACTIVE M2 entry remains gated on a clean (deaths=0, no-restart) deep resolve posture - unchanged"
  },
  "prior_art": [

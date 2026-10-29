@@ -107,6 +107,14 @@
     "source": "r46b_score_telemetry.py (the per-frame 0x8005883C telemetry arm + the one-boot timing probe)",
     "evidence": "scratch/r46b/ (boots_used.json cap 2 with the timeout-kill amendment + frames_T.jsonl with per-frame sc + metrics_r46b.json + boot_log_r46b.json); report docs/issue6_r46b_report.md"
    }
+  },
+  {
+   "what": "R47 the CAP_F extension arm executed (restore-only arms, boot 1 = the core+rom load AND the gs1 checkpoint rebuild, cap 1 DISCLOSED PRE-RUN; the sandbox rollback lost scratch/r45b/state_r45b_gs1.bin - the environment was rebuilt INTERNET-FIRST sha-verified BEFORE the boot (upstream EXE 9b0bfc08... byte-identical re-fetched from the manifest URL, committed wrap-script output 042b94bb... byte-identical - the R45-B precedent, 0 boots).  bot_policy5 verbatim (the R45-B run_arm, protocol parity, only the frame cap changed): arm A1700 = score 1601 / 0 hits / 6 passes / caused 1 / hp 5066 / 86 flaps; arm A1800 (the capsule clause: extend only if A finished 0 hits) = score 1701 / 0 hits / 7 passes / caused 1 / hp 5766 / 90 flaps.  MECHANISM CONFIRMED + EXTENDED: score = survival_frames - 99 (the same constant overhead as the 1500f runs: 1401/1601/1701 = the 4th and 5th independent policy5 reproductions) - the climb scales LINEARLY past f1500 and the ORACLE score axis (>= 1550) is CROSSED with 0 hits.  THE DOMINANCE RECIPE SCALES WITH TIME: 6->7 passes, 0 hits at both caps - the wasp spawn schedule continues at stable density and the guarantee planner holds.  HONEST NEGATIVE on the full oracle line: caused >= 2 NOT met (caused 1 for the THIRD consecutive round - the pickups keep landing opportunistically: mode=dodge with seek_dur 0, or seek_dur 8 < the window), so CAPF_GOAL = false.",
+   "status": "VERIFIED",
+   "provenance": {
+    "source": "r47b_capf_extension.py (arm A1700 + arm A1800, the run_arm verbatim with the module-global cap override)",
+    "evidence": "scratch/r47b/ (boots_used.json cap 1 + metrics_r47b.json + boot_log_r47b.json + frames_A1700/frames_A1800 jsonl)"
+   }
   }
  ],
  "functions": [],
@@ -297,11 +305,11 @@
   "last_commit_note": "R44 (40% track): score-superiority NEGATIVE (tie 1401; caused 1<2; bail shape = partial-column positionable, 0 full-column sweeps); dominance stands; next R45 = seek-timing pre-position + tiered margin (8 pre-danger / 12 in-window)."
  },
  "next_experiment": {
-  "id": "R47",
-  "budget": "0-1 boots (restore-only from the r45b gs1 checkpoint while it survives)",
-  "hypothesis": "the climb continues past f1500: bot_policy5 verbatim at CAP_F 1700 (extend to 1800 only if 1700 finishes with 0 hits) reaches score >= 1550 with hits == 0 (the mechanism predicts ~1550 climb-frames at ~f1582 after the 32f ready phase); the REAL risk is not scoring but late-game wasp density vs the guarantee planner - the first hit past the R45-B frontier would be the finding",
-  "method": "restore-only, 1 boot max: the R45-B run_arm verbatim (protocol parity: same checkpoint, same kw, the pass/pickup/attribution machinery unchanged) at CAP_F 1700 -> the oracle line (score >= 1550 AND hits 0 AND caused >= 2) -> the pass-table comparison vs the 1500f runs (passes 7-8 density, min_sep trend) -> decide whether the dominance recipe scales with time or the wasp spawn schedule breaks it",
-  "m2_gate_note": "the score-superiority line stays within the dodge axis; no policy changes"
+  "id": "R48",
+  "budget": "0-1 boots (restore-only from the r47b gs1 checkpoint while it survives)",
+  "hypothesis": "the caused>=2 clause closes with the R45-B tier evidence: the GM8 pre-danger tier is SAFE (453 dodge frames, zero hits, measured R45-B) and widens the candidate set exactly when flowers are reachable - bot_policy8 = the tiered-margin planner (GM 8 pre-danger / GM 12 in-window) with the flower-proximity hold COMMITTED through the pickup window (seek held until pickup or the window opens, not re-planned away) at CAP_F 1700 reaches caused >= 2 with hits 0 and score >= 1550 (score = f - 99 predicts 1601 at 1700f)",
+  "method": "restore-only, 1 boot max: arm A = bot_policy5 verbatim at 1700 (the R47 control line, protocol parity) vs arm B = bot_policy8 (the tiered planner + the committed seek) at 1700 -> the oracle line (score >= 1550 AND hits 0 AND caused >= 2) -> if B takes a hit, the margin floor files (GM8 rejected at this checkpoint, the R45-B revert protocol); the pass-table + seek-duration tables vs the R47 arms decide whether commitment or reach was the caused bottleneck",
+  "m2_gate_note": "the score-superiority line stays within the dodge axis; no scoring-policy changes"
  },
  "prior_art": [
   {
