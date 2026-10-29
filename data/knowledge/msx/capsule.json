@@ -381,6 +381,22 @@
     "source": "r47_analysis_correct.py (offline, no boot; the control-baseline + corpse-dating rules)",
     "evidence": "data/games/SLUS-01212/truck_evidence/r47/corrected_score_table.json"
    }
+  },
+  {
+   "what": "R48 the FRAME-EXACT TAP PROTOCOL executed (the capsule lever: per-frame score telemetry COMPOSED with the single-bullet taps).  NO sandbox rollback this round: the R47 frontiers r47_frontier_a/b SURVIVED on disk (verified pre-boot) - cap 1 disclosed pre-run (the core+rom load ONLY, both passes restore-only).  Boot 1 ran clean and DETERMINISTICALLY (11 taps, the same tap/dscore/corpse tables twice across two boots) but its RECORDING was corpse-blind: mini_census is built on scan_entities which SKIPS corpse-st and hp==0 slots (the union_post lesson applied to per-frame telemetry), so no death was ever dated at frame granularity and the per-event decision degraded.  cap amended 1->2 DISCLOSED (the r47 boot-2 defect precedent): boot 2 = the same protocol + DIRECT per-frame table reads (slots 1..39, five words, unconditional), 29s wall.  Two background launches died silently inside boot_to_demo before any core load - refunded per the R45 precedent; the round ran FOREGROUND per the learned protocol.",
+   "status": "VERIFIED",
+   "provenance": {
+    "source": "r48t1_frame_exact_taps.py (boots 1-2) + scratch/r48/boots_used.json (cap 2, the recording-defect amendment disclosed same-entry)",
+    "evidence": "data/games/SLUS-01212/truck_evidence/r48/ (r48_boot1.jsonl + r48_boot2.jsonl + r48_boot2_report.json)"
+   }
+  },
+  {
+   "what": "R48 CORRECTED VERDICT - TWO PAY CLASSES, measured FRAME-EXACT (r48_analysis_correct.py, offline, authoritative):  (1) DEATH-INITIATION-LOCKED payments n=3 - the flat +100 lands EXACTLY on the 0x515c entry frame (the kill registration: dying state), corpse 0x4BE4 follows 1-4f later (taps 2/3/5; identities x 1284.2/1351.2/1293.2, the x~1275 cluster = 4 of the dated deaths);  (2) a SURVIVING-CONNECT payment n=1 - the +500 lands at tap-1 f_rel 2 where the ONLY measurable event is slot-20's hit-reaction state change (st 0x42bc) while slot 20 SURVIVES the connect (its death initiation is 23f later at tap 2) - the R47 'ZERO surviving-hit payment' reading is FALSIFIED at frame granularity and the R45 '+500 attribution unresolved' is RESOLVED (the slot-20 connect payment, deterministic across R45/R48).  BOTH pure models falsified: payments land at the connect/kill-registration frame, the corpse state lags 1-14f (the dying animation), so tap-granularity dating (R47) conflated the classes - R47's '+600 = 6 x +100 uniform' was that conflation, and this session's ledger is +800 (+500 + 100x3) with 16 dated deaths of which the ZERO-INPUT control walk shows 4 NATURAL deaths paying 0 (churn baseline frame-exact for the first time).  The 1-2px/frame +0x8E screen-x drift is camera churn (the R45 lesson, now frame-quantified: chips need >= 3px).",
+   "status": "VERIFIED",
+   "provenance": {
+    "source": "r48_analysis_correct.py (offline, no boot; the 0x515c-entry frame match is exact in 3/4 payments, the +500 matches the only state change at its frame)",
+    "evidence": "data/games/SLUS-01212/truck_evidence/r48/ r48_frame_exact_events.json"
+   }
   }
  ],
  "functions": [
@@ -527,10 +543,10 @@
   "r43_reconciled": "R43: the stale-stat gate lesson (world-depth condition on any stat-gated save), the dynamic restart guard requirement, the from-start village capability CONFIRMED for the current policy, the post-restart posture NEGATIVE for the end chain, next_experiment replaced (R44 = the clean-resolve chain with deaths=0 validity + frontier saves)"
  },
  "next_experiment": {
-  "id": "R48",
+  "id": "R49",
   "budget": "cap 1 disclosed pre-run (restore-only from the SAVED r47_frontier_a/b while they survive; the boot is the core+rom load only)",
-  "hypothesis": "per-event score attribution is DECIDED by composing the r46b per-frame score telemetry with the single-bullet tap protocol: the exact frame of each +100 event lands at (a) the bullet-impact frame on a corpse-to-be (per-KILL, locked to the death moment) or (b) a connect frame with the target surviving (per-HIT); the identity of each paying entity (the x~1275 cluster: falling-shell mid-air shoots vs ground soldiers) is read off the same frames",
-  "method": "boot -> restore r47_frontier_a -> per-frame 0x8005883C-style score reads around each single-bullet tap (TAP_FRAMES 3, then a 20f readout tail covering the flight window; FULL-kind census per read) -> the frame-exact event table decides (a) vs (b) per event -> restore r47_frontier_b if the census thins; the burning-ground states stay excluded AS TARGETS, RECORDED",
+  "hypothesis": "the TWO PAY CLASSES are CLASS-KEYED: the +100 death-registration payment is the soldier-class kill reward (0x515c entry, already 3/3 frame-exact), while the +500 surviving-connect payment keys on a DIFFERENT target class (slot 20's 0x42bc hit-reaction) - aimed taps DEDICATED to 0x42bc-class targets that are then left alive (no follow-up kill) should reproduce +500-class payments with the target surviving to walk end, and taps dedicated to 0x4054/0x5b0c soldiers should yield +100-class only; the payment magnitude reads off the class, not off kill vs hit",
+  "method": "boot -> restore r47_frontier_a -> the direct-read telemetry VERBATIM (the R48 recording) -> taps GROUPED by target class: >= 3 dedicated 0x42bc connects (no kill follow-up) vs >= 3 soldier kills -> the frame-exact event table per group -> the class-keyed magnitude table; the burning states stay excluded AS TARGETS, RECORDED",
   "m2_gate_note": "the INTERACTIVE M2 entry remains gated on a clean (deaths=0, no-restart) deep resolve posture - unchanged"
  },
  "prior_art": [

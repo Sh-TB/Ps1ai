@@ -115,6 +115,14 @@
     "source": "r47b_capf_extension.py (arm A1700 + arm A1800, the run_arm verbatim with the module-global cap override)",
     "evidence": "scratch/r47b/ (boots_used.json cap 1 + metrics_r47b.json + boot_log_r47b.json + frames_A1700/frames_A1800 jsonl)"
    }
+  },
+  {
+   "what": "R48 the COMMITTED-SEEK round - the FIRST FULL ORACLE LINE PASS (honest and complete): the environment verified internet-first sha-verified BEFORE any boot (0 boots: upstream EXE 9b0bfc08... byte-identical, committed wrap output 042b94bb... byte-identical); the r47b gs1 checkpoint SURVIVED on disk (verified pre-boot, READ-ONLY) - cap 1 = the core+rom load ONLY; 9 offline policy checks passed BEFORE the boot (the R46 precedent: the committed hold does not flip across frames, the committed seek does not re-pick while the flower is alive, the tier switch fires at t_enter_min, every committed reuse passes the guarantee filter).  Arm A (bot_policy5 verbatim @1700): 1601 / 0 hits / 6 passes / caused 1 - the 6th independent policy5 reproduction, score EXACTLY the R47 A1700 line (cross-boot determinism confirmed).  Arm B (bot_policy8 = the tiered GM 8/12 planner + the flower-proximity hold COMMITTED through the pickup window + the committed flower seek): 1601 / 0 HITS / 6 passes / 6-of-6 dodges / caused 2 - the oracle line score >= 1550 AND hits 0 AND caused >= 2 is TRUE for the first time in seven rounds on this axis.  THE MECHANISM CONFIRMED BY NAME: commitment was the caused bottleneck - the decisive pickup attributes seek_dur 134 (>= the 20f window) in flower mode because the seek is no longer reset by re-picks; the pre-danger flower-prox holds accumulate seek through the hold.  No margin floor needed (B took no hits; GM8 stays safe at this checkpoint, the R45-B evidence replicated).  Honest notes: the score axis is structurally tied (score = f - 99, the R46/R47 mechanism - both arms 1601 at 1700f); the caused gain is the ONLY delta, which is exactly what the capsule hypothesis predicted.",
+   "status": "VERIFIED",
+   "provenance": {
+    "source": "r48b_committed_seek.py (offline checks + restore-only arms) + scratch/r48b/boots_used.json (cap 1)",
+    "evidence": "scratch/r48b/ (metrics_r48b.json + frames_A1700.jsonl + frames_B1700.jsonl + boot_log_r48b.json)"
+   }
   }
  ],
  "functions": [],
@@ -305,10 +313,10 @@
   "last_commit_note": "R44 (40% track): score-superiority NEGATIVE (tie 1401; caused 1<2; bail shape = partial-column positionable, 0 full-column sweeps); dominance stands; next R45 = seek-timing pre-position + tiered margin (8 pre-danger / 12 in-window)."
  },
  "next_experiment": {
-  "id": "R48",
-  "budget": "0-1 boots (restore-only from the r47b gs1 checkpoint while it survives)",
-  "hypothesis": "the caused>=2 clause closes with the R45-B tier evidence: the GM8 pre-danger tier is SAFE (453 dodge frames, zero hits, measured R45-B) and widens the candidate set exactly when flowers are reachable - bot_policy8 = the tiered-margin planner (GM 8 pre-danger / GM 12 in-window) with the flower-proximity hold COMMITTED through the pickup window (seek held until pickup or the window opens, not re-planned away) at CAP_F 1700 reaches caused >= 2 with hits 0 and score >= 1550 (score = f - 99 predicts 1601 at 1700f)",
-  "method": "restore-only, 1 boot max: arm A = bot_policy5 verbatim at 1700 (the R47 control line, protocol parity) vs arm B = bot_policy8 (the tiered planner + the committed seek) at 1700 -> the oracle line (score >= 1550 AND hits 0 AND caused >= 2) -> if B takes a hit, the margin floor files (GM8 rejected at this checkpoint, the R45-B revert protocol); the pass-table + seek-duration tables vs the R47 arms decide whether commitment or reach was the caused bottleneck",
+  "id": "R49",
+  "budget": "0-1 boots (restore-only from the r48b-eligible r47b gs1 checkpoint while it survives)",
+  "hypothesis": "the caused >= 2 pass REPLICATES (bot_policy8 is not a one-checkpoint fluke): the same restore-only protocol at CAP_F 1800 (the R47 clause) reaches caused >= 2 AGAIN with hits 0 and score >= 1701 predicted by score = f - 99; the pass-density vs commitment table decides whether the commitment mechanism scales with wasp density (the 8th/9th wasp passes)",
+  "method": "arm A = bot_policy5 verbatim @1800 (the control line, protocol parity); arm B = bot_policy8 @1800 (the committed seek verbatim); the oracle line (score >= 1550 AND hits 0 AND caused >= 2) evaluated on B; if B takes a hit the margin floor files (the R45-B revert protocol); offline checks BEFORE any boot (the R48 precedent)",
   "m2_gate_note": "the score-superiority line stays within the dodge axis; no scoring-policy changes"
  },
  "prior_art": [
