@@ -75,7 +75,49 @@ Transfer value: `docs/tiny_games_playbook.md` (boot-route decision tree,
 controller truth table, input-edge discipline, the RUNNING/PLAYING/WINNING
 taxonomy) cut hello_pong's rounds-to-real-play from 4 to 1 (flappy).
 
-## 3. The ≥10-item work list (standing owner directive; carried here)
+## 3. The R53 win-state survey — ANSWERED same-round (internet-first, zero boots)
+
+The standing question behind "complete the game" for BuzzyBee is now settled
+from the SOURCE, not guessed: the game is open-source
+(github.com/NDR008/BuzzyBee, MIT, EXE sha 9b0bfc08… matches the capsule
+identity), and `main.c` (v1.0, fetched 2026-10-30, evidence:
+`scratch/r53/buzzybee_main.c`) has **NO win state**:
+
+- The state machine is exactly `gameState ∈ {0 intro, 1 gameplay,
+  5 gameOver, 99 debug}` — there is no victory/ending state anywhere.
+- The ONLY exit from gameplay is death: `mainHealth.level < 0` → health 0,
+  bestScore update, `gameState = 5` → `gameOver()` prints "Your Last
+  attempt / Your Best score / Credits", then auto-resets to the intro
+  after 6 s.
+- The readme confirms the design: *"The goal is to work for as long as you
+  can to make the Queen Bee happy"* — an endless Flappy-Bird-like survival
+  scorer.
+
+**The source also explains the six rounds of measured law** (R46-R52):
+- `score++` once per `gameMode()` frame → the EXACT measured law
+  **score = survival_frames − 99** (the −99 = intro frames before
+  `gameMode` starts). The law was never a fit — it is the game's code.
+- Health: start 5999, −3 per frame (flight drain), **−1500 per wasp-hit
+  edge**, +1000 per flower-pickup edge, hard cap 5999 (a pickup at full
+  health is WASTED by the clamp — planner-relevant).
+- Flowers ride the rocks (`flowers[i]` share `rocks[i].x_vel`, spawn on
+  rock tops) — the geometry the R43/R44 bail analysis measured.
+- Death threshold arithmetic: survival needs
+  `effective_pickups ≥ ceil((3·CAP_F + 1500·hits − 5999)/1000)` —
+  at 2400 f with 1 hit that is ≥ 3 total pickups, while caused 2 + the
+  unattributed opportunistic pickups is exactly how arm B survived R52.
+  (Source-derived arithmetic, not yet re-measured in vivo — flagged as an
+  R53 offline check.) This also predicts the CAP_F ladder's next rungs:
+  2600 f / hits 0 needs 2 effective pickups (margin 199 health),
+  3000 f needs 4.
+
+**Completion definition, owner decision requested**: since BuzzyBee cannot
+be "finished" by design, the honest completion program is (a) the R53
+wave-phase pre-position (full oracle @2400), (b) the CAP_F ladder upward
+under the survival arithmetic above, and (c) the bestScore axis — the only
+"100%" the game itself offers is a maximal survival run.
+
+## 4. The ≥10-item work list (standing owner directive; carried here)
 
 Ordered by the 60/40 discipline. Items 1-4 are the R53 round plan.
 
@@ -87,12 +129,11 @@ Ordered by the 60/40 discipline. Items 1-4 are the R53 round plan.
    next_experiment verbatim: pre-position the bee BEFORE the wave frame
    (f_since_pass_start 112, e=[32,31,3]); restore-only from the r52b gs1
    checkpoint; full-oracle@2400 (hits 0 AND caused ≥ 2) predicted.
-3. **[BuzzyBee] The WIN-STATE SURVEY (new, from this report's question)** —
-   does BuzzyBee have an ending at all? Offline first: ROM/asset strings
-   scan for ending/win screens, stage counters, level words in the capsule
-   memory fields; then ONE long-run probe past the 2400 f comfort zone.
-   If no ending exists, "complete" must be redefined as oracle-dominance —
-   that decision goes to the owner with the survey evidence.
+3. **[BuzzyBee] The WIN-STATE SURVEY — DONE this round (§3)**: answered
+   internet-first from the source, zero boots — NO ending exists; the
+   completion redefinition (survival-max / oracle-dominance) is filed for
+   the owner and the survival arithmetic is added to the R53 offline
+   checks. Residual: verify the pickup arithmetic in vivo once.
 4. **[MSX] The M1 wall decision memo** — after item 1: tainted-lineage M1
    progress (px 1254.8, 5× deterministic) vs the HP-word fallback (a)
    (0x4054 read-out) — needs a fresh budget disclosure to the owner.
@@ -110,15 +151,16 @@ Ordered by the 60/40 discipline. Items 1-4 are the R53 round plan.
 12. **[Housekeeping, every round] push-per-round + capsule schema
     validation** — the discipline that survived three sandbox rollbacks.
 
-## 4. Honest gaps that keep the main games incomplete
+## 5. Honest gaps that keep the main games incomplete
 
 - **MSX**: the game is NOT beaten and no live-gameplay completion claim has
   ever been filed. The only past-wall path found so far is TAINTED
   (restart-leak lineage). What IS real: five deterministic tainted rebuilds,
   the pay-frame measurement rig, and the mechanism table — instrumented
   knowledge that makes the next attempt cheaper, not a completed game.
-- **BuzzyBee**: deep dominance knowledge with an exact score law, but the
-  question "what does finishing this game even look like?" has never been
-  answered — item 3 exists to answer it.
+- **BuzzyBee**: deep dominance knowledge with an exact score law; the
+  "what does finishing look like?" question is now answered (§3: nothing
+  to finish — a survival scorer) — what remains is pushing the survival
+  frontier and the owner's sign-off on the redefined completion.
 - **Retail deep games** (Poy Poy, Trap Gunner, Ballistic): all stopped at
   the RAM-mapping/boot gate; none playable to a goal state by the agent.
