@@ -139,6 +139,14 @@
     "source": "r50b_capf2000.py (boot 1) + scratch/r50b/boots_used.json (cap 1, no amendments) + offline_checks 9/9 pre-boot",
     "evidence": "scratch/r50b/metrics_r50b.json + frames_A2000.jsonl + frames_B2000.jsonl"
    }
+  },
+  {
+   "what": "R51 the dominance recipe SCALES to CAP_F 2200 (the fourth extension, the capsule lever verbatim): arm A (bot_policy5 verbatim @2200) 2102 / 0 hits / 8 passes / caused 1 = the 9th independent policy5 reproduction with the score = f - 99 prediction EXACT (2201 - 99 = 2102) - AND THE 8TH PASS FINALLY ARRIVED (6 @1500 -> 7 @1700 -> 7 @1800 -> 7 @2000 -> 8 @2200; the capsule's density watch paid off); arm B (bot_policy8 verbatim @2200) 2101 / 0 HITS / 8-of-8 / caused 2 = the FOURTH caused-replication, the FULL ORACLE (score >= 1550 AND hits 0 AND caused >= 2) TRUE for the FOURTH consecutive round, the score = f - 99 prediction EXACT (2200 - 99 = 2101).  HONEST NOTES: (1) the score tie is RESTORED (A 2102 vs B 2101 - the R50 +2 B-edge did NOT replicate, the positioning side-effect label holds); (2) no margin floor (B took 0 hits, GM 8 safe a FIFTH time); (3) the commitment mechanism visible again (the decisive pickup seek_dur 134 in flower mode - the R48/R49 signature - plus one seek_dur 8).  Environment re-verified internet-first sha-verified 0 boots (9b0bfc08/042b94bb); the r47b gs1 checkpoint SURVIVED (READ-ONLY restore); cap 1 disclosed pre-run, boot 1 = the core+rom load only; 9 offline policy checks passed BEFORE the boot; 12.8s wall.",
+   "status": "VERIFIED",
+   "provenance": {
+    "source": "r51b_capf2200.py (boot 1) + scratch/r51b/boots_used.json (cap 1, no amendments) + offline_checks 9/9 pre-boot",
+    "evidence": "scratch/r51b/metrics_r51b.json + frames_A2200.jsonl + frames_B2200.jsonl"
+   }
   }
  ],
  "functions": [],
@@ -327,13 +335,13 @@
   "built_at": "2026-10-28T19:32:27Z",
   "last_updated": "2026-10-29T10:21:40Z",
   "last_commit_note": "R44 (40% track): score-superiority NEGATIVE (tie 1401; caused 1<2; bail shape = partial-column positionable, 0 full-column sweeps); dominance stands; next R45 = seek-timing pre-position + tiered margin (8 pre-danger / 12 in-window).",
-  "updated": "2026-10-29T18:36:56Z"
+  "updated": "2026-10-29T19:03:45Z"
  },
  "next_experiment": {
-  "id": "R51",
+  "id": "R52",
   "budget": "0-1 boots (restore-only from the r47b gs1 checkpoint while it survives)",
-  "hypothesis": "the linear score mechanism and the caused mechanism hold at CAP_F 2200 (the fourth extension): arm B (bot_policy8 verbatim @2200) holds hits 0 AND caused >= 2 (the FOURTH caused-replication) with score >= 2101 predicted by score = f - 99; the wasp-density risk re-opens with the cap (the 8th pass should finally arrive: 6 @1500 -> 7 @1700 -> 7 @1800 -> 7 @2000 -> ? @2200); arm A = policy5 verbatim @2200 (the 9th reproduction check)",
-  "method": "offline checks BEFORE any boot -> boot 1 core+rom load -> restore the r47b gs1 checkpoint -> arm A2200 -> arm B2200 -> arm B2 (tier 12/12) only on a B hit -> the oracle line on B + the score = f - 99 prediction at 2200 + the pass-density vs commitment table (the 8th pass watch)",
+  "hypothesis": "the linear score mechanism and the caused mechanism hold at CAP_F 2400 (the fifth extension): arm B (bot_policy8 verbatim @2400) holds hits 0 AND caused >= 2 (the FIFTH caused-replication) with score >= 2301 predicted by score = f - 99; the wasp-density watch continues (8 @2200 -> ? @2400); arm A = policy5 verbatim @2400 (the 10th reproduction check)",
+  "method": "offline checks BEFORE any boot -> boot 1 core+rom load -> restore the r47b gs1 checkpoint -> arm A2400 -> arm B2400 -> arm B2 (tier 12/12) only on a B hit -> the oracle line on B + the score = f - 99 prediction at 2400 + the pass-density vs commitment table (the 9th pass watch)",
   "m2_gate_note": "the score-superiority line stays within the dodge axis; no scoring-policy changes"
  },
  "prior_art": [

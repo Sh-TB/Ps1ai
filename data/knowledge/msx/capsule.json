@@ -429,6 +429,22 @@
     "source": "r50_analysis_correct.py (offline, no boot)",
     "evidence": "data/games/SLUS-01212/truck_evidence/r50/ r50_corridor_table.json"
    }
+  },
+  {
+   "what": "R51 the WOUND-ACCUMULATOR HUNT executed (the capsule lever verbatim: the extended wide-net u16 0x60..0x88 + 0xA8..0xE0 read as the UNION with the R48 bounded net = 0x60..0xE0 even, 65 offsets, the read_words widening DISCLOSED PRE-RUN; the corridor gate with the invulnerability predicate; CONNECT x3 no-follow-up, KILL x2, PIERCE x1; the invulnerability census at every tap).  NO sandbox rollback (the R47 frontiers survived, verified pre-boot).  THREE disclosed defect amendments, zero unaccounted boots: boot 1 clean 29s wall but the tap loop STARVED (the +60px beyond-margin put every candidate inside its own corridor - a gate predicate defect, ZERO bullets, ZERO protocol taps; the partial jsonl preserved) -> cap amended 1->2 DISCLOSED PRE-BOOT-2 (the r47/r50 defect precedent); boot 2 ALSO starved (29s wall, zero bullets - the beyond-margin still applied to MORTAL targets) -> cap amended 2->3 DISCLOSED with an OFFLINE GATE DRY-RUN (r51_gate_dryrun.py) PROVING taps flow on the boot-2 census BEFORE boot 3 was spent (CONNECT/KILL admitted on both frontiers); boot 3 clean 30s wall, ledger 3/3.  GATE LESSON (the R50 gate-physics rule applied twice): the bullet is ABSORBED by a mortal target - the corridor extends BEYOND only for a TRANSPARENT target.  Group shortfall honest: connects 1/3 counted (b-tap2 slot20 st_pre 0x3f48 PAID +1000 but was not counted - no 0x42bc entry, already mid-recovery), kills 0/2 (the census thinned), PIERCE 2/2.",
+   "status": "VERIFIED",
+   "provenance": {
+    "source": "r51t1_wound_hunt.py (boots 1-3, the defect amendments disclosed same-entry, the dry-run gate-proof before boot 3) + scratch/r51/boots_used.json",
+    "evidence": "data/games/SLUS-01212/truck_evidence/r51/ (r51_boot1.jsonl + r51_boot2.jsonl partials + r51_boot3.jsonl + r51_boot3_report.json)"
+   }
+  },
+  {
+   "what": "R51 CORRECTED VERDICT (r51_analysis_correct.py, offline, authoritative - the R49/R50 v2 global-frame matcher + the wound-word hunt + the R50 bounded-net cross-join):  (1) THE PIERCING REPLICATED n=2 IN ONE ROUND: both PIERCE taps (aimed at the 0xab94-state slot30) paid +100 with the transparent target NEVER reacting (no 0x42bc, no registration on the transparent slot); pass-a's +100 co-lands lag-0 on slot18's 0x515c registration at x 1357.2 BEHIND the transparent target (class KILL_REG, holder_invul=30 at the pay frame) - the R50 discovery is now frame-exact replicated and the invulnerability predicate is MEASURED: the bullet passes 0xab94 and kills the first vulnerable mortal behind;  (2) THE CONTROLS NEVER PAY (4 control windows, 0 payments - the movement-inclusive churn baseline replicated a fourth round);  (3) THE CONNECT MAGNITUDE: two MORE +1000 connects (st_pre 0x42bc AND st_pre 0x3f48, both slot20 recoveries) - the table is now +500 x3 vs +1000 x5 across R48-R51; the 0x42bc-entry state alone is NOT the discriminator (the same entry state paid +500 in R48/R49 and +1000 in R50/R51); (4) THE WOUND-WORD HUNT IS NEGATIVE AT TAP-WINDOW GRANULARITY: the union-net delta intersection across the two +1000 events holds 100+ candidate words (the pre/post window contains walk/animation churn) and the bounded-net cross-join against R50's +500/+1000 events shows NO separating word (the R50 +500 shares 5 candidate words, the +1000s share 51) - the accumulator hunt needs the FRAME-EXACT union-net read (per-frame 0x60..0xE0 in the flight window, the word state AT the pay frame) = the R52 lever;  (5) the invul census: 4 dwell entries (0xab94/0xae7c), the 0xae7c class registered twice more with ZERO co-landing payments (the exonerated status holds).  Session ledger +2200 (a: +1100 = 1000+100, b: +1100 = 1000+100), deterministic across both frontiers.",
+   "status": "VERIFIED",
+   "provenance": {
+    "source": "r51_analysis_correct.py (offline, no boot) + r51_gate_dryrun.py (offline, the boot-3 gate proof)",
+    "evidence": "data/games/SLUS-01212/truck_evidence/r51/ r51_wound_table.json"
+   }
   }
  ],
  "functions": [
@@ -573,13 +589,13 @@
   "last_updated": "2026-10-29T10:39:34Z",
   "last_commit_note": "R44 (60% track): stage-1 FALSIFIED (the c86/87 armor-zone death is deterministic 3/3 across R43/R44 - bit-identical worlds through the divergence; deaths=0 unreachable from the shallow anchor; r42t1's clean rebuild came from the LOST deep anchor) + harness lessons (sensor order both chunk ends, the px 65494-65535 wrap signature, sane-world clamp, wrap-junk frontier invalidated) + fallback (b): 900-chunk push from the tainted posture, 8 continue-rescued deaths disclosed, no latch (the R43 negative re-confirmed), FRONTIERS SAVED px 1275.2 + 1341.2 (the boot-7 loss repaired); next_experiment = R45 fallback (a) the 0x4054 HP-word readout from the frontiers.",
   "r43_reconciled": "R43: the stale-stat gate lesson (world-depth condition on any stat-gated save), the dynamic restart guard requirement, the from-start village capability CONFIRMED for the current policy, the post-restart posture NEGATIVE for the end chain, next_experiment replaced (R44 = the clean-resolve chain with deaths=0 validity + frontier saves)",
-  "updated": "2026-10-29T18:36:56Z"
+  "updated": "2026-10-29T19:03:45Z"
  },
  "next_experiment": {
-  "id": "R51",
+  "id": "R52",
   "budget": "cap 1 disclosed pre-run (restore-only from the SAVED r47_frontier_a/b while they survive; the boot is the core+rom load only)",
-  "hypothesis": "the connect-class +500/+1000 non-determinism is a WOUND-DEPTH accumulator: the payment = 100 x the accumulated wound on the surviving target, tracked by a hidden word OUTSIDE the bounded R45 net (0x88..0xA8) - the extended wide-net u16 0x60..0x88 + 0xA8..0xE0 on the connect targets across dedicated 1-bullet connects should expose a word whose delta co-moves with the payment magnitude; SECONDARY: the invulnerability predicate (0xab94 + the burning family) closes the piercing hole in the corridor gate - a bullet fired at an invulnerable-state target passes through and kills the first vulnerable mortal behind",
-  "method": "boot -> restore r47_frontier_a -> the R48/R50 direct-read telemetry verbatim + the corridor gate with the invulnerability predicate -> dedicated 1-bullet CONNECT taps on wounded survivors with the EXTENDED wide-net word capture (pre/post per tap) -> the wound-accumulator hunt in the analysis (any word whose delta correlates with the +500-vs-+1000 magnitude) -> the magnitude table + the invulnerability census",
+  "hypothesis": "the connect +500-vs-+1000 discriminator is visible only AT the pay frame: a per-frame u16 read of the union net (0x60..0xE0 even) in the tap+flight window on dedicated connects exposes the word whose PAY-FRAME state (not the window delta) separates the +500 class from the +1000 class; the wound-accumulator must hold the accumulated wound AT the registration frame; SECONDARY: the piercing class grows to n>=3 with a dedicated transparent-target tap when the census offers one",
+  "method": "boot -> restore r47_frontier_a -> the R48 direct-read telemetry verbatim + PER-FRAME union-net reads (the flight window at 0x60..0xE0, slots 1..39) -> dedicated 1-bullet CONNECT taps until n>=3 paid events across both magnitudes -> the pay-frame word table + the discriminator test (any word whose pay-frame value separates +500 from +1000 with zero overlap) -> the magnitude model refined to payment = f(wound_state)",
   "m2_gate_note": "the INTERACTIVE M2 entry remains gated on a clean (deaths=0, no-restart) deep resolve posture - unchanged"
  },
  "prior_art": [
