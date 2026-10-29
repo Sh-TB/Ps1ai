@@ -75,6 +75,14 @@
     "evidence": "docs/issue6_r42b_report.md + scratch/r42b/{metrics_r42b.json,frames_A.jsonl,frames_B.jsonl,hit/flower PNGs}",
     "source": "R42-B A/B (1 boot, 2 restores)"
    }
+  },
+  {
+   "what": "R43 the contact-time trajectory guarantee reaches DOMINANCE (hypothesis CONFIRMED->VERIFIED): A/B on one rebuilt gs1 checkpoint, 1500f/arm - arm A (the recorded bot-A recipe) 2 hits (f=1472 by 58 inside the band under ey 15; f=2274 f_since_pass_start=99 the late fall-back-in), 3/5 dodges, score 1401, hp 4758, caused-pickups 0; arm B (bot_policy5: per-frame (side,target) enumeration on an 8px grid, forward sim under the calibrated physics, 12px guarantee margin over the DANGER WINDOW ex in [-36,32] only, bail = max band-center distance) 0 HITS, 6/6 dodges, score 1401, hp 5666 (+908), flaps 82 (-16), caused-pickups 1 (the widened attribution window: recent_seek<=60f), 714 replans / 99 bails (86% planned). All four oracle legs true. The R42-B failure shape (wasp arrives at contact-x while the bee is inside the band) is fixed by name: the guarantee plans against the wasp PREDICTED contact-time position with bounces. Offline tests (no boot) caught 2 real bugs pre-emulator: the pre-contact-frame check (danger-window-only horizon) and the below-side tap rule (any tap rises into the band - pure free-fall below). Environment rebuilt internet-first sha-verified (upstream EXE 9b0bfc08... byte-identical, disc 042b94bb... byte-identical, the rollback had removed the disc); ledger cap 2 with the filed-but-boot-failed entry disclosed.",
+   "status": "VERIFIED",
+   "provenance": {
+    "evidence": "scratch/r43b/metrics_r43b.json + docs/issue6_r43b_report.md + boots_used.json cap 2",
+    "source": "R43 buzzybee A/B (arm A bot_policy2 vs arm B bot_policy5, one shared checkpoint, exact within-run)"
+   }
   }
  ],
  "functions": [],
@@ -265,9 +273,9 @@
   "last_commit_note": "R42-B: the v4 dominance hypothesis CONTRADICTED (2 hits/1500f both arms; the residual hit mode = the wasp arrives while the bee is still inside the band); both lost artifacts (upstream EXE + patched disc) rebuilt sha-verified; next_experiment = R43 contact-time trajectory guarantee."
  },
  "next_experiment": {
-  "budget": "1 boot + savestate restores (the R42-B gs1 checkpoint is preserved at scratch/r42b/state_r42b_gs1.bin; if lost again, boot 1 rebuilds it as disclosed)",
-  "hypothesis": "R43: a CONTACT-TIME TRAJECTORY GUARANTEE reaches dominance (0 hits/1500f) - at engage time, simulate (bee gravity/tap physics x wasp bounce-y) forward to ex=32 and choose the exit (side + tap schedule) that keeps the bee out of the PREDICTED band for the whole ex in [-36,32] window; re-plan on vy-flip or a failed guarantee (bail = maximize distance from the band center). Secondary: widen the pickup attribution window (flower-mode OR dodge-mode with a flower target held within the last 60f) so caused-pickups stop reading 0. Tertiary: per-hit frame-delta metric (arm B's hp 1790 vs arm A 4758 at equal hit COUNT shows hit TIMING drove the difference).",
-  "method": "restore the gs1 checkpoint, run the planner arm 1500f vs the recorded bot-A recipe arm 1500f (same protocol as R42-B); oracle: hits==0 AND dodges==passes AND score/pickups not worse than A; event snaps capped as before; never write RAM, legal inputs only."
+  "budget": "1 boot + restores (the r43b gs1 checkpoint is preserved at scratch/r43b/state_r43b_gs1.bin; rebuild disclosed if lost)",
+  "hypothesis": "R44 (buzzybee): DOMINANCE -> SCORE SUPERIORITY - the guarantee planner ties A at 1401 because it inherits the policy3 flower logic verbatim and spends its dodge windows purely defensively; widen the flower seek INTO the guarantee safe phases (between wasp passes the planner may fly to flowers instead of hovering: during the no-wasp windows and the pre-danger frames, target the nearest flower if the return-to-safe trajectory still satisfies the guarantee at the danger-window boundary), target: score > A (>=1500) with hits still 0 and caused-pickups >= 2; secondary: the bail rate 99/714 (14%) - log the bail shapes (wasp sweep covering the whole column) to name the geometry.",
+  "method": "restore the gs1 checkpoint, run the flower-seeking planner arm 1500f vs the recorded bot-A recipe arm 1500f (same protocol); oracle: hits==0 AND score>A AND caused-pickups>=2; never write RAM, legal inputs only."
  },
  "prior_art": [
   {

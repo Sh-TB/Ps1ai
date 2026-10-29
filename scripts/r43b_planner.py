@@ -68,9 +68,14 @@ def _setup():
                            "(settle->START->gs1->serialize), disclosed; "
                            "restores are not boots"},
                   open(L.BOOTS, "w"), indent=1)
-    led = L.ledger_use(1, "r43b_planner.py",
-                       note="boot 1: fresh boot -> gs1 checkpoint rebuild "
-                            "(the R42-B checkpoint is absent; disclosed)")
+    led_pre = json.load(open(L.BOOTS))
+    nxt = int(led_pre.get("count", 0)) + 1
+    led = L.ledger_use(nxt, "r43b_planner.py",
+                       note="boot: fresh boot -> gs1 checkpoint rebuild "
+                            "(the R42-B checkpoint is absent; disclosed; "
+                            "entry 1 was the disclosed filed-but-"
+                            "boot-failed filing — disc absent, rebuilt "
+                            "internet-first sha-verified)")
     log("ledger", count=led["count"], cap=led["cap"], out=L.OUT,
         mirror=L.MIRROR_NOTE)
     return R, log, dump, led
