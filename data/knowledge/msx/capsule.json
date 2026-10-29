@@ -445,6 +445,22 @@
     "source": "r51_analysis_correct.py (offline, no boot) + r51_gate_dryrun.py (offline, the boot-3 gate proof)",
     "evidence": "data/games/SLUS-01212/truck_evidence/r51/ r51_wound_table.json"
    }
+  },
+  {
+   "what": "R52 the PAY-FRAME UNION-NET WOUND HUNT armed and executed under the THIRD sandbox rollback (the R45/R47 contingency verbatim): the scratch/ reset lost the r47_frontier_a/b states + the r47b gs1 checkpoint (never committed - no-game-bytes); issue5_m1_start SURVIVED (verified pre-run).  Stage 1 rebuilt the frontiers DETERMINISTICALLY for the 5th time (r52_frontier_a px 1224.9 census 13 / r52_frontier_b px 1254.8 census 14 - the SAME postures as R45/R47, 6 deaths / 6 continue-rescues counted, TAINTED lineage).  Boot ledger 4/4 with THREE disclosed amendments, every one a ZERO-TAP runner-code defect: boot 2 crashed at the first CONNECT pick (the hunt rows dropped the R48 direct key the R50 helpers read; partial jsonl preserved) -> cap 2->3 DISCLOSED; boot 3 crashed in the CONTROL walk (a missing import - same defect family) -> cap 3->4 DISCLOSED with the OFFLINE CONTRACT DRY-RUN (r52_dryrun.py, the r51_gate_dryrun precedent) passing ALL 11 checks BEFORE boot 4 was spent; two phantom ledger entries (cap-check crashes after increment, no core load) REFUNDED disclosed and the cap gate moved BEFORE the increment (the phantom class eliminated); boot 4 clean.  THE R52 LEVER PROVEN: frame_walk_hunt records the union-net u16 states (0x60..0xE0, 65 offsets) for every live slot EVERY frame of the tap+flight window.  CAPTURES: two MORE +1000 connects (st_pre 0x42bc path [0x42bc,0x17f8,0x4008,0x3f48,0x5b0c] pay f_rel 3; st_pre 0x3f48 path [0x3f48,0x5b0c] pay f_rel 4 - the R51 +1000 family REPLICATED under pay-frame telemetry; the magnitude table now +500 x3 vs +1000 x7 across R48-R52); PIERCE replicated n=2 (total n=4; the 0xab94 target NEVER reacted, +100 paid, no corpse in-window - the victim is beyond); controls 6 windows dscore 0 (the movement-inclusive baseline, 5th round).  ANALYSIS (r52_analysis_correct.py): the two +1000 pay-frame word vectors DIFFER in 123 slot/offsets (the candidate pool for the discriminator); the wound-shape batch holds 546 raw candidates incl. slot12 +0xa0 257->2 with 4f recovery (the closest accumulator signature; the camera-churn families 0x8c/0x94 and the 1-tick countdowns dominate the rest).  HONEST SHORTFALL: the +500 class was NOT captured (the corridor gate starved - 11 skips per frontier - and the wall guard ended both passes before a +500 connect or a KILL landed), so the +500-vs-+1000 pay-frame discriminator stays PENDING.",
+   "status": "OBSERVED",
+   "provenance": {
+    "source": "r52t1_payframe_wound.py (boots 1-4) + scratch/r52/boots_used.json (cap 4: three disclosed zero-tap defect amendments + two refunded phantom entries) + r52_dryrun.py (11 contract checks pre-boot-4)",
+    "evidence": "data/games/SLUS-01212/truck_evidence/r52/ (r52_boot1_s1 + r52_boot4_s2 jsonl + reports + r52_wound_table.json; boots 2-3 preserved as defect partials)"
+   }
+  },
+  {
+   "what": "R52 offline verdict recorded: the pay-frame telemetry path is the R53 discriminator lever - the +500 capture under the SAME telemetry is the single missing piece; the 123-word candidate pool and the 546-shape batch are committed in r52_wound_table.json for the cross-round intersection test.",
+   "status": "OBSERVED",
+   "provenance": {
+    "source": "r52_analysis_correct.py (offline, no boot)",
+    "evidence": "data/games/SLUS-01212/truck_evidence/r52/r52_wound_table.json"
+   }
   }
  ],
  "functions": [
@@ -589,13 +605,13 @@
   "last_updated": "2026-10-29T10:39:34Z",
   "last_commit_note": "R44 (60% track): stage-1 FALSIFIED (the c86/87 armor-zone death is deterministic 3/3 across R43/R44 - bit-identical worlds through the divergence; deaths=0 unreachable from the shallow anchor; r42t1's clean rebuild came from the LOST deep anchor) + harness lessons (sensor order both chunk ends, the px 65494-65535 wrap signature, sane-world clamp, wrap-junk frontier invalidated) + fallback (b): 900-chunk push from the tainted posture, 8 continue-rescued deaths disclosed, no latch (the R43 negative re-confirmed), FRONTIERS SAVED px 1275.2 + 1341.2 (the boot-7 loss repaired); next_experiment = R45 fallback (a) the 0x4054 HP-word readout from the frontiers.",
   "r43_reconciled": "R43: the stale-stat gate lesson (world-depth condition on any stat-gated save), the dynamic restart guard requirement, the from-start village capability CONFIRMED for the current policy, the post-restart posture NEGATIVE for the end chain, next_experiment replaced (R44 = the clean-resolve chain with deaths=0 validity + frontier saves)",
-  "updated": "2026-10-29T19:03:45Z"
+  "updated": "2026-10-29T19:41:38Z"
  },
  "next_experiment": {
-  "id": "R52",
-  "budget": "cap 1 disclosed pre-run (restore-only from the SAVED r47_frontier_a/b while they survive; the boot is the core+rom load only)",
-  "hypothesis": "the connect +500-vs-+1000 discriminator is visible only AT the pay frame: a per-frame u16 read of the union net (0x60..0xE0 even) in the tap+flight window on dedicated connects exposes the word whose PAY-FRAME state (not the window delta) separates the +500 class from the +1000 class; the wound-accumulator must hold the accumulated wound AT the registration frame; SECONDARY: the piercing class grows to n>=3 with a dedicated transparent-target tap when the census offers one",
-  "method": "boot -> restore r47_frontier_a -> the R48 direct-read telemetry verbatim + PER-FRAME union-net reads (the flight window at 0x60..0xE0, slots 1..39) -> dedicated 1-bullet CONNECT taps until n>=3 paid events across both magnitudes -> the pay-frame word table + the discriminator test (any word whose pay-frame value separates +500 from +1000 with zero overlap) -> the magnitude model refined to payment = f(wound_state)",
+  "id": "R53",
+  "budget": "1-2 boots (restore-only from the r52 frontiers while they survive on disk; a rebuild boot only if lost, disclosed)",
+  "hypothesis": "the +500 connect class is capturable under the pay-frame telemetry from the r52 frontiers (the R50/R51/R52 +1000s all came from st_pre 0x42bc/0x3f48/0x2b74 targets mid-wound-recovery; a FRESH 0x4054 soft target connect paid +500 in R48 - target freshness is the discriminator candidate); any word whose pay-frame value separates +500 from +1000 with ZERO overlap refines the model to payment = f(wound_state); the slot12 +0xa0 shape (257->2, rec 4) is the named accumulator candidate to test first",
+  "method": "gate diagnostics FIRST (per-skip blocking-occupant dump - the R52 starvation is undiagnosed) -> restore r52_frontier_a/b -> CONNECT taps with the freshness spread (fresh 0x4054 + the wound-state family) until BOTH magnitudes land under pay-frame telemetry -> the zero-overlap discriminator test on the pay-frame word state -> the KILL contrast if the budget allows",
   "m2_gate_note": "the INTERACTIVE M2 entry remains gated on a clean (deaths=0, no-restart) deep resolve posture - unchanged"
  },
  "prior_art": [

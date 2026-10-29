@@ -1,0 +1,31 @@
+{
+ "schema": "ps1play.r52-payframe/1",
+ "stage": 1,
+ "generated": "2026-10-29T19:33:03Z",
+ "commit": "d968271b9d85dc282642b52061051a3a8f8250c2",
+ "anchor": "issue5_m1_start",
+ "frontiers": [
+  "r52_frontier_a",
+  "r52_frontier_b"
+ ],
+ "run": {
+  "push": {
+   "outcome": "frontiers_saved",
+   "deaths": 6,
+   "rescues": 6,
+   "frontiers": 2,
+   "frontier_px": 1254.8
+  },
+  "final": {
+   "px": 1254.8,
+   "score": 6702,
+   "gren": 8,
+   "php": 146,
+   "sec": [
+    11,
+    1
+   ],
+   "prog": 4294967295
+  }
+ }
+}

@@ -147,6 +147,14 @@
     "source": "r51b_capf2200.py (boot 1) + scratch/r51b/boots_used.json (cap 1, no amendments) + offline_checks 9/9 pre-boot",
     "evidence": "scratch/r51b/metrics_r51b.json + frames_A2200.jsonl + frames_B2200.jsonl"
    }
+  },
+  {
+   "what": "R52 the dominance recipe SCALES to CAP_F 2400 (the fifth extension, the capsule lever verbatim) under the THIRD sandbox rollback: the r47b gs1 checkpoint LOST (never committed) -> boot 1 = the core+rom load AND the gs1 checkpoint REBUILD (the r45b/r42b pattern verbatim, DISCLOSED pre-run; settle 900f -> START -> gs1 -> serialize).  Environment re-verified internet-first sha-verified 0 boots (upstream EXE 9b0bfc08 byte-identical, committed wrap-script output 042b94bb byte-identical; the disc rebuilt by r30t0_buzzybee_asset.py after the rollback).  9 offline policy checks passed BEFORE the boot.  RESULTS: arm A (policy5 verbatim @2400) 2301 / 1 hit / 9 passes / caused 1 = the 10th reproduction with score = f - 99 EXACT (2400 - 99 = 2301) - the prediction holds across the SIXTH cap; THE 9TH PASS ARRIVED (6 @1500 -> 7 @1700 -> 7 @1800 -> 7 @2000 -> 8 @2200 -> 9 @2400); arm B (bot_policy8 verbatim @2400) 2301 / 1 HIT / 8-of-8 / caused 2 (the FIFTH caused-replication TRUE) -> the FULL ORACLE FALSE FOR THE FIRST TIME IN FIVE ROUNDS (hits_zero broke); arm B2 (tier 12/12, the revert protocol) ALSO 1 hit + caused 3 - the margin floor is FILED (GM 8 AND GM 12 both hit at this checkpoint).  THE MECHANISM: both hits land at f_since_pass_start = 112 on the same deterministic wasp wave (e=[32,31,3]; A from above, B/B2 below; 'planned': false - a reflex dodge cannot clear it) - the wave is pass-boundary-locked, not margin-locked.  HONEST NOTES: (1) the five-round hits-zero streak (R47-R51) is BROKEN; (2) the score = f - 99 law survives; (3) the commitment signature visible again (seek_dur 134 + 8 + 4).",
+   "status": "OBSERVED",
+   "provenance": {
+    "source": "r52b_capf2400.py (boot 1 incl. the disclosed gs1 rebuild) + scratch/r52b/boots_used.json (cap 1)",
+    "evidence": "scratch/r52b/metrics_r52b.json + frames_A2400.jsonl + frames_B2400.jsonl + frames_B2400_r.jsonl"
+   }
   }
  ],
  "functions": [],
@@ -335,13 +343,13 @@
   "built_at": "2026-10-28T19:32:27Z",
   "last_updated": "2026-10-29T10:21:40Z",
   "last_commit_note": "R44 (40% track): score-superiority NEGATIVE (tie 1401; caused 1<2; bail shape = partial-column positionable, 0 full-column sweeps); dominance stands; next R45 = seek-timing pre-position + tiered margin (8 pre-danger / 12 in-window).",
-  "updated": "2026-10-29T19:03:45Z"
+  "updated": "2026-10-29T19:41:38Z"
  },
  "next_experiment": {
-  "id": "R52",
-  "budget": "0-1 boots (restore-only from the r47b gs1 checkpoint while it survives)",
-  "hypothesis": "the linear score mechanism and the caused mechanism hold at CAP_F 2400 (the fifth extension): arm B (bot_policy8 verbatim @2400) holds hits 0 AND caused >= 2 (the FIFTH caused-replication) with score >= 2301 predicted by score = f - 99; the wasp-density watch continues (8 @2200 -> ? @2400); arm A = policy5 verbatim @2400 (the 10th reproduction check)",
-  "method": "offline checks BEFORE any boot -> boot 1 core+rom load -> restore the r47b gs1 checkpoint -> arm A2400 -> arm B2400 -> arm B2 (tier 12/12) only on a B hit -> the oracle line on B + the score = f - 99 prediction at 2400 + the pass-density vs commitment table (the 9th pass watch)",
+  "id": "R53",
+  "budget": "0-1 boots (restore-only from the r52b gs1 checkpoint while it survives)",
+  "hypothesis": "the pass-boundary wave (f_since_pass_start 112, e=[32,31,3]) is DODGEABLE BY PLAN: a wave-phase predictor in bot_policy8 that pre-positions the bee BEFORE the wave frame (the R45-B pre-position lever returns with a wave-phase input) holds hits 0 AND caused >= 2 @2400 (the sixth caused-replication) with score >= 2301 predicted; if the wave is phase-locked to the pass counter rather than the planner, the hit recurs at the same relative frame in ALL arms - the control experiment decides",
+  "method": "offline checks BEFORE any boot -> boot 1 core+rom load (restore-only arms from the r52b gs1 checkpoint) -> arm A2400 (the 11th reproduction) -> arm B2400 + the wave-phase pre-position -> arm B2 (tier 12/12) only on a B hit -> the wave-phase table (the hit frame relative to the pass boundary across arms) -> the oracle line",
   "m2_gate_note": "the score-superiority line stays within the dodge axis; no scoring-policy changes"
  },
  "prior_art": [
