@@ -1,0 +1,141 @@
+{
+ "schema": "ps1play.r41-boot3/1",
+ "generated": "2026-10-29T05:55:51Z",
+ "commit": "7ee5f8c6f660f3b03c27a7a930e0fb384ed5b580",
+ "checkpoint": "r38_ckpt",
+ "run": {
+  "outcome": "banner_expired_restart",
+  "end_chunk": 100,
+  "deaths": 0,
+  "wall_s": 4.3,
+  "throws": 0,
+  "resolved_at": 100,
+  "released_at": 100,
+  "kills": {},
+  "score_final": 3200,
+  "pol_stats": {
+   "engage": 28,
+   "clamp_clear": 1,
+   "advance": 25,
+   "grenade": 24,
+   "jump": 3,
+   "front_engage": 420,
+   "dodge": 18,
+   "budget_walkthrough": 3,
+   "proj_dodge": 19,
+   "proj_unverified": 214,
+   "stale_reset": 5,
+   "advance_silent": 18,
+   "armor_hold": 38,
+   "section_pin": 1,
+   "d7_zone_latch": 3,
+   "aa_kill": 5,
+   "mission_end": 3,
+   "mission_end_prebanner": 3,
+   "mission_end_hold": 4,
+   "mission_end_restart_resume": 3,
+   "aa_resolved": 1
+  },
+  "final": {
+   "px": 37.5,
+   "score": 3200,
+   "gren": 7,
+   "php": 291,
+   "sec": [
+    11,
+    75
+   ],
+   "prog": 4294967295
+  },
+  "final_vm": {
+   "runner_s16": 0,
+   "gate_u16": 5,
+   "flags_u16": 75,
+   "prog_u32": "0xffffffff",
+   "table": [
+    "0x0",
+    "0x800eb7e4"
+   ],
+   "state_u16": "0xb",
+   "gate_bytes": [
+    255,
+    0
+   ],
+   "cursor": "0x80084dcc",
+   "handle_at_cursor": "0x0",
+   "pending": {
+    "handle": 0,
+    "valid": false
+   },
+   "array_backward": [
+    {
+     "d": 1,
+     "w": "0x800ec9a0",
+     "handle": "0x800ec9a0",
+     "valid": true,
+     "node_0x5C": "0x8012d890",
+     "node_0x8": "0x0",
+     "sub_0x8": "0x0",
+     "sub_0x0": "0x8012d82c"
+    },
+    {
+     "d": 2,
+     "w": "0x800eb928",
+     "handle": "0x800eb928",
+     "valid": true,
+     "node_0x5C": "0x8012d86c",
+     "node_0x8": "0x0",
+     "sub_0x8": "0x800fa6b0",
+     "sub_0x0": "0x8012d71c"
+    },
+    {
+     "d": 3,
+     "w": "0x0"
+    },
+    {
+     "d": 4,
+     "w": "0x0"
+    },
+    {
+     "d": 5,
+     "w": "0x0"
+    }
+   ],
+   "array_forward": [
+    {
+     "d": 1,
+     "w": "0x0"
+    },
+    {
+     "d": 2,
+     "w": "0x0"
+    },
+    {
+     "d": 3,
+     "w": "0x0"
+    },
+    {
+     "d": 4,
+     "w": "0x0"
+    },
+    {
+     "d": 5,
+     "w": "0x0"
+    },
+    {
+     "d": 6,
+     "w": "0x7fe0000"
+    },
+    {
+     "d": 7,
+     "w": "0x7fe"
+    },
+    {
+     "d": 8,
+     "w": "0x7fe0000"
+    }
+   ]
+  },
+  "hp_drops": 0
+ }
+}

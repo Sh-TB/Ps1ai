@@ -1,0 +1,25 @@
+{
+ "cap": 3,
+ "count": 3,
+ "log": [
+  {
+   "n": 1,
+   "ts": "2026-10-29T05:48:40Z",
+   "script": "r41t2_nodes_live.py",
+   "reason": "BOOT2: kill chain (v3.1) + the section-VM node readout naming the pending node (cursor/handle/node-chain/array)"
+  },
+  {
+   "n": 2,
+   "ts": "2026-10-29T05:55:19Z",
+   "script": "r41t3_soldier_release.py",
+   "reason": "BOOT3: soldier-wave release test \u2014 aimed fire at the live 0x4054 rows (slots 13/16) then advance; release-signature watch"
+  },
+  {
+   "n": 3,
+   "ts": "2026-10-29T05:59:12Z",
+   "script": "r41t4_final.py",
+   "reason": "BOOT3-FINAL: hardened sensors (per-burst death, restart-leak, fixed release predicate) + post-kill savestate + the boot-2 soldier-wave sweep"
+  }
+ ],
+ "note": "boot 1 = r38t1_reach.py (own ledger, scratch/r38)"
+}
