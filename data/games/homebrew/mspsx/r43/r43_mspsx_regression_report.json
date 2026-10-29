@@ -1,0 +1,132 @@
+{
+ "schema": "ps1play.r43-mspsx-regression/1",
+ "generated": "2026-10-29T07:40:18Z",
+ "commit": "3522ef260833bb33933b9c2c443ff7aedcab0407",
+ "oracle": {
+  "revt_monotone_0_to_160": true,
+  "win_screen_watch": {
+   "watch_frames": 180,
+   "max_frame_diff": 4.254
+  }
+ },
+ "baseline_comparison": {
+  "r35_clicks": 59,
+  "r35_frames": 14665,
+  "this_clicks": 59,
+  "this_frames": 15270
+ },
+ "events": [
+  {
+   "event": "boot",
+   "av": {
+    "w": 320,
+    "h": 240,
+    "fps": 59.94,
+    "audio": 44100.0
+   },
+   "content": "mspsx_lic.cue"
+  },
+  {
+   "event": "title_wait",
+   "pad_live": true,
+   "f": 542
+  },
+  {
+   "event": "board_init",
+   "board_f": 605
+  },
+  {
+   "event": "progress",
+   "clicks": 10,
+   "revt": 111,
+   "revealed": 110
+  },
+  {
+   "event": "progress",
+   "clicks": 20,
+   "revt": 121,
+   "revealed": 120
+  },
+  {
+   "event": "progress",
+   "clicks": 30,
+   "revt": 131,
+   "revealed": 130
+  },
+  {
+   "event": "progress",
+   "clicks": 40,
+   "revt": 141,
+   "revealed": 140
+  },
+  {
+   "event": "progress",
+   "clicks": 50,
+   "revt": 151,
+   "revealed": 150
+  },
+  {
+   "event": "reveal_end",
+   "dead": false,
+   "clicks": 59,
+   "swallows": 0,
+   "nav_fail": 0,
+   "fallback": 0,
+   "stats": {
+    "active": 192,
+    "mines": 32,
+    "revealed": 160,
+    "flagged": 32
+   },
+   "revt_final": 160,
+   "monotone": true
+  },
+  {
+   "event": "FULL_CLEAR",
+   "stats": {
+    "active": 192,
+    "mines": 32,
+    "revealed": 160,
+    "flagged": 32
+   },
+   "ram_window": {
+    "0x18cc0": 120,
+    "0x18cc4": 134,
+    "0x18cc8": 140,
+    "0x18ccc": 0,
+    "0x18cd0": 11,
+    "0x18cd4": 0,
+    "0x18cd8": 160,
+    "0x18cdc": 160,
+    "0x18ce0": 0,
+    "0x18ce4": 1,
+    "0x18ce8": 0,
+    "0x18cec": 0,
+    "0x18cf0": 0,
+    "0x18cf4": 144,
+    "0x18cf8": 0,
+    "0x18cfc": 0,
+    "0x18d00": 0,
+    "0x18d04": 0,
+    "0x18d08": 4,
+    "0x18d0c": 4,
+    "0x18d10": 236,
+    "0x18d14": 0,
+    "0x18d18": 34,
+    "0x18d1c": 211,
+    "0x18d20": 211,
+    "0x18d24": 1,
+    "0x18d28": 0,
+    "0x18d2c": 0,
+    "0x18d30": 0,
+    "0x18d34": 60,
+    "0x18d38": 0,
+    "0x18d3c": 3
+   },
+   "watch_frames": 180,
+   "max_frame_diff": 4.254
+  }
+ ],
+ "wall_s": 55.2,
+ "outcome": "WIN_REGRESSION_VERIFIED"
+}

@@ -1,0 +1,19 @@
+{
+ "cap": 1,
+ "count": 2,
+ "log": [
+  {
+   "n": 1,
+   "ts": "2026-10-29T07:38:07Z",
+   "script": "r43_mspsx_regression.py",
+   "reason": "the recorded 1-boot win regression"
+  },
+  {
+   "n": 2,
+   "ts": "2026-10-29T07:39:23Z",
+   "script": "r43_mspsx_regression.py",
+   "reason": "the recorded 1-boot win regression"
+  }
+ ],
+ "note": "R43 regression: 1 cold boot, fresh board, the r35c adaptive reveal to REVT 160"
+}

@@ -4,7 +4,7 @@
  "controls": [
   {
    "button": "B (CROSS)",
-   "effect": "reveal/chord — needs hold 40f > 33f SPI poll cadence",
+   "effect": "reveal/chord \u2014 needs hold 40f > 33f SPI poll cadence",
    "provenance": {
     "evidence": "issue6_r23_report.md",
     "source": "worklog+docs issue6_r23_report.md"
@@ -56,6 +56,15 @@
    "provenance": {
     "evidence": "scripts/ps1play_knowledge.py cmd_intake_game output (2 runs: 10 MISS then 10 HIT) + docs/issue6_r35_report.md (the known-good win baseline)",
     "source": "R42-B offline calibration dry-run"
+   }
+  },
+  {
+   "what": "R43 the recorded 1-boot win regression executed VERIFIED: the mspsx_lic disc was REBUILT first (filesystem rollback had removed it - upstream v0.1 release re-fetched, sha256 d35a189b...a4c5fa byte-identical to the r22/r23-verified pristine, 16 license sectors from the user's own retail MSX disc, EXE untouched - the internet-first rule); then 1 cold boot -> fresh board -> the r35c adaptive reveal: 59 clicks (= the r35 baseline 59 exactly), 0 swallowed, 0 nav failures, 0 sim fallbacks, REVT 0->160 MONOTONE, revealed 160 / mines 32 / auto-flagged 32, win watch 180f max_frame_diff 4.254 - deterministic parity with the r35 win; the intake-calibration benchmark role stands re-verified on the current core/build.",
+   "status": "VERIFIED",
+   "frame": 14930,
+   "provenance": {
+    "evidence": "data/games/homebrew/mspsx/r43/ (r43_mspsx_regression_report.json + boots_used.json cap 1/1) + docs/issue6_r43_report.md",
+    "source": "R43 mspsx regression boot (fresh board)"
    }
   }
  ],
@@ -175,9 +184,9 @@
   "last_commit_note": "R42-B: the 0-boot intake-calibration dry run VERIFIED (10-stage pipeline clean + 10/10 cache HIT on resume); next round = the r35 win regression in 1 boot."
  },
  "next_experiment": {
-  "budget": "0 boots (offline)",
-  "hypothesis": "the intake-calibration benchmark role is CLOSED (verified); the next mspsx round (when the 60/40 budget allocates it) can reuse the r35 win recipe (59-click flood plan + WinCheck auto-flag) as a regression harness - e.g. re-verify the win end-to-end on the current core/build in 1 boot.",
-  "method": "regression: 1 boot, replay the r35c click plan from a fresh board, oracle REVT 0->160 monotone + the auto-flagged win screen; offline until then."
+  "budget": "0 boots queued",
+  "hypothesis": "the mspsx track is fully regression-verified (r35 win + R43 deterministic parity); no open lever - the game serves as the intake-calibration benchmark and the r35 recipe stays the reference harness for future core/build regressions (1 boot each, when the 60/40 budget allocates).",
+  "method": "offline until a core/build change warrants another 1-boot regression; re-run scripts/r43_mspsx_regression.py unchanged (it re-verifies the disc sha first via scripts/r29t0_mspsx_asset.py)."
  },
  "prior_art": [
   {
