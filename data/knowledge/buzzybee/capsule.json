@@ -131,6 +131,14 @@
     "source": "r49b_capf1800_replication.py (boot 1) + scratch/r49b/boots_used.json (cap 1, no amendments) + offline_checks 9/9 pre-boot",
     "evidence": "scratch/r49b/metrics_r49b.json + frames_A1800.jsonl + frames_B1800.jsonl"
    }
+  },
+  {
+   "what": "R50 the dominance recipe SCALES to CAP_F 2000 (the third extension, the capsule lever verbatim): arm A (bot_policy5 verbatim @2000) 1901 / 0 hits / 7 passes / caused 1 = the 8th independent policy5 reproduction with the score = f - 99 prediction EXACT (2000 - 99 = 1901); arm B (bot_policy8 verbatim @2000) 1903 / 0 HITS / 7-of-7 / caused 2 = the THIRD caused-replication and the FULL ORACLE (score >= 1550 AND hits 0 AND caused >= 2) TRUE for the THIRD consecutive round.  HONEST NOTES: (1) the score axis BROKE ITS TIE by +2 frames for the first time (B survived 2002f vs A's 2000f - 1903 = 2002 - 99 exact, the linear mechanism holds; the committed-seek positioning shifted a landing frame - a positioning side-effect, not a mechanism change); (2) the 8th/9th wasp passes never arrived (7 passes at 2000f, density stable - the capsule's density risk did not materialize at this cap); (3) no margin floor needed (B took 0 hits, GM 8 safe a fourth time).  Environment re-verified internet-first sha-verified 0 boots (9b0bfc08/042b94bb); the r47b gs1 checkpoint SURVIVED (READ-ONLY restore); cap 1 disclosed pre-run, boot 1 = the core+rom load only; 9 offline policy checks passed BEFORE the boot; 11.6s wall.",
+   "status": "VERIFIED",
+   "provenance": {
+    "source": "r50b_capf2000.py (boot 1) + scratch/r50b/boots_used.json (cap 1, no amendments) + offline_checks 9/9 pre-boot",
+    "evidence": "scratch/r50b/metrics_r50b.json + frames_A2000.jsonl + frames_B2000.jsonl"
+   }
   }
  ],
  "functions": [],
@@ -319,13 +327,13 @@
   "built_at": "2026-10-28T19:32:27Z",
   "last_updated": "2026-10-29T10:21:40Z",
   "last_commit_note": "R44 (40% track): score-superiority NEGATIVE (tie 1401; caused 1<2; bail shape = partial-column positionable, 0 full-column sweeps); dominance stands; next R45 = seek-timing pre-position + tiered margin (8 pre-danger / 12 in-window).",
-  "updated": "2026-10-29T18:20:51Z"
+  "updated": "2026-10-29T18:36:56Z"
  },
  "next_experiment": {
-  "id": "R50",
+  "id": "R51",
   "budget": "0-1 boots (restore-only from the r47b gs1 checkpoint while it survives)",
-  "hypothesis": "the dominance recipe SCALES to CAP_F 2000 (the third extension): arm B (bot_policy8 verbatim @2000) holds hits 0 AND caused >= 2 (the third caused-replication) with score >= 1901 predicted by score = f - 99; the REAL RISK is late-game wasp density vs the guarantee planner (the pass count grows 7 -> ~8-9; a hit at GM8 files the margin floor per the R45-B revert protocol); arm A = policy5 verbatim @2000 (the control line and the 8th reproduction check)",
-  "method": "offline checks BEFORE any boot (the R48/R49 precedent) -> boot 1 core+rom load -> restore the r47b gs1 checkpoint -> arm A2000 -> arm B2000 -> arm B2 (tier 12/12) only on a B hit -> the oracle line (score >= 1550 AND hits 0 AND caused >= 2) evaluated on B + the score = f - 99 prediction check at 2000 + the pass-density vs commitment table (the 8th/9th passes)",
+  "hypothesis": "the linear score mechanism and the caused mechanism hold at CAP_F 2200 (the fourth extension): arm B (bot_policy8 verbatim @2200) holds hits 0 AND caused >= 2 (the FOURTH caused-replication) with score >= 2101 predicted by score = f - 99; the wasp-density risk re-opens with the cap (the 8th pass should finally arrive: 6 @1500 -> 7 @1700 -> 7 @1800 -> 7 @2000 -> ? @2200); arm A = policy5 verbatim @2200 (the 9th reproduction check)",
+  "method": "offline checks BEFORE any boot -> boot 1 core+rom load -> restore the r47b gs1 checkpoint -> arm A2200 -> arm B2200 -> arm B2 (tier 12/12) only on a B hit -> the oracle line on B + the score = f - 99 prediction at 2200 + the pass-density vs commitment table (the 8th pass watch)",
   "m2_gate_note": "the score-superiority line stays within the dodge axis; no scoring-policy changes"
  },
  "prior_art": [

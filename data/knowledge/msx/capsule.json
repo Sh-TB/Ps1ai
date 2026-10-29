@@ -413,6 +413,22 @@
     "source": "r49_analysis_correct.py (offline, no boot) over the r49_boot1.jsonl global-frame sequence",
     "evidence": "data/games/SLUS-01212/truck_evidence/r49/ r49_class_keyed_table.json"
    }
+  },
+  {
+   "what": "R50 the CONTROLLED-CORRIDOR tap protocol executed (the capsule lever verbatim: fire ONLY when the aimed target is the ONLY mortal in the bullet corridor; 2 movement-only controls; CONNECT no-follow-up; KILL prefers the 0xae7c class - the in-round disclosed pre-run refinement).  NO sandbox rollback (the R47 frontiers survived, verified pre-boot); boot 1 CRASHED post-restore at the control-walk record (NameError post_sc - a runner defect, ZERO taps fired, the world untouched; the partial jsonl preserved) - cap amended 1->2 DISCLOSED PRE-BOOT-2 (the r47 boot-2 defect precedent); boot 2 clean 32s wall, ledger 2/2 spent, no further amendments.  The corridor gate was STRICT (11 gate skips per pass - the spawner zone keeps the lanes occupied) and re-derivation found 1 marginal violation (an approach-shift entry, disclosed).  GROUP RESULTS: connects 1+0 (the group goals unmet again - the zone churn thins the census), kills 0/3 as a PROTOCOL group - but the fired windows produced the cleanest payment data of the campaign (6 paid windows, every one corridor-cleared pre-fire).",
+   "status": "VERIFIED",
+   "provenance": {
+    "source": "r50t1_controlled_corridor.py (boots 1-2, the defect amendment disclosed same-entry) + scratch/r50/boots_used.json",
+    "evidence": "data/games/SLUS-01212/truck_evidence/r50/ (r50_boot1.jsonl partial + r50_boot2.jsonl + r50_boot2_report.json)"
+   }
+  },
+  {
+   "what": "R50 CORRECTED VERDICT (r50_analysis_correct.py, offline, authoritative - the R49 v2 global-frame matcher + the corridor re-derivation + the 0xae7c census):  (1) THE CONTROLS NEVER PAY - zero-input AND movement-only windows (4 windows, 6+ natural corpses) paid 0 = the churn baseline is now movement-inclusive and the bullet-victim lock tightens (movement alone provokes nothing);  (2) THE KILL LANE IS CLEAN FOR THE FIRST TIME: the two +100 payments co-land EXACTLY (lag 0) on the registrations at x 1389.2 / 1349.8 and the corridor evidence makes the AIMED-OR-PIERCED victim unambiguous - n=6 across R48/R49/R50 for the +100 registration-locked kill class;  (3) THE PIERCING DISCOVERY: the fired CONNECT tap at the 0xab94-state target (an invulnerable state - the bullet passes) killed the mortal BEHIND it (slot18 @1389.2, +100) - the corridor gate needs an invulnerability predicate (0xab94 joins the burning family as bullet-transparent);  (4) THE 0xae7c CLASS IS EXONERATED: slot33 cycled 2 more times (32/27 frames in-state) with ZERO co-landing payments - the R49 +1000 residual is NOT the 0xae7c kill reward;  (5) THE CONNECT MAGNITUDE STAYS UNSETTLED - now +500 x3 vs +1000 x3 across R48/R49/R50 (this round: +1000 on the 0x42bc pre-state recovery, +500 on a LEFT-side 0x2b74 recovery, +1000 on a 0x3f48 recovery), every payment landing mid-wound-recovery of a SURVIVING target, NO state/co-landing discriminator found; the strong class-keyed form stays FALSIFIED; the remaining candidates: an internal wound accumulator (a hidden HP word OUTSIDE the bounded 0x88..0xA8 net), or a hit-geometry-dependent damage model.  Session ledger +2700 (a: +1600 = 1000+100+500, b: +1100 = 1000+100).",
+   "status": "VERIFIED",
+   "provenance": {
+    "source": "r50_analysis_correct.py (offline, no boot)",
+    "evidence": "data/games/SLUS-01212/truck_evidence/r50/ r50_corridor_table.json"
+   }
   }
  ],
  "functions": [
@@ -557,13 +573,13 @@
   "last_updated": "2026-10-29T10:39:34Z",
   "last_commit_note": "R44 (60% track): stage-1 FALSIFIED (the c86/87 armor-zone death is deterministic 3/3 across R43/R44 - bit-identical worlds through the divergence; deaths=0 unreachable from the shallow anchor; r42t1's clean rebuild came from the LOST deep anchor) + harness lessons (sensor order both chunk ends, the px 65494-65535 wrap signature, sane-world clamp, wrap-junk frontier invalidated) + fallback (b): 900-chunk push from the tainted posture, 8 continue-rescued deaths disclosed, no latch (the R43 negative re-confirmed), FRONTIERS SAVED px 1275.2 + 1341.2 (the boot-7 loss repaired); next_experiment = R45 fallback (a) the 0x4054 HP-word readout from the frontiers.",
   "r43_reconciled": "R43: the stale-stat gate lesson (world-depth condition on any stat-gated save), the dynamic restart guard requirement, the from-start village capability CONFIRMED for the current policy, the post-restart posture NEGATIVE for the end chain, next_experiment replaced (R44 = the clean-resolve chain with deaths=0 validity + frontier saves)",
-  "updated": "2026-10-29T18:20:51Z"
+  "updated": "2026-10-29T18:36:56Z"
  },
  "next_experiment": {
-  "id": "R50",
+  "id": "R51",
   "budget": "cap 1 disclosed pre-run (restore-only from the SAVED r47_frontier_a/b while they survive; the boot is the core+rom load only)",
-  "hypothesis": "the payment model is PLAYER-BULLET-VICTIM-LOCKED with per-class magnitudes (+100 the soft-soldier kill reward, +500 the 0x42bc surviving-connect) - a CONTROLLED-CORRIDOR tap protocol (fire ONLY when the census shows the aimed target as the ONLY mortal entity in the bullet corridor, i.e. no cycling zone entity between player and target; prefer targets dx > 100 beyond the x~1277-1351 spawner cluster) yields n >= 3 clean per-class payments with ZERO co-landing ambiguity and settles the magnitude table; the movement-only control (walk 3f + 20f idle, no Y) tests whether the corridor churn alone can pay; the 0xae7c-class census (slot33's class) dates its kills to settle the +1000 residual",
-  "method": "boot -> restore r47_frontier_a -> the R48/R49 direct-read telemetry verbatim -> the corridor census gate before EVERY tap (skip the tap and re-census when the corridor is occupied) -> CONNECT group (no follow-up) AND KILL group until n >= 3 clean each or the census thins -> r49-style offline global-frame analysis -> the magnitude table",
+  "hypothesis": "the connect-class +500/+1000 non-determinism is a WOUND-DEPTH accumulator: the payment = 100 x the accumulated wound on the surviving target, tracked by a hidden word OUTSIDE the bounded R45 net (0x88..0xA8) - the extended wide-net u16 0x60..0x88 + 0xA8..0xE0 on the connect targets across dedicated 1-bullet connects should expose a word whose delta co-moves with the payment magnitude; SECONDARY: the invulnerability predicate (0xab94 + the burning family) closes the piercing hole in the corridor gate - a bullet fired at an invulnerable-state target passes through and kills the first vulnerable mortal behind",
+  "method": "boot -> restore r47_frontier_a -> the R48/R50 direct-read telemetry verbatim + the corridor gate with the invulnerability predicate -> dedicated 1-bullet CONNECT taps on wounded survivors with the EXTENDED wide-net word capture (pre/post per tap) -> the wound-accumulator hunt in the analysis (any word whose delta correlates with the +500-vs-+1000 magnitude) -> the magnitude table + the invulnerability census",
   "m2_gate_note": "the INTERACTIVE M2 entry remains gated on a clean (deaths=0, no-restart) deep resolve posture - unchanged"
  },
  "prior_art": [
