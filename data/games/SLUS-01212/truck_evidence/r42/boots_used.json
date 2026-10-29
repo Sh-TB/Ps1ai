@@ -1,0 +1,19 @@
+{
+ "cap": 2,
+ "count": 2,
+ "log": [
+  {
+   "n": 1,
+   "ts": "2026-10-29T07:21:10Z",
+   "script": "r42t1_hold.py",
+   "reason": "BOOT1: rebuild r42_postkill from r38_ckpt (premise staleness disclosed) + the HARD zero-input hold prebanner->banner+2s+"
+  },
+  {
+   "n": 2,
+   "ts": "2026-10-29T07:26:07Z",
+   "script": "r42t1_hold.py",
+   "reason": "BOOT2: from r42_postkill -> shipped policy to the mission_end latch -> HARD hold through prebanner/banner+2s+ (boot-1's aa_resolved gate was premature \u2014 recorded)"
+  }
+ ],
+ "note": "r41_postkill ABSENT (boot-4 saved_postkill=false; states/ has no r41_postkill.*) -> boot 1 rebuilds r42_postkill from r38_ckpt, then holds; boot 2 reserved (accept-variant or the 0x4054 HP word)"
+}

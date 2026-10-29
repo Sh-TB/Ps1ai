@@ -1,0 +1,130 @@
+{
+ "schema": "ps1play.r42-boot2/1",
+ "generated": "2026-10-29T07:27:34Z",
+ "commit": "a76af4196cc6329ed70f67b1effe673be35e4c87",
+ "postkill": "r42_postkill",
+ "run": {
+  "latch": {
+   "outcome": "latched",
+   "c": 24,
+   "deaths": 0,
+   "stats": {
+    "engage": 12,
+    "clamp_clear": 10,
+    "grenade": 6,
+    "front_engage": 180,
+    "dodge": 6,
+    "proj_dodge": 2,
+    "proj_unverified": 110,
+    "armor_hold": 2,
+    "d7_zone_latch": 1,
+    "mission_end": 1,
+    "mission_end_prebanner": 1,
+    "mission_end_hold": 1
+   }
+  },
+  "outcome": "hold_budget",
+  "end_c": 1599,
+  "banner_c": null,
+  "chunks": 1599,
+  "final": {
+   "px": 0.0,
+   "score": 13630,
+   "gren": 7,
+   "php": 0,
+   "sec": [
+    11,
+    1
+   ],
+   "prog": 4294967295
+  },
+  "latch_chunk": 24,
+  "final_vm": {
+   "runner_s16": 0,
+   "gate_u16": 5,
+   "flags_u16": 1,
+   "prog_u32": "0xffffffff",
+   "table": [
+    "0x0",
+    "0x800eb928"
+   ],
+   "state_u16": "0xb",
+   "gate_bytes": [
+    255,
+    0
+   ],
+   "cursor": "0x80084dcc",
+   "handle_at_cursor": "0x0",
+   "pending": {
+    "handle": 0,
+    "valid": false
+   },
+   "array_backward": [
+    {
+     "d": 1,
+     "w": "0x800ec9a0",
+     "handle": "0x800ec9a0",
+     "valid": true,
+     "node_0x5C": "0x0",
+     "node_0x8": "0x0"
+    },
+    {
+     "d": 2,
+     "w": "0x800eb928",
+     "handle": "0x800eb928",
+     "valid": true,
+     "node_0x5C": "0x801186dc",
+     "node_0x8": "0x0",
+     "sub_0x8": "0x80123000",
+     "sub_0x0": "0x8011832c"
+    },
+    {
+     "d": 3,
+     "w": "0x0"
+    },
+    {
+     "d": 4,
+     "w": "0x0"
+    },
+    {
+     "d": 5,
+     "w": "0x0"
+    }
+   ],
+   "array_forward": [
+    {
+     "d": 1,
+     "w": "0x0"
+    },
+    {
+     "d": 2,
+     "w": "0x0"
+    },
+    {
+     "d": 3,
+     "w": "0x0"
+    },
+    {
+     "d": 4,
+     "w": "0x0"
+    },
+    {
+     "d": 5,
+     "w": "0x0"
+    },
+    {
+     "d": 6,
+     "w": "0x7fe0000"
+    },
+    {
+     "d": 7,
+     "w": "0x7fe"
+    },
+    {
+     "d": 8,
+     "w": "0x7fe0000"
+    }
+   ]
+  }
+ }
+}
