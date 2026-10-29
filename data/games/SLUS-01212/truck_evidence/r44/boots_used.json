@@ -1,0 +1,35 @@
+{
+ "cap": 4,
+ "count": 4,
+ "log": [
+  {
+   "n": 1,
+   "ts": "2026-10-29T10:06:15Z",
+   "script": "r44t1_clean_resolve.py",
+   "reason": "BOOT stage-1 (two-stage split, the R42/R43-proven cross-process savestate pattern): boot -> restore issue5_m1_start -> CLEAN rebuild (DYNAMIC restart guard max_px>700-then-px<700 = honest abort; deaths=0 validity; frontier saves px>1200) -> gate aa_resolved>=1 AND px>700 -> r44_postkill -> exit",
+   "outcome_corrected": "CORRECTED (post-run, same-entry amendment - the corrected-filings precedent): boot 1 did NOT end in a restart. At chunk-end c86 the world showed px_end=0/php=0 (the death/teardown signature) after a CLEAN deaths=0-at-chunk-starts rebuild to max_px 1048 (score 2700, armor engage at px 951). The harness chunk-end guard ran the restart-leak check BEFORE the death sensor and mislabeled it 'restart_leak'. Honest label: MID-CHUNK DEATH at c86 (death_taints under the deaths=0 validity requirement). Harness fix applied (alive-check before leak-check at chunk end); boot 2 = the disclosed spare stage-1."
+  },
+  {
+   "n": 2,
+   "ts": "2026-10-29T10:10:42Z",
+   "script": "r44t1_clean_resolve.py",
+   "reason": "BOOT stage-1 (two-stage split, the R42/R43-proven cross-process savestate pattern): boot -> restore issue5_m1_start -> CLEAN rebuild (DYNAMIC restart guard max_px>700-then-px<700 = honest abort; deaths=0 validity; frontier saves px>1200) -> gate aa_resolved>=1 AND px>700 -> r44_postkill -> exit",
+   "outcome_corrected": "CORRECTED + DETERMINISM RESULT: boot 2 (the spare stage-1) died at the SAME chunk c86 (CHUNK_END_DEATH px_end=0/php=0, score 2700, max_px 1048) with the world trace BIT-IDENTICAL to boot 1 AND to R43 boot-5 (px 279/487.9/770.2/1044.7/951.1 at c0/20/40/60/80; r43's chunk-start sensor filed the same death as c87). Three independent boots across two rounds = the c86/87 armor-zone death (px 951.1, php 79 at c80) is DETERMINISTIC from the shallow anchor issue5_m1_start under the shipped policy. The R44 deaths=0 premise is FALSIFIED for shallow-anchor rebuilds (the only deaths=0 rebuild on record, r42t1, came from the LOST deep anchor r38_ckpt) -> the capsule fallback levers activate. Boots 3+4 reallocated to fallback (b): the px-1272 clamp push from the on-disk r43_postkill (tainted lineage, disclosed - NOT a clean claim) with frontier saves, then a frontier-posture latch attempt."
+  },
+  {
+   "n": 3,
+   "ts": "2026-10-29T10:21:01Z",
+   "script": "r44t1_clean_resolve.py",
+   "reason": "BOOT stage-3: FALLBACK (b) PIVOT (disclosed: the deaths=0 premise was falsified by the deterministic 3/3 c86/87 armor-zone death; boots 3+4 reallocated per the corrected-filings precedent): boot -> restore r43_postkill (the on-disk TAINTED post-restart checkpoint-respawn posture - NOT a clean claim) -> policy to the mission_end latch (900 bound) with FRONTIER SAVES px>1200 (the boot-7 loss) -> accept chain + discriminator ONLY if latched (any verdict is post-restart-lineage evidence, not an interactive claim)",
+   "outcome_corrected": "CORRECTED (post-run): boot 3 was cut short by a HARNESS sensor-order bug at chunk start (the leak guard ran BEFORE the alive check) plus the newly-named WRAP signature: at c20-end the scene-transition px wrap (s2 px 65494.4, the R43 boot-5 c160 px 65524/php-242 class) fed max_px, then c21 px0=0/php=0 (a DEAD transition world) was mislabeled restart_leak instead of taking the death/continue-rescue path (the boot-7 pattern). Honest label: deaths>=1 transition, harness-aborted. ALSO: the px>1200 frontier save fired on the WRAPPED px (65494.4>1200) - r44_frontier_a was the transition world, INVALIDATED and renamed r44_wrap_junk_boot3 (forensics). Harness fixes: alive-first at chunk start, sane-world clamp (0<=px<5000) for max_px/leak/frontier. Boot 4 = stage-3 re-run, the last of cap 4."
+  },
+  {
+   "n": 4,
+   "ts": "2026-10-29T10:27:56Z",
+   "script": "r44t1_clean_resolve.py",
+   "reason": "BOOT stage-3: FALLBACK (b) PIVOT (disclosed: the deaths=0 premise was falsified by the deterministic 3/3 c86/87 armor-zone death; boots 3+4 reallocated per the corrected-filings precedent): boot -> restore r43_postkill (the on-disk TAINTED post-restart checkpoint-respawn posture - NOT a clean claim) -> policy to the mission_end latch (900 bound) with FRONTIER SAVES px>1200 (the boot-7 loss) -> accept chain + discriminator ONLY if latched (any verdict is post-restart-lineage evidence, not an interactive claim)"
+  }
+ ],
+ "note": "R44 cap 4 DISCLOSED PRE-RUN (the capsule budget: stage-1 rebuilds are death-sensitive; one spare): boot1 = stage-1 clean rebuild (dynamic restart guard + deaths=0 + frontier saves) -> r44_postkill; boot2 = stage-2 latch -> accept chain -> discriminator; boot3 = spare stage-1; boot4 = spare stage-2. Restores are NOT boots (r35 precedent). Fallbacks (a) 0x4054 HP-word readout / (b) px-1272 clamp push need their own disclosure beyond this cap.",
+ "hypothesis": "the end-of-mission chain fires ONLY from a clean (deaths=0, no-restart) resolve posture"
+}

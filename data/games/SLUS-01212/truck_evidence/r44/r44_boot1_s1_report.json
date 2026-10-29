@@ -1,0 +1,115 @@
+{
+ "schema": "ps1play.r44-boot/1",
+ "generated": "2026-10-29T10:06:47Z",
+ "commit": "387e28f50cf9293f04331b8535193624e2f23120",
+ "anchor": "issue5_m1_start",
+ "postkill": "r44_postkill",
+ "run": {
+  "rebuild": {
+   "outcome": "restart_leak",
+   "c": 86,
+   "deaths": 0
+  },
+  "outcome": "rebuild_restart_leak",
+  "final": {
+   "px": 0.0,
+   "score": 2700,
+   "gren": 0,
+   "php": 0,
+   "sec": [
+    11,
+    1
+   ],
+   "prog": 4294967295
+  },
+  "final_vm": {
+   "runner_s16": 0,
+   "gate_u16": 5,
+   "flags_u16": 1,
+   "prog_u32": "0xffffffff",
+   "table": [
+    "0x0",
+    "0x800eb928"
+   ],
+   "state_u16": "0xb",
+   "gate_bytes": [
+    0,
+    0
+   ],
+   "cursor": "0x80084dcc",
+   "handle_at_cursor": "0x0",
+   "pending": {
+    "handle": 0,
+    "valid": false
+   },
+   "array_backward": [
+    {
+     "d": 1,
+     "w": "0x800ec9a0",
+     "handle": "0x800ec9a0",
+     "valid": true,
+     "node_0x5C": "0x8012d890",
+     "node_0x8": "0x0",
+     "sub_0x8": "0x0",
+     "sub_0x0": "0x8012d82c"
+    },
+    {
+     "d": 2,
+     "w": "0x800eb928",
+     "handle": "0x800eb928",
+     "valid": true,
+     "node_0x5C": "0x8012d86c",
+     "node_0x8": "0x0",
+     "sub_0x8": "0x800fa6b0",
+     "sub_0x0": "0x8012d71c"
+    },
+    {
+     "d": 3,
+     "w": "0x0"
+    },
+    {
+     "d": 4,
+     "w": "0x0"
+    },
+    {
+     "d": 5,
+     "w": "0x0"
+    }
+   ],
+   "array_forward": [
+    {
+     "d": 1,
+     "w": "0x0"
+    },
+    {
+     "d": 2,
+     "w": "0x0"
+    },
+    {
+     "d": 3,
+     "w": "0x0"
+    },
+    {
+     "d": 4,
+     "w": "0x0"
+    },
+    {
+     "d": 5,
+     "w": "0x0"
+    },
+    {
+     "d": 6,
+     "w": "0x7fe0000"
+    },
+    {
+     "d": 7,
+     "w": "0x7fe"
+    },
+    {
+     "d": 8,
+     "w": "0x7fe0000"
+    }
+   ]
+  }
+ }
+}
