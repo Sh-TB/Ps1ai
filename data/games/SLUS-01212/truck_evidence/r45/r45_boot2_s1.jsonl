@@ -1,0 +1,94 @@
+{"ev": "RUN_START", "commit": "c17551bc1307bc94cdf2a15aa4d0aec7212a3191", "stage": "1", "rollback_disclosure": "r43_postkill/r44_postkill/r44_frontier_a/b LOST to the sandbox filesystem rollback; issue5_m1_start survived (Oct 20); the capsule contingency (rebuild boot, disclosed) applies; boot ledger entries 1 from the aborted same-round background attempts were REFUNDED per the corrected-filings precedent (process died in boot_to_demo, no jsonl event beyond RUN_START)", "lineage": "TAINTED (continue-rescues; never a clean claim)", "oracle": "walker words + verified score gains + alive 0x0EE518; never +0x8E (the wide net = disclosed exploratory telemetry)", "ts": "2026-10-29T12:21:36Z"}
+{"ev": "ANCHOR_RESTORED", "state": "issue5_m1_start", "px": 258.6, "score": 0, "gren": 10, "php": 144, "sec": [6, 1], "prog": 4294967295}
+{"ev": "PUSH_START", "snap": {"px": 258.6, "score": 0, "gren": 10, "php": 141, "sec": [6, 1], "prog": 4294967295}, "vm": {"runner_s16": 0, "gate_u16": 5, "flags_u16": 1, "prog_u32": "0xffffffff", "table": ["0x0", "0x800eb928"], "state_u16": "0x6", "gate_bytes": [255, 0], "cursor": "0x80084dcc", "handle_at_cursor": "0x0", "pending": {"handle": 0, "valid": false}, "array_backward": [{"d": 1, "w": "0x800ec9a0", "handle": "0x800ec9a0", "valid": true, "node_0x5C": "0x8012d890", "node_0x8": "0xfffdd61a", "sub_0x8": "0x0", "sub_0x0": "0x8012d82c"}, {"d": 2, "w": "0x800eb928", "handle": "0x800eb928", "valid": true, "node_0x5C": "0x8012d86c", "node_0x8": "0xfffd1d78", "sub_0x8": "0x800fa6b0", "sub_0x0": "0x8012d71c"}, {"d": 3, "w": "0x0"}, {"d": 4, "w": "0x0"}, {"d": 5, "w": "0x0"}], "array_forward": [{"d": 1, "w": "0x0"}, {"d": 2, "w": "0x0"}, {"d": 3, "w": "0x0"}, {"d": 4, "w": "0x0"}, {"d": 5, "w": "0x0"}, {"d": 6, "w": "0x7fe0000"}, {"d": 7, "w": "0x7fe"}, {"d": 8, "w": "0x7fe0000"}]}}
+{"ev": "PUSH_DUMP", "chunk": 0, "mode": "advance", "max_px": 279.0, "deaths": 0, "rescues": 0, "saved_i": 0, "px": 279.0, "score": 0, "gren": 10, "php": 143, "sec": [8, 1], "prog": 4294967295}
+{"ev": "SCORE_EVENT", "chunk": 12, "from": 0, "to": 100}
+{"ev": "SCORE_EVENT", "chunk": 13, "from": 100, "to": 600}
+{"ev": "SCORE_EVENT", "chunk": 15, "from": 600, "to": 700}
+{"ev": "SCORE_EVENT", "chunk": 18, "from": 700, "to": 800}
+{"ev": "SCORE_EVENT", "chunk": 19, "from": 800, "to": 900}
+{"ev": "SCORE_EVENT", "chunk": 26, "from": 900, "to": 1000}
+{"ev": "SCORE_EVENT", "chunk": 33, "from": 1000, "to": 1100}
+{"ev": "SCORE_EVENT", "chunk": 40, "from": 1100, "to": 1200}
+{"ev": "PUSH_DUMP", "chunk": 40, "mode": "engage", "max_px": 770.2, "deaths": 0, "rescues": 0, "saved_i": 0, "px": 770.2, "score": 1200, "gren": 8, "php": 141, "sec": [11, 1], "prog": 4294967295}
+{"ev": "SCORE_EVENT", "chunk": 43, "from": 1200, "to": 1300}
+{"ev": "SCORE_EVENT", "chunk": 50, "from": 1300, "to": 1400}
+{"ev": "SCORE_EVENT", "chunk": 51, "from": 1400, "to": 1900}
+{"ev": "SCORE_EVENT", "chunk": 54, "from": 1900, "to": 2000}
+{"ev": "SCORE_EVENT", "chunk": 60, "from": 2000, "to": 2100}
+{"ev": "SCORE_EVENT", "chunk": 61, "from": 2100, "to": 2200}
+{"ev": "SCORE_EVENT", "chunk": 62, "from": 2200, "to": 2400}
+{"ev": "SCORE_EVENT", "chunk": 63, "from": 2400, "to": 2500}
+{"ev": "SCORE_EVENT", "chunk": 64, "from": 2500, "to": 2700}
+{"ev": "PUSH_DUMP", "chunk": 80, "mode": "engage", "max_px": 1047.7, "deaths": 0, "rescues": 0, "saved_i": 0, "px": 951.1, "score": 2700, "gren": 7, "php": 79, "sec": [11, 1], "prog": 4294967295}
+{"ev": "CHUNK_END_DEATH", "chunk": 86, "deaths_at_start": 0, "px_end": 0.0, "px": 0.0, "score": 2700, "gren": 0, "php": 0, "sec": [11, 1], "prog": 4294967295}
+{"ev": "death", "chunk": 87, "deaths": 1, "px": 0.0, "score": 2700, "gren": 0, "php": 0, "sec": [11, 1], "prog": 4294967295}
+{"ev": "SCORE_EVENT", "chunk": 88, "from": 2700, "to": 3700}
+{"ev": "SCORE_EVENT", "chunk": 89, "from": 3700, "to": 3800}
+{"ev": "SCORE_EVENT", "chunk": 91, "from": 3800, "to": 3900}
+{"ev": "SCORE_EVENT", "chunk": 92, "from": 3900, "to": 4000}
+{"ev": "SCORE_EVENT", "chunk": 93, "from": 4000, "to": 4100}
+{"ev": "PUSH_DUMP", "chunk": 120, "mode": "armor_hold", "max_px": 1047.7, "deaths": 1, "rescues": 1, "saved_i": 0, "px": 900.0, "score": 4100, "gren": 10, "php": 28, "sec": [11, 67], "prog": 4294967295}
+{"ev": "CHUNK_END_DEATH", "chunk": 156, "deaths_at_start": 1, "px_end": 0.0, "px": 0.0, "score": 4100, "gren": 0, "php": 0, "sec": [0, 0], "prog": 2147483648}
+{"ev": "death", "chunk": 157, "deaths": 2, "px": 0.0, "score": 4100, "gren": 0, "php": 0, "sec": [0, 0], "prog": 2147483648}
+{"ev": "SCORE_EVENT", "chunk": 158, "from": 4100, "to": 4501}
+{"ev": "PUSH_DUMP", "chunk": 160, "mode": "engage", "max_px": 1087.6, "deaths": 2, "rescues": 2, "saved_i": 0, "px": 65524.0, "score": 4501, "gren": 10, "php": 242, "sec": [12, 9], "prog": 4294967295}
+{"ev": "RESTART_LEAK_DYNAMIC", "chunk": 164, "max_px": 1150.2, "px_end": 24.5, "px": 24.5, "score": 4501, "gren": 10, "php": 279, "sec": [11, 9], "prog": 4294967295}
+{"ev": "RESTART_LEAK_DYNAMIC", "chunk": 165, "max_px": 1150.2, "px_end": 24.5, "px": 24.5, "score": 4501, "gren": 10, "php": 279, "sec": [11, 9], "prog": 4294967295}
+{"ev": "RESTART_LEAK_DYNAMIC", "chunk": 166, "max_px": 1150.2, "px_end": 24.5, "px": 24.5, "score": 4501, "gren": 10, "php": 279, "sec": [11, 9], "prog": 4294967295}
+{"ev": "RESTART_LEAK_DYNAMIC", "chunk": 167, "max_px": 1150.2, "px_end": 24.5, "px": 24.5, "score": 4501, "gren": 10, "php": 279, "sec": [11, 75], "prog": 4294967295}
+{"ev": "RESTART_LEAK_DYNAMIC", "chunk": 168, "max_px": 1150.2, "px_end": 24.5, "px": 24.5, "score": 4501, "gren": 10, "php": 279, "sec": [11, 75], "prog": 4294967295}
+{"ev": "RESTART_LEAK_DYNAMIC", "chunk": 169, "max_px": 1150.2, "px_end": 24.5, "px": 24.5, "score": 4501, "gren": 10, "php": 279, "sec": [11, 75], "prog": 4294967295}
+{"ev": "RESTART_LEAK_DYNAMIC", "chunk": 170, "max_px": 1150.2, "px_end": 24.5, "px": 24.5, "score": 4501, "gren": 10, "php": 279, "sec": [11, 75], "prog": 4294967295}
+{"ev": "RESTART_LEAK_DYNAMIC", "chunk": 171, "max_px": 1150.2, "px_end": 24.5, "px": 24.5, "score": 4501, "gren": 0, "php": 279, "sec": [11, 1], "prog": 4294967295}
+{"ev": "SCORE_EVENT", "chunk": 176, "from": 4501, "to": 4601}
+{"ev": "SCORE_EVENT", "chunk": 179, "from": 4601, "to": 4801}
+{"ev": "SCORE_EVENT", "chunk": 181, "from": 4801, "to": 4901}
+{"ev": "SCORE_EVENT", "chunk": 183, "from": 4901, "to": 5001}
+{"ev": "SCORE_EVENT", "chunk": 187, "from": 5001, "to": 5101}
+{"ev": "SCORE_EVENT", "chunk": 191, "from": 5101, "to": 5401}
+{"ev": "RESTART_LEAK_DYNAMIC", "chunk": 196, "max_px": 1150.2, "px_end": 2.3, "px": 2.3, "score": 5401, "gren": 8, "php": 256, "sec": [11, 9], "prog": 4294967295}
+{"ev": "RESTART_LEAK_DYNAMIC", "chunk": 197, "max_px": 1150.2, "px_end": 26.3, "px": 26.3, "score": 5401, "gren": 8, "php": 280, "sec": [11, 9], "prog": 4294967295}
+{"ev": "RESTART_LEAK_DYNAMIC", "chunk": 198, "max_px": 1150.2, "px_end": 37.5, "px": 37.5, "score": 5401, "gren": 8, "php": 291, "sec": [11, 9], "prog": 4294967295}
+{"ev": "RESTART_LEAK_DYNAMIC", "chunk": 199, "max_px": 1150.2, "px_end": 37.5, "px": 37.5, "score": 5401, "gren": 8, "php": 291, "sec": [11, 9], "prog": 4294967295}
+{"ev": "RESTART_LEAK_DYNAMIC", "chunk": 200, "max_px": 1150.2, "px_end": 37.5, "px": 37.5, "score": 5401, "gren": 8, "php": 291, "sec": [11, 9], "prog": 4294967295}
+{"ev": "RESTART_LEAK_DYNAMIC", "chunk": 201, "max_px": 1150.2, "px_end": 37.5, "px": 37.5, "score": 5401, "gren": 8, "php": 291, "sec": [11, 9], "prog": 4294967295}
+{"ev": "RESTART_LEAK_DYNAMIC", "chunk": 202, "max_px": 1150.2, "px_end": 37.5, "px": 37.5, "score": 5401, "gren": 8, "php": 291, "sec": [11, 9], "prog": 4294967295}
+{"ev": "RESTART_LEAK_DYNAMIC", "chunk": 203, "max_px": 1150.2, "px_end": 37.5, "px": 37.5, "score": 5401, "gren": 8, "php": 291, "sec": [11, 9], "prog": 4294967295}
+{"ev": "RESTART_LEAK_DYNAMIC", "chunk": 204, "max_px": 1150.2, "px_end": 37.5, "px": 37.5, "score": 5401, "gren": 8, "php": 291, "sec": [11, 9], "prog": 4294967295}
+{"ev": "RESTART_LEAK_DYNAMIC", "chunk": 205, "max_px": 1150.2, "px_end": 37.5, "px": 37.5, "score": 5401, "gren": 8, "php": 291, "sec": [11, 9], "prog": 4294967295}
+{"ev": "RESTART_LEAK_DYNAMIC", "chunk": 206, "max_px": 1150.2, "px_end": 37.5, "px": 37.5, "score": 5401, "gren": 8, "php": 291, "sec": [11, 9], "prog": 4294967295}
+{"ev": "RESTART_LEAK_DYNAMIC", "chunk": 211, "max_px": 1164.0, "px_end": 37.5, "px": 37.5, "score": 5401, "gren": 8, "php": 291, "sec": [11, 75], "prog": 4294967295}
+{"ev": "RESTART_LEAK_DYNAMIC", "chunk": 212, "max_px": 1164.0, "px_end": 37.5, "px": 37.5, "score": 5401, "gren": 8, "php": 291, "sec": [11, 9], "prog": 4294967295}
+{"ev": "RESTART_LEAK_DYNAMIC", "chunk": 213, "max_px": 1164.0, "px_end": 37.5, "px": 37.5, "score": 5401, "gren": 8, "php": 291, "sec": [11, 75], "prog": 4294967295}
+{"ev": "RESTART_LEAK_DYNAMIC", "chunk": 214, "max_px": 1164.0, "px_end": 37.5, "px": 37.5, "score": 5401, "gren": 8, "php": 291, "sec": [11, 75], "prog": 4294967295}
+{"ev": "RESTART_LEAK_DYNAMIC", "chunk": 215, "max_px": 1164.0, "px_end": 37.5, "px": 37.5, "score": 5401, "gren": 8, "php": 291, "sec": [11, 75], "prog": 4294967295}
+{"ev": "RESTART_LEAK_DYNAMIC", "chunk": 216, "max_px": 1164.0, "px_end": 37.5, "px": 37.5, "score": 5401, "gren": 8, "php": 291, "sec": [11, 75], "prog": 4294967295}
+{"ev": "CHUNK_END_DEATH", "chunk": 217, "deaths_at_start": 2, "px_end": 0.0, "px": 0.0, "score": 5401, "gren": 0, "php": 0, "sec": [0, 0], "prog": 2147483648}
+{"ev": "death", "chunk": 218, "deaths": 3, "px": 0.0, "score": 5401, "gren": 0, "php": 0, "sec": [0, 0], "prog": 2147483648}
+{"ev": "SCORE_EVENT", "chunk": 221, "from": 5401, "to": 5501}
+{"ev": "SCORE_EVENT", "chunk": 222, "from": 5501, "to": 5601}
+{"ev": "SCORE_EVENT", "chunk": 226, "from": 5601, "to": 5701}
+{"ev": "RESTART_LEAK_DYNAMIC", "chunk": 233, "max_px": 1164.0, "px_end": 30.6, "px": 30.6, "score": 5701, "gren": 10, "php": 285, "sec": [11, 9], "prog": 4294967295}
+{"ev": "RESTART_LEAK_DYNAMIC", "chunk": 234, "max_px": 1164.0, "px_end": 30.6, "px": 30.6, "score": 5701, "gren": 10, "php": 285, "sec": [11, 9], "prog": 4294967295}
+{"ev": "RESTART_LEAK_DYNAMIC", "chunk": 235, "max_px": 1164.0, "px_end": 30.6, "px": 30.6, "score": 5701, "gren": 10, "php": 285, "sec": [11, 9], "prog": 4294967295}
+{"ev": "RESTART_LEAK_DYNAMIC", "chunk": 236, "max_px": 1164.0, "px_end": 30.6, "px": 30.6, "score": 5701, "gren": 10, "php": 285, "sec": [11, 75], "prog": 4294967295}
+{"ev": "RESTART_LEAK_DYNAMIC", "chunk": 237, "max_px": 1164.0, "px_end": 30.6, "px": 30.6, "score": 5701, "gren": 10, "php": 285, "sec": [11, 75], "prog": 4294967295}
+{"ev": "RESTART_LEAK_DYNAMIC", "chunk": 238, "max_px": 1164.0, "px_end": 30.6, "px": 30.6, "score": 5701, "gren": 10, "php": 285, "sec": [11, 75], "prog": 4294967295}
+{"ev": "RESTART_LEAK_DYNAMIC", "chunk": 239, "max_px": 1164.0, "px_end": 30.6, "px": 30.6, "score": 5701, "gren": 10, "php": 285, "sec": [11, 75], "prog": 4294967295}
+{"ev": "CHUNK_END_DEATH", "chunk": 240, "deaths_at_start": 3, "px_end": 0.0, "px": 0.0, "score": 5701, "gren": 0, "php": 0, "sec": [0, 0], "prog": 2147483648}
+{"ev": "death", "chunk": 241, "deaths": 4, "px": 0.0, "score": 5701, "gren": 0, "php": 0, "sec": [0, 0], "prog": 2147483648}
+{"ev": "SCORE_EVENT", "chunk": 242, "from": 5701, "to": 5902}
+{"ev": "SCORE_EVENT", "chunk": 249, "from": 5902, "to": 6202}
+{"ev": "CHUNK_END_DEATH", "chunk": 268, "deaths_at_start": 4, "px_end": 0.0, "px": 0.0, "score": 6202, "gren": 0, "php": 0, "sec": [0, 0], "prog": 2147483648}
+{"ev": "death", "chunk": 269, "deaths": 5, "px": 0.0, "score": 6202, "gren": 0, "php": 0, "sec": [0, 0], "prog": 2147483648}
+{"ev": "PUSH_DUMP", "chunk": 280, "mode": "aa_kill", "max_px": 1164.0, "deaths": 5, "rescues": 5, "saved_i": 0, "px": 1146.7, "score": 6202, "gren": 9, "php": 274, "sec": [10, 1], "prog": 4294967295}
+{"ev": "SCORE_EVENT", "chunk": 282, "from": 6202, "to": 6402}
+{"ev": "CHUNK_END_DEATH", "chunk": 308, "deaths_at_start": 5, "px_end": 0.0, "px": 0.0, "score": 6402, "gren": 10, "php": 0, "sec": [0, 0], "prog": 2147483648}
+{"ev": "death", "chunk": 309, "deaths": 6, "px": 0.0, "score": 6402, "gren": 10, "php": 0, "sec": [0, 0], "prog": 2147483648}
+{"ev": "SCORE_EVENT", "chunk": 320, "from": 6402, "to": 6602}
+{"ev": "PUSH_DUMP", "chunk": 320, "mode": "aa_kill", "max_px": 1164.0, "deaths": 6, "rescues": 6, "saved_i": 0, "px": 1114.0, "score": 6602, "gren": 8, "php": 242, "sec": [0, 0], "prog": 2147483648}
+{"ev": "FRONTIER_SAVED", "state": "r45_frontier_a", "px": 1224.9, "census_n": 9}
+{"ev": "SCORE_EVENT", "chunk": 325, "from": 6602, "to": 6702}
+{"ev": "FRONTIER_SAVED", "state": "r45_frontier_b", "px": 1254.8, "census_n": 13}
+{"ev": "PUSH_DONE", "outcome": "frontiers_saved", "deaths": 6, "rescues": 6, "frontiers": 2, "frontier_px": 1254.8, "px": 1254.8, "score": 6702, "gren": 8, "php": 146, "sec": [11, 1], "prog": 4294967295}

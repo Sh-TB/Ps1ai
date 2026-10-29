@@ -28,7 +28,7 @@
   },
   {
    "code": "800CA30C 0068",
-   "meaning": "Invisible P1 \u2014 data poke inside P1 entity",
+   "meaning": "Invisible P1 — data poke inside P1 entity",
    "source": "cheatcc 2001",
    "validation": "INFERRED (struct-consistent)"
   }
@@ -60,7 +60,7 @@
     "source": "worklog+docs issue6_r35_report.md"
    },
    "status": "VERIFIED",
-   "what": "truck lives in slot 33 \u2014 outside the historical 24-slot scan window"
+   "what": "truck lives in slot 33 — outside the historical 24-slot scan window"
   },
   {
    "frame": null,
@@ -78,7 +78,7 @@
     "source": "scripts/r37t1_msx_cheat_anchors.py"
    },
    "status": "OBSERVED",
-   "what": "r37t1: pure-input menu ladder (r17 ground truth) NOT reproduced within a 2-boot cap after rollback #8 \u2014 states 9->6 regression under repeated CROSS; checkpoints wiped"
+   "what": "r37t1: pure-input menu ladder (r17 ground truth) NOT reproduced within a 2-boot cap after rollback #8 — states 9->6 regression under repeated CROSS; checkpoints wiped"
   },
   {
    "frame": null,
@@ -88,7 +88,7 @@
    },
    "status": "CONTRADICTED",
    "supersedes_role": "P1_entity_HP (base+0x8E)",
-   "what": "The '+0x8E = entity HP' semantic label is CONTRADICTED for world entities and UNRESOLVED for slot 0. Contradicting evidence: (a) parked truck +0x8E stayed 254->254 under standing fire while its +0xA4 fell 300->0 under grenades (the historical '254->207 grenade damage' was the truck MOVING \u2014 screen-x shrink); (b) chopper +0x8E decayed 148->2 with NO player fire (camera advance, Gate B no-fire control, 3/3 identical); (c) static: writer 0x80064674 adds camera-scroll deltas to +0x8C/+0x90 per entity (+0x8E = screen-x integer half); (d) the Issue #5 freeze A/B held the PAIR 0x800CA2F6+0x800CA2FE, so word-level causality was never isolated, and pincorr1 slot-0 readings (291->81, damage-correlated, regen-like recoveries, px-scroll ~0) do not distinguish player-HP from other per-entity state. RESOLUTION RULE: +0x8E is EXCLUDED from success oracles; armored-entity HP evidence is +0xA4; the address observation stays under role entity_field_+0x8E."
+   "what": "The '+0x8E = entity HP' semantic label is CONTRADICTED for world entities and UNRESOLVED for slot 0. Contradicting evidence: (a) parked truck +0x8E stayed 254->254 under standing fire while its +0xA4 fell 300->0 under grenades (the historical '254->207 grenade damage' was the truck MOVING — screen-x shrink); (b) chopper +0x8E decayed 148->2 with NO player fire (camera advance, Gate B no-fire control, 3/3 identical); (c) static: writer 0x80064674 adds camera-scroll deltas to +0x8C/+0x90 per entity (+0x8E = screen-x integer half); (d) the Issue #5 freeze A/B held the PAIR 0x800CA2F6+0x800CA2FE, so word-level causality was never isolated, and pincorr1 slot-0 readings (291->81, damage-correlated, regen-like recoveries, px-scroll ~0) do not distinguish player-HP from other per-entity state. RESOLUTION RULE: +0x8E is EXCLUDED from success oracles; armored-entity HP evidence is +0xA4; the address observation stays under role entity_field_+0x8E."
   },
   {
    "frame": null,
@@ -97,7 +97,7 @@
     "source": "scripts uplob6-12 + truck_resolution_session*.json + ps1play/agent/combat.py truck_kill_segments"
    },
    "status": "VERIFIED",
-   "what": "Truck campaign semantics (Oct 25, GAMEPLAY_VERIFIED): armored truck HP = u16 at entity_base+0xA4 (300 fresh; grenade = 100 dmg; death state word0 = 0xA304); truck identity = ground contact (h=64) + state 0x9E88 + hp_a4 in [100,600]; truck seen in slot 14 (Oct 24 phase) and slot 33 (Oct 25 phase) \u2014 scans must cover >=36 slots"
+   "what": "Truck campaign semantics (Oct 25, GAMEPLAY_VERIFIED): armored truck HP = u16 at entity_base+0xA4 (300 fresh; grenade = 100 dmg; death state word0 = 0xA304); truck identity = ground contact (h=64) + state 0x9E88 + hp_a4 in [100,600]; truck seen in slot 14 (Oct 24 phase) and slot 33 (Oct 25 phase) — scans must cover >=36 slots"
   },
   {
    "frame": null,
@@ -106,7 +106,7 @@
     "source": "scripts/release_test.py rel1-3 + policy_chain_trial.py (session 4) vs r35a_attack*.py (R35)"
    },
    "status": "VERIFIED",
-   "what": "D7 release condition: the section VM's pending-entity queue CLEARING releases the pin \u2014 walker state 0xB -> 0xC, flags 0x1 -> 0x8, progress word leaves 0xFFFFFFFF (PROVEN 3/3 + policy banner 3/3 from the Oct-25 pin_ckpt phase, MISSION 1 banner 6/6 total); NOT yet reproduced from a post-rollback rebuilt checkpoint (R35's 4 custom policies died at the pin with zero kills \u2014 checkpoint-phase variance, worklog 2026-10-23 note); release REQUIRES the section entities dead (chopper hop-lob |dx| 7-29; frozen 0x4054 soldiers = 2 AIMED bullets from px ~992 side; truck via grenade lob |dx| 53-135)"
+   "what": "D7 release condition: the section VM's pending-entity queue CLEARING releases the pin — walker state 0xB -> 0xC, flags 0x1 -> 0x8, progress word leaves 0xFFFFFFFF (PROVEN 3/3 + policy banner 3/3 from the Oct-25 pin_ckpt phase, MISSION 1 banner 6/6 total); NOT yet reproduced from a post-rollback rebuilt checkpoint (R35's 4 custom policies died at the pin with zero kills — checkpoint-phase variance, worklog 2026-10-23 note); release REQUIRES the section entities dead (chopper hop-lob |dx| 7-29; frozen 0x4054 soldiers = 2 AIMED bullets from px ~992 side; truck via grenade lob |dx| 53-135)"
   },
   {
    "frame": null,
@@ -115,7 +115,7 @@
     "source": "scripts/r38t1_reach.py + r38t2_trials.py (trialA1/A2 vs trialB_control)"
    },
    "status": "VERIFIED",
-   "what": "R38 TRUCK KILLED BY THE SHIPPED POLICY (matched live trial from the rebuilt r38_ckpt, deterministic x2): hp_a4 240 at engage -> -10 steps under sustained standing fire -> 150, one grenade -100 (counter 8->7) -> 50 -> wreck residual 30 -> 10 -> row gone by c95; wreck state 0xA44C at slot 9; the pure-RIGHT control arm held hp_a4 = 300 FROZEN for 45 chunks (no self-decay \u2014 the damage is input-caused). Score 0 -> 4600 (25+ kill events) with 0 combat deaths vs control score 0. The Oct-23 'forward fire does not kill armor (254->254)' reading is hereby corrected: that field was +0x8E screen-x; the REAL hp_a4 DOES chip under sustained fire"
+   "what": "R38 TRUCK KILLED BY THE SHIPPED POLICY (matched live trial from the rebuilt r38_ckpt, deterministic x2): hp_a4 240 at engage -> -10 steps under sustained standing fire -> 150, one grenade -100 (counter 8->7) -> 50 -> wreck residual 30 -> 10 -> row gone by c95; wreck state 0xA44C at slot 9; the pure-RIGHT control arm held hp_a4 = 300 FROZEN for 45 chunks (no self-decay — the damage is input-caused). Score 0 -> 4600 (25+ kill events) with 0 combat deaths vs control score 0. The Oct-23 'forward fire does not kill armor (254->254)' reading is hereby corrected: that field was +0x8E screen-x; the REAL hp_a4 DOES chip under sustained fire"
   },
   {
    "frame": null,
@@ -124,7 +124,7 @@
     "source": "scripts/r38t3_aa_trial.py (boots 3-5, ledger amendments 3->4->5 disclosed pre-run; one aborted launch corrected in the ledger)"
    },
    "status": "OBSERVED",
-   "what": "R38 D7 PIN STILL HOLDS FROM THE REBUILT PHASE \u2014 blocker ISOLATED to the chopper: at every pin observation the census keeps slot 4 = chopper (st 0xAA94/0xABDC cycle, hp_a4 300, h 207-210) ALIVE while the truck is a wreck (0xA44C) and the soldier wave is dead; the walker cycles (0xA,0x43) <-> (0,0) and no 0xC appears. The new aa_kill rule (J1 hop + UP-lob) CONNECTED once live per run (hp_a4 300 -> 200, the -100 grenade signature, deterministic x2) but the kill needs 3 connects and the connect rate is ~1/10 throws (chopper patrols dx -9..-51 vs the proven 7-29 band). A |dx|<=40 pre-throw gate was tried and FALSIFIED (0/6 connects, earlier one-shot bomb death php 291->0 because the first build had dropped the rain-hop); ungated + rain-hop restored = stable. Runs end at the death->restart wall; F6 respawn refills grenades (8->10 observed). Cheats stayed OUT of all success claims"
+   "what": "R38 D7 PIN STILL HOLDS FROM THE REBUILT PHASE — blocker ISOLATED to the chopper: at every pin observation the census keeps slot 4 = chopper (st 0xAA94/0xABDC cycle, hp_a4 300, h 207-210) ALIVE while the truck is a wreck (0xA44C) and the soldier wave is dead; the walker cycles (0xA,0x43) <-> (0,0) and no 0xC appears. The new aa_kill rule (J1 hop + UP-lob) CONNECTED once live per run (hp_a4 300 -> 200, the -100 grenade signature, deterministic x2) but the kill needs 3 connects and the connect rate is ~1/10 throws (chopper patrols dx -9..-51 vs the proven 7-29 band). A |dx|<=40 pre-throw gate was tried and FALSIFIED (0/6 connects, earlier one-shot bomb death php 291->0 because the first build had dropped the rain-hop); ungated + rain-hop restored = stable. Runs end at the death->restart wall; F6 respawn refills grenades (8->10 observed). Cheats stayed OUT of all success claims"
   },
   {
    "what": "R39 boot-1 matched-anchor delivery A/B (one boot, anchor r39_anchor = the first aa_kill chunk with the chopper inside 160px, BASE reproduced R38 trialAA1 exactly first): the 15f-chunked in-policy J1 delivery connected 0/8 while the Session-3 ATOMIC script delivery (same anchor, same 2400f budget) connected 2/12 (verified hp_a4 300->200 and 200->100). The delivery mechanism, not geometry alone, is the first-order connect-rate factor.",
@@ -271,7 +271,7 @@
    }
   },
   {
-   "what": "R43 premise staleness (disclosed): r38_ckpt AND r42_postkill are ABSENT from emu/ws/states/ (a filesystem rollback \u2014 only Oct-20 states survived; the same class as the documented mspsx_lic rollback). The round rebuilt from the surviving session-5 anchor issue5_m1_start (M1 start px~26). Ledger cap 7/7 with corrected filings disclosed: entries 1+2 = real boots aborted at rebuild c3 by the r42t1 deep-posture guard (px<700) copied verbatim onto a px~26 start anchor; entry 3 = filed-but-died (external kill pre-boot); entry 4 = real boot killed mid-campaign.",
+   "what": "R43 premise staleness (disclosed): r38_ckpt AND r42_postkill are ABSENT from emu/ws/states/ (a filesystem rollback — only Oct-20 states survived; the same class as the documented mspsx_lic rollback). The round rebuilt from the surviving session-5 anchor issue5_m1_start (M1 start px~26). Ledger cap 7/7 with corrected filings disclosed: entries 1+2 = real boots aborted at rebuild c3 by the r42t1 deep-posture guard (px<700) copied verbatim onto a px~26 start anchor; entry 3 = filed-but-died (external kill pre-boot); entry 4 = real boot killed mid-campaign.",
    "status": "OBSERVED",
    "provenance": {
     "evidence": "data/games/SLUS-01212/truck_evidence/r43/ (boots_used.json cap 7/7 + r43_boot2_leak_report + r43_boot5/6_s1/7_s2 reports+jsonl; scratch/r43/pngs local-only)",
@@ -279,7 +279,7 @@
    }
   },
   {
-   "what": "R43 boot-5 ROOT CAUSE + capability revision: (a) the r42t1 resolve gate (aa_resolved>=1) is STALE-STAT-UNSAFE across mission restarts \u2014 after 2 deaths the mission restarted (px back to ~24) and the gate fired on the policy's surviving stat, saving a RESTART posture (RESOLVED at c167, px=24.5, flags=75, score 4501) as the postkill; r42t1 itself was safe only because its rebuild never died (deaths=0). (b) The boot-4 'village stall' hypothesis is REVISED: the current (queue_priority) policy PASSED the village from-start TWICE (boot-5 rebuild c0-167 + the boot-5 latch replay 4501->9403) \u2014 boot 4 was in the silent aa campaign, not stalled.",
+   "what": "R43 boot-5 ROOT CAUSE + capability revision: (a) the r42t1 resolve gate (aa_resolved>=1) is STALE-STAT-UNSAFE across mission restarts — after 2 deaths the mission restarted (px back to ~24) and the gate fired on the policy's surviving stat, saving a RESTART posture (RESOLVED at c167, px=24.5, flags=75, score 4501) as the postkill; r42t1 itself was safe only because its rebuild never died (deaths=0). (b) The boot-4 'village stall' hypothesis is REVISED: the current (queue_priority) policy PASSED the village from-start TWICE (boot-5 rebuild c0-167 + the boot-5 latch replay 4501->9403) — boot 4 was in the silent aa campaign, not stalled.",
    "status": "VERIFIED",
    "provenance": {
     "evidence": "r43_boot5.jsonl (RESOLVED event) + r43_boot5_report.json",
@@ -287,7 +287,7 @@
    }
   },
   {
-   "what": "R43 boots 6+7 (two-stage split, the cross-process savestate restore is the R42-proven pattern): the depth-conditional gate (aa_resolved>=1 AND px>700) saved r43_postkill at c172 with px=992.0, flags=0x4B (the R41 RELEASE_SIGNATURE), score 4501 \u2014 but that posture is POST-RESTART + CHECKPOINT-RESPAWN (the c164 chopper resolve was followed by a silent timer-expiry-style mission restart px 1150->25 that the shallow-anchor guard could not see, then the checkpoint reload back to 992). Stage 2 from it: 900 latch chunks, 8 deaths (all continue-rescued, counted + disclosed), score 4501->13704, px pushed to 1378 (PAST the 1285-1310 soldier wave \u2014 new territory) but held at the 1272 clamp; mission_end NEVER latched (0 latches); the R41 partial-F1 gap (flags partial, prog 0xffffffff unmoved) + re-armed section-VM nodes persist across restarts. THE PRIMARY NEGATIVE: the INTERACTIVE M2 entry is NOT claimable from a post-restart posture this round; the clean (deaths=0) R42-style resolve posture remains the requirement.",
+   "what": "R43 boots 6+7 (two-stage split, the cross-process savestate restore is the R42-proven pattern): the depth-conditional gate (aa_resolved>=1 AND px>700) saved r43_postkill at c172 with px=992.0, flags=0x4B (the R41 RELEASE_SIGNATURE), score 4501 — but that posture is POST-RESTART + CHECKPOINT-RESPAWN (the c164 chopper resolve was followed by a silent timer-expiry-style mission restart px 1150->25 that the shallow-anchor guard could not see, then the checkpoint reload back to 992). Stage 2 from it: 900 latch chunks, 8 deaths (all continue-rescued, counted + disclosed), score 4501->13704, px pushed to 1378 (PAST the 1285-1310 soldier wave — new territory) but held at the 1272 clamp; mission_end NEVER latched (0 latches); the R41 partial-F1 gap (flags partial, prog 0xffffffff unmoved) + re-armed section-VM nodes persist across restarts. THE PRIMARY NEGATIVE: the INTERACTIVE M2 entry is NOT claimable from a post-restart posture this round; the clean (deaths=0) R42-style resolve posture remains the requirement.",
    "status": "OBSERVED",
    "provenance": {
     "evidence": "r43_boot6_s1_report.json + r43_boot7_s2_report.json + jsonl",
@@ -295,7 +295,7 @@
    }
   },
   {
-   "what": "R43 harness lessons (reusable guards, both rooted in measured failures): (1) policy stats (aa_resolved) survive deaths/restarts \u2014 ANY stat-gated save needs a world-depth condition; (2) the rebuild restart-leak guard must be DYNAMIC (max_px>700 then px<700 = leak), not phase-open-state \u2014 the shallow-anchor rebuild ran the deep phase with the guard permanently off and the c164->c165 restart (px 1150->25, no death event \u2014 the timer-expiry path reads as alive-at-25) went undetected; (3) frontier postures must be SAVED (the px-1378 posture of boot 7 was lost to exit without a save).",
+   "what": "R43 harness lessons (reusable guards, both rooted in measured failures): (1) policy stats (aa_resolved) survive deaths/restarts — ANY stat-gated save needs a world-depth condition; (2) the rebuild restart-leak guard must be DYNAMIC (max_px>700 then px<700 = leak), not phase-open-state — the shallow-anchor rebuild ran the deep phase with the guard permanently off and the c164->c165 restart (px 1150->25, no death event — the timer-expiry path reads as alive-at-25) went undetected; (3) frontier postures must be SAVED (the px-1378 posture of boot 7 was lost to exit without a save).",
    "status": "OBSERVED",
    "provenance": {
     "evidence": "data/games/SLUS-01212/truck_evidence/r43/ (boots_used.json cap 7/7 + r43_boot2_leak_report + r43_boot5/6_s1/7_s2 reports+jsonl; scratch/r43/pngs local-only)",
@@ -324,6 +324,30 @@
    "provenance": {
     "evidence": "data/games/SLUS-01212/truck_evidence/r44/ (boots_used.json cap 4/4 + r44_boot[1,2]_s1 + r44_boot[3,4]_s3 jsonl+reports; scratch/r44/pngs local-only; buzzybee 40%-track round in scratch/r44b + docs/issue6_r44b_report.md)",
     "source": "R44 boots 3-4 (stage 3, the fallback-b pivot)"
+   }
+  },
+  {
+   "what": "R45 SANDBOX ROLLBACK + the disclosed rebuild: the R43/R44 states (r43_postkill, r44_postkill, r44_frontier_a/b) are LOST to the filesystem rollback; the session-5 anchor issue5_m1_start (Oct 20) SURVIVED; the capsule contingency applied verbatim (a rebuild boot only if a frontier is lost, disclosed).  Two background launches died silently inside boot_to_demo (ledger + RUN_START only) - refunded per the corrected-filings precedent; the two-stage FOREGROUND protocol (stage-1 rebuild / stage-2 readout) then ran clean inside cap 2/2 (48 s + 29 s wall).",
+   "status": "VERIFIED",
+   "provenance": {
+    "source": "R45 stage-1+stage-2 foreground boots + the refund amendments (r45t1_hp_readout.py)",
+    "evidence": "data/games/SLUS-01212/truck_evidence/r45/ (boots_used.json cap 2/2 with the refunded ghost entries + r45_boot2_s1/s2 jsonl+reports; scratch/r45/pngs local-only; the frontier states r45_frontier_a/b survive in the local emulator workspace)"
+   }
+  },
+  {
+   "what": "R45 tainted frontier rebuild (stage 1): the eager rolling saves captured COMBAT-LIVE postures - r45_frontier_b (px 1254.8, census 13 live in the x 1150-1450 window) + r45_frontier_a; 6 deaths / 6 continue-rescues counted and disclosed; the rebuilt frontier lineage is TAINTED (never a clean claim) - the INTERACTIVE M2 gate is untouched by this round.",
+   "status": "OBSERVED",
+   "provenance": {
+    "source": "R45 stage-1 (the tainted rebuild push, r45t1_hp_readout.py 1)",
+    "evidence": "data/games/SLUS-01212/truck_evidence/r45/ (boots_used.json cap 2/2 with the refunded ghost entries + r45_boot2_s1/s2 jsonl+reports; scratch/r45/pngs local-only; the frontier states r45_frontier_a/b survive in the local emulator workspace)"
+   }
+  },
+  {
+   "what": "R45 the 0x4054 soft-soldier HP-word readout (restore-only from r45_frontier_a px 1224.9 score 6702): 1 zero-input control tap + 14 aimed taps against the 3 capsule candidates (+0x8E/+0xA4/+0x9E) plus the disclosed exploratory wide net (u16 0x88..0xA8 step 2).  BOUNDED NEGATIVE on the candidates + a constructive finding: +0xA4 = 0 throughout (armored-only; the truck semantics hold), +0x9E silent, +0x8E = screen-x again (the 0x8C/0x94 shadows move in sync - no damage tracking); the slot-20 soldier (st 0x4054, dx +60.8) died on the 2nd aimed tap with the flat +100 at the death tap = the ONE-HIT kill class - no word in 0x88..0xA8 behaved as a damage counter (n = 1 soldier; cap 2/2 spent).  Score events: +500 (tap 1, attribution unresolved - OBSERVED), +100 x 3 (soldier-class).  Protocol note for R46: the tap fallback hit AIRBORNE projectiles after the ground entities died (dscore 0) - filter kind=='enemy'.",
+   "status": "VERIFIED",
+   "provenance": {
+    "source": "R45 stage-2 (the restore-only readout, r45t1_hp_readout.py 2)",
+    "evidence": "data/games/SLUS-01212/truck_evidence/r45/ (boots_used.json cap 2/2 with the refunded ghost entries + r45_boot2_s1/s2 jsonl+reports; scratch/r45/pngs local-only; the frontier states r45_frontier_a/b survive in the local emulator workspace)"
    }
   }
  ],
@@ -369,7 +393,7 @@
    "endian": "little",
    "game_status": "VERIFIED",
    "provenance": {
-    "evidence": "worklog r-b256b17: stride 0x14C, HP+0x8E, spawn+0xA0; damage-entry enemy_800A41D8 (R38 note: the HP+0x8E part of that worklog line is the SUPERSEDED label \u2014 see the CONTRADICTED event; the stride/base stand on independent evidence)",
+    "evidence": "worklog r-b256b17: stride 0x14C, HP+0x8E, spawn+0xA0; damage-entry enemy_800A41D8 (R38 note: the HP+0x8E part of that worklog line is the SUPERSEDED label — see the CONTRADICTED event; the stride/base stand on independent evidence)",
     "source": "Issue #5 A/B (hp_pair_freeze) + r24/25 live probes"
    },
    "role": "entity_table_base",
@@ -384,7 +408,7 @@
     "evidence": "A/B froze the PAIR 0x800CA2F6+0x800CA2FE (mediator word NOT isolated); Gate B no-fire decay 3/3 identical (raw JSON local-wiped; committed records: docs/tools_matrix_issue10.md caveat + combat.py note); pincorr1 slot0+0x8E swings 291->81 damage-correlated with regen-like recoveries while px-scroll ~0 (download/mission2_section_pin/pincorr1/result.json); R38 reader census: 5 EXE read-hits, ZERO halfword stores to +0x8E (death_path.json + capstone decode; r38_function_shortlist.json); EXCLUDED from success oracles per R38 policy",
     "source": "Issue #5 pair-freeze A/B (b256b17) + Issue #10 Gate B no-fire control (fab6538) + pincorr1 telemetry"
    },
-   "role": "entity_field_+0x8E (slot0 address observation; semantics UNRESOLVED \u2014 see CONTRADICTED event)",
+   "role": "entity_field_+0x8E (slot0 address observation; semantics UNRESOLVED — see CONTRADICTED event)",
    "signed": false,
    "va": 2148311798,
    "width": 2
@@ -393,7 +417,7 @@
    "endian": "little",
    "game_status": "VERIFIED",
    "provenance": {
-    "evidence": "truck hp_a4 300->200->100->0 under grenades (100 dmg/hit) with +400/+800 score events; kill GAMEPLAY_VERIFIED 16x across sessions; docs/truck_blocker_resolution.md; NOTE same address as the cheatcc 'Invisible P1' poke (cheat_leads[2]) \u2014 P1-slot +0xA4 semantics remain UNKNOWN",
+    "evidence": "truck hp_a4 300->200->100->0 under grenades (100 dmg/hit) with +400/+800 score events; kill GAMEPLAY_VERIFIED 16x across sessions; docs/truck_blocker_resolution.md; NOTE same address as the cheatcc 'Invisible P1' poke (cheat_leads[2]) — P1-slot +0xA4 semantics remain UNKNOWN",
     "source": "Issue #5 truck campaign (d99db899..b19ad97, uplob6-12 + sessions 1-4)"
    },
    "role": "armored_entity_HP (entity_base+0xA4; truck live-verified)",
@@ -457,7 +481,7 @@
     "note": "corroborates the 0x800D4210 block",
     "source": "gamehacking.org/game/89284 (Code Master/nolberto82) + cheatcc 2001 variants"
    },
-   "role": "unlock_another_mission byte (300-format code pokes it) \u2014 high byte of unlock u16",
+   "role": "unlock_another_mission byte (300-format code pokes it) — high byte of unlock u16",
    "signed": false,
    "va": 2148352531,
    "width": 1
@@ -471,16 +495,18 @@
   "r43_reconciled": "R43: the stale-stat gate lesson (world-depth condition on any stat-gated save), the dynamic restart guard requirement, the from-start village capability CONFIRMED for the current policy, the post-restart posture NEGATIVE for the end chain, next_experiment replaced (R44 = the clean-resolve chain with deaths=0 validity + frontier saves)"
  },
  "next_experiment": {
-  "budget": "cap 2 disclosed pre-run (restore-only from the saved r44 frontier postures; a rebuild boot only if a frontier is lost, disclosed)",
-  "hypothesis": "R45 = fallback (a), the deferred 0x4054 soft-soldier HP-word readout: from r44_frontier_a (px 1341.2) / r44_frontier_b (px 1275.2) the aimed-fire readout at slots 13/16 (x 1150-1450, corpse/wreck excluded) reads the soft-soldier HP word per tap (+0x8E/+0xA4/+0x9E candidates) against verified score gains - converting the last unknown word into verified semantics with the unchanged oracle (walker words + verified score gains + alive 0x0EE518; never +0x8E in any oracle).  The INTERACTIVE M2 entry remains gated on a clean (deaths=0, no-restart) deep resolve posture - no such source exists after the r38_ckpt loss; producing one is a LATER round's problem, not a fallback lever.",
-  "method": "boot -> restore r44_frontier_a -> identify the soft-soldier entity slots in x 1150-1450 (corpse/wreck excluded) -> scripted aimed-fire taps (disclosed inputs) -> per-tap word deltas vs score deltas -> the readout table -> report; repeat from r44_frontier_b if the slot set is empty at 1341."
+  "id": "R46",
+  "budget": "cap 1 disclosed pre-run (restore-only from the SAVED r45_frontier_a/b - they survive on disk; the boot is the core+rom load only)",
+  "hypothesis": "the soft-soldier ONE-HIT kill finding replicates: >= 3 ground (kind=='enemy') 0x4054-class kills from the frontier postures, each dying to a single aimed tap with the flat +100 and NO candidate-word decrement before death - converting the soldier class to 'one-hit, no tracked HP word' with the unchanged oracle (walker words + verified score gains + alive 0x0EE518; never +0x8E); any multi-tap kill or any decrementing word REFUTES the one-hit reading and reopens the HP-word hunt at the non-candidate offsets",
+  "method": "boot -> restore r45_frontier_b (px 1254.8, census 13) -> census -> ground-only aimed taps (kind=='enemy', corpse/wreck excluded) -> per-tap wide net + score deltas -> kill table; restore r45_frontier_a for a second pass in the same boot if kills < 3; report",
+  "m2_gate_note": "the INTERACTIVE M2 entry remains gated on a clean (deaths=0, no-restart) deep resolve posture - no such source exists after the r38_ckpt loss; producing one is a LATER round's problem, not a fallback lever"
  },
  "prior_art": [
   {
-   "classification": "METHOD_REUSABLE \u2014 same build SLUS-01212; 2,931 EXE functions + 7,725 call edges (functions.tsv/edges.json imported as external static analysis); generated C is NOT original source; ONLY 1 named symbol (BootEntry 0x80082A44); no ENEMY.BIN overlay coverage",
+   "classification": "METHOD_REUSABLE — same build SLUS-01212; 2,931 EXE functions + 7,725 call edges (functions.tsv/edges.json imported as external static analysis); generated C is NOT original source; ONLY 1 named symbol (BootEntry 0x80082A44); no ENEMY.BIN overlay coverage",
    "inspected": true,
    "kind": "static recompilation + mechanical C (PSXrecomp)",
-   "license": "none found in repo \u2014 reference-only, local research use; requires owning the game",
+   "license": "none found in repo — reference-only, local research use; requires owning the game",
    "name": "TechnicallyComputers/Metal-Slug-X-Recomp",
    "url": "https://github.com/TechnicallyComputers/Metal-Slug-X-Recomp"
   },
@@ -503,12 +529,13 @@
  ],
  "schema": "ps1play.capsule/1",
  "unknowns": [
-  "slot-0 +0x8E semantics (player-HP-like vs other per-entity state) UNRESOLVED \u2014 pair-freeze A/B did not isolate the mediator word; excluded from oracles",
+  "slot-0 +0x8E semantics (player-HP-like vs other per-entity state) UNRESOLVED — pair-freeze A/B did not isolate the mediator word; excluded from oracles",
   "chopper kill rate: 1 connect/10 throws live; the positioning sub-rule that walks the player INTO the 7-29 band is the R39 lever (the pre-throw gate was falsified)",
   "the +0xA4 damage-delivery write site (EXE-side) not located",
   "score/prisoners/unlock cheat addresses not validated in-game (menu ladder still not re-walked post-rollback)",
   "lives counter data address (both DBs give code patches only)",
   "ENEMY.BIN overlay not covered by external recomp analysis",
   "boss HP outside 0x14C table or phase-gated (Issue #5 BLOCKED)"
- ]
+ ],
+ "last_commit_note": "R45 (60% track): sandbox rollback disclosed (the R43/R44 states lost; the anchor survived; the capsule contingency applied) + the two-stage foreground protocol after two silent background deaths (refunded per corrected-filings); tainted frontier rebuild (6 deaths/6 rescues, r45_frontier_b px 1254.8 census 13 + r45_frontier_a) + the 0x4054 readout = BOUNDED NEGATIVE on +0x8E/+0xA4/+0x9E (0xA4 armored-only 0, 0x9E silent, 0x8E screen-x again) + the ONE-HIT soldier finding (flat +100 at the 2nd-tap death, no decrementing word in the disclosed 0x88..0xA8 net, n=1); next = R46 the one-hit replication (ground-only taps, restore-only cap 1)."
 }

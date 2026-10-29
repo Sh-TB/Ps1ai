@@ -34,11 +34,11 @@
   {
    "frame": null,
    "provenance": {
-    "evidence": "patched image sha 042b94bb\u2026 local-only",
+    "evidence": "patched image sha 042b94bb… local-only",
     "source": "scripts/r23t2_ntsc_patch_and_wrap.py"
    },
    "status": "OBSERVED",
-   "what": "NTSC 2-instruction patch disclosed for rendering (SCREEN_HEIGHT 256->240, SetVideoMode 1->0) \u2014 logic unpatched"
+   "what": "NTSC 2-instruction patch disclosed for rendering (SCREEN_HEIGHT 256->240, SetVideoMode 1->0) — logic unpatched"
   },
   {
    "frame": null,
@@ -90,6 +90,14 @@
    "provenance": {
     "evidence": "scratch/r44b/ (metrics_r44b.json + frames_A/B.jsonl + boot_log_r44b.json + boots_used.json cap 1/1; synced to scratch/r35b)",
     "source": "R44 A/B (r44b_flower_superiority.py, restore-only)"
+   }
+  },
+  {
+   "what": "R45 environment rebuild + the tiered-margin round (disclosed): the sandbox rollback lost the disc AND the r43b gs1 checkpoint; the disc was rebuilt internet-first BEFORE the boot (upstream NDR008/BuzzyBee@master EXE sha256 9b0bfc08... = byte-identical to the r23/r42b/r44b reference; the committed r23t2 wrap script output sha256 042b94bb... = byte-identical to the capsule-recorded artifact; 0 boots) and boot 1 rebuilt the gs1 checkpoint in-process (settle 900f -> START -> gs1 -> serialize; the r42b precedent).  The round: arm A = bot_policy5 verbatim, arm B = bot_policy7 (the TIERED margin: GM 8 pre-danger t_enter>20 / GM 12 in-window; the policy6 flower-proximity selection and the bail unchanged), 1500f/arm on the shared checkpoint.  HONEST NEGATIVE (the third consecutive score-tie): B 0 hits / 6-of-6 / score 1401 TIE / caused 1 (<2) - the tiered margin genuinely engaged (GM8 held 453 dodge frames with ZERO hits = the looser tier is safe at this checkpoint) but the outcomes CONVERGED with arm A (score 1401, hp 5666, 6 passes, flaps 82/81).  CONSTRUCTIVE: the 1401 line is INVARIANT across four policy families (A recipe, policy5, policy6, policy7) = the checkpoint's fixed reward structure (6 wasp passes per 1500f), NOT a policy deficit; the flowers drive HEALTH (+997 each), not score.  Breaking >= 1550 requires leaving the dodge axis: per-frame score telemetry (0x8005883C is readable per frame) to locate the actual score-source events, then either a longer horizon (more passes) or targeting the discovered source.  The margin-floor revert protocol did not fire (0 hits).",
+   "status": "VERIFIED",
+   "provenance": {
+    "source": "R45-B boot 1 (r45b_preposition_margin.py: the checkpoint rebuild + arms A/B)",
+    "evidence": "scratch/r45b/ (boots_used.json cap 1/1 + frames_A/B.jsonl + metrics_r45b.json + boot_log_r45b.json); report docs/issue6_r45b_report.md"
    }
   }
  ],
@@ -281,16 +289,17 @@
   "last_commit_note": "R44 (40% track): score-superiority NEGATIVE (tie 1401; caused 1<2; bail shape = partial-column positionable, 0 full-column sweeps); dominance stands; next R45 = seek-timing pre-position + tiered margin (8 pre-danger / 12 in-window)."
  },
  "next_experiment": {
-  "budget": "0-1 boots (restore-only from the preserved r43b gs1 checkpoint while it survives)",
-  "hypothesis": "R45 (buzzybee): the tie is a FLOWER-SUPPLY limit, not a dodge limit - the score stalled at 1401 across A (0 caused) and B (1 caused) because the 3-slot flower field feeds the same base pickups; the lever is the SEEK TIMING shift: enter the no-wasp windows already AT the next flower's y (the guarantee planner can pre-position during the tail of each dodge instead of at band-exit), plus relax the guarantee margin 12->8 px ONLY in the pre-danger frames (t_enter>20) to widen the reachable set; target: score >1401 (>=1550) with hits 0 and caused >=2; if the margin relaxation produces any hit, revert to GM=12 and file the margin floor as a finding.",
-  "method": "restore the gs1 checkpoint, arm A = bot_policy5 (the R43-B dominance reference) 1500f, arm B = bot_policy7 (pre-position during dodge tail + tiered margin: GM 8 pre-danger / 12 in-window) 1500f; oracle: hits==0 AND score>A AND caused>=2; never write RAM, legal inputs only."
+  "id": "R46",
+  "budget": "0-1 boots (restore-only from the r45b gs1 checkpoint while it survives)",
+  "hypothesis": "the score SOURCE is identifiable: per-frame u32 reads at 0x8005883C during one bot_policy5 arm (1500f) localize every score delta to its frame + game state (wasp pass completion vs dodge timing vs idle), converting the 1401 invariant from a curiosity into a mechanism; if pass-completion dominates, the >= 1550 lever is a longer CAP_F (more passes) with the dominance constraints unchanged (0 hits, caused >= 2)",
+  "method": "restore-only, 1 boot max: instrument run_arm with a per-frame score read (cheap: one u32 per frame into the jsonl) -> one bot_policy5 arm -> the score-source table -> decide the R47 lever from the mechanism, not from another policy variant"
  },
  "prior_art": [
   {
    "classification": "DIRECTLY_REUSABLE (source-assisted)",
    "inspected": true,
    "kind": "upstream repo (code, MIT)",
-   "license": "MIT header only \u2014 flagged",
+   "license": "MIT header only — flagged",
    "name": "NDR008/BuzzyBee",
    "url": "https://github.com/NDR008/BuzzyBee"
   }
