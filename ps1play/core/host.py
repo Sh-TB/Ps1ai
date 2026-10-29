@@ -86,6 +86,11 @@ class LibretroCore:
         self.log_history = []
         self._keepalive = []
         self._buttons = set()
+        # R53-learn: port-1 (pad2) buttons — used ONLY by the scenario-
+        # opponent feature of the learning foundation. Default empty =
+        # byte-identical behaviour for every pre-existing caller (MSX,
+        # buzzybee, homebrew): port 1 keeps returning 0.
+        self._buttons_p1 = set()
         self.frames_run = 0
         self._ram = self._vram = self._sram = None
         self._ram_buf = self._vram_buf = self._sram_buf = None
@@ -133,16 +138,22 @@ class LibretroCore:
 
         @INPUT_STATE
         def input_state(port, device, index, device_id):
-            if port != 0:
-                return 0
             if device == DEVICE_JOYPAD:
-                return 1 if device_id in self._buttons else 0
+                if port == 0:
+                    return 1 if device_id in self._buttons else 0
+                if port == 1:
+                    # scenario-opponent path (R53-learn); empty set when unused
+                    return 1 if device_id in self._buttons_p1 else 0
+                return 0
             if device == DEVICE_ANALOG:
                 # DualShock-class ports: triggers/binds may be queried as
                 # analog buttons (index 2); sticks (index 0/1) are
                 # centered — this agent steers with digital buttons only.
                 if index == 2:      # RETRO_DEVICE_INDEX_ANALOG_BUTTON
-                    return 1 if device_id in self._buttons else 0
+                    if port == 0:
+                        return 1 if device_id in self._buttons else 0
+                    if port == 1:
+                        return 1 if device_id in self._buttons_p1 else 0
                 return 0
             return 0
 
@@ -344,6 +355,10 @@ class LibretroCore:
     def set_buttons(self, spec):
         self._buttons = parse_buttons(spec)
 
+    def set_buttons_p1(self, spec):
+        """Scenario-opponent buttons on port 1 (R53-learn only)."""
+        self._buttons_p1 = parse_buttons(spec)
+
     def reset(self):
         self.lib.retro_reset()
 
@@ -351,9 +366,11 @@ class LibretroCore:
         self.frames_run += 1
         self.lib.retro_run()
 
-    def run(self, frames, buttons=None):
+    def run(self, frames, buttons=None, buttons_p1=None):
         if buttons is not None:
             self.set_buttons(buttons)
+        if buttons_p1 is not None:
+            self.set_buttons_p1(buttons_p1)
         for _ in range(frames):
             self.run_frame()
 
