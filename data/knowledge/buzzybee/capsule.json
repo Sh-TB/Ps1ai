@@ -1,1 +1,287 @@
-{"artifacts":[],"cheat_leads":[],"controls":[{"button":"B (CROSS)","effect":"flap tap (y_vel -3072; gravity +256/f)","provenance":{"evidence":"issue6_r23_report.md + r35 bot A (4000f, score 4003)","source":"worklog+docs issue6_r23_report.md + r35 bot A (4000f, score 4003)"},"status":"VERIFIED"},{"button":"START","effect":"title gate -> gameplay (gs 0->1)","provenance":{"evidence":"r23 boot4: vis_diff 122.4","source":"worklog+docs r23 boot4: vis_diff 122.4"},"status":"VERIFIED"},{"button":"SELECT","effect":"pause/resume (gs 99 + resume)","provenance":{"evidence":"r23 boot4","source":"worklog+docs r23 boot4"},"status":"VERIFIED"}],"events":[{"frame":null,"provenance":{"evidence":"patched image sha 042b94bb… local-only","source":"scripts/r23t2_ntsc_patch_and_wrap.py"},"status":"OBSERVED","what":"NTSC 2-instruction patch disclosed for rendering (SCREEN_HEIGHT 256->240, SetVideoMode 1->0) — logic unpatched"},{"frame":null,"provenance":{"evidence":"issue6_r34_report.md","source":"worklog+docs issue6_r34_report.md"},"status":"VERIFIED","what":"systems closure ALL_PHASES_OK (drain -3/f exact, enemy -1500 edge, death->gs5, auto-return 381f)"},{"frame":null,"provenance":{"evidence":"issue6_r35_report.md","source":"worklog+docs issue6_r35_report.md"},"status":"OBSERVED","what":"PLAYING_BOT: 4000f never-died, 8 causal dodges, 17 flower pickups vs idle 1000; NOT dominant (7 hits/15 passes)"}],"functions":[],"identity":{"exe_sha256":"9b0bfc089c33d6116f2e67436254a4ced6e26275a7cac83f5f0dda95c909a8ba","fingerprint":{"license":"MIT (in-header, flagged)","repo":"github.com/NDR008/BuzzyBee"},"game_id":"buzzybee","region":"NTSC (patched)","serial":"homebrew (PS-EXE wrap)","title":"BuzzyBee"},"memory_fields":[{"endian":"little","game_status":"VERIFIED","provenance":{"evidence":"scratch/r23/buzzybee/boot4_log.json (rollback-affected; facts re-affirmed r34/r35) + r35 entity trace","source":"upstream map + r23t2_buzzybee_boot4.py live probe"},"role":"screen_width","signed":false,"va":2147846160,"width":4},{"endian":"little","game_status":"VERIFIED","provenance":{"evidence":"scratch/r23/buzzybee/boot4_log.json (rollback-affected; facts re-affirmed r34/r35) + r35 entity trace","source":"upstream map + r23t2_buzzybee_boot4.py live probe"},"role":"screen_height","signed":false,"va":2147846164,"width":4},{"endian":"little","game_status":"VERIFIED","provenance":{"evidence":"scratch/r23/buzzybee/boot4_log.json (rollback-affected; facts re-affirmed r34/r35) + r35 entity trace","source":"upstream map + r23t2_buzzybee_boot4.py live probe"},"role":"input_pad","signed":false,"va":2147846172,"width":4},{"endian":"little","game_status":"VERIFIED","provenance":{"evidence":"scratch/r23/buzzybee/boot4_log.json (rollback-affected; facts re-affirmed r34/r35) + r35 entity trace","source":"upstream map + r23t2_buzzybee_boot4.py live probe"},"role":"input_trig","signed":false,"va":2147846176,"width":4},{"endian":"little","game_status":"VERIFIED","provenance":{"evidence":"scratch/r23/buzzybee/boot4_log.json (rollback-affected; facts re-affirmed r34/r35) + r35 entity trace","source":"upstream map + r23t2_buzzybee_boot4.py live probe"},"role":"input_held","signed":false,"va":2147846180,"width":4},{"endian":"little","game_status":"VERIFIED","provenance":{"evidence":"scratch/r23/buzzybee/boot4_log.json (rollback-affected; facts re-affirmed r34/r35) + r35 entity trace","source":"upstream map + r23t2_buzzybee_boot4.py live probe"},"role":"game_state","signed":false,"va":2147846192,"width":4},{"endian":"little","game_status":"VERIFIED","provenance":{"evidence":"scratch/r23/buzzybee/boot4_log.json (rollback-affected; facts re-affirmed r34/r35) + r35 entity trace","source":"upstream map + r23t2_buzzybee_boot4.py live probe"},"role":"best_score","signed":false,"va":2147846200,"width":4},{"endian":"little","game_status":"VERIFIED","provenance":{"evidence":"scratch/r23/buzzybee/boot4_log.json (rollback-affected; facts re-affirmed r34/r35) + r35 entity trace","source":"upstream map + r23t2_buzzybee_boot4.py live probe"},"role":"score","signed":false,"va":2147846204,"width":4},{"endian":"little","game_status":"VERIFIED","provenance":{"evidence":"scratch/r23/buzzybee/boot4_log.json (rollback-affected; facts re-affirmed r34/r35) + r35 entity trace","source":"upstream map + r23t2_buzzybee_boot4.py live probe"},"role":"player_ptr/struct","signed":false,"va":2147872192,"width":4},{"endian":"little","game_status":"VERIFIED","provenance":{"evidence":"scratch/r23/buzzybee/boot4_log.json (rollback-affected; facts re-affirmed r34/r35) + r35 entity trace","source":"upstream map + r23t2_buzzybee_boot4.py live probe"},"role":"player_health","signed":false,"va":2147872584,"width":4},{"endian":"little","game_status":"VERIFIED","provenance":{"evidence":"scratch/r23/buzzybee/boot4_log.json (rollback-affected; facts re-affirmed r34/r35) + r35 entity trace","source":"upstream map + r23t2_buzzybee_boot4.py live probe"},"role":"player_timer","signed":false,"va":2147874120,"width":4},{"endian":"little","game_status":"VERIFIED","provenance":{"evidence":"scratch/r23/buzzybee/boot4_log.json (rollback-affected; facts re-affirmed r34/r35) + r35 entity trace","source":"upstream map + r23t2_buzzybee_boot4.py live probe"},"role":"wasp_entity","signed":false,"va":2147871612,"width":4},{"endian":"little","game_status":"VERIFIED","provenance":{"evidence":"scratch/r23/buzzybee/boot4_log.json (rollback-affected; facts re-affirmed r34/r35) + r35 entity trace","source":"upstream map + r23t2_buzzybee_boot4.py live probe"},"role":"flowers_array (stride 0x24)","signed":false,"va":2147871648,"width":4},{"endian":"little","game_status":"VERIFIED","provenance":{"evidence":"scratch/r23/buzzybee/boot4_log.json (rollback-affected; facts re-affirmed r34/r35) + r35 entity trace","source":"upstream map + r23t2_buzzybee_boot4.py live probe"},"role":"rocks_array (stride 0x24)","signed":false,"va":2147874140,"width":4}],"meta":{"built_at":"2026-10-28T19:32:27Z"},"next_experiment":{"budget":"1 boot + savestate restores","hypothesis":"policy-v4 (arc-checked below-side taps + fx>0 flower window) reaches dominance (0 hits/1500f)","method":"A/B bot-v4 vs bot-A on savestate r35b checkpoint"},"prior_art":[{"classification":"DIRECTLY_REUSABLE (source-assisted)","inspected":true,"kind":"upstream repo (code, MIT)","license":"MIT header only — flagged","name":"NDR008/BuzzyBee","url":"https://github.com/NDR008/BuzzyBee"}],"schema":"ps1play.capsule/1","unknowns":["score cap 1000 residual (mechanism not disassembled)","mainHealth/mainTimer anchors located but not yet wired into a bot policy"]}
+{
+ "artifacts": [],
+ "cheat_leads": [],
+ "controls": [
+  {
+   "button": "B (CROSS)",
+   "effect": "flap tap (y_vel -3072; gravity +256/f)",
+   "provenance": {
+    "evidence": "issue6_r23_report.md + r35 bot A (4000f, score 4003)",
+    "source": "worklog+docs issue6_r23_report.md + r35 bot A (4000f, score 4003)"
+   },
+   "status": "VERIFIED"
+  },
+  {
+   "button": "START",
+   "effect": "title gate -> gameplay (gs 0->1)",
+   "provenance": {
+    "evidence": "r23 boot4: vis_diff 122.4",
+    "source": "worklog+docs r23 boot4: vis_diff 122.4"
+   },
+   "status": "VERIFIED"
+  },
+  {
+   "button": "SELECT",
+   "effect": "pause/resume (gs 99 + resume)",
+   "provenance": {
+    "evidence": "r23 boot4",
+    "source": "worklog+docs r23 boot4"
+   },
+   "status": "VERIFIED"
+  }
+ ],
+ "events": [
+  {
+   "frame": null,
+   "provenance": {
+    "evidence": "patched image sha 042b94bb… local-only",
+    "source": "scripts/r23t2_ntsc_patch_and_wrap.py"
+   },
+   "status": "OBSERVED",
+   "what": "NTSC 2-instruction patch disclosed for rendering (SCREEN_HEIGHT 256->240, SetVideoMode 1->0) — logic unpatched"
+  },
+  {
+   "frame": null,
+   "provenance": {
+    "evidence": "issue6_r34_report.md",
+    "source": "worklog+docs issue6_r34_report.md"
+   },
+   "status": "VERIFIED",
+   "what": "systems closure ALL_PHASES_OK (drain -3/f exact, enemy -1500 edge, death->gs5, auto-return 381f)"
+  },
+  {
+   "frame": null,
+   "provenance": {
+    "evidence": "issue6_r35_report.md",
+    "source": "worklog+docs issue6_r35_report.md"
+   },
+   "status": "OBSERVED",
+   "what": "PLAYING_BOT: 4000f never-died, 8 causal dodges, 17 flower pickups vs idle 1000; NOT dominant (7 hits/15 passes)"
+  },
+  {
+   "what": "R42-B environment rebuild (disclosed, sha-verified): the sandbox scratch cleanup had removed the r35b gs1 savestate AND the local patched disc; BuzzyBee.ps-exe re-fetched from upstream NDR008/BuzzyBee@master (internet-first rule) sha256 9b0bfc08...c909a8ba = byte-identical to the r23 reference artifact; the disc rebuilt with the committed r23t2_ntsc_patch_and_wrap.py, output sha256 042b94bb... = byte-identical to the capsule-recorded patched-image sha (the NTSC 2-instruction disclosure carries over); the gs1 checkpoint rebuilt inside boot 1 (NOT frame-identical to the r35b ckpt - cross-run comparisons to r35 are qualitative only).",
+   "status": "OBSERVED",
+   "frame": null,
+   "provenance": {
+    "evidence": "docs/issue6_r42b_report.md + scratch/r42b/boots_used.json (cap 1, 1 boot; one pre-boot abort filing corrected and disclosed)",
+    "source": "R42-B rebuild"
+   }
+  },
+  {
+   "what": "R42-B the policy-v4 dominance hypothesis is CONTRADICTED: A/B on one gs1 checkpoint, 1500f per arm - arm A (the recorded bot-A recipe bot_policy2 engage=150/margin=16/flower_hi=160/hover=95) 2 hits, 3/5 dodges, score 1401; arm B (bot_policy4 = policy3 + the PREDICTED 14f tap-window band-bottom arc-check + engage=200) 2 hits, 4/6 dodges, score 1403 - v4 not dominant (primary oracle hits==0 failed on BOTH arms), but not worse than A (score +2, +1 dodge, +1 pickup). All 4 hits share one shape: the wasp ARRIVES at contact-x while the bee is still INSIDE the 56px band [ey-13, ey+43] at low altitude (by 24-58) under a high wasp (ey 10-29); arm B's last hit had side=above with the bee already falling back into the band (bvy +1024 at contact) - the side commit is right, nothing guarantees OUT-OF-BAND at ex=32. Pickup attribution still caused=0 (pickups land in dodge/hover mode - the seek-window accounting artifact r35 recorded).",
+   "status": "CONTRADICTED",
+   "frame": null,
+   "provenance": {
+    "evidence": "docs/issue6_r42b_report.md + scratch/r42b/{metrics_r42b.json,frames_A.jsonl,frames_B.jsonl,hit/flower PNGs}",
+    "source": "R42-B A/B (1 boot, 2 restores)"
+   }
+  }
+ ],
+ "functions": [],
+ "identity": {
+  "exe_sha256": "9b0bfc089c33d6116f2e67436254a4ced6e26275a7cac83f5f0dda95c909a8ba",
+  "fingerprint": {
+   "license": "MIT (in-header, flagged)",
+   "repo": "github.com/NDR008/BuzzyBee"
+  },
+  "game_id": "buzzybee",
+  "region": "NTSC (patched)",
+  "serial": "homebrew (PS-EXE wrap)",
+  "title": "BuzzyBee"
+ },
+ "memory_fields": [
+  {
+   "endian": "little",
+   "game_status": "VERIFIED",
+   "provenance": {
+    "evidence": "scratch/r23/buzzybee/boot4_log.json (rollback-affected; facts re-affirmed r34/r35) + r35 entity trace",
+    "source": "upstream map + r23t2_buzzybee_boot4.py live probe"
+   },
+   "role": "screen_width",
+   "signed": false,
+   "va": 2147846160,
+   "width": 4
+  },
+  {
+   "endian": "little",
+   "game_status": "VERIFIED",
+   "provenance": {
+    "evidence": "scratch/r23/buzzybee/boot4_log.json (rollback-affected; facts re-affirmed r34/r35) + r35 entity trace",
+    "source": "upstream map + r23t2_buzzybee_boot4.py live probe"
+   },
+   "role": "screen_height",
+   "signed": false,
+   "va": 2147846164,
+   "width": 4
+  },
+  {
+   "endian": "little",
+   "game_status": "VERIFIED",
+   "provenance": {
+    "evidence": "scratch/r23/buzzybee/boot4_log.json (rollback-affected; facts re-affirmed r34/r35) + r35 entity trace",
+    "source": "upstream map + r23t2_buzzybee_boot4.py live probe"
+   },
+   "role": "input_pad",
+   "signed": false,
+   "va": 2147846172,
+   "width": 4
+  },
+  {
+   "endian": "little",
+   "game_status": "VERIFIED",
+   "provenance": {
+    "evidence": "scratch/r23/buzzybee/boot4_log.json (rollback-affected; facts re-affirmed r34/r35) + r35 entity trace",
+    "source": "upstream map + r23t2_buzzybee_boot4.py live probe"
+   },
+   "role": "input_trig",
+   "signed": false,
+   "va": 2147846176,
+   "width": 4
+  },
+  {
+   "endian": "little",
+   "game_status": "VERIFIED",
+   "provenance": {
+    "evidence": "scratch/r23/buzzybee/boot4_log.json (rollback-affected; facts re-affirmed r34/r35) + r35 entity trace",
+    "source": "upstream map + r23t2_buzzybee_boot4.py live probe"
+   },
+   "role": "input_held",
+   "signed": false,
+   "va": 2147846180,
+   "width": 4
+  },
+  {
+   "endian": "little",
+   "game_status": "VERIFIED",
+   "provenance": {
+    "evidence": "scratch/r23/buzzybee/boot4_log.json (rollback-affected; facts re-affirmed r34/r35) + r35 entity trace",
+    "source": "upstream map + r23t2_buzzybee_boot4.py live probe"
+   },
+   "role": "game_state",
+   "signed": false,
+   "va": 2147846192,
+   "width": 4
+  },
+  {
+   "endian": "little",
+   "game_status": "VERIFIED",
+   "provenance": {
+    "evidence": "scratch/r23/buzzybee/boot4_log.json (rollback-affected; facts re-affirmed r34/r35) + r35 entity trace",
+    "source": "upstream map + r23t2_buzzybee_boot4.py live probe"
+   },
+   "role": "best_score",
+   "signed": false,
+   "va": 2147846200,
+   "width": 4
+  },
+  {
+   "endian": "little",
+   "game_status": "VERIFIED",
+   "provenance": {
+    "evidence": "scratch/r23/buzzybee/boot4_log.json (rollback-affected; facts re-affirmed r34/r35) + r35 entity trace",
+    "source": "upstream map + r23t2_buzzybee_boot4.py live probe"
+   },
+   "role": "score",
+   "signed": false,
+   "va": 2147846204,
+   "width": 4
+  },
+  {
+   "endian": "little",
+   "game_status": "VERIFIED",
+   "provenance": {
+    "evidence": "scratch/r23/buzzybee/boot4_log.json (rollback-affected; facts re-affirmed r34/r35) + r35 entity trace",
+    "source": "upstream map + r23t2_buzzybee_boot4.py live probe"
+   },
+   "role": "player_ptr/struct",
+   "signed": false,
+   "va": 2147872192,
+   "width": 4
+  },
+  {
+   "endian": "little",
+   "game_status": "VERIFIED",
+   "provenance": {
+    "evidence": "scratch/r23/buzzybee/boot4_log.json (rollback-affected; facts re-affirmed r34/r35) + r35 entity trace",
+    "source": "upstream map + r23t2_buzzybee_boot4.py live probe"
+   },
+   "role": "player_health",
+   "signed": false,
+   "va": 2147872584,
+   "width": 4
+  },
+  {
+   "endian": "little",
+   "game_status": "VERIFIED",
+   "provenance": {
+    "evidence": "scratch/r23/buzzybee/boot4_log.json (rollback-affected; facts re-affirmed r34/r35) + r35 entity trace",
+    "source": "upstream map + r23t2_buzzybee_boot4.py live probe"
+   },
+   "role": "player_timer",
+   "signed": false,
+   "va": 2147874120,
+   "width": 4
+  },
+  {
+   "endian": "little",
+   "game_status": "VERIFIED",
+   "provenance": {
+    "evidence": "scratch/r23/buzzybee/boot4_log.json (rollback-affected; facts re-affirmed r34/r35) + r35 entity trace",
+    "source": "upstream map + r23t2_buzzybee_boot4.py live probe"
+   },
+   "role": "wasp_entity",
+   "signed": false,
+   "va": 2147871612,
+   "width": 4
+  },
+  {
+   "endian": "little",
+   "game_status": "VERIFIED",
+   "provenance": {
+    "evidence": "scratch/r23/buzzybee/boot4_log.json (rollback-affected; facts re-affirmed r34/r35) + r35 entity trace",
+    "source": "upstream map + r23t2_buzzybee_boot4.py live probe"
+   },
+   "role": "flowers_array (stride 0x24)",
+   "signed": false,
+   "va": 2147871648,
+   "width": 4
+  },
+  {
+   "endian": "little",
+   "game_status": "VERIFIED",
+   "provenance": {
+    "evidence": "scratch/r23/buzzybee/boot4_log.json (rollback-affected; facts re-affirmed r34/r35) + r35 entity trace",
+    "source": "upstream map + r23t2_buzzybee_boot4.py live probe"
+   },
+   "role": "rocks_array (stride 0x24)",
+   "signed": false,
+   "va": 2147874140,
+   "width": 4
+  }
+ ],
+ "meta": {
+  "built_at": "2026-10-28T19:32:27Z",
+  "last_updated": "R42-B",
+  "last_commit_note": "R42-B: the v4 dominance hypothesis CONTRADICTED (2 hits/1500f both arms; the residual hit mode = the wasp arrives while the bee is still inside the band); both lost artifacts (upstream EXE + patched disc) rebuilt sha-verified; next_experiment = R43 contact-time trajectory guarantee."
+ },
+ "next_experiment": {
+  "budget": "1 boot + savestate restores (the R42-B gs1 checkpoint is preserved at scratch/r42b/state_r42b_gs1.bin; if lost again, boot 1 rebuilds it as disclosed)",
+  "hypothesis": "R43: a CONTACT-TIME TRAJECTORY GUARANTEE reaches dominance (0 hits/1500f) - at engage time, simulate (bee gravity/tap physics x wasp bounce-y) forward to ex=32 and choose the exit (side + tap schedule) that keeps the bee out of the PREDICTED band for the whole ex in [-36,32] window; re-plan on vy-flip or a failed guarantee (bail = maximize distance from the band center). Secondary: widen the pickup attribution window (flower-mode OR dodge-mode with a flower target held within the last 60f) so caused-pickups stop reading 0. Tertiary: per-hit frame-delta metric (arm B's hp 1790 vs arm A 4758 at equal hit COUNT shows hit TIMING drove the difference).",
+  "method": "restore the gs1 checkpoint, run the planner arm 1500f vs the recorded bot-A recipe arm 1500f (same protocol as R42-B); oracle: hits==0 AND dodges==passes AND score/pickups not worse than A; event snaps capped as before; never write RAM, legal inputs only."
+ },
+ "prior_art": [
+  {
+   "classification": "DIRECTLY_REUSABLE (source-assisted)",
+   "inspected": true,
+   "kind": "upstream repo (code, MIT)",
+   "license": "MIT header only — flagged",
+   "name": "NDR008/BuzzyBee",
+   "url": "https://github.com/NDR008/BuzzyBee"
+  }
+ ],
+ "schema": "ps1play.capsule/1",
+ "unknowns": [
+  "score cap 1000 residual (mechanism not disassembled)",
+  "mainHealth/mainTimer anchors located but not yet wired into a bot policy"
+ ]
+}
