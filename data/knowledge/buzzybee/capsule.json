@@ -99,6 +99,14 @@
     "source": "R45-B boot 1 (r45b_preposition_margin.py: the checkpoint rebuild + arms A/B)",
     "evidence": "scratch/r45b/ (boots_used.json cap 1/1 + frames_A/B.jsonl + metrics_r45b.json + boot_log_r45b.json); report docs/issue6_r45b_report.md"
    }
+  },
+  {
+   "what": "R46 the per-frame score telemetry (the capsule lever, executed restore-only): boot = the core+rom load only (ledger cap amended 1->2 DISCLOSED: boot 1 was killed by the operator shell timeout at f~268/1500 - the runner was healthy, the wall was underestimated; the re-run added a one-boot timing probe that measured 407 fps across raw/loop/telemetry 60f variants - the slowness never reproduced and the probe world was discarded by a clean re-restore).  ONE bot_policy5 arm, 1500f, the R45-B arm-A protocol verbatim from the preserved r45b gs1 checkpoint (READ-ONLY).  MECHANISM DECIDED - PER_FRAME_TIME: every score delta is +1 (n=1401 climb frames = the whole gain, jumps = []); the only non-climb window is a 32f ready phase at the start; the 6 wasp passes and the flower pickups (+997 hp x2, 1 caused) contribute ZERO score directly.  The 1401 invariant across four policy families = survival time, not reward structure - and NOT a policy deficit.  DETERMINISM: the 3rd independent reproduction of the exact policy5 line (score 1401 / hp 5666 / 6 passes / 0 hits - R43-B arm B, R45-B arm A, R46-T) = cross-process restore determinism re-confirmed.  The R47 lever follows from the mechanism: score is TIME, so >= 1550 = survive the climb past 1550 frames - the CAP_F extension, not a new policy.",
+   "status": "VERIFIED",
+   "provenance": {
+    "source": "r46b_score_telemetry.py (the per-frame 0x8005883C telemetry arm + the one-boot timing probe)",
+    "evidence": "scratch/r46b/ (boots_used.json cap 2 with the timeout-kill amendment + frames_T.jsonl with per-frame sc + metrics_r46b.json + boot_log_r46b.json); report docs/issue6_r46b_report.md"
+   }
   }
  ],
  "functions": [],
@@ -289,10 +297,11 @@
   "last_commit_note": "R44 (40% track): score-superiority NEGATIVE (tie 1401; caused 1<2; bail shape = partial-column positionable, 0 full-column sweeps); dominance stands; next R45 = seek-timing pre-position + tiered margin (8 pre-danger / 12 in-window)."
  },
  "next_experiment": {
-  "id": "R46",
+  "id": "R47",
   "budget": "0-1 boots (restore-only from the r45b gs1 checkpoint while it survives)",
-  "hypothesis": "the score SOURCE is identifiable: per-frame u32 reads at 0x8005883C during one bot_policy5 arm (1500f) localize every score delta to its frame + game state (wasp pass completion vs dodge timing vs idle), converting the 1401 invariant from a curiosity into a mechanism; if pass-completion dominates, the >= 1550 lever is a longer CAP_F (more passes) with the dominance constraints unchanged (0 hits, caused >= 2)",
-  "method": "restore-only, 1 boot max: instrument run_arm with a per-frame score read (cheap: one u32 per frame into the jsonl) -> one bot_policy5 arm -> the score-source table -> decide the R47 lever from the mechanism, not from another policy variant"
+  "hypothesis": "the climb continues past f1500: bot_policy5 verbatim at CAP_F 1700 (extend to 1800 only if 1700 finishes with 0 hits) reaches score >= 1550 with hits == 0 (the mechanism predicts ~1550 climb-frames at ~f1582 after the 32f ready phase); the REAL risk is not scoring but late-game wasp density vs the guarantee planner - the first hit past the R45-B frontier would be the finding",
+  "method": "restore-only, 1 boot max: the R45-B run_arm verbatim (protocol parity: same checkpoint, same kw, the pass/pickup/attribution machinery unchanged) at CAP_F 1700 -> the oracle line (score >= 1550 AND hits 0 AND caused >= 2) -> the pass-table comparison vs the 1500f runs (passes 7-8 density, min_sep trend) -> decide whether the dominance recipe scales with time or the wasp spawn schedule breaks it",
+  "m2_gate_note": "the score-superiority line stays within the dodge axis; no policy changes"
  },
  "prior_art": [
   {

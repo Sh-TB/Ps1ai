@@ -1,0 +1,686 @@
+{
+ "schema": "ps1play.r46-corrected/1",
+ "generated": "2026-10-29T12:50:55Z",
+ "rules": {
+  "death": "st->0x4be4 with x==0 (corpse row)",
+  "candidates": "0x9E/0xA4 only (0x8E=screen-x per R45; 0x8c/0x94/0x96/0xa0/0xa8=churn - they move in the ZERO-INPUT control tap)",
+  "attribution": "the R45 corpse table is the key: the first-tap +500/+1000 coincide with AIR corpses (R45 tap1 slots 33+23), not with the targeted ground soldier"
+ },
+ "deaths": [
+  {
+   "pass": "R45/r45_frontier_a",
+   "slot": 33,
+   "pre_death_st": "0xae7c",
+   "pre_death_h": 144,
+   "air_at_restore": true,
+   "death_tap": 1,
+   "death_dscore": 500,
+   "targeted_history": [],
+   "candidate_word_hist": [
+    [
+     0,
+     {
+      "0x9e": 0,
+      "0xa4": 0
+     }
+    ]
+   ],
+   "cand_nonzero_when_alive": []
+  },
+  {
+   "pass": "R45/r45_frontier_a",
+   "slot": 23,
+   "pre_death_st": null,
+   "pre_death_h": null,
+   "air_at_restore": false,
+   "death_tap": 1,
+   "death_dscore": 500,
+   "targeted_history": [],
+   "candidate_word_hist": [],
+   "cand_nonzero_when_alive": []
+  },
+  {
+   "pass": "R45/r45_frontier_a",
+   "slot": 20,
+   "pre_death_st": "0x5b0c",
+   "pre_death_h": 64,
+   "air_at_restore": false,
+   "death_tap": 2,
+   "death_dscore": 100,
+   "targeted_history": [
+    {
+     "tap": 1,
+     "dscore": 500
+    },
+    {
+     "tap": 2,
+     "dscore": 100
+    }
+   ],
+   "candidate_word_hist": [
+    [
+     0,
+     {
+      "0x9e": 0,
+      "0xa4": 0
+     }
+    ],
+    [
+     1,
+     {
+      "0x9e": 0,
+      "0xa4": 0
+     }
+    ]
+   ],
+   "cand_nonzero_when_alive": []
+  },
+  {
+   "pass": "R45/r45_frontier_a",
+   "slot": 31,
+   "pre_death_st": "0xed60",
+   "pre_death_h": 92,
+   "air_at_restore": true,
+   "death_tap": 2,
+   "death_dscore": 100,
+   "targeted_history": [],
+   "candidate_word_hist": [
+    [
+     1,
+     {
+      "0x9e": 0,
+      "0xa4": 0
+     }
+    ]
+   ],
+   "cand_nonzero_when_alive": []
+  },
+  {
+   "pass": "R45/r45_frontier_a",
+   "slot": 22,
+   "pre_death_st": "0x540c",
+   "pre_death_h": 64,
+   "air_at_restore": false,
+   "death_tap": 5,
+   "death_dscore": 0,
+   "targeted_history": [],
+   "candidate_word_hist": [
+    [
+     4,
+     {
+      "0x9e": 0,
+      "0xa4": 0
+     }
+    ]
+   ],
+   "cand_nonzero_when_alive": []
+  },
+  {
+   "pass": "R45/r45_frontier_a",
+   "slot": 16,
+   "pre_death_st": "0x6730",
+   "pre_death_h": 64,
+   "air_at_restore": false,
+   "death_tap": 8,
+   "death_dscore": 0,
+   "targeted_history": [],
+   "candidate_word_hist": [
+    [
+     0,
+     {
+      "0x9e": 0,
+      "0xa4": 0
+     }
+    ],
+    [
+     1,
+     {
+      "0x9e": 0,
+      "0xa4": 0
+     }
+    ],
+    [
+     2,
+     {
+      "0x9e": 0,
+      "0xa4": 0
+     }
+    ],
+    [
+     3,
+     {
+      "0x9e": 0,
+      "0xa4": 0
+     }
+    ],
+    [
+     4,
+     {
+      "0x9e": 0,
+      "0xa4": 0
+     }
+    ],
+    [
+     5,
+     {
+      "0x9e": 0,
+      "0xa4": 0
+     }
+    ],
+    [
+     6,
+     {
+      "0x9e": 0,
+      "0xa4": 0
+     }
+    ],
+    [
+     7,
+     {
+      "0x9e": 0,
+      "0xa4": 0
+     }
+    ]
+   ],
+   "cand_nonzero_when_alive": []
+  },
+  {
+   "pass": "R45/r45_frontier_a",
+   "slot": 18,
+   "pre_death_st": "0xe19c",
+   "pre_death_h": 102,
+   "air_at_restore": true,
+   "death_tap": 11,
+   "death_dscore": 0,
+   "targeted_history": [
+    {
+     "tap": 5,
+     "dscore": 0
+    },
+    {
+     "tap": 6,
+     "dscore": 0
+    },
+    {
+     "tap": 7,
+     "dscore": 0
+    },
+    {
+     "tap": 9,
+     "dscore": 100
+    },
+    {
+     "tap": 10,
+     "dscore": 0
+    },
+    {
+     "tap": 11,
+     "dscore": 0
+    }
+   ],
+   "candidate_word_hist": [
+    [
+     0,
+     {
+      "0x9e": 0,
+      "0xa4": 0
+     }
+    ],
+    [
+     1,
+     {
+      "0x9e": 0,
+      "0xa4": 0
+     }
+    ],
+    [
+     2,
+     {
+      "0x9e": 0,
+      "0xa4": 0
+     }
+    ],
+    [
+     3,
+     {
+      "0x9e": 0,
+      "0xa4": 0
+     }
+    ],
+    [
+     4,
+     {
+      "0x9e": 0,
+      "0xa4": 0
+     }
+    ],
+    [
+     5,
+     {
+      "0x9e": 0,
+      "0xa4": 0
+     }
+    ],
+    [
+     6,
+     {
+      "0x9e": 0,
+      "0xa4": 0
+     }
+    ],
+    [
+     7,
+     {
+      "0x9e": 0,
+      "0xa4": 0
+     }
+    ],
+    [
+     8,
+     {
+      "0x9e": 0,
+      "0xa4": 0
+     }
+    ],
+    [
+     9,
+     {
+      "0x9e": 0,
+      "0xa4": 0
+     }
+    ],
+    [
+     10,
+     {
+      "0x9e": 0,
+      "0xa4": 0
+     }
+    ]
+   ],
+   "cand_nonzero_when_alive": []
+  },
+  {
+   "pass": "R45/r45_frontier_a",
+   "slot": 26,
+   "pre_death_st": "0x540c",
+   "pre_death_h": 64,
+   "air_at_restore": false,
+   "death_tap": 11,
+   "death_dscore": 0,
+   "targeted_history": [],
+   "candidate_word_hist": [
+    [
+     10,
+     {
+      "0x9e": 0,
+      "0xa4": 0
+     }
+    ]
+   ],
+   "cand_nonzero_when_alive": []
+  },
+  {
+   "pass": "R45/r45_frontier_a",
+   "slot": 3,
+   "pre_death_st": "0x6730",
+   "pre_death_h": 64,
+   "air_at_restore": false,
+   "death_tap": 12,
+   "death_dscore": 0,
+   "targeted_history": [
+    {
+     "tap": 4,
+     "dscore": 0
+    }
+   ],
+   "candidate_word_hist": [
+    [
+     0,
+     {
+      "0x9e": 0,
+      "0xa4": 0
+     }
+    ],
+    [
+     1,
+     {
+      "0x9e": 0,
+      "0xa4": 0
+     }
+    ],
+    [
+     2,
+     {
+      "0x9e": 0,
+      "0xa4": 0
+     }
+    ],
+    [
+     3,
+     {
+      "0x9e": 0,
+      "0xa4": 0
+     }
+    ],
+    [
+     4,
+     {
+      "0x9e": 0,
+      "0xa4": 0
+     }
+    ],
+    [
+     5,
+     {
+      "0x9e": 0,
+      "0xa4": 0
+     }
+    ],
+    [
+     6,
+     {
+      "0x9e": 0,
+      "0xa4": 0
+     }
+    ],
+    [
+     7,
+     {
+      "0x9e": 0,
+      "0xa4": 0
+     }
+    ],
+    [
+     8,
+     {
+      "0x9e": 0,
+      "0xa4": 0
+     }
+    ],
+    [
+     9,
+     {
+      "0x9e": 0,
+      "0xa4": 0
+     }
+    ],
+    [
+     10,
+     {
+      "0x9e": 0,
+      "0xa4": 0
+     }
+    ],
+    [
+     11,
+     {
+      "0x9e": 0,
+      "0xa4": 0
+     }
+    ]
+   ],
+   "cand_nonzero_when_alive": []
+  },
+  {
+   "pass": "R46/r45_frontier_b",
+   "slot": 20,
+   "pre_death_st": "0x5b0c",
+   "pre_death_h": 64,
+   "air_at_restore": false,
+   "death_tap": 2,
+   "death_dscore": 100,
+   "targeted_history": [
+    {
+     "tap": 1,
+     "dscore": 1000
+    },
+    {
+     "tap": 2,
+     "dscore": 100
+    }
+   ],
+   "candidate_word_hist": [
+    [
+     1,
+     {
+      "0x9e": 0,
+      "0xa4": 0
+     }
+    ]
+   ],
+   "cand_nonzero_when_alive": []
+  },
+  {
+   "pass": "R46/r45_frontier_b",
+   "slot": 16,
+   "pre_death_st": "0x5b0c",
+   "pre_death_h": 64,
+   "air_at_restore": false,
+   "death_tap": 7,
+   "death_dscore": 0,
+   "targeted_history": [],
+   "candidate_word_hist": [
+    [
+     3,
+     {
+      "0x9e": 0,
+      "0xa4": 0
+     }
+    ],
+    [
+     4,
+     {
+      "0x9e": 0,
+      "0xa4": 0
+     }
+    ],
+    [
+     5,
+     {
+      "0x9e": 0,
+      "0xa4": 0
+     }
+    ],
+    [
+     6,
+     {
+      "0x9e": 0,
+      "0xa4": 0
+     }
+    ]
+   ],
+   "cand_nonzero_when_alive": []
+  },
+  {
+   "pass": "R46/r45_frontier_a",
+   "slot": 20,
+   "pre_death_st": "0x5b0c",
+   "pre_death_h": 64,
+   "air_at_restore": false,
+   "death_tap": 2,
+   "death_dscore": 100,
+   "targeted_history": [
+    {
+     "tap": 1,
+     "dscore": 500
+    },
+    {
+     "tap": 2,
+     "dscore": 100
+    }
+   ],
+   "candidate_word_hist": [
+    [
+     1,
+     {
+      "0x9e": 0,
+      "0xa4": 0
+     }
+    ]
+   ],
+   "cand_nonzero_when_alive": []
+  },
+  {
+   "pass": "R46/r45_frontier_a",
+   "slot": 22,
+   "pre_death_st": "0x540c",
+   "pre_death_h": 64,
+   "air_at_restore": false,
+   "death_tap": 5,
+   "death_dscore": 0,
+   "targeted_history": [],
+   "candidate_word_hist": [
+    [
+     4,
+     {
+      "0x9e": 0,
+      "0xa4": 0
+     }
+    ]
+   ],
+   "cand_nonzero_when_alive": []
+  },
+  {
+   "pass": "R46/r45_frontier_a",
+   "slot": 16,
+   "pre_death_st": "0x6730",
+   "pre_death_h": 64,
+   "air_at_restore": false,
+   "death_tap": 8,
+   "death_dscore": 0,
+   "targeted_history": [],
+   "candidate_word_hist": [
+    [
+     4,
+     {
+      "0x9e": 0,
+      "0xa4": 0
+     }
+    ],
+    [
+     5,
+     {
+      "0x9e": 0,
+      "0xa4": 0
+     }
+    ],
+    [
+     6,
+     {
+      "0x9e": 0,
+      "0xa4": 0
+     }
+    ],
+    [
+     7,
+     {
+      "0x9e": 0,
+      "0xa4": 0
+     }
+    ]
+   ],
+   "cand_nonzero_when_alive": []
+  },
+  {
+   "pass": "R46/r45_frontier_a",
+   "slot": 18,
+   "pre_death_st": "0x6730",
+   "pre_death_h": 64,
+   "air_at_restore": false,
+   "death_tap": 11,
+   "death_dscore": 0,
+   "targeted_history": [
+    {
+     "tap": 5,
+     "dscore": 0
+    },
+    {
+     "tap": 6,
+     "dscore": 0
+    },
+    {
+     "tap": 7,
+     "dscore": 0
+    },
+    {
+     "tap": 11,
+     "dscore": 0
+    }
+   ],
+   "candidate_word_hist": [
+    [
+     1,
+     {
+      "0x9e": 0,
+      "0xa4": 0
+     }
+    ],
+    [
+     2,
+     {
+      "0x9e": 0,
+      "0xa4": 0
+     }
+    ],
+    [
+     3,
+     {
+      "0x9e": 0,
+      "0xa4": 0
+     }
+    ],
+    [
+     4,
+     {
+      "0x9e": 0,
+      "0xa4": 0
+     }
+    ],
+    [
+     5,
+     {
+      "0x9e": 0,
+      "0xa4": 0
+     }
+    ],
+    [
+     6,
+     {
+      "0x9e": 0,
+      "0xa4": 0
+     }
+    ]
+   ],
+   "cand_nonzero_when_alive": []
+  }
+ ],
+ "corrected_verdict": {
+  "slot20_signature": [
+   {
+    "pass": "R45/r45_frontier_a",
+    "death_tap": 2,
+    "death_dscore": 100,
+    "candidate_words_when_alive": []
+   },
+   {
+    "pass": "R46/r45_frontier_b",
+    "death_tap": 2,
+    "death_dscore": 100,
+    "candidate_words_when_alive": []
+   },
+   {
+    "pass": "R46/r45_frontier_a",
+    "death_tap": 2,
+    "death_dscore": 100,
+    "candidate_words_when_alive": []
+   }
+  ],
+  "reading": "the slot-20 ground soldier died with the flat +100 at the death tap in ALL THREE readouts (R45-a tap2, R46-b tap2, R46-a tap2) with NO 0x9E/0xA4 movement while alive - the R45 one-hit SIGNATURE replicates 3/3 deterministically for this entity; the class-wide one-hit reading stays UNPROVEN: the >= 3 distinct-kill bar was NOT met (the frontier worlds hold ~2 ground soldiers each; the second soldier died with dscore 0 at taps 11 - no +100 at death), and score events include +100 with NO tracked death (R45 taps 3/9) and deaths with NO score (R45 tap11 ground+air) - attribution stays the open problem",
+  "harness_lessons": [
+   "the ground-only census filter discarded the air-corpse evidence that attributes the +500/+1000 first-tap events (R46 defect; R45 tracked all kinds)",
+   "the wreck/fire-state filter (0xA44C only) missed the evolved burning states (0xa264/0xa414; a landed shell burns on the ground) - 12/16 frontier_b taps were fired at an unkillable ground fire (dscore 0 x12)",
+   "the in-runner verdict counted position churn as HP chip - the REFUTED verdict it printed is WITHDRAWN here (corrected-filings precedent)",
+   "the st word is a STATE HANDLER, not identity: the same soldier reads 0x4054/0x42bc/0x5b0c/0x6730 across taps - class labels must use the pre-death row, and 0x4054 vs 0x42bc are STATES of one soldier class"
+  ]
+ }
+}

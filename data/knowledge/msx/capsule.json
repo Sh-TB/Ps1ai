@@ -349,6 +349,22 @@
     "source": "R45 stage-2 (the restore-only readout, r45t1_hp_readout.py 2)",
     "evidence": "data/games/SLUS-01212/truck_evidence/r45/ (boots_used.json cap 2/2 with the refunded ghost entries + r45_boot2_s1/s2 jsonl+reports; scratch/r45/pngs local-only; the frontier states r45_frontier_a/b survive in the local emulator workspace)"
    }
+  },
+  {
+   "what": "R46 the ONE-HIT replication round executed (cap 1/1 DISCLOSED PRE-RUN, restore-only: the SAVED r45 frontiers were verified on disk BEFORE the boot - the R45 rollback watch): restore r45_frontier_b (px 1254.8; ground census 2 - the 13-entity R45 census was mostly airborne shells) -> zero-input control tap -> ground-only aimed taps (the R45 protocol note applied: kind=='enemy' only) -> restore r45_frontier_a in the same boot -> 34 taps total, 31s wall.  The in-runner kill table printed verdict REFUTED - WITHDRAWN the same round by the offline corrected analysis (corrected-filings precedent): the verdict counted position churn (0x8c/0x94/0x8e/0x96 move in the ZERO-INPUT control tap) as HP chip and ignored the attribution evidence.",
+   "status": "VERIFIED",
+   "provenance": {
+    "source": "r46t1_onehit_replication.py + r46_analysis_correct.py (offline, no boot)",
+    "evidence": "data/games/SLUS-01212/truck_evidence/r46/ (r46_boot1.jsonl + r46_boot1_report.json + corrected_kill_table.json); scratch/r46/ boots_used.json entry 1 outcome_corrected"
+   }
+  },
+  {
+   "what": "R46 CORRECTED VERDICT - the slot-20 soft-soldier one-hit SIGNATURE replicates 3/3 deterministically: the soldier died with the flat +100 at the death tap in ALL THREE readouts (R45-a tap2, R46-b tap2, R46-a tap2 - two rounds, three boots) with NO 0x9E/0xA4 movement while alive (0x8E = screen-x re-confirmed; the wide net shows no decrementing word anywhere).  BUT the CLASS-WIDE one-hit reading is UNPROVEN: the >= 3 distinct-kill bar was NOT met - the frontier worlds hold ~2 ground soldiers each, and the second soldier died with dscore 0 (R45 tap 11 killed TWO entities - ground 18 + ground 26 - with +0 = the environmental-kill signature, likely falling-shell ground bursts crediting nothing); score events include +100 with NO tracked death (R45 taps 3/9) and deaths with NO score - score-to-death attribution stays the open problem.  Harness lessons (measured, disclosed): (1) the wreck/fire filter (0xA44C only) missed the evolved burning states 0xa264/0xa414 - a landed shell burns on the ground and 12/16 frontier_b taps were wasted on it (dscore 0 x12); (2) the ground-only census filter over-pruned: it discarded the air-corpse evidence that attributes the first-tap +500/+1000 events (R45's full census shows slots 33+23 entering the 0x4be4 corpse state exactly at the +500 tap); (3) the st word is a STATE HANDLER, not identity - the same soldier reads 0x4054/0x42bc/0x5b0c/0x6730 across taps, so class labels must use the pre-death row; (4) churn is not chip: any verdict that treats wide-net movement as damage without the zero-input control baseline is invalid.",
+   "status": "VERIFIED",
+   "provenance": {
+    "source": "r46_analysis_correct.py (the corrected kill table over r45+r46 jsonl)",
+    "evidence": "data/games/SLUS-01212/truck_evidence/r46/corrected_kill_table.json"
+   }
   }
  ],
  "functions": [
@@ -495,11 +511,11 @@
   "r43_reconciled": "R43: the stale-stat gate lesson (world-depth condition on any stat-gated save), the dynamic restart guard requirement, the from-start village capability CONFIRMED for the current policy, the post-restart posture NEGATIVE for the end chain, next_experiment replaced (R44 = the clean-resolve chain with deaths=0 validity + frontier saves)"
  },
  "next_experiment": {
-  "id": "R46",
-  "budget": "cap 1 disclosed pre-run (restore-only from the SAVED r45_frontier_a/b - they survive on disk; the boot is the core+rom load only)",
-  "hypothesis": "the soft-soldier ONE-HIT kill finding replicates: >= 3 ground (kind=='enemy') 0x4054-class kills from the frontier postures, each dying to a single aimed tap with the flat +100 and NO candidate-word decrement before death - converting the soldier class to 'one-hit, no tracked HP word' with the unchanged oracle (walker words + verified score gains + alive 0x0EE518; never +0x8E); any multi-tap kill or any decrementing word REFUTES the one-hit reading and reopens the HP-word hunt at the non-candidate offsets",
-  "method": "boot -> restore r45_frontier_b (px 1254.8, census 13) -> census -> ground-only aimed taps (kind=='enemy', corpse/wreck excluded) -> per-tap wide net + score deltas -> kill table; restore r45_frontier_a for a second pass in the same boot if kills < 3; report",
-  "m2_gate_note": "the INTERACTIVE M2 entry remains gated on a clean (deaths=0, no-restart) deep resolve posture - no such source exists after the r38_ckpt loss; producing one is a LATER round's problem, not a fallback lever"
+  "id": "R47",
+  "budget": "cap 1 disclosed pre-run (restore-only from the SAVED r45_frontier_a/b while they survive; the boot is the core+rom load only)",
+  "hypothesis": "the score system is PER-HIT, not per-kill: a single-bullet tap protocol (TAP_FRAMES ~3 = about one bullet per tap) from the frontier postures yields score deltas of exactly +100 per bullet CONNECT on a ground soldier (surviving hits included), which would reclassify the R45/R46 'one-hit' reading as PER-HIT SCORING (the soldier dies at the first connect because it is one-hit AND every connect pays +100 - the two models agree at the death tap and diverge on surviving hits); if instead connects score 0 and only the death pays +100, the one-hit reading stands; the +500/+1000 first-tap events become attributable (multi-connect bursts)",
+  "method": "boot -> restore r45_frontier_a -> FULL-kind census per tap (air included - the R46 ground-only filter discarded the attribution evidence) -> single-bullet taps (3f Y) at the nearest ground enemy with per-tap corpse/score/word tables -> restore r45_frontier_b if the census thins -> the per-connect score table decides per-hit vs per-kill; the burning-ground states (0xa264/0xa414 and the landed-shell family) are excluded as unkillable scenery",
+  "m2_gate_note": "the INTERACTIVE M2 entry remains gated on a clean (deaths=0, no-restart) deep resolve posture - unchanged"
  },
  "prior_art": [
   {
