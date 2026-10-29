@@ -1,0 +1,96 @@
+{"ev": "RUN_START", "commit": "e3451e3284e8f7f86989a36e18cef058f272751e", "policy": "corrected re-run (boot 3; depth-conditional restart guard) - premise-staleness rebuild from issue5_m1_start -> r43_postkill at the gate -> policy to the mission_end latch -> W/S accept ladder -> RIGHT walk -> M2 input-delta discriminator", "premise_note": "r38_ckpt and r42_postkill ABSENT (filesystem rollback, only Oct-20 states survived); anchor issue5_m1_start = session-5-era M1 start px~26; entries 1+2 double-filing disclosed in the ledger (deep-posture guard misfire at c3)", "oracle": "walker words + verified score gains + alive 0x0EE518; never +0x8E", "ts": "2026-10-29T08:58:11Z"}
+{"ev": "ANCHOR_RESTORED", "state": "issue5_m1_start", "vm": {"runner_s16": 0, "gate_u16": 5, "flags_u16": 1, "prog_u32": "0xffffffff", "table": ["0x0", "0x800eb928"], "state_u16": "0x6", "gate_bytes": [255, 0], "cursor": "0x80084dcc", "handle_at_cursor": "0x0", "pending": {"handle": 0, "valid": false}, "array_backward": [{"d": 1, "w": "0x800ec9a0", "handle": "0x800ec9a0", "valid": true, "node_0x5C": "0x8012d890", "node_0x8": "0xfffddd78", "sub_0x8": "0x0", "sub_0x0": "0x8012d82c"}, {"d": 2, "w": "0x800eb928", "handle": "0x800eb928", "valid": true, "node_0x5C": "0x8012d86c", "node_0x8": "0xfffd274a", "sub_0x8": "0x800fa6b0", "sub_0x0": "0x8012d71c"}, {"d": 3, "w": "0x0"}, {"d": 4, "w": "0x0"}, {"d": 5, "w": "0x0"}], "array_forward": [{"d": 1, "w": "0x0"}, {"d": 2, "w": "0x0"}, {"d": 3, "w": "0x0"}, {"d": 4, "w": "0x0"}, {"d": 5, "w": "0x0"}, {"d": 6, "w": "0x7fe0000"}, {"d": 7, "w": "0x7fe"}, {"d": 8, "w": "0x7fe0000"}]}, "px": 258.6, "score": 0, "gren": 10, "php": 144, "sec": [6, 1], "prog": 4294967295}
+{"ev": "PHASE_START", "phase": "rebuild", "deep_anchor": false, "snap": {"px": 258.6, "score": 0, "gren": 10, "php": 141, "sec": [6, 1], "prog": 4294967295}, "vm": {"runner_s16": 0, "gate_u16": 5, "flags_u16": 1, "prog_u32": "0xffffffff", "table": ["0x0", "0x800eb928"], "state_u16": "0x6", "gate_bytes": [255, 0], "cursor": "0x80084dcc", "handle_at_cursor": "0x0", "pending": {"handle": 0, "valid": false}, "array_backward": [{"d": 1, "w": "0x800ec9a0", "handle": "0x800ec9a0", "valid": true, "node_0x5C": "0x8012d890", "node_0x8": "0xfffdd61a", "sub_0x8": "0x0", "sub_0x0": "0x8012d82c"}, {"d": 2, "w": "0x800eb928", "handle": "0x800eb928", "valid": true, "node_0x5C": "0x8012d86c", "node_0x8": "0xfffd1d78", "sub_0x8": "0x800fa6b0", "sub_0x0": "0x8012d71c"}, {"d": 3, "w": "0x0"}, {"d": 4, "w": "0x0"}, {"d": 5, "w": "0x0"}], "array_forward": [{"d": 1, "w": "0x0"}, {"d": 2, "w": "0x0"}, {"d": 3, "w": "0x0"}, {"d": 4, "w": "0x0"}, {"d": 5, "w": "0x0"}, {"d": 6, "w": "0x7fe0000"}, {"d": 7, "w": "0x7fe"}, {"d": 8, "w": "0x7fe0000"}]}}
+{"ev": "PHASE_DUMP", "phase": "rebuild", "chunk": 0, "mode": "advance", "vm": {"flags": 1, "prog": "0xffffffff", "state": 8, "cursor": "0x80084dcc", "gate_b": [255, 0]}, "px": 279.0, "score": 0, "gren": 10, "php": 143, "sec": [8, 1], "prog": 4294967295}
+{"ev": "SCORE_EVENT", "phase": "rebuild", "chunk": 12, "from": 0, "to": 100}
+{"ev": "SCORE_EVENT", "phase": "rebuild", "chunk": 13, "from": 100, "to": 600}
+{"ev": "SCORE_EVENT", "phase": "rebuild", "chunk": 15, "from": 600, "to": 700}
+{"ev": "SCORE_EVENT", "phase": "rebuild", "chunk": 18, "from": 700, "to": 800}
+{"ev": "SCORE_EVENT", "phase": "rebuild", "chunk": 19, "from": 800, "to": 900}
+{"ev": "PHASE_DUMP", "phase": "rebuild", "chunk": 20, "mode": "engage", "vm": {"flags": 0, "prog": "0x80000000", "state": 0, "cursor": "0x80084dcc", "gate_b": [255, 0]}, "px": 487.9, "score": 900, "gren": 10, "php": 125, "sec": [0, 0], "prog": 2147483648}
+{"ev": "SCORE_EVENT", "phase": "rebuild", "chunk": 26, "from": 900, "to": 1000}
+{"ev": "SCORE_EVENT", "phase": "rebuild", "chunk": 33, "from": 1000, "to": 1100}
+{"ev": "SCORE_EVENT", "phase": "rebuild", "chunk": 40, "from": 1100, "to": 1200}
+{"ev": "PHASE_DUMP", "phase": "rebuild", "chunk": 40, "mode": "engage", "vm": {"flags": 1, "prog": "0xffffffff", "state": 11, "cursor": "0x80084dcc", "gate_b": [255, 0]}, "px": 770.2, "score": 1200, "gren": 8, "php": 141, "sec": [11, 1], "prog": 4294967295}
+{"ev": "SCORE_EVENT", "phase": "rebuild", "chunk": 43, "from": 1200, "to": 1300}
+{"ev": "SCORE_EVENT", "phase": "rebuild", "chunk": 50, "from": 1300, "to": 1400}
+{"ev": "SCORE_EVENT", "phase": "rebuild", "chunk": 51, "from": 1400, "to": 1900}
+{"ev": "SCORE_EVENT", "phase": "rebuild", "chunk": 54, "from": 1900, "to": 2000}
+{"ev": "SCORE_EVENT", "phase": "rebuild", "chunk": 60, "from": 2000, "to": 2100}
+{"ev": "PHASE_DUMP", "phase": "rebuild", "chunk": 60, "mode": "engage", "vm": {"flags": 0, "prog": "0x80000000", "state": 0, "cursor": "0x80084dcc", "gate_b": [0, 0]}, "px": 1044.7, "score": 2100, "gren": 7, "php": 172, "sec": [0, 0], "prog": 2147483648}
+{"ev": "SCORE_EVENT", "phase": "rebuild", "chunk": 61, "from": 2100, "to": 2200}
+{"ev": "SCORE_EVENT", "phase": "rebuild", "chunk": 62, "from": 2200, "to": 2400}
+{"ev": "SCORE_EVENT", "phase": "rebuild", "chunk": 63, "from": 2400, "to": 2500}
+{"ev": "SCORE_EVENT", "phase": "rebuild", "chunk": 64, "from": 2500, "to": 2700}
+{"ev": "PHASE_DUMP", "phase": "rebuild", "chunk": 80, "mode": "engage", "vm": {"flags": 1, "prog": "0xffffffff", "state": 11, "cursor": "0x80084dcc", "gate_b": [255, 0]}, "px": 951.1, "score": 2700, "gren": 7, "php": 79, "sec": [11, 1], "prog": 4294967295}
+{"ev": "death", "phase": "rebuild", "chunk": 87, "px": 0.0, "score": 2700, "gren": 0, "php": 0, "sec": [11, 1], "prog": 4294967295}
+{"ev": "SCORE_EVENT", "phase": "rebuild", "chunk": 88, "from": 2700, "to": 3700}
+{"ev": "SCORE_EVENT", "phase": "rebuild", "chunk": 89, "from": 3700, "to": 3800}
+{"ev": "SCORE_EVENT", "phase": "rebuild", "chunk": 91, "from": 3800, "to": 3900}
+{"ev": "SCORE_EVENT", "phase": "rebuild", "chunk": 92, "from": 3900, "to": 4000}
+{"ev": "SCORE_EVENT", "phase": "rebuild", "chunk": 93, "from": 4000, "to": 4100}
+{"ev": "PHASE_DUMP", "phase": "rebuild", "chunk": 100, "mode": "armor_hold", "vm": {"flags": 0, "prog": "0x80000000", "state": 0, "cursor": "0x80084dcc", "gate_b": [255, 0]}, "px": 900.0, "score": 4100, "gren": 10, "php": 28, "sec": [0, 0], "prog": 2147483648}
+{"ev": "PHASE_DUMP", "phase": "rebuild", "chunk": 120, "mode": "armor_hold", "vm": {"flags": 67, "prog": "0xffffffff", "state": 11, "cursor": "0x80084dcc", "gate_b": [255, 0]}, "px": 900.0, "score": 4100, "gren": 10, "php": 28, "sec": [11, 67], "prog": 4294967295}
+{"ev": "PHASE_DUMP", "phase": "rebuild", "chunk": 140, "mode": "armor_hold", "vm": {"flags": 1, "prog": "0xffffffff", "state": 11, "cursor": "0x80084dcc", "gate_b": [255, 0]}, "px": 900.0, "score": 4100, "gren": 10, "php": 28, "sec": [11, 1], "prog": 4294967295}
+{"ev": "death", "phase": "rebuild", "chunk": 157, "px": 0.0, "score": 4100, "gren": 0, "php": 0, "sec": [0, 0], "prog": 2147483648}
+{"ev": "SCORE_EVENT", "phase": "rebuild", "chunk": 158, "from": 4100, "to": 4501}
+{"ev": "PHASE_DUMP", "phase": "rebuild", "chunk": 160, "mode": "engage", "vm": {"flags": 9, "prog": "0xffffffff", "state": 12, "cursor": "0x80084dcc", "gate_b": [255, 0]}, "px": 65524.0, "score": 4501, "gren": 10, "php": 242, "sec": [12, 9], "prog": 4294967295}
+{"ev": "RESOLVED", "phase": "rebuild", "chunk": 167, "how": "aa_resolved", "postkill_state": "r43_postkill", "vm": {"runner_s16": 0, "gate_u16": 5, "flags_u16": 75, "prog_u32": "0xffffffff", "table": ["0x0", "0x800eb7e4"], "state_u16": "0xb", "gate_bytes": [255, 0], "cursor": "0x80084dcc", "handle_at_cursor": "0x0", "pending": {"handle": 0, "valid": false}, "array_backward": [{"d": 1, "w": "0x800ec9a0", "handle": "0x800ec9a0", "valid": true, "node_0x5C": "0x8012d890", "node_0x8": "0x0", "sub_0x8": "0x0", "sub_0x0": "0x8012d82c"}, {"d": 2, "w": "0x800eb928", "handle": "0x800eb928", "valid": true, "node_0x5C": "0x8012d86c", "node_0x8": "0x0", "sub_0x8": "0x800fa6b0", "sub_0x0": "0x8012d71c"}, {"d": 3, "w": "0x0"}, {"d": 4, "w": "0x0"}, {"d": 5, "w": "0x0"}], "array_forward": [{"d": 1, "w": "0x0"}, {"d": 2, "w": "0x0"}, {"d": 3, "w": "0x0"}, {"d": 4, "w": "0x0"}, {"d": 5, "w": "0x0"}, {"d": 6, "w": "0x7fe0000"}, {"d": 7, "w": "0x7fe"}, {"d": 8, "w": "0x7fe0000"}]}, "px": 24.5, "score": 4501, "gren": 10, "php": 279, "sec": [11, 75], "prog": 4294967295}
+{"ev": "PHASE_START", "phase": "latch", "deep_anchor": false, "snap": {"px": 24.5, "score": 4501, "gren": 10, "php": 279, "sec": [11, 75], "prog": 4294967295}, "vm": {"runner_s16": 0, "gate_u16": 5, "flags_u16": 75, "prog_u32": "0xffffffff", "table": ["0x0", "0x800eb7e4"], "state_u16": "0xb", "gate_bytes": [255, 0], "cursor": "0x80084dcc", "handle_at_cursor": "0x0", "pending": {"handle": 0, "valid": false}, "array_backward": [{"d": 1, "w": "0x800ec9a0", "handle": "0x800ec9a0", "valid": true, "node_0x5C": "0x8012d890", "node_0x8": "0x0", "sub_0x8": "0x0", "sub_0x0": "0x8012d82c"}, {"d": 2, "w": "0x800eb928", "handle": "0x800eb928", "valid": true, "node_0x5C": "0x8012d86c", "node_0x8": "0x0", "sub_0x8": "0x800fa6b0", "sub_0x0": "0x8012d71c"}, {"d": 3, "w": "0x0"}, {"d": 4, "w": "0x0"}, {"d": 5, "w": "0x0"}], "array_forward": [{"d": 1, "w": "0x0"}, {"d": 2, "w": "0x0"}, {"d": 3, "w": "0x0"}, {"d": 4, "w": "0x0"}, {"d": 5, "w": "0x0"}, {"d": 6, "w": "0x7fe0000"}, {"d": 7, "w": "0x7fe"}, {"d": 8, "w": "0x7fe0000"}]}}
+{"ev": "PHASE_DUMP", "phase": "latch", "chunk": 0, "mode": "advance", "vm": {"flags": 75, "prog": "0xffffffff", "state": 11, "cursor": "0x80084dcc", "gate_b": [255, 0]}, "px": 24.5, "score": 4501, "gren": 10, "php": 279, "sec": [11, 75], "prog": 4294967295}
+{"ev": "death", "phase": "latch", "chunk": 4, "px": 0.0, "score": 4501, "gren": 0, "php": 0, "sec": [11, 1], "prog": 4294967295}
+{"ev": "SCORE_EVENT", "phase": "latch", "chunk": 10, "from": 4501, "to": 4601}
+{"ev": "SCORE_EVENT", "phase": "latch", "chunk": 11, "from": 4601, "to": 4701}
+{"ev": "SCORE_EVENT", "phase": "latch", "chunk": 14, "from": 4701, "to": 4801}
+{"ev": "SCORE_EVENT", "phase": "latch", "chunk": 18, "from": 4801, "to": 5101}
+{"ev": "SCORE_EVENT", "phase": "latch", "chunk": 20, "from": 5101, "to": 5201}
+{"ev": "PHASE_DUMP", "phase": "latch", "chunk": 20, "mode": "engage", "vm": {"flags": 8, "prog": "0x80000000", "state": 0, "cursor": "0x80084dcc", "gate_b": [255, 0]}, "px": 1109.3, "score": 5201, "gren": 10, "php": 237, "sec": [0, 8], "prog": 2147483648}
+{"ev": "SCORE_EVENT", "phase": "latch", "chunk": 35, "from": 5201, "to": 5301}
+{"ev": "SCORE_EVENT", "phase": "latch", "chunk": 36, "from": 5301, "to": 5501}
+{"ev": "SCORE_EVENT", "phase": "latch", "chunk": 40, "from": 5501, "to": 5701}
+{"ev": "PHASE_DUMP", "phase": "latch", "chunk": 40, "mode": "engage", "vm": {"flags": 0, "prog": "0x80000000", "state": 0, "cursor": "0x80084dcc", "gate_b": [255, 0]}, "px": 1059.6, "score": 5701, "gren": 10, "php": 187, "sec": [0, 0], "prog": 2147483648}
+{"ev": "SCORE_EVENT", "phase": "latch", "chunk": 43, "from": 5701, "to": 5901}
+{"ev": "death", "phase": "latch", "chunk": 47, "px": 0.0, "score": 5901, "gren": 10, "php": 254, "sec": [11, 79], "prog": 4294967295}
+{"ev": "death", "phase": "latch", "chunk": 59, "px": 0.0, "score": 5901, "gren": 0, "php": 0, "sec": [0, 8], "prog": 2147483648}
+{"ev": "SCORE_EVENT", "phase": "latch", "chunk": 60, "from": 5901, "to": 6302}
+{"ev": "PHASE_DUMP", "phase": "latch", "chunk": 60, "mode": "aa_kill", "vm": {"flags": 8, "prog": "0x80000000", "state": 0, "cursor": "0x80084dcc", "gate_b": [255, 0]}, "px": 1070.2, "score": 6302, "gren": 9, "php": 198, "sec": [0, 8], "prog": 2147483648}
+{"ev": "death", "phase": "latch", "chunk": 76, "px": 0.0, "score": 6302, "gren": 0, "php": 0, "sec": [0, 8], "prog": 2147483648}
+{"ev": "PHASE_DUMP", "phase": "latch", "chunk": 80, "mode": "engage", "vm": {"flags": 0, "prog": "0x80000000", "state": 0, "cursor": "0x80084dcc", "gate_b": [255, 0]}, "px": 940.2, "score": 6302, "gren": 10, "php": 68, "sec": [0, 0], "prog": 2147483648}
+{"ev": "SCORE_EVENT", "phase": "latch", "chunk": 83, "from": 6302, "to": 6402}
+{"ev": "SCORE_EVENT", "phase": "latch", "chunk": 85, "from": 6402, "to": 6602}
+{"ev": "SCORE_EVENT", "phase": "latch", "chunk": 86, "from": 6602, "to": 6802}
+{"ev": "PHASE_DUMP", "phase": "latch", "chunk": 100, "mode": "aa_kill", "vm": {"flags": 0, "prog": "0x80000000", "state": 0, "cursor": "0x80084dcc", "gate_b": [255, 0]}, "px": 1164.0, "score": 6802, "gren": 8, "php": 291, "sec": [0, 0], "prog": 2147483648}
+{"ev": "PHASE_DUMP", "phase": "latch", "chunk": 120, "mode": "aa_kill", "vm": {"flags": 0, "prog": "0x80000000", "state": 0, "cursor": "0x80084dcc", "gate_b": [255, 0]}, "px": 1050.9, "score": 6802, "gren": 9, "php": 178, "sec": [0, 0], "prog": 2147483648}
+{"ev": "PHASE_DUMP", "phase": "latch", "chunk": 140, "mode": "aa_kill", "vm": {"flags": 0, "prog": "0x80000000", "state": 0, "cursor": "0x80084dcc", "gate_b": [255, 0]}, "px": 1164.0, "score": 6802, "gren": 7, "php": 291, "sec": [0, 0], "prog": 2147483648}
+{"ev": "death", "phase": "latch", "chunk": 150, "px": 0.0, "score": 6802, "gren": 0, "php": 0, "sec": [10, 67], "prog": 4294967295}
+{"ev": "SCORE_EVENT", "phase": "latch", "chunk": 151, "from": 6802, "to": 6803}
+{"ev": "PHASE_DUMP", "phase": "latch", "chunk": 160, "mode": "engage", "vm": {"flags": 0, "prog": "0x80000000", "state": 0, "cursor": "0x80084dcc", "gate_b": [255, 0]}, "px": 1148.2, "score": 6803, "gren": 10, "php": 276, "sec": [0, 0], "prog": 2147483648}
+{"ev": "SCORE_EVENT", "phase": "latch", "chunk": 168, "from": 6803, "to": 6903}
+{"ev": "SCORE_EVENT", "phase": "latch", "chunk": 170, "from": 6903, "to": 7103}
+{"ev": "SCORE_EVENT", "phase": "latch", "chunk": 177, "from": 7103, "to": 7303}
+{"ev": "SCORE_EVENT", "phase": "latch", "chunk": 178, "from": 7303, "to": 7403}
+{"ev": "PHASE_DUMP", "phase": "latch", "chunk": 180, "mode": "clamp_clear", "vm": {"flags": 0, "prog": "0x80000000", "state": 0, "cursor": "0x80084dcc", "gate_b": [255, 0]}, "px": 1111.9, "score": 7403, "gren": 10, "php": 239, "sec": [0, 0], "prog": 2147483648}
+{"ev": "SCORE_EVENT", "phase": "latch", "chunk": 184, "from": 7403, "to": 7603}
+{"ev": "PHASE_DUMP", "phase": "latch", "chunk": 200, "mode": "engage", "vm": {"flags": 0, "prog": "0x80000000", "state": 0, "cursor": "0x80084dcc", "gate_b": [255, 0]}, "px": 1030.7, "score": 7603, "gren": 9, "php": 158, "sec": [0, 0], "prog": 2147483648}
+{"ev": "SCORE_EVENT", "phase": "latch", "chunk": 201, "from": 7603, "to": 7703}
+{"ev": "SCORE_EVENT", "phase": "latch", "chunk": 209, "from": 7703, "to": 7903}
+{"ev": "PHASE_DUMP", "phase": "latch", "chunk": 220, "mode": "clamp_clear", "vm": {"flags": 67, "prog": "0xffffffff", "state": 10, "cursor": "0x80084dcc", "gate_b": [255, 0]}, "px": 1164.0, "score": 7903, "gren": 9, "php": 291, "sec": [10, 67], "prog": 4294967295}
+{"ev": "PHASE_DUMP", "phase": "latch", "chunk": 240, "mode": "engage", "vm": {"flags": 0, "prog": "0x80000000", "state": 0, "cursor": "0x80084dcc", "gate_b": [0, 0]}, "px": 1083.9, "score": 7903, "gren": 8, "php": 211, "sec": [0, 0], "prog": 2147483648}
+{"ev": "SCORE_EVENT", "phase": "latch", "chunk": 260, "from": 7903, "to": 8003}
+{"ev": "PHASE_DUMP", "phase": "latch", "chunk": 260, "mode": "engage", "vm": {"flags": 1, "prog": "0xffffffff", "state": 11, "cursor": "0x80084dcc", "gate_b": [255, 0]}, "px": 1091.8, "score": 8003, "gren": 7, "php": 219, "sec": [11, 1], "prog": 4294967295}
+{"ev": "SCORE_EVENT", "phase": "latch", "chunk": 269, "from": 8003, "to": 8103}
+{"ev": "PHASE_DUMP", "phase": "latch", "chunk": 280, "mode": "engage", "vm": {"flags": 67, "prog": "0xffffffff", "state": 5, "cursor": "0x80084dcc", "gate_b": [255, 0]}, "px": 1075.1, "score": 8103, "gren": 6, "php": 203, "sec": [5, 67], "prog": 4294967295}
+{"ev": "SCORE_EVENT", "phase": "latch", "chunk": 285, "from": 8103, "to": 8303}
+{"ev": "PHASE_DUMP", "phase": "latch", "chunk": 300, "mode": "engage", "vm": {"flags": 0, "prog": "0x80000000", "state": 0, "cursor": "0x80084dcc", "gate_b": [255, 0]}, "px": 1073.0, "score": 8303, "gren": 6, "php": 200, "sec": [0, 0], "prog": 2147483648}
+{"ev": "SCORE_EVENT", "phase": "latch", "chunk": 316, "from": 8303, "to": 8403}
+{"ev": "SCORE_EVENT", "phase": "latch", "chunk": 317, "from": 8403, "to": 8503}
+{"ev": "SCORE_EVENT", "phase": "latch", "chunk": 318, "from": 8503, "to": 8603}
+{"ev": "PHASE_DUMP", "phase": "latch", "chunk": 320, "mode": "aa_kill", "vm": {"flags": 0, "prog": "0x80000000", "state": 0, "cursor": "0x80084dcc", "gate_b": [255, 0]}, "px": 1074.1, "score": 8603, "gren": 6, "php": 202, "sec": [0, 0], "prog": 2147483648}
+{"ev": "SCORE_EVENT", "phase": "latch", "chunk": 326, "from": 8603, "to": 8703}
+{"ev": "SCORE_EVENT", "phase": "latch", "chunk": 327, "from": 8703, "to": 8803}
+{"ev": "PHASE_DUMP", "phase": "latch", "chunk": 340, "mode": "clamp_clear", "vm": {"flags": 67, "prog": "0xffffffff", "state": 10, "cursor": "0x80084dcc", "gate_b": [255, 0]}, "px": 1164.0, "score": 8803, "gren": 5, "php": 291, "sec": [10, 67], "prog": 4294967295}
+{"ev": "SCORE_EVENT", "phase": "latch", "chunk": 343, "from": 8803, "to": 8903}
+{"ev": "PHASE_DUMP", "phase": "latch", "chunk": 360, "mode": "clamp_clear", "vm": {"flags": 67, "prog": "0xffffffff", "state": 10, "cursor": "0x80084dcc", "gate_b": [255, 0]}, "px": 1164.0, "score": 8903, "gren": 5, "php": 291, "sec": [10, 67], "prog": 4294967295}
+{"ev": "SCORE_EVENT", "phase": "latch", "chunk": 367, "from": 8903, "to": 9103}
+{"ev": "SCORE_EVENT", "phase": "latch", "chunk": 374, "from": 9103, "to": 9403}
+{"ev": "PHASE_DUMP", "phase": "latch", "chunk": 380, "mode": "aa_kill", "vm": {"flags": 1, "prog": "0xffffffff", "state": 11, "cursor": "0x80084dcc", "gate_b": [255, 0]}, "px": 979.3, "score": 9403, "gren": 1, "php": 107, "sec": [11, 1], "prog": 4294967295}

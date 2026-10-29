@@ -1,0 +1,67 @@
+{
+ "cap": 7,
+ "count": 7,
+ "log": [
+  {
+   "n": 1,
+   "ts": "2026-10-29T08:29:06Z",
+   "script": "r43t1_accept.py",
+   "reason": "BOOT1: premise-staleness rebuild (issue5_m1_start anchor; r38_ckpt/r42_postkill absent - filesystem rollback) -> shipped policy to the gate -> r43_postkill -> policy to the mission_end latch -> the session-6 accept chain -> the M2 input-delta discriminator"
+  },
+  {
+   "n": 2,
+   "ts": "2026-10-29T08:30:43Z",
+   "script": "r43t1_accept.py",
+   "reason": "BOOT1: premise-staleness rebuild (issue5_m1_start anchor; r38_ckpt/r42_postkill absent - filesystem rollback) -> shipped policy to the gate -> r43_postkill -> policy to the mission_end latch -> the session-6 accept chain -> the M2 input-delta discriminator"
+  },
+  {
+   "n": 3,
+   "ts": "2026-10-29T08:34:43Z",
+   "script": "r43t1_accept.py",
+   "reason": "BOOT3 (corrected re-run): the depth-conditional fix for the entries-1+2 misfire (px<700 guard is deep-posture-only; the px~26 mission-START anchor walks through px<700 normally) -> premise-staleness rebuild from issue5_m1_start -> shipped policy to the gate -> r43_postkill -> policy to the mission_end latch -> the session-6 accept chain -> the M2 input-delta discriminator"
+  },
+  {
+   "n": 3,
+   "ts": "2026-10-29T08:34:00Z",
+   "script": "r43t1_accept.py",
+   "reason": "FILED-BUT-DIED (disclosed): the setsid-detached process was killed externally before any emulator evidence (no ANCHOR_RESTORED, no core artifacts); entry filed by the launch, run never completed"
+  },
+  {
+   "n": 4,
+   "ts": "2026-10-29T08:48:33Z",
+   "script": "r43t1_accept.py",
+   "reason": "BOOT3 (corrected re-run): the depth-conditional fix for the entries-1+2 misfire (px<700 guard is deep-posture-only; the px~26 mission-START anchor walks through px<700 normally) -> premise-staleness rebuild from issue5_m1_start -> shipped policy to the gate -> r43_postkill -> policy to the mission_end latch -> the session-6 accept chain -> the M2 input-delta discriminator"
+  },
+  {
+   "n": 4,
+   "ts": "2026-10-29T08:48:00Z",
+   "script": "r43t1_accept.py",
+   "reason": "BOOT4 (real): rebuild progressed c0-c33+ px 258->488 score 900, then FROZE ~c34-40 (the village armored-truck zone, px~500-700) with zero trace events for 3+ min -> process killed externally (idle watchdog). First from-start run of the CURRENT (queue_priority) policy through the village - R42 rebuilds started DEEP (px 992, past it)."
+  },
+  {
+   "n": 5,
+   "ts": "2026-10-29T08:58:11Z",
+   "script": "r43t1_accept.py",
+   "reason": "BOOT3 (corrected re-run): the depth-conditional fix for the entries-1+2 misfire (px<700 guard is deep-posture-only; the px~26 mission-START anchor walks through px<700 normally) -> premise-staleness rebuild from issue5_m1_start -> shipped policy to the gate -> r43_postkill -> policy to the mission_end latch -> the session-6 accept chain -> the M2 input-delta discriminator"
+  },
+  {
+   "n": 5,
+   "ts": "2026-10-29T09:00:00Z",
+   "script": "r43t1_accept.py",
+   "reason": "BOOT5 (real, foreground, diagnostic-grade): the FULL from-start replay PASSED the village twice (c0-167 rebuild + the latch replay) - the boot-4 village-stall hypothesis REVISED (boot 4 was in the silent aa campaign, not stalled). ROOT CAUSE FOUND: the r42t1 resolve gate (aa_resolved>=1, verbatim) MISFIRED after 2 deaths -> mission restart (RESOLVED at c167 with px=24.5 flags=75 score=4501 = a RESTART posture saved as r43_postkill; the aa_resolved POLICY stat survives deaths/restarts); the latch phase then replayed the whole mission from the restart (score 4501->9403, 32 score events, 5 deaths) and hit the 400-chunk budget mid-aa-campaign. r42t1 itself was safe only because its rebuild never died (deaths=0). FIX: depth-conditional gate (aa_resolved>=1 AND px>700) + latch bound 900 + two-stage split."
+  },
+  {
+   "n": 6,
+   "ts": "2026-10-29T09:02:48Z",
+   "script": "r43t1_accept.py",
+   "reason": "BOOT stage-1 (two-stage split: each stage fits one foreground window; the cross-process savestate restore is the R42-proven pattern): boot -> premise-staleness rebuild from issue5_m1_start (depth-conditional gate: aa_resolved>=1 AND px>700 - the boot-5 stale-stat-restart lesson) -> save r43_postkill -> exit"
+  },
+  {
+   "n": 7,
+   "ts": "2026-10-29T09:05:14Z",
+   "script": "r43t1_accept.py",
+   "reason": "BOOT stage-2 (two-stage split: each stage fits one foreground window; the cross-process savestate restore is the R42-proven pattern): boot -> restore r43_postkill -> policy to the mission_end latch (900-chunk bound) -> the session-6 accept chain -> the M2 input-delta discriminator -> report"
+  }
+ ],
+ "note": "1+2: guard-misfire boots; 3: filed-but-died; 4: real boot, killed mid-aa-campaign (externally, disclosed); 5: real boot - ROOT CAUSE: stale-stat gate misfire across mission restarts; fix = depth-conditional gate; 6: stage-1 rebuild with the fixed gate; 7: stage-2 latch+accept from r43_postkill"
+}

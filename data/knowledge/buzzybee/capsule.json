@@ -34,11 +34,11 @@
   {
    "frame": null,
    "provenance": {
-    "evidence": "patched image sha 042b94bb… local-only",
+    "evidence": "patched image sha 042b94bb\u2026 local-only",
     "source": "scripts/r23t2_ntsc_patch_and_wrap.py"
    },
    "status": "OBSERVED",
-   "what": "NTSC 2-instruction patch disclosed for rendering (SCREEN_HEIGHT 256->240, SetVideoMode 1->0) — logic unpatched"
+   "what": "NTSC 2-instruction patch disclosed for rendering (SCREEN_HEIGHT 256->240, SetVideoMode 1->0) \u2014 logic unpatched"
   },
   {
    "frame": null,
@@ -274,7 +274,7 @@
    "classification": "DIRECTLY_REUSABLE (source-assisted)",
    "inspected": true,
    "kind": "upstream repo (code, MIT)",
-   "license": "MIT header only — flagged",
+   "license": "MIT header only \u2014 flagged",
    "name": "NDR008/BuzzyBee",
    "url": "https://github.com/NDR008/BuzzyBee"
   }
