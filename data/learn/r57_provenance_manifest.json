@@ -1,0 +1,773 @@
+{
+  "round": "R57-learn P0",
+  "date": "2026-10-30",
+  "base_commit": "2d2c41e217cf",
+  "rule": "A checkpoint qualifies as the R57 teacher-bootstrap student ONLY if its teacher-derived labels contain no teacher actions beyond the first 20 successfully passed pipes per teacher episode.",
+  "checkpoints": [
+    {
+      "file": "flappy_student_feat_p4sf4.npz",
+      "bytes": 5558,
+      "sha256": "0a3a70ecde17521d88cb671598948dcb58a12c1591dfa9524fdfcad15b9d6284",
+      "kind": "model_artifact"
+    },
+    {
+      "file": "flappy_student_feat_p4sf4.npz.json",
+      "bytes": 992,
+      "sha256": "4aafd94315e7823900aaa93f8e84e730a4d8e7d41a939cad5f8bdc3a547d8dda",
+      "kind": "artifact_sidecar",
+      "arch": {
+        "n_in": 10,
+        "hidden": 96,
+        "n_out": 2
+      },
+      "feature_version": 4,
+      "classes": [
+        "HOVER",
+        "FLAP"
+      ],
+      "teacher": "flappy_teacher_v2_r15play (full-res)",
+      "teacher_provenance": null,
+      "n_steps": 48800,
+      "artifact_npz": "flappy_student_feat_p4sf4.npz"
+    },
+    {
+      "file": "flappy_student_feat_p5v7.npz",
+      "bytes": 3181,
+      "sha256": "d27c42e5120efbdcb98315d9f1c616d23656449cd4f966784315e00e0ab34b97",
+      "kind": "model_artifact"
+    },
+    {
+      "file": "flappy_student_feat_p5v7.npz.json",
+      "bytes": 1134,
+      "sha256": "bf7fb1e27f4b7cceef7e605e6cc45db34939029dfd47b591047e3227a53e8ab4",
+      "kind": "artifact_sidecar",
+      "arch": {
+        "n_in": 10,
+        "hidden": 48,
+        "n_out": 2
+      },
+      "feature_version": 7,
+      "classes": [
+        "HOVER",
+        "FLAP"
+      ],
+      "teacher": "flappy_law_on_v7 (r15 law + BirdObserverV7 + GapTrackerV7, same-sensor small-frame pathway)",
+      "teacher_provenance": "behavior cloning on the teacher's own recorded flight (tv7n traces)",
+      "n_steps": 4673,
+      "artifact_npz": "flappy_student_feat_p5v7.npz"
+    },
+    {
+      "file": "flappy_student_feat_p5v7d1.npz",
+      "bytes": 3186,
+      "sha256": "b439b44c506539fade6d184f6ac429508f64cef48aa1997c99df07e62ff8d2c5",
+      "kind": "model_artifact"
+    },
+    {
+      "file": "flappy_student_feat_p5v7d1.npz.json",
+      "bytes": 1159,
+      "sha256": "9d4e7b965ac597432cc39134d0c64044907432c5d41ed5b1f18d0444763baa9e",
+      "kind": "artifact_sidecar",
+      "arch": {
+        "n_in": 10,
+        "hidden": 48,
+        "n_out": 2
+      },
+      "feature_version": 7,
+      "classes": [
+        "HOVER",
+        "FLAP"
+      ],
+      "teacher": "flappy_law_on_v7 (r15 law + BirdObserverV7 + GapTrackerV7, same-sensor small-frame pathway)",
+      "teacher_provenance": "behavior cloning on the teacher's own recorded flight (tv7n traces) + DAgger relabels",
+      "n_steps": 11423,
+      "artifact_npz": "flappy_student_feat_p5v7d1.npz"
+    },
+    {
+      "file": "flappy_student_feat_p6v7.npz",
+      "bytes": 3190,
+      "sha256": "28854ad5b1dfd3cda06c6d0c7c13c60559129ccd896250456e038e5916f2874a",
+      "kind": "model_artifact"
+    },
+    {
+      "file": "flappy_student_feat_p6v7.npz.json",
+      "bytes": 1149,
+      "sha256": "b37412e4b8f68302ffff4649d6921080df53f2680f4eee16959bd13d93831102",
+      "kind": "artifact_sidecar",
+      "arch": {
+        "n_in": 10,
+        "hidden": 48,
+        "n_out": 2
+      },
+      "feature_version": 7,
+      "classes": [
+        "HOVER",
+        "FLAP"
+      ],
+      "teacher": "flappy_law_on_v7 (r15 law + BirdObserverV7 + GapTrackerV7, same-sensor small-frame pathway)",
+      "teacher_provenance": "behavior cloning on the teacher's own recorded flight (tv7n traces)",
+      "n_steps": 13172,
+      "artifact_npz": "flappy_student_feat_p6v7.npz"
+    },
+    {
+      "file": "flappy_student_feat_p6v7f.npz",
+      "bytes": 3182,
+      "sha256": "67fa892ad74ed17c2d524cdd34084d3fe5a6d1946e0bcc0a28f4e34aa97bbfc4",
+      "kind": "model_artifact"
+    },
+    {
+      "file": "flappy_student_feat_p6v7f.npz.json",
+      "bytes": 1165,
+      "sha256": "030d4841852c42df413a6297177eef9bf69b9088697a672168c9a40313b0ef09",
+      "kind": "artifact_sidecar",
+      "arch": {
+        "n_in": 10,
+        "hidden": 48,
+        "n_out": 2
+      },
+      "feature_version": 7,
+      "classes": [
+        "HOVER",
+        "FLAP"
+      ],
+      "teacher": "flappy_law_on_v7 (r15 law + BirdObserverV7 + GapTrackerV7, same-sensor small-frame pathway)",
+      "teacher_provenance": "behavior cloning on the teacher's own recorded flight (tv7n traces) + DAgger relabels",
+      "n_steps": 27493,
+      "artifact_npz": "flappy_student_feat_p6v7f.npz"
+    },
+    {
+      "file": "flappy_student_feat_p6v7f128.npz",
+      "bytes": 7091,
+      "sha256": "eb31da12c509398d23fef2a40433d45d82511a037d17778daa4fd9ceca9798d0",
+      "kind": "model_artifact"
+    },
+    {
+      "file": "flappy_student_feat_p6v7f128.npz.json",
+      "bytes": 1164,
+      "sha256": "545c7cca3bbc6d846b0efb1a5cf7a03aeb1f789ee4cc45620a28efbbeb39c1e1",
+      "kind": "artifact_sidecar",
+      "arch": {
+        "n_in": 10,
+        "hidden": 128,
+        "n_out": 2
+      },
+      "feature_version": 7,
+      "classes": [
+        "HOVER",
+        "FLAP"
+      ],
+      "teacher": "flappy_law_on_v7 (r15 law + BirdObserverV7 + GapTrackerV7, same-sensor small-frame pathway)",
+      "teacher_provenance": "behavior cloning on the teacher's own recorded flight (tv7n traces) + DAgger relabels",
+      "n_steps": 29672,
+      "artifact_npz": "flappy_student_feat_p6v7f128.npz"
+    },
+    {
+      "file": "flappy_student_feat_p6v7g.npz",
+      "bytes": 3190,
+      "sha256": "d8a6a6476657062e788a1afc758656fdfe36e7ada1119687feda8e4fdfd4c07e",
+      "kind": "model_artifact"
+    },
+    {
+      "file": "flappy_student_feat_p6v7g.npz.json",
+      "bytes": 1168,
+      "sha256": "460904b1584cf49971514bcbd3d383d668001ab93444b85d8738e53205c7e447",
+      "kind": "artifact_sidecar",
+      "arch": {
+        "n_in": 10,
+        "hidden": 48,
+        "n_out": 2
+      },
+      "feature_version": 7,
+      "classes": [
+        "HOVER",
+        "FLAP"
+      ],
+      "teacher": "flappy_law_on_v7 (r15 law + BirdObserverV7 + GapTrackerV7, same-sensor small-frame pathway)",
+      "teacher_provenance": "behavior cloning on the teacher's own recorded flight (tv7n traces) + DAgger relabels",
+      "n_steps": 27493,
+      "artifact_npz": "flappy_student_feat_p6v7g.npz"
+    },
+    {
+      "file": "flappy_student_feat_p6v7h128.npz",
+      "bytes": 7101,
+      "sha256": "c5e0b25192f0708e4e7bf9019d582158f96d8b1ba13b1b0f05f3f30c31fb2a7d",
+      "kind": "model_artifact"
+    },
+    {
+      "file": "flappy_student_feat_p6v7h128.npz.json",
+      "bytes": 1149,
+      "sha256": "5ea51a5fe3f325832e65b1b95aa1ee54f57c91ecaecf059c9929d17c61e75ac5",
+      "kind": "artifact_sidecar",
+      "arch": {
+        "n_in": 10,
+        "hidden": 128,
+        "n_out": 2
+      },
+      "feature_version": 7,
+      "classes": [
+        "HOVER",
+        "FLAP"
+      ],
+      "teacher": "flappy_law_on_v7 (r15 law + BirdObserverV7 + GapTrackerV7, same-sensor small-frame pathway)",
+      "teacher_provenance": "behavior cloning on the teacher's own recorded flight (tv7n traces)",
+      "n_steps": 13172,
+      "artifact_npz": "flappy_student_feat_p6v7h128.npz"
+    },
+    {
+      "file": "flappy_student_feat_p6v7h96.npz",
+      "bytes": 5538,
+      "sha256": "45eeadc280d7cc7a5fd85184a992860496e2f7e931935bfad0aa8771a068bb84",
+      "kind": "model_artifact"
+    },
+    {
+      "file": "flappy_student_feat_p6v7h96.npz.json",
+      "bytes": 1150,
+      "sha256": "0b98c1750f06925bfb6803082fe2de09524dabaeb4a88c0a39b9fb886183a12d",
+      "kind": "artifact_sidecar",
+      "arch": {
+        "n_in": 10,
+        "hidden": 96,
+        "n_out": 2
+      },
+      "feature_version": 7,
+      "classes": [
+        "HOVER",
+        "FLAP"
+      ],
+      "teacher": "flappy_law_on_v7 (r15 law + BirdObserverV7 + GapTrackerV7, same-sensor small-frame pathway)",
+      "teacher_provenance": "behavior cloning on the teacher's own recorded flight (tv7n traces)",
+      "n_steps": 13172,
+      "artifact_npz": "flappy_student_feat_p6v7h96.npz"
+    },
+    {
+      "file": "flappy_student_feat_p7v7h128.npz",
+      "bytes": 7085,
+      "sha256": "b031081dd4f6e6fc03e151e2e0f3b3812cec3db722071a279fdb797412e63f42",
+      "kind": "model_artifact"
+    },
+    {
+      "file": "flappy_student_feat_p7v7h128.npz.json",
+      "bytes": 1043,
+      "sha256": "df3f2ea1ad5a250b73adb9fdeb0886ddd684e85b1e0f14f520ac5afa4a88ce0c",
+      "kind": "artifact_sidecar",
+      "arch": {
+        "n_in": 10,
+        "hidden": 128,
+        "n_out": 2
+      },
+      "feature_version": 7,
+      "classes": [
+        "HOVER",
+        "FLAP"
+      ],
+      "teacher": "flappy_law_on_v7 (r15 law + BirdObserverV7 + GapTrackerV7, same-sensor pathway)",
+      "teacher_provenance": "BC on the tv8 teacher lives (8 seeds incl. k12/45/120)",
+      "n_steps": 33882,
+      "artifact_npz": "flappy_student_feat_p7v7h128.npz"
+    },
+    {
+      "file": "flappy_student_feat_p7v7h128w1.npz",
+      "bytes": 7101,
+      "sha256": "03e27d1dfc8254e2ccdfa6c2382f7986ac8e1772844a59062c60277dd72cee2c",
+      "kind": "model_artifact"
+    },
+    {
+      "file": "flappy_student_feat_p7v7h128w1.npz.json",
+      "bytes": 1092,
+      "sha256": "b0543c8a0a6278833d463e3dd9aecf5f93f62324d796fac8e9732aa17c12c961",
+      "kind": "artifact_sidecar",
+      "arch": {
+        "n_in": 10,
+        "hidden": 128,
+        "n_out": 2
+      },
+      "feature_version": 7,
+      "classes": [
+        "HOVER",
+        "FLAP"
+      ],
+      "teacher": "flappy_law_on_v7 (r15 law + BirdObserverV7 + GapTrackerV7, same-sensor pathway)",
+      "teacher_provenance": "BC on the tv8 teacher lives (8 seeds incl. k12/45/120) + 2 r56b surgical corrections @weight 1",
+      "n_steps": 33916,
+      "artifact_npz": "flappy_student_feat_p7v7h128w1.npz"
+    },
+    {
+      "file": "flappy_student_feat_p7v7h128w2.npz",
+      "bytes": 7096,
+      "sha256": "cfc16176412a857735e29f989e871340cf22ceb41fae687f073d75368eda8875",
+      "kind": "model_artifact"
+    },
+    {
+      "file": "flappy_student_feat_p7v7h128w2.npz.json",
+      "bytes": 1089,
+      "sha256": "c6466bdb999ab5d47c28e0244dafbc8115bbcd9018094e05a96be2c62953c270",
+      "kind": "artifact_sidecar",
+      "arch": {
+        "n_in": 10,
+        "hidden": 128,
+        "n_out": 2
+      },
+      "feature_version": 7,
+      "classes": [
+        "HOVER",
+        "FLAP"
+      ],
+      "teacher": "flappy_law_on_v7 (r15 law + BirdObserverV7 + GapTrackerV7, same-sensor pathway)",
+      "teacher_provenance": "BC on the tv8 teacher lives (8 seeds incl. k12/45/120) + 2 r56b surgical corrections @weight 2",
+      "n_steps": 33950,
+      "artifact_npz": "flappy_student_feat_p7v7h128w2.npz"
+    },
+    {
+      "file": "flappy_student_feat_p7v7h128w3.npz",
+      "bytes": 7081,
+      "sha256": "5bb2bc9f1885e3bc8df26866a5286bf9f072236b54dc78d8367b81d417fa9311",
+      "kind": "model_artifact"
+    },
+    {
+      "file": "flappy_student_feat_p7v7h128w3.npz.json",
+      "bytes": 1087,
+      "sha256": "2b384c262c71bd45db463c379e7c2d9715621dca0595f0da0266d7bf1501bf0b",
+      "kind": "artifact_sidecar",
+      "arch": {
+        "n_in": 10,
+        "hidden": 128,
+        "n_out": 2
+      },
+      "feature_version": 7,
+      "classes": [
+        "HOVER",
+        "FLAP"
+      ],
+      "teacher": "flappy_law_on_v7 (r15 law + BirdObserverV7 + GapTrackerV7, same-sensor pathway)",
+      "teacher_provenance": "BC on the tv8 teacher lives (8 seeds incl. k12/45/120) + 2 r56b surgical corrections @weight 3",
+      "n_steps": 33984,
+      "artifact_npz": "flappy_student_feat_p7v7h128w3.npz"
+    },
+    {
+      "file": "flappy_student_feat_p7v7h192.npz",
+      "bytes": 10201,
+      "sha256": "75498b81f0d1031abeb2480d658fb376ec108cecafe9430a3bca7b7ff0795b4b",
+      "kind": "model_artifact"
+    },
+    {
+      "file": "flappy_student_feat_p7v7h192.npz.json",
+      "bytes": 1044,
+      "sha256": "96736ba530760b50140909b0c2e9296d858dee3ec84ac914c1cf05307aad7cb4",
+      "kind": "artifact_sidecar",
+      "arch": {
+        "n_in": 10,
+        "hidden": 192,
+        "n_out": 2
+      },
+      "feature_version": 7,
+      "classes": [
+        "HOVER",
+        "FLAP"
+      ],
+      "teacher": "flappy_law_on_v7 (r15 law + BirdObserverV7 + GapTrackerV7, same-sensor pathway)",
+      "teacher_provenance": "BC on the tv8 teacher lives (8 seeds incl. k12/45/120)",
+      "n_steps": 33882,
+      "artifact_npz": "flappy_student_feat_p7v7h192.npz"
+    },
+    {
+      "file": "flappy_student_feat_p7v7h192w1.npz",
+      "bytes": 10180,
+      "sha256": "835c46f3cd5da4bc265cecfa0a3f3c528a5a37ea25bc9e8d6d6c12b181f2a9bb",
+      "kind": "model_artifact"
+    },
+    {
+      "file": "flappy_student_feat_p7v7h192w1.npz.json",
+      "bytes": 1091,
+      "sha256": "d3a0015ce2f14a4c1e5eec039043e57fd9feb9d377521977a09a5d0a26b7c69f",
+      "kind": "artifact_sidecar",
+      "arch": {
+        "n_in": 10,
+        "hidden": 192,
+        "n_out": 2
+      },
+      "feature_version": 7,
+      "classes": [
+        "HOVER",
+        "FLAP"
+      ],
+      "teacher": "flappy_law_on_v7 (r15 law + BirdObserverV7 + GapTrackerV7, same-sensor pathway)",
+      "teacher_provenance": "BC on the tv8 teacher lives (8 seeds incl. k12/45/120) + 2 r56b surgical corrections @weight 1",
+      "n_steps": 33916,
+      "artifact_npz": "flappy_student_feat_p7v7h192w1.npz"
+    },
+    {
+      "file": "flappy_student_feat_p7v7h192w2.npz",
+      "bytes": 10182,
+      "sha256": "dd72153b37f705115b94e2dff59815d9b1a5483e8501ffd0a9d23d6f3037545c",
+      "kind": "model_artifact"
+    },
+    {
+      "file": "flappy_student_feat_p7v7h192w2.npz.json",
+      "bytes": 1088,
+      "sha256": "6342a51f00be64e83ba72b46861df2444ec409b55b179994c86d76f02203ad30",
+      "kind": "artifact_sidecar",
+      "arch": {
+        "n_in": 10,
+        "hidden": 192,
+        "n_out": 2
+      },
+      "feature_version": 7,
+      "classes": [
+        "HOVER",
+        "FLAP"
+      ],
+      "teacher": "flappy_law_on_v7 (r15 law + BirdObserverV7 + GapTrackerV7, same-sensor pathway)",
+      "teacher_provenance": "BC on the tv8 teacher lives (8 seeds incl. k12/45/120) + 2 r56b surgical corrections @weight 2",
+      "n_steps": 33950,
+      "artifact_npz": "flappy_student_feat_p7v7h192w2.npz"
+    },
+    {
+      "file": "flappy_student_feat_p7v7h192w3.npz",
+      "bytes": 10200,
+      "sha256": "85f4c3b789b8ef1274bc05ab7ad598de794e1a0b4fedef7216aaca59ba052b1c",
+      "kind": "model_artifact"
+    },
+    {
+      "file": "flappy_student_feat_p7v7h192w3.npz.json",
+      "bytes": 1088,
+      "sha256": "eb885bdcb26a7227021a71f1ba3ecbe818f1c3d584139c0235a34a5963e00eae",
+      "kind": "artifact_sidecar",
+      "arch": {
+        "n_in": 10,
+        "hidden": 192,
+        "n_out": 2
+      },
+      "feature_version": 7,
+      "classes": [
+        "HOVER",
+        "FLAP"
+      ],
+      "teacher": "flappy_law_on_v7 (r15 law + BirdObserverV7 + GapTrackerV7, same-sensor pathway)",
+      "teacher_provenance": "BC on the tv8 teacher lives (8 seeds incl. k12/45/120) + 2 r56b surgical corrections @weight 3",
+      "n_steps": 33984,
+      "artifact_npz": "flappy_student_feat_p7v7h192w3.npz"
+    },
+    {
+      "file": "flappy_student_feat_r56_c1.npz",
+      "bytes": 7080,
+      "sha256": "985cd751fb79968a77e3e1535375bd6587a56601509ffa05177d1fc43e80528b",
+      "kind": "model_artifact"
+    },
+    {
+      "file": "flappy_student_feat_r56_c1.npz.json",
+      "bytes": 1033,
+      "sha256": "26f0e84171737cbfd87aac25a87016497c951a96bbf9675c3c334482a9ebf257",
+      "kind": "artifact_sidecar",
+      "arch": {
+        "n_in": 10,
+        "hidden": 128,
+        "n_out": 2
+      },
+      "feature_version": 7,
+      "classes": [
+        "HOVER",
+        "FLAP"
+      ],
+      "teacher": "flappy_law_on_v7 (r15 law + BirdObserverV7 + GapTrackerV7, same-sensor pathway)",
+      "teacher_provenance": "BC on the tv8 teacher lives [6, 60]",
+      "n_steps": 13172,
+      "artifact_npz": "flappy_student_feat_r56_c1.npz"
+    },
+    {
+      "file": "flappy_student_feat_r56_c2.npz",
+      "bytes": 7095,
+      "sha256": "7bbe63d9b4760b3fa44aa658094d7b1a4105ab9c3172c9d0d0d1557d4057e004",
+      "kind": "model_artifact"
+    },
+    {
+      "file": "flappy_student_feat_r56_c2.npz.json",
+      "bytes": 1039,
+      "sha256": "2cad16322974d77897a2cde578bff9426c9d3e25453f994733d61bc7c63c92f8",
+      "kind": "artifact_sidecar",
+      "arch": {
+        "n_in": 10,
+        "hidden": 128,
+        "n_out": 2
+      },
+      "feature_version": 7,
+      "classes": [
+        "HOVER",
+        "FLAP"
+      ],
+      "teacher": "flappy_law_on_v7 (r15 law + BirdObserverV7 + GapTrackerV7, same-sensor pathway)",
+      "teacher_provenance": "BC on the tv8 teacher lives [6, 60, 12, 120]",
+      "n_steps": 23824,
+      "artifact_npz": "flappy_student_feat_r56_c2.npz"
+    },
+    {
+      "file": "flappy_student_feat_r56_c3.npz",
+      "bytes": 7085,
+      "sha256": "5297d5afcd1db91435591d9c6ed63f88fc56d43b733f239f5b2ca4b913fa321f",
+      "kind": "model_artifact"
+    },
+    {
+      "file": "flappy_student_feat_r56_c3.npz.json",
+      "bytes": 1098,
+      "sha256": "246f2dff9bc958b8e8e39bc183ad2d269717f99c3cd7df85b7ed99131aac7a83",
+      "kind": "artifact_sidecar",
+      "arch": {
+        "n_in": 10,
+        "hidden": 128,
+        "n_out": 2
+      },
+      "feature_version": 7,
+      "classes": [
+        "HOVER",
+        "FLAP"
+      ],
+      "teacher": "flappy_law_on_v7 (r15 law + BirdObserverV7 + GapTrackerV7, same-sensor pathway)",
+      "teacher_provenance": "BC on the tv8 teacher lives [6, 60, 12, 120] + the r56b walkback corrections (jitter x8, sigma 1.2px)",
+      "n_steps": 23842,
+      "artifact_npz": "flappy_student_feat_r56_c3.npz"
+    },
+    {
+      "file": "flappy_student_feat_r56_c4.npz",
+      "bytes": 7088,
+      "sha256": "aec129aaf2aa1805560ca1b204ab36ad3b9e7236d4e19744274954c9d8eaf99a",
+      "kind": "model_artifact"
+    },
+    {
+      "file": "flappy_student_feat_r56_c4.npz.json",
+      "bytes": 1209,
+      "sha256": "5041155b6bf3d42c9f28ecf2f6b6360110e76cba562f178de6744cedf1c0ef9e",
+      "kind": "artifact_sidecar",
+      "arch": {
+        "n_in": 10,
+        "hidden": 128,
+        "n_out": 2
+      },
+      "feature_version": 7,
+      "classes": [
+        "HOVER",
+        "FLAP"
+      ],
+      "teacher": "flappy_law_on_v7 (r15 law + BirdObserverV7 + GapTrackerV7, same-sensor pathway)",
+      "teacher_provenance": "BC on the tv8 teacher lives k6+k60 (the r55 champion recipe) + the r56 surgical corrections (2 teacher-death walkbacks k30/k45 + 4 real-basin flips from the recorded student lives), jitter x8 sigma 1.2px, tiled x2",
+      "n_steps": 13280,
+      "artifact_npz": "flappy_student_feat_r56_c4.npz"
+    },
+    {
+      "file": "flappy_train_p5v7.json",
+      "bytes": 522,
+      "sha256": "ad970c22ddf574134aecbfcbd9501db1d16eb053f8a027e96060254c7feff4b0",
+      "kind": "dataset_report_or_evidence",
+      "notes": "{   \"splits\": {     \"train\": 3729,     \"val\": 2943,     \"test\": 0   },   \"dagger_eps\": \"\",   \"hidden\": 48,   \"n_train_steps\": 4673,   \"acc_train\": 0.9839,   \"fl"
+    },
+    {
+      "file": "flappy_train_p5v7d1.json",
+      "bytes": 561,
+      "sha256": "662399bbd2488b8a90e0d2e20baad06b914650b742a7931096c9d592484e6a8e",
+      "kind": "dataset_report_or_evidence",
+      "notes": "{   \"splits\": {     \"train\": 3729,     \"val\": 2943,     \"test\": 0   },   \"dagger_eps\": \"dag_r1_k006,dag_r1_k030,dag_r1_k060\",   \"hidden\": 48,   \"n_train_steps\":"
+    },
+    {
+      "file": "flappy_train_p6v7.json",
+      "bytes": 526,
+      "sha256": "deb61e21dd201fc06ddcd121b2b200fc906cf81f4ba5021f1cd7a432e21cffd6",
+      "kind": "dataset_report_or_evidence",
+      "notes": "{   \"splits\": {     \"train\": 10500,     \"val\": 4000,     \"test\": 0   },   \"dagger_eps\": \"\",   \"hidden\": 48,   \"n_train_steps\": 13172,   \"acc_train\": 0.9954,   \""
+    },
+    {
+      "file": "flappy_train_p6v7f.json",
+      "bytes": 599,
+      "sha256": "351677becbb785975060e509b29ec7d52e6b37d644f145b9fc72d9ee576e4d7f",
+      "kind": "dataset_report_or_evidence",
+      "notes": "{   \"splits\": {     \"train\": 10500,     \"val\": 4000,     \"test\": 0   },   \"dagger_eps\": \"dag_r3_k006,dag_r3_k030,dag_r3_k060,mine_teacher_v7_k30,mine_dag_r3_k06"
+    },
+    {
+      "file": "flappy_train_p6v7f128.json",
+      "bytes": 607,
+      "sha256": "8340c30dfc3e2bdae0a63b805a1387a9f01198d1e56017133d96768390dcc8d6",
+      "kind": "dataset_report_or_evidence",
+      "notes": "{   \"splits\": {     \"train\": 10500,     \"val\": 4000,     \"test\": 0   },   \"dagger_eps\": \"dag_r6_k006,dag_r6_k030,dag_r6_k060,mine_teacher_v7_k30,mine_dag_r3_k06"
+    },
+    {
+      "file": "flappy_train_p6v7g.json",
+      "bytes": 601,
+      "sha256": "1925a4aa72e1411a0aa62b8000f42f50582cf88fba938fd3c05e2dddca7c05be",
+      "kind": "dataset_report_or_evidence",
+      "notes": "{   \"splits\": {     \"train\": 10500,     \"val\": 4000,     \"test\": 0   },   \"dagger_eps\": \"dag_r3_k006,dag_r3_k030,dag_r3_k060,mine_teacher_v7_k30,mine_dag_r3_k06"
+    },
+    {
+      "file": "flappy_train_p6v7h128.json",
+      "bytes": 533,
+      "sha256": "945347ca6feed63a84700337751b149c2dcf14f6e6ca83f3874015ca37c73ec2",
+      "kind": "dataset_report_or_evidence",
+      "notes": "{   \"splits\": {     \"train\": 10500,     \"val\": 4000,     \"test\": 0   },   \"dagger_eps\": \"\",   \"hidden\": 128,   \"n_train_steps\": 13172,   \"acc_train\": 0.9973,   "
+    },
+    {
+      "file": "flappy_train_p6v7h96.json",
+      "bytes": 531,
+      "sha256": "c94735f5905f5376a5eb20dc2e98695a2f5cc3f943db3a0a99105b174ee06c8a",
+      "kind": "dataset_report_or_evidence",
+      "notes": "{   \"splits\": {     \"train\": 10500,     \"val\": 4000,     \"test\": 0   },   \"dagger_eps\": \"\",   \"hidden\": 96,   \"n_train_steps\": 13172,   \"acc_train\": 0.9953,   \""
+    },
+    {
+      "file": "flappy_train_p7v7h128.json",
+      "bytes": 628,
+      "sha256": "205580db20f313de041b0561a7b954e0f211e78761b5972074f2342f01e360c3",
+      "kind": "dataset_report_or_evidence",
+      "notes": "{   \"tag\": \"p7v7h128\",   \"hidden\": 128,   \"mined_weight\": 0,   \"n_train_steps\": 33882,   \"mined_labels\": 2,   \"splits\": {     \"k6\": 6000,     \"k30\": 4398,     \""
+    },
+    {
+      "file": "flappy_train_p7v7h128w1.json",
+      "bytes": 635,
+      "sha256": "270a77726dc38cbf3c5a16e7301ecc98916ed8820f0fd9780ee8f26b5bea8556",
+      "kind": "dataset_report_or_evidence",
+      "notes": "{   \"tag\": \"p7v7h128w1\",   \"hidden\": 128,   \"mined_weight\": 1,   \"n_train_steps\": 33916,   \"mined_labels\": 2,   \"splits\": {     \"k6\": 6000,     \"k30\": 4398,    "
+    },
+    {
+      "file": "flappy_train_p7v7h128w2.json",
+      "bytes": 631,
+      "sha256": "fe25afdd875fe27c81e48cbc7ae1265a88a3c24f9d7d583aa63abfbefacbc9fb",
+      "kind": "dataset_report_or_evidence",
+      "notes": "{   \"tag\": \"p7v7h128w2\",   \"hidden\": 128,   \"mined_weight\": 2,   \"n_train_steps\": 33950,   \"mined_labels\": 2,   \"splits\": {     \"k6\": 6000,     \"k30\": 4398,    "
+    },
+    {
+      "file": "flappy_train_p7v7h128w3.json",
+      "bytes": 634,
+      "sha256": "11d36a4c42d6a44680262b69d1daaf0bc65819e922eff861c501196e0d1280b7",
+      "kind": "dataset_report_or_evidence",
+      "notes": "{   \"tag\": \"p7v7h128w3\",   \"hidden\": 128,   \"mined_weight\": 3,   \"n_train_steps\": 33984,   \"mined_labels\": 2,   \"splits\": {     \"k6\": 6000,     \"k30\": 4398,    "
+    },
+    {
+      "file": "flappy_train_p7v7h192.json",
+      "bytes": 630,
+      "sha256": "e031de03204e6a7299885680c59976e63758303886eebef2a15baa1c217ab1a7",
+      "kind": "dataset_report_or_evidence",
+      "notes": "{   \"tag\": \"p7v7h192\",   \"hidden\": 192,   \"mined_weight\": 0,   \"n_train_steps\": 33882,   \"mined_labels\": 2,   \"splits\": {     \"k6\": 6000,     \"k30\": 4398,     \""
+    },
+    {
+      "file": "flappy_train_p7v7h192w1.json",
+      "bytes": 635,
+      "sha256": "07dbd9e16b8a743a6bb9614afbe3b6e6fdb1ad07dd87ae5bcc488d98ddc10498",
+      "kind": "dataset_report_or_evidence",
+      "notes": "{   \"tag\": \"p7v7h192w1\",   \"hidden\": 192,   \"mined_weight\": 1,   \"n_train_steps\": 33916,   \"mined_labels\": 2,   \"splits\": {     \"k6\": 6000,     \"k30\": 4398,    "
+    },
+    {
+      "file": "flappy_train_p7v7h192w2.json",
+      "bytes": 635,
+      "sha256": "271ea40dcaa8db5a4990c943f845de1521d319855224909789ab8780f467ff40",
+      "kind": "dataset_report_or_evidence",
+      "notes": "{   \"tag\": \"p7v7h192w2\",   \"hidden\": 192,   \"mined_weight\": 2,   \"n_train_steps\": 33950,   \"mined_labels\": 2,   \"splits\": {     \"k6\": 6000,     \"k30\": 4398,    "
+    },
+    {
+      "file": "flappy_train_p7v7h192w3.json",
+      "bytes": 635,
+      "sha256": "b1e67b700e40712fce09a816b44d7a53918e32d757c04e7539f926f4908ce45f",
+      "kind": "dataset_report_or_evidence",
+      "notes": "{   \"tag\": \"p7v7h192w3\",   \"hidden\": 192,   \"mined_weight\": 3,   \"n_train_steps\": 33984,   \"mined_labels\": 2,   \"splits\": {     \"k6\": 6000,     \"k30\": 4398,    "
+    },
+    {
+      "file": "flappy_train_r56_c1.json",
+      "bytes": 594,
+      "sha256": "4e7d66743c499b192a17ee53183ea03a32f5e50063ff9e9ca6ffd4b1cfbf7e91",
+      "kind": "dataset_report_or_evidence",
+      "notes": "{   \"tag\": \"r56_c1\",   \"train\": [     6,     60   ],   \"mined\": 0,   \"per_seed_steps\": {     \"k6\": 6000,     \"k60\": 4500   },   \"n_train\": 13172,   \"acc_val\": 0"
+    },
+    {
+      "file": "flappy_train_r56_c2.json",
+      "bytes": 644,
+      "sha256": "fd4af13c10c2ac86e0053fa15ee36cf8ca997f403758c3e6e0ffd86b69710d03",
+      "kind": "dataset_report_or_evidence",
+      "notes": "{   \"tag\": \"r56_c2\",   \"train\": [     6,     60,     12,     120   ],   \"mined\": 0,   \"per_seed_steps\": {     \"k6\": 6000,     \"k60\": 4500,     \"k12\": 4500,     "
+    },
+    {
+      "file": "flappy_train_r56_c3.json",
+      "bytes": 646,
+      "sha256": "07d59a3ab9044123760075be276efa0e052c2c6f673d6c331f7b70f087133c43",
+      "kind": "dataset_report_or_evidence",
+      "notes": "{   \"tag\": \"r56_c3\",   \"train\": [     6,     60,     12,     120   ],   \"mined\": 1,   \"per_seed_steps\": {     \"k6\": 6000,     \"k60\": 4500,     \"k12\": 4500,     "
+    },
+    {
+      "file": "flappy_train_r56_c4.json",
+      "bytes": 553,
+      "sha256": "37d7400ff8633c8730eef2a9bf9448f7e44636f16013e37068bde855e770f77a",
+      "kind": "dataset_report_or_evidence",
+      "notes": "{   \"tag\": \"r56_c4\",   \"train\": [     6,     60   ],   \"mined\": 6,   \"per_seed_steps\": {     \"k6\": 6000,     \"k60\": 4500   },   \"acc_val\": 0.994,   \"flap_recall"
+    },
+    {
+      "file": "pong_student_feat_p4d4.npz",
+      "bytes": 2417,
+      "sha256": "845f92aff4a9d416f7e631f94d85d0e53a58684388ca8537cb4f3a4c1daac9f0",
+      "kind": "model_artifact"
+    },
+    {
+      "file": "pong_student_feat_p4d4.npz.json",
+      "bytes": 1721,
+      "sha256": "a08615ad3d06c80a6bbf1201ff5d861e9e2f1fc0f61bbadc03eef9224aa04a53",
+      "kind": "artifact_sidecar",
+      "arch": {
+        "n_in": 9,
+        "hidden": 32,
+        "n_out": 3
+      },
+      "feature_version": 2,
+      "classes": [
+        "DOWN",
+        "NONE",
+        "UP"
+      ],
+      "teacher": "pong_teacher_v2_predictive_edge",
+      "teacher_provenance": null,
+      "n_steps": 32929,
+      "artifact_npz": "pong_student_feat_p4d4.npz"
+    },
+    {
+      "file": "r54_flappy_evidence.json",
+      "bytes": 3322,
+      "sha256": "99b5eacddfbd7a454567a566c72df71dea3e794f2bb9d696e70b803f64cee9dd",
+      "kind": "dataset_report_or_evidence",
+      "notes": "{   \"protocol\": {     \"seeds\": {       \"train_family\": [         6,         30,         60,         100,         130       ],       \"heldout\": [         90,    "
+    },
+    {
+      "file": "r54_pong_evidence.json",
+      "bytes": 6345,
+      "sha256": "b3ab6ef8a5ded394e404b71a75a9d89595c6bcf68e4580618a7586280710c661",
+      "kind": "dataset_report_or_evidence",
+      "notes": "{   \"protocol\": {     \"anchor\": \"pong_anchor (0-0, verified)\",     \"step\": 2,     \"game_ai_eps\": 2,     \"budget_game_ai\": 2600,     \"scenario_eps\": \"3 seeds per"
+    },
+    {
+      "file": "r55_flappy_evidence.json",
+      "bytes": 8189,
+      "sha256": "73c638ed159dbfe0dab82d368a00aae0c52afd8948e209f7b3a0be122767d08a",
+      "kind": "dataset_report_or_evidence",
+      "notes": "{   \"round\": \"R55-learn\",   \"date\": \"2026-10-30\",   \"mission\": \"close the r54 flappy residual gap (the small-frame perception latch class) and push the student-"
+    },
+    {
+      "file": "r56_flappy_evidence.json",
+      "bytes": 7619,
+      "sha256": "919acbde49d7f2e0aa62b4c7b87171ebc551fe7233b86f5ebd76a41997cd5bae",
+      "kind": "dataset_report_or_evidence",
+      "notes": "{   \"/round\": \"R56-learn\",   \"/date\": \"2026-10-30\",   \"/mission\": \"close the flappy P4 exceed bar (the student must meet-or-exceed its teacher) \u2014 the r55-declar"
+    },
+    {
+      "file": "r57_provenance_manifest.json",
+      "bytes": 29113,
+      "sha256": "883099e02f9ea2628f96b3e5e0cb2fd4362902fd9d1b2f31075e0e5364563d3c",
+      "kind": "dataset_report_or_evidence",
+      "notes": "{   \"round\": \"R57-learn P0\",   \"date\": \"2026-10-30\",   \"base_commit\": \"2d2c41e217cf\",   \"rule\": \"A checkpoint qualifies as the R57 teacher-bootstrap student ONL"
+    },
+    {
+      "file": "r57_seed_splits.json",
+      "bytes": 898,
+      "sha256": "9c6fd0d116218c0b3f7051120cf0aa8c0223cade00576bf5de8f15f0f238fed7",
+      "kind": "dataset_report_or_evidence",
+      "notes": "{   \"round\": \"R57-learn\",   \"k_semantics\": \"the scenario k = idle frames between the ready anchor restore and the X press (the press seeds the game RNG)\",   \"tr"
+    }
+  ],
+  "teacher_pipes_by_k_measured": {
+    "6": 51,
+    "30": 37,
+    "60": 38,
+    "90": 34,
+    "210": 34,
+    "12": 38,
+    "45": 30,
+    "120": 34
+  }
+}
