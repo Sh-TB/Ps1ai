@@ -164,3 +164,40 @@ Ordered by the 60/40 discipline. Items 1-4 are the R53 round plan.
   frontier and the owner's sign-off on the redefined completion.
 - **Retail deep games** (Poy Poy, Trap Gunner, Ballistic): all stopped at
   the RAM-mapping/boot gate; none playable to a goal state by the agent.
+
+## 6. R57 intake — the autonomous student round (2026-10-31)
+
+**Trigger:** the owner filed the R57 MASTER MISSION ("the student must
+learn beyond the teacher") and directed a line-by-line review plus a
+dedicated issue. Both landed this round at base `f5a47a6`:
+
+- `docs/r57_mission.md` — the canonical verbatim mission text.
+- `docs/r57_mission_review.md` — the line-by-line audit: 22 findings
+  (0 blockers, 9 GAPs with proposed resolutions, 5 RISKs with
+  mitigations, 8 OK-with-notes), all numbers recomputed (C1 173 and
+  teacher 194 verified; C3's regression ≈ 107 added to the audit's
+  correction of the header's "C2 and C4" summary).
+- The R57 workstream issue (cross-linked from #12) carries the
+  condensed work plan, the numeric regression gate, the seed-split and
+  boot-budget rules, and the 29-item deliverables checklist.
+
+**Why a separate issue:** PART 17 of the mission says "do not create a
+duplicate Flappy issue unless a genuinely separate root problem exists."
+The owner directed a new issue; the R57 autonomous-learning workstream
+(20-pipe teacher cutoff → teacher-off self-improvement → unseen-seed
+evaluation) is a genuinely separate root workstream from #12's general
+visual-learning track, so both conditions are satisfied. #12 remains the
+parent evidence thread; nothing is duplicated between them.
+
+**Carried into R57 from this report's standing rules:** the ≥10-item
+work list discipline, push-per-round with verified read-back, honest
+status labels, and the 60/40 focus rule (R57 is a Flappy primary round
+under Issue #12's game; Pong regression stays green via the existing
+suite).
+
+**R57 execution order (from the review, evidence-grounded):** P0 audit +
+seed splits → P1 capped bootstrap + clean BC → P2 teacher-off
+enforcement (AST + import-hook + hashed trace) → P3 learner bake-off
+(ES/ARS first, correct-PPO second, confidence-aware exploration layer
+third, self-imitation last) → P4 the pipe-overlap perception latch fix →
+P5 numeric-gated promotion + 20 unseen TEST seeds × 3 boots.
