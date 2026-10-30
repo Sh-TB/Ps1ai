@@ -1,0 +1,197 @@
+{
+  "round": "R57 P1",
+  "format": "r57-capped-bc-dataset-v1",
+  "classes": [
+    "HOVER",
+    "FLAP"
+  ],
+  "n_rows": 23966,
+  "rows_sha_note": "row identity = (episode_id, frame_index); provenance_hash = sha256 of the episode npz recorded per episode below",
+  "dataset_sha256": "c3feeb8f31b2bb86f41f820269939a71dfdf1219b138ad5902a689712bc6e52d",
+  "cap_rule": "no teacher action beyond the first 20 visually confirmed pipes per episode; the cutoff step's own label excluded",
+  "max_passed_pipe_count": 19,
+  "episodes": [
+    {
+      "episode_index": 0,
+      "episode_id": "r57_tb_e01",
+      "k": 6,
+      "n_rows": 2401,
+      "source_type": "teacher",
+      "source_checkpoint": "flappy_law_on_v7 (r55g_m1)",
+      "frame_index_range": [
+        0,
+        2400
+      ],
+      "max_passed_pipe_count_in_rows": 19,
+      "row_bound_note": "rows [0, cutoff_step): the action at the last row is the one whose execution completes the 20th passage; the cutoff step's own action is EXCLUDED; the offline pre-run band recount lags the live post-run counter by one event",
+      "cutoff_step": 2401,
+      "npz_sha256": "db085c3d933702d92adc52273cbd566e6f9ad43865fb17f8ca0285e4d540179d",
+      "npz": "tb_life_e01.npz"
+    },
+    {
+      "episode_index": 1,
+      "episode_id": "r57_tb_e02",
+      "k": 60,
+      "n_rows": 2397,
+      "source_type": "teacher",
+      "source_checkpoint": "flappy_law_on_v7 (r55g_m1)",
+      "frame_index_range": [
+        0,
+        2396
+      ],
+      "max_passed_pipe_count_in_rows": 19,
+      "row_bound_note": "rows [0, cutoff_step): the action at the last row is the one whose execution completes the 20th passage; the cutoff step's own action is EXCLUDED; the offline pre-run band recount lags the live post-run counter by one event",
+      "cutoff_step": 2397,
+      "npz_sha256": "c85a8ab5af55eefcbec4cc4da4d2b23d2453e8def0fb62ee5a3e622629aa8b1e",
+      "npz": "tb_life_e02.npz"
+    },
+    {
+      "episode_index": 2,
+      "episode_id": "r57_tb_e03",
+      "k": 6,
+      "n_rows": 2401,
+      "source_type": "teacher",
+      "source_checkpoint": "flappy_law_on_v7 (r55g_m1)",
+      "frame_index_range": [
+        0,
+        2400
+      ],
+      "max_passed_pipe_count_in_rows": 19,
+      "row_bound_note": "rows [0, cutoff_step): the action at the last row is the one whose execution completes the 20th passage; the cutoff step's own action is EXCLUDED; the offline pre-run band recount lags the live post-run counter by one event",
+      "cutoff_step": 2401,
+      "npz_sha256": "db085c3d933702d92adc52273cbd566e6f9ad43865fb17f8ca0285e4d540179d",
+      "npz": "tb_life_e03.npz"
+    },
+    {
+      "episode_index": 3,
+      "episode_id": "r57_tb_e04",
+      "k": 60,
+      "n_rows": 2397,
+      "source_type": "teacher",
+      "source_checkpoint": "flappy_law_on_v7 (r55g_m1)",
+      "frame_index_range": [
+        0,
+        2396
+      ],
+      "max_passed_pipe_count_in_rows": 19,
+      "row_bound_note": "rows [0, cutoff_step): the action at the last row is the one whose execution completes the 20th passage; the cutoff step's own action is EXCLUDED; the offline pre-run band recount lags the live post-run counter by one event",
+      "cutoff_step": 2397,
+      "npz_sha256": "c85a8ab5af55eefcbec4cc4da4d2b23d2453e8def0fb62ee5a3e622629aa8b1e",
+      "npz": "tb_life_e04.npz"
+    },
+    {
+      "episode_index": 4,
+      "episode_id": "r57_tb_e05",
+      "k": 30,
+      "n_rows": 2389,
+      "source_type": "teacher",
+      "source_checkpoint": "flappy_law_on_v7 (r55g_m1)",
+      "frame_index_range": [
+        0,
+        2388
+      ],
+      "max_passed_pipe_count_in_rows": 19,
+      "row_bound_note": "rows [0, cutoff_step): the action at the last row is the one whose execution completes the 20th passage; the cutoff step's own action is EXCLUDED; the offline pre-run band recount lags the live post-run counter by one event",
+      "cutoff_step": 2389,
+      "npz_sha256": "7c5ba972a4dff30ae84550e85c954d3d15a57f9e85bfd8d1e8dbff60caa59616",
+      "npz": "tb_life_e05.npz"
+    },
+    {
+      "episode_index": 5,
+      "episode_id": "r57_tb_e06",
+      "k": 6,
+      "n_rows": 2401,
+      "source_type": "teacher",
+      "source_checkpoint": "flappy_law_on_v7 (r55g_m1)",
+      "frame_index_range": [
+        0,
+        2400
+      ],
+      "max_passed_pipe_count_in_rows": 19,
+      "row_bound_note": "rows [0, cutoff_step): the action at the last row is the one whose execution completes the 20th passage; the cutoff step's own action is EXCLUDED; the offline pre-run band recount lags the live post-run counter by one event",
+      "cutoff_step": 2401,
+      "npz_sha256": "db085c3d933702d92adc52273cbd566e6f9ad43865fb17f8ca0285e4d540179d",
+      "npz": "tb_life_e06.npz"
+    },
+    {
+      "episode_index": 6,
+      "episode_id": "r57_tb_e07",
+      "k": 60,
+      "n_rows": 2397,
+      "source_type": "teacher",
+      "source_checkpoint": "flappy_law_on_v7 (r55g_m1)",
+      "frame_index_range": [
+        0,
+        2396
+      ],
+      "max_passed_pipe_count_in_rows": 19,
+      "row_bound_note": "rows [0, cutoff_step): the action at the last row is the one whose execution completes the 20th passage; the cutoff step's own action is EXCLUDED; the offline pre-run band recount lags the live post-run counter by one event",
+      "cutoff_step": 2397,
+      "npz_sha256": "c85a8ab5af55eefcbec4cc4da4d2b23d2453e8def0fb62ee5a3e622629aa8b1e",
+      "npz": "tb_life_e07.npz"
+    },
+    {
+      "episode_index": 7,
+      "episode_id": "r57_tb_e08",
+      "k": 30,
+      "n_rows": 2389,
+      "source_type": "teacher",
+      "source_checkpoint": "flappy_law_on_v7 (r55g_m1)",
+      "frame_index_range": [
+        0,
+        2388
+      ],
+      "max_passed_pipe_count_in_rows": 19,
+      "row_bound_note": "rows [0, cutoff_step): the action at the last row is the one whose execution completes the 20th passage; the cutoff step's own action is EXCLUDED; the offline pre-run band recount lags the live post-run counter by one event",
+      "cutoff_step": 2389,
+      "npz_sha256": "7c5ba972a4dff30ae84550e85c954d3d15a57f9e85bfd8d1e8dbff60caa59616",
+      "npz": "tb_life_e08.npz"
+    },
+    {
+      "episode_index": 8,
+      "episode_id": "r57_tb_e09",
+      "k": 12,
+      "n_rows": 2395,
+      "source_type": "teacher",
+      "source_checkpoint": "flappy_law_on_v7 (r55g_m1)",
+      "frame_index_range": [
+        0,
+        2394
+      ],
+      "max_passed_pipe_count_in_rows": 19,
+      "row_bound_note": "rows [0, cutoff_step): the action at the last row is the one whose execution completes the 20th passage; the cutoff step's own action is EXCLUDED; the offline pre-run band recount lags the live post-run counter by one event",
+      "cutoff_step": 2395,
+      "npz_sha256": "ec4cd2f3e9a907af9e09160bfbde0597c68670aef68e00dbc07fcf74fa42b0d0",
+      "npz": "tb_life_e09.npz"
+    },
+    {
+      "episode_index": 9,
+      "episode_id": "r57_tb_e10",
+      "k": 45,
+      "n_rows": 2399,
+      "source_type": "teacher",
+      "source_checkpoint": "flappy_law_on_v7 (r55g_m1)",
+      "frame_index_range": [
+        0,
+        2398
+      ],
+      "max_passed_pipe_count_in_rows": 19,
+      "row_bound_note": "rows [0, cutoff_step): the action at the last row is the one whose execution completes the 20th passage; the cutoff step's own action is EXCLUDED; the offline pre-run band recount lags the live post-run counter by one event",
+      "cutoff_step": 2399,
+      "npz_sha256": "5df5eb9624cbcd81b7ee5274e08fdca50851025997d54bd08316abea719f1a9b",
+      "npz": "tb_life_e10.npz"
+    }
+  ],
+  "teacher": "flappy_law_on_v7",
+  "teacher_params": {
+    "flap_below": 14.0,
+    "emergency_below": 26.0
+  },
+  "boot_ids": [
+    "boot_170146",
+    "boot_170413",
+    "boot_170530",
+    "boot_170653"
+  ],
+  "cutoff_proof": true
+}

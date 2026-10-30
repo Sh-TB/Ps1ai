@@ -1,0 +1,63 @@
+{
+  "round": "R57 P1",
+  "artifact": {
+    "npz": "/home/z/my-project/ps1ai/data/learn/r57_bootstrap_bc.npz",
+    "json": "/home/z/my-project/ps1ai/data/learn/r57_bootstrap_bc.npz.json",
+    "npz_bytes": 7096,
+    "sha256": "2f3605677b9650efd51627bd8574e702b2cde98c9e6298725f0133811e306aa9"
+  },
+  "recipe": {
+    "hidden": 128,
+    "epochs": 60,
+    "batch": 128,
+    "lr": 0.003,
+    "seed": 11,
+    "flap_tile": 4,
+    "train_s": 2.7
+  },
+  "dataset_rows": 23966,
+  "max_teacher_pipe": 19,
+  "in_sample_agreement": {
+    "r57_tb_e01": {
+      "acc": 0.9988,
+      "flap_recall": 1.0
+    },
+    "r57_tb_e02": {
+      "acc": 0.9992,
+      "flap_recall": 1.0
+    },
+    "r57_tb_e03": {
+      "acc": 0.9988,
+      "flap_recall": 1.0
+    },
+    "r57_tb_e04": {
+      "acc": 0.9992,
+      "flap_recall": 1.0
+    },
+    "r57_tb_e05": {
+      "acc": 0.9962,
+      "flap_recall": 1.0
+    },
+    "r57_tb_e06": {
+      "acc": 0.9988,
+      "flap_recall": 1.0
+    },
+    "r57_tb_e07": {
+      "acc": 0.9992,
+      "flap_recall": 1.0
+    },
+    "r57_tb_e08": {
+      "acc": 0.9962,
+      "flap_recall": 1.0
+    },
+    "r57_tb_e09": {
+      "acc": 0.9983,
+      "flap_recall": 0.9934
+    },
+    "r57_tb_e10": {
+      "acc": 0.9971,
+      "flap_recall": 1.0
+    }
+  },
+  "mean_acc": 0.9982
+}

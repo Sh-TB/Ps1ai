@@ -1,0 +1,209 @@
+{
+  "round": "R57 P0",
+  "artifact": "/home/z/my-project/ps1ai/data/learn/flappy_student_feat_r56_c1.npz",
+  "sha256": "985cd751fb79968a77e3e1535375bd6587a56601509ffa05177d1fc43e80528b",
+  "protocol": "3 restored episodes per dev seed, one boot",
+  "rows": [
+    {
+      "tag": "c1_repro_k6_r0",
+      "k": 6,
+      "result": "budget",
+      "pipes": 51,
+      "steps": 6000,
+      "flaps": 384,
+      "wall_s": 62.4
+    },
+    {
+      "tag": "c1_repro_k6_r1",
+      "k": 6,
+      "result": "budget",
+      "pipes": 51,
+      "steps": 6000,
+      "flaps": 384,
+      "wall_s": 62.3
+    },
+    {
+      "tag": "c1_repro_k6_r2",
+      "k": 6,
+      "result": "budget",
+      "pipes": 51,
+      "steps": 6000,
+      "flaps": 384,
+      "wall_s": 62.0
+    },
+    {
+      "tag": "c1_repro_k30_r0",
+      "k": 30,
+      "result": "death",
+      "pipes": 37,
+      "steps": 4394,
+      "flaps": 282,
+      "wall_s": 46.4
+    },
+    {
+      "tag": "c1_repro_k30_r1",
+      "k": 30,
+      "result": "death",
+      "pipes": 37,
+      "steps": 4394,
+      "flaps": 282,
+      "wall_s": 45.9
+    },
+    {
+      "tag": "c1_repro_k30_r2",
+      "k": 30,
+      "result": "death",
+      "pipes": 37,
+      "steps": 4394,
+      "flaps": 282,
+      "wall_s": 45.1
+    },
+    {
+      "tag": "c1_repro_k60_r0",
+      "k": 60,
+      "result": "budget",
+      "pipes": 38,
+      "steps": 4500,
+      "flaps": 286,
+      "wall_s": 47.1
+    },
+    {
+      "tag": "c1_repro_k60_r1",
+      "k": 60,
+      "result": "budget",
+      "pipes": 38,
+      "steps": 4500,
+      "flaps": 286,
+      "wall_s": 46.8
+    },
+    {
+      "tag": "c1_repro_k60_r2",
+      "k": 60,
+      "result": "budget",
+      "pipes": 38,
+      "steps": 4500,
+      "flaps": 286,
+      "wall_s": 47.2
+    },
+    {
+      "tag": "c1_repro_k90_r0",
+      "k": 90,
+      "result": "budget",
+      "pipes": 34,
+      "steps": 4000,
+      "flaps": 256,
+      "wall_s": 41.8
+    },
+    {
+      "tag": "c1_repro_k90_r1",
+      "k": 90,
+      "result": "budget",
+      "pipes": 34,
+      "steps": 4000,
+      "flaps": 256,
+      "wall_s": 41.4
+    },
+    {
+      "tag": "c1_repro_k90_r2",
+      "k": 90,
+      "result": "budget",
+      "pipes": 34,
+      "steps": 4000,
+      "flaps": 256,
+      "wall_s": 42.0
+    },
+    {
+      "tag": "c1_repro_k210_r0",
+      "k": 210,
+      "result": "death",
+      "pipes": 13,
+      "steps": 1698,
+      "flaps": 108,
+      "wall_s": 17.8
+    },
+    {
+      "tag": "c1_repro_k210_r1",
+      "k": 210,
+      "result": "death",
+      "pipes": 13,
+      "steps": 1698,
+      "flaps": 108,
+      "wall_s": 17.2
+    },
+    {
+      "tag": "c1_repro_k210_r2",
+      "k": 210,
+      "result": "death",
+      "pipes": 13,
+      "steps": 1698,
+      "flaps": 108,
+      "wall_s": 17.9
+    }
+  ],
+  "agg": {
+    "6": {
+      "pipes": [
+        51,
+        51,
+        51
+      ],
+      "mean": 51.0,
+      "results": [
+        "budget"
+      ]
+    },
+    "30": {
+      "pipes": [
+        37,
+        37,
+        37
+      ],
+      "mean": 37.0,
+      "results": [
+        "death"
+      ]
+    },
+    "60": {
+      "pipes": [
+        38,
+        38,
+        38
+      ],
+      "mean": 38.0,
+      "results": [
+        "budget"
+      ]
+    },
+    "90": {
+      "pipes": [
+        34,
+        34,
+        34
+      ],
+      "mean": 34.0,
+      "results": [
+        "budget"
+      ]
+    },
+    "210": {
+      "pipes": [
+        13,
+        13,
+        13
+      ],
+      "mean": 13.0,
+      "results": [
+        "death"
+      ]
+    }
+  },
+  "total_pipes": 519,
+  "r56_reported_c1": {
+    "k6": 51,
+    "k30": 37,
+    "k60": 38,
+    "k90": 34,
+    "k210": 13,
+    "total": 173
+  }
+}

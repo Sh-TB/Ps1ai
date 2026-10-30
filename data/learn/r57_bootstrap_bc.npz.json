@@ -1,0 +1,49 @@
+{
+  "arch": {
+    "n_in": 10,
+    "hidden": 128,
+    "n_out": 2
+  },
+  "format": "tinymlp-npz-v1",
+  "created": 1793380190.2796388,
+  "game": "flappy",
+  "control_mode": "cv+mlp",
+  "feature_version": 7,
+  "classes": [
+    "HOVER",
+    "FLAP"
+  ],
+  "norm": {
+    "mean": [
+      97.8950424194336,
+      0.0062432195991277695,
+      98.52149200439453,
+      32.677001953125,
+      66.51093292236328,
+      130.46961975097656,
+      0.09475924074649811,
+      16.047651290893555,
+      98.81202697753906,
+      1.8117332458496094
+    ],
+    "std": [
+      24.330570220947266,
+      2.978083610534668,
+      31.22158432006836,
+      45.460506439208984,
+      26.62419319152832,
+      36.5621452331543,
+      0.3859897553920746,
+      13.82913589477539,
+      30.880252838134766,
+      8.253826141357422
+    ]
+  },
+  "teacher": "flappy_law_on_v7 (r15 law + BirdObserverV7 + GapTrackerV7, same-sensor pathway)",
+  "teacher_provenance": "QUALIFIED R57 bootstrap: BC on the capped teacher demonstrations r57_tb_e01..e10 (10 episodes, cap 20 visually confirmed passages, cutoff-step label excluded); dataset sha256 c3feeb8f31b2bb86",
+  "dataset": "r57_bootstrap_dataset.npz",
+  "dataset_sha256": "c3feeb8f31b2bb86f41f820269939a71dfdf1219b138ad5902a689712bc6e52d",
+  "recipe": "tinymlp 10-128-2, seed 11, CE, flap tile x4, sqrt-balanced class weights, epochs 60, batch 128, lr 3e-3 (the C1 recipe verbatim)",
+  "n_steps": 23966,
+  "trained_at": 1793380190.27876
+}

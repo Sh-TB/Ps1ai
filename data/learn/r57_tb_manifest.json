@@ -1,0 +1,242 @@
+{
+  "round": "R57 P1",
+  "cap_pipes": 20,
+  "rule": "recording stops at the step completing the 20th visually confirmed passage; the cutoff step's own label is excluded (no teacher action from the cutoff frame onward)",
+  "teacher": "flappy_law_on_v7",
+  "teacher_params": {
+    "flap_below": 14.0,
+    "emergency_below": 26.0
+  },
+  "plan": [
+    [
+      "e01",
+      6
+    ],
+    [
+      "e02",
+      60
+    ],
+    [
+      "e03",
+      6
+    ],
+    [
+      "e04",
+      60
+    ],
+    [
+      "e05",
+      30
+    ],
+    [
+      "e06",
+      6
+    ],
+    [
+      "e07",
+      60
+    ],
+    [
+      "e08",
+      30
+    ],
+    [
+      "e09",
+      12
+    ],
+    [
+      "e10",
+      45
+    ]
+  ],
+  "boot_ids": [
+    "boot_170146",
+    "boot_170413",
+    "boot_170530",
+    "boot_170653"
+  ],
+  "episodes": [
+    {
+      "episode_id": "r57_tb_e01",
+      "k": 6,
+      "result": "cutoff",
+      "passages": 20,
+      "cutoff_step": 2401,
+      "n_labels": 2401,
+      "steps_total": 2402,
+      "ram_score_at_end": 0,
+      "dead_flag_at_end": 0,
+      "source_type": "teacher",
+      "source_checkpoint": "flappy_law_on_v7 (r55g_m1)",
+      "action_contract": "FLAP=1-frame B emit inside the teacher's 2f-pulse/3f-cooldown SM; HOVER=release",
+      "feature_version": 7,
+      "npz": "tb_life_e01.npz",
+      "npz_sha256": "db085c3d933702d92adc52273cbd566e6f9ad43865fb17f8ca0285e4d540179d",
+      "boot_id": "boot_170653"
+    },
+    {
+      "episode_id": "r57_tb_e02",
+      "k": 60,
+      "result": "cutoff",
+      "passages": 20,
+      "cutoff_step": 2397,
+      "n_labels": 2397,
+      "steps_total": 2398,
+      "ram_score_at_end": 0,
+      "dead_flag_at_end": 0,
+      "source_type": "teacher",
+      "source_checkpoint": "flappy_law_on_v7 (r55g_m1)",
+      "action_contract": "FLAP=1-frame B emit inside the teacher's 2f-pulse/3f-cooldown SM; HOVER=release",
+      "feature_version": 7,
+      "npz": "tb_life_e02.npz",
+      "npz_sha256": "c85a8ab5af55eefcbec4cc4da4d2b23d2453e8def0fb62ee5a3e622629aa8b1e",
+      "boot_id": "boot_170146"
+    },
+    {
+      "episode_id": "r57_tb_e03",
+      "k": 6,
+      "result": "cutoff",
+      "passages": 20,
+      "cutoff_step": 2401,
+      "n_labels": 2401,
+      "steps_total": 2402,
+      "ram_score_at_end": 0,
+      "dead_flag_at_end": 0,
+      "source_type": "teacher",
+      "source_checkpoint": "flappy_law_on_v7 (r55g_m1)",
+      "action_contract": "FLAP=1-frame B emit inside the teacher's 2f-pulse/3f-cooldown SM; HOVER=release",
+      "feature_version": 7,
+      "npz": "tb_life_e03.npz",
+      "npz_sha256": "db085c3d933702d92adc52273cbd566e6f9ad43865fb17f8ca0285e4d540179d",
+      "boot_id": "boot_170146"
+    },
+    {
+      "episode_id": "r57_tb_e04",
+      "k": 60,
+      "result": "cutoff",
+      "passages": 20,
+      "cutoff_step": 2397,
+      "n_labels": 2397,
+      "steps_total": 2398,
+      "ram_score_at_end": 0,
+      "dead_flag_at_end": 0,
+      "source_type": "teacher",
+      "source_checkpoint": "flappy_law_on_v7 (r55g_m1)",
+      "action_contract": "FLAP=1-frame B emit inside the teacher's 2f-pulse/3f-cooldown SM; HOVER=release",
+      "feature_version": 7,
+      "npz": "tb_life_e04.npz",
+      "npz_sha256": "c85a8ab5af55eefcbec4cc4da4d2b23d2453e8def0fb62ee5a3e622629aa8b1e",
+      "boot_id": "boot_170146"
+    },
+    {
+      "episode_id": "r57_tb_e05",
+      "k": 30,
+      "result": "cutoff",
+      "passages": 20,
+      "cutoff_step": 2389,
+      "n_labels": 2389,
+      "steps_total": 2390,
+      "ram_score_at_end": 0,
+      "dead_flag_at_end": 0,
+      "source_type": "teacher",
+      "source_checkpoint": "flappy_law_on_v7 (r55g_m1)",
+      "action_contract": "FLAP=1-frame B emit inside the teacher's 2f-pulse/3f-cooldown SM; HOVER=release",
+      "feature_version": 7,
+      "npz": "tb_life_e05.npz",
+      "npz_sha256": "7c5ba972a4dff30ae84550e85c954d3d15a57f9e85bfd8d1e8dbff60caa59616",
+      "boot_id": "boot_170413"
+    },
+    {
+      "episode_id": "r57_tb_e06",
+      "k": 6,
+      "result": "cutoff",
+      "passages": 20,
+      "cutoff_step": 2401,
+      "n_labels": 2401,
+      "steps_total": 2402,
+      "ram_score_at_end": 0,
+      "dead_flag_at_end": 0,
+      "source_type": "teacher",
+      "source_checkpoint": "flappy_law_on_v7 (r55g_m1)",
+      "action_contract": "FLAP=1-frame B emit inside the teacher's 2f-pulse/3f-cooldown SM; HOVER=release",
+      "feature_version": 7,
+      "npz": "tb_life_e06.npz",
+      "npz_sha256": "db085c3d933702d92adc52273cbd566e6f9ad43865fb17f8ca0285e4d540179d",
+      "boot_id": "boot_170413"
+    },
+    {
+      "episode_id": "r57_tb_e07",
+      "k": 60,
+      "result": "cutoff",
+      "passages": 20,
+      "cutoff_step": 2397,
+      "n_labels": 2397,
+      "steps_total": 2398,
+      "ram_score_at_end": 0,
+      "dead_flag_at_end": 0,
+      "source_type": "teacher",
+      "source_checkpoint": "flappy_law_on_v7 (r55g_m1)",
+      "action_contract": "FLAP=1-frame B emit inside the teacher's 2f-pulse/3f-cooldown SM; HOVER=release",
+      "feature_version": 7,
+      "npz": "tb_life_e07.npz",
+      "npz_sha256": "c85a8ab5af55eefcbec4cc4da4d2b23d2453e8def0fb62ee5a3e622629aa8b1e",
+      "boot_id": "boot_170413"
+    },
+    {
+      "episode_id": "r57_tb_e08",
+      "k": 30,
+      "result": "cutoff",
+      "passages": 20,
+      "cutoff_step": 2389,
+      "n_labels": 2389,
+      "steps_total": 2390,
+      "ram_score_at_end": 0,
+      "dead_flag_at_end": 0,
+      "source_type": "teacher",
+      "source_checkpoint": "flappy_law_on_v7 (r55g_m1)",
+      "action_contract": "FLAP=1-frame B emit inside the teacher's 2f-pulse/3f-cooldown SM; HOVER=release",
+      "feature_version": 7,
+      "npz": "tb_life_e08.npz",
+      "npz_sha256": "7c5ba972a4dff30ae84550e85c954d3d15a57f9e85bfd8d1e8dbff60caa59616",
+      "boot_id": "boot_170530"
+    },
+    {
+      "episode_id": "r57_tb_e09",
+      "k": 12,
+      "result": "cutoff",
+      "passages": 20,
+      "cutoff_step": 2395,
+      "n_labels": 2395,
+      "steps_total": 2396,
+      "ram_score_at_end": 0,
+      "dead_flag_at_end": 0,
+      "source_type": "teacher",
+      "source_checkpoint": "flappy_law_on_v7 (r55g_m1)",
+      "action_contract": "FLAP=1-frame B emit inside the teacher's 2f-pulse/3f-cooldown SM; HOVER=release",
+      "feature_version": 7,
+      "npz": "tb_life_e09.npz",
+      "npz_sha256": "ec4cd2f3e9a907af9e09160bfbde0597c68670aef68e00dbc07fcf74fa42b0d0",
+      "boot_id": "boot_170530"
+    },
+    {
+      "episode_id": "r57_tb_e10",
+      "k": 45,
+      "result": "cutoff",
+      "passages": 20,
+      "cutoff_step": 2399,
+      "n_labels": 2399,
+      "steps_total": 2400,
+      "ram_score_at_end": 0,
+      "dead_flag_at_end": 0,
+      "source_type": "teacher",
+      "source_checkpoint": "flappy_law_on_v7 (r55g_m1)",
+      "action_contract": "FLAP=1-frame B emit inside the teacher's 2f-pulse/3f-cooldown SM; HOVER=release",
+      "feature_version": 7,
+      "npz": "tb_life_e10.npz",
+      "npz_sha256": "5df5eb9624cbcd81b7ee5274e08fdca50851025997d54bd08316abea719f1a9b",
+      "boot_id": "boot_170530"
+    }
+  ],
+  "total_labels": 23966,
+  "cutoff_proof": true
+}
