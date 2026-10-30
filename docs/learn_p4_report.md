@@ -104,3 +104,90 @@ python scripts/r54g_flappy_eval.py --tag p4r3 --art \
 Artifacts: `data/learn/pong_student_feat_p4d4.npz` (2,417 B) and
 `data/learn/flappy_student_feat_p4sf4.npz` (5,558 B) — both far below
 the 4 MiB bound; sha256s in the `.json` sidecars.
+
+---
+
+# R55 — the flappy perception round: the same-sensor teacher reaches
+# the full-res tier; the student matches it on 3/5 seeds
+
+**Mission:** close the r54 residual gap (the small-frame perception
+latch class diagnosed to the pixel but unsolved) and push the P4 bar.
+Assets rebuilt internet-first where needed; 10 boots spent, all
+disclosed in `data/learn/r55_flappy_evidence.json`.
+
+## The five death mechanisms, each proven by pixel dissection and fixed
+at the source (`ps1play/learn/visual_only.py`, BirdObserverV7 /
+_flappy_gap_raw2 v3 / GapTrackerV7)
+
+1. **Bird-extended gap run** — the bird occludes the rim rows behind
+   its body; the free run extends ~32px; the tracker's 24px gate
+   adopted the bias (the tv7g_k90 death: the raw alternated 125<->141
+   inside ONE static pipe). Fix: the CONSTANT-GAP decontamination (the
+   gap height is source-constant 70px): a run > 82px proves one side
+   bird-extended; the center pins on the edge AWAY from the bird.
+2. **Pipe-gradient mask holes** — the v2 brightness gates rejected the
+   pipe's bright (216,232,128) and shaded (80,120,40) ends; the
+   lower-pipe rows flipped free/pipe as the band width wobbled. Fix:
+   the measured hue rule `(g > r+8) & (b < g-40)`.
+3. **Band-fragment gap shift** — a single-dip column split the band;
+   the left fragment shifted the whole reported gap 19px (101->83);
+   the tracker adopted it as the "next pipe"; the law flapped into the
+   top rim (tv7m_k6/k60). Fix: merge dip-split bands + the
+   bird-overlap band pick.
+4. **Score-glyph edge latch** — one (147,144,94) digit anti-alias
+   block passed the face test and kept the observer latched at y=28
+   while the bird fell 66->99 (tv7m_k90). Fix: the PROXIMITY rule —
+   weak orange (r>g+3) survives only within 2 blocks of strong orange
+   (r>g+8; the bird's beak r-g>=13; the digit edge r-g=3).
+5. **Rim-row fraction flip** — one edge column's sub-pixel washout
+   flipped 4 rim-adjacent rows (5/9 vs 4/9 columns) and shifted the
+   reported gap 19px in ALL THREE tv7n deaths. Fix: the CORE-WINDOW
+   profile (a row is PIPE iff ANY 3 adjacent band columns are mostly
+   green — the pipe's solid core reads 1.0 in every window).
+
+Plus the **measured dynamics**: the r54k "terminal +2" fit was an
+artifact of the 8-frame rounding plateaus; the corpus truth (183
+impulse events): the rise arc decelerates exactly +1 px/f², the fall
+accelerates +0.125 px/f² with the screen dy rounded HALF-UP, no cap.
+
+## Results (within-boot, identical protocol)
+
+* **M1 ACHIEVED** — the law-on-v7 (small frames + own action history
+  ONLY) now flies **51/37/38/34/34 = 194 pipes with 4/5 lives ALIVE AT
+  BUDGET** (k6/k60/k90/k210) — the first small-frame agent to survive
+  the k90/k210 budgets; the per-seed numbers match or exceed the r54
+  full-res teacher tier (38/38/38/34/34).
+* **The student** (feature_version 7, subprocess brain, frames only):
+  the BC champion at hidden 128 = **155 pipes (51/37/20/34/13)**,
+  artifact 7,101 B — MEETS the teacher on 3/5 seeds (k6 51 = budget
+  EXACT with 382 flaps = the teacher's flight; k30 37 with death at
+  4398 = the teacher's 4398; k90 34 = budget), BELOW on k60 (20 vs 38)
+  and k210 (13 vs 34). The student-exceeds-teacher bar: met for pong in
+  r54 (8>7), NOT met for flappy this round — honest.
+* **The offline sim lab** (`scripts/r55k_sim_lab.py`): zero-boot
+  physics+collision calibrated on the trace deaths (pads TOP=10
+  BOT=11 GROUND=204); it reproduced the teacher's k30 death (sim 4394
+  vs recorded 4397), swept the law parameters (fb16 6/10 vs fb12-14
+  7/10 corpus lives), and served as the failure-mining oracle.
+* **The failure-mining honest negative**: the counterfactual recovery
+  relabels (mined from the teacher's k30 death + the student's k60
+  death, sim-validated) DEGRADED the closed loop at weight 3 (140->91)
+  and weight 1 (123); the machinery is committed, the data excluded
+  from the champion; the step-level surgical mining is the open lever.
+* **DAgger negative this round**: the relabels at the student's drift
+  states reproduce the teacher's own failing actions — the r54 pong
+  DAgger gain did not transfer to flappy (65-143 vs the plain-BC 140-
+  155 across the lineage).
+
+## Evidence & reproduction
+
+* Evidence: `data/learn/r55_flappy_evidence.json` (the full lineage,
+  the mechanism table, the boot ledger).
+* The champion: `data/learn/flappy_student_feat_p6v7h128.npz` +
+  `.json` (feature_version 7, hidden 128, 7,101 B).
+* The scripts: `scripts/r55a..r55m` (collect / labs / m1 / sim-lab /
+  train / eval / mine); the traces in `scratch/r55/` (local,
+  gitignored).
+* Tests: 614 passed + 1 xfailed (the pre-existing capstone-dependent
+  module uncollectable); `test_learning_boundary` 10/10 including the
+  AST scan of the modified `visual_only.py` (numpy + stdlib only).

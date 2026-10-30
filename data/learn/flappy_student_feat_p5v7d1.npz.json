@@ -1,0 +1,50 @@
+{
+  "arch": {
+    "n_in": 10,
+    "hidden": 48,
+    "n_out": 2
+  },
+  "format": "tinymlp-npz-v1",
+  "created": 1793352320.114114,
+  "game": "flappy",
+  "control_mode": "cv+mlp",
+  "feature_version": 7,
+  "classes": [
+    "HOVER",
+    "FLAP"
+  ],
+  "norm": {
+    "mean": [
+      100.92882537841797,
+      0.648450493812561,
+      94.91105651855469,
+      33.56097412109375,
+      62.61988830566406,
+      127.20677947998047,
+      0.17280924320220947,
+      16.781755447387695,
+      96.52556610107422,
+      2.2896788120269775
+    ],
+    "std": [
+      25.706052780151367,
+      2.969451427459717,
+      34.29285430908203,
+      45.9207649230957,
+      28.15406608581543,
+      41.45896530151367,
+      0.43855151534080505,
+      15.915154457092285,
+      32.58633041381836,
+      9.191737174987793
+    ]
+  },
+  "teacher": "flappy_law_on_v7 (r15 law + BirdObserverV7 + GapTrackerV7, same-sensor small-frame pathway)",
+  "teacher_provenance": "behavior cloning on the teacher's own recorded flight (tv7n traces) + DAgger relabels",
+  "n_steps": 11423,
+  "class_weights": [
+    0.8147983551025391,
+    1.423149585723877
+  ],
+  "trained_at": 1793352320.1131988
+}

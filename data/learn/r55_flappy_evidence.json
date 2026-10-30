@@ -1,0 +1,95 @@
+{
+  "round": "R55-learn",
+  "date": "2026-10-30",
+  "mission": "close the r54 flappy residual gap (the small-frame perception latch class) and push the student-vs-teacher bar; pong P4 already closed in r54 (student 8 > teachers 7)",
+  "protocol": {
+    "seeds": {"train_family": [6, 30, 60], "heldout": [90, 210]},
+    "budgets": "6000 (k=6) / 4500 (k=30,60) / 4000 (k=90,210)",
+    "pipe_count": "eval-side full-res band-acquisition proxy (r53 convention)",
+    "boot_ledger": "10 boots spent this round (m1-a, m1-b, eval r1, eval r2, m1-c, eval r3, eval r4, eval r5, eval r6, eval r7); each script = exactly one boot; no amendments were needed beyond the planned runs; all evidence below is from these boots",
+    "same_sensor_discipline": "the v7 pathway consumes ONLY small frames + the policy's OWN action history; the student's brain = subprocess, numpy+stdlib only, AST-scanned"
+  },
+  "death_mechanisms_fixed": [
+    {
+      "id": "bird-extended gap run",
+      "evidence": "tv7g_k90 steps 263-331: the raw gap ALTERNATED 125<->141 inside ONE static pipe; the bird occludes the rim rows behind its body, the free run extends ~32px, the tracker's 24px gate adopted the bias, the law flew a 16px-too-low line into the bottom rim",
+      "fix": "constant-gap decontamination (the gap height is source-constant 70px): a free run > 82px proves one side bird-extended; the side NEARER the bird is pinned out, the center pins on the OPPOSITE edge (top+35 / bottom-35)"
+    },
+    {
+      "id": "pipe-gradient mask holes",
+      "evidence": "the v2 brightness gates (g>135, r<205) rejected the pipe gradient's bright (216,232,128) and shaded (80,120,40) ends; the lower-pipe rows flipped free/pipe as the band width wobbled (3/6 vs 3/9 columns)",
+      "fix": "the measured pipe hue rule: (g > r+8) & (b < g-40) — every sampled pipe pixel keeps both, sky/clouds/buildings all carry b >= g-40"
+    },
+    {
+      "id": "band-fragment gap shift",
+      "evidence": "tv7m_k6/tv7m_k60 deaths: a single-dip column split the band; the left fragment's profile shifted the whole reported gap 19px (101->83); the tracker adopted it as the 'next pipe'; the law flapped and rose into the top rim",
+      "fix": "merge bands separated by <=1 dip column + the bird-overlap band pick (the pipe overlapping the bird's fixed columns 36-47 wins)"
+    },
+    {
+      "id": "score-glyph edge latch",
+      "evidence": "tv7m_k90: one (147,144,94) digit anti-alias block at row 7 passed the face test (r>g+2) and kept the observer latched at y=28 while the true bird fell 66->99",
+      "fix": "the r55m proximity rule: weak orange (r>g+3) is kept only within 2 small blocks of strong orange (r>g+8, the bird's bright beak r-g>=13); the digit edge has no strong neighbor"
+    },
+    {
+      "id": "rim-row fraction flip",
+      "evidence": "tv7n_k6/k60/k90 deaths (ALL three, same signature): one edge column's sub-pixel washout flipped 4 rim-adjacent rows (frac 0.56<->0.44 = 5/9 vs 4/9 columns) and shifted the reported gap 19px; the tracker adopted; the law flapped at the shifted target",
+      "fix": "CORE-WINDOW profile: a row is PIPE iff ANY 3 adjacent band columns are mostly green — the pipe's solid core reads 1.0 in every window, junk edges cannot dilute it"
+    },
+    {
+      "id": "wrong fall dynamics",
+      "evidence": "the r54k 'terminal +2' fit was faked by the 8-frame rounding plateaus; the corpus truth (183 impulse events): the rise arc decelerates exactly +1 px/f^2, the fall accelerates +0.125 px/f^2 with the screen dy rounded HALF-UP (plateaus 0/+1/+2/+3), no cap",
+      "fix": "BirdObserverV7 + the r55k sim both use the measured dynamics; Python's banker's round() replaced by floor(vy+0.5)"
+    }
+  ],
+  "teacher_tier_table": {
+    "note": "per-boot seed-timing variation is large (verified r53); the honest comparison is WITHIN one boot",
+    "r54_full_res_teacher": [38, 38, 38, 34, 34],
+    "r54_smallframe_v1_teacher": [3, 0, 0, 0, 5],
+    "r55_law_on_v7_boot5": [51, 37, 38, 34, 34],
+    "r55_law_on_v7_boot6": [51, 37, 38, 34, 34],
+    "r55_result": "4/5 lives ALIVE AT BUDGET (k6/k60/k90/k210) — the first small-frame agent to survive the k90/k210 budgets; the per-seed numbers match or exceed the r54 full-res teacher tier (51=51, 37~38, 38=38, 34=34, 34=34)"
+  },
+  "student_lineage": [
+    {"artifact": "p5v7 (BC on the boot-2 teacher traces, hidden 48)", "offline_val_acc": 0.9834, "closed_loop": "60 pipes (9/22/11/14/4)"},
+    {"artifact": "p5v7d1 (+ DAgger r1, hidden 48)", "closed_loop": "65 pipes (9/22/11/14/9)"},
+    {"artifact": "p6v7 (BC on the boot-5 teacher traces, hidden 48)", "offline_val_acc": 0.9955, "closed_loop": "140 pipes (51/22/20/34/13) — k6/k90 EXACTLY the teacher's flight"},
+    {"artifact": "p6v7f (BC + DAgger r3 + failure-mined x3, hidden 48)", "closed_loop": "91 pipes — the mined whole-tail relabels DEGRADED the net (honest negative)"},
+    {"artifact": "p6v7g (mined x1)", "closed_loop": "123 pipes (51/5/20/34/13) — k30 collapsed; DAgger+mining verdict: HURTS at hidden 48"},
+    {"artifact": "p6v7h128 (BC, hidden 128)", "offline_val_acc": 0.9955, "closed_loop": "155 pipes (51/37/20/34/13) — k30 recovered to EXACTLY the teacher's flight (37 pipes, death 4398 vs 4398)"},
+    {"artifact": "p6v7f128 (hidden 128 + DAgger r6 + mined x1)", "closed_loop": "143 (51/37/20/22/13) — k90 regressed; DAgger verdict: still hurts"}
+  ],
+  "champion": {
+    "artifact": "data/learn/flappy_student_feat_p6v7h128.npz",
+    "bytes": 7101,
+    "feature_version": 7,
+    "hidden": 128,
+    "closed_loop": [51, 37, 20, 34, 13],
+    "total": 155,
+    "teacher_same_boot": [51, 37, 38, 34, 34],
+    "verdict": "MEETS the teacher on 3/5 seeds (k6 budget-exact, k30 death-exact 4398, k90 budget-exact); BELOW on k60 (20 vs 38) and k210 (13 vs 34); the student-exceeds-teacher bar NOT met for flappy this round (met for pong in r54: 8>7)"
+  },
+  "failure_mining": {
+    "mechanism": "the sim-oracle counterfactual: at the teacher's death states, re-fly the window with candidate recovery laws (flap-threshold grid x the hover-bias grid); a surviving variant becomes the corrected-label episode",
+    "mined": ["mine_teacher_v7_k30 (fb10/eb24 from anchor -200, sim margin 2.3px)", "mine_dag_r3_k060 (fb14/eb26 from anchor -100, margin 4.4px)"],
+    "outcome": "the closed-loop regressed at weight 3 (140->91) and at weight 1 (123); the mined data is committed as evidence but EXCLUDED from the champion",
+    "lesson": "whole-tail recovery relabels teach a second flight style that interferes with the primary mapping at hidden 48; the surgical step-level mining is the open lever for the next round"
+  },
+  "sim_lab": {
+    "script": "scripts/r55k_sim_lab.py",
+    "calibration": "pads TOP=10 BOT=11 GROUND=204 fitted on the law-on-v7 trace deaths (local geometric calibration, no trajectory drift); the physics = the measured dynamics; the pipe geometry = the core-window profile + the decontamination",
+    "uses": ["the law-parameter sweep (fb16 measured 6/10 vs fb12-14 7/10 corpus lives alive)", "the failure-mining oracle", "the death reproduction (sim death 4394 vs recorded 4397 on teacher k30)"]
+  },
+  "artifacts": {
+    "champion": "data/learn/flappy_student_feat_p6v7h128.npz (7,101 B, feature_version 7)",
+    "json": "data/learn/flappy_student_feat_p6v7h128.npz.json",
+    "train_report": "data/learn/flappy_train_p6v7h128.json",
+    "evidence": "data/learn/r55_flappy_evidence.json",
+    "budget_ok": true
+  },
+  "tests": "614 passed + 1 xfailed (the pre-existing capstone-dependent module uncollectable); test_learning_boundary 10/10 including the AST scan of the modified visual_only.py (numpy + stdlib only)",
+  "honest_limitations": [
+    "the student below the teacher on k60/k210: the student's drift states recreate the OLD stack's failure basins (the deaths land at the old death steps 2488/1699); the BC labels never cover those states (the teacher survives there)",
+    "the failure-mining as implemented (whole-tail recovery relabels) is an honest negative",
+    "the per-boot seed-timing variation means cross-boot teacher numbers are indicative, not exact; all the round's head-to-heads are within-boot"
+  ]
+}

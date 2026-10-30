@@ -1,0 +1,20 @@
+{
+  "splits": {
+    "train": 3729,
+    "val": 2943,
+    "test": 0
+  },
+  "dagger_eps": "dag_r1_k006,dag_r1_k030,dag_r1_k060",
+  "hidden": 48,
+  "n_train_steps": 11423,
+  "acc_train": 0.989,
+  "flap_recall_train": 1.0,
+  "acc_val": 0.9857,
+  "flap_recall_val": 0.9894,
+  "artifact": {
+    "npz": "/home/z/my-project/ps1ai/data/learn/flappy_student_feat_p5v7d1.npz",
+    "json": "/home/z/my-project/ps1ai/data/learn/flappy_student_feat_p5v7d1.npz.json",
+    "npz_bytes": 3186,
+    "sha256": "b439b44c506539fade6d184f6ac429508f64cef48aa1997c99df07e62ff8d2c5"
+  }
+}

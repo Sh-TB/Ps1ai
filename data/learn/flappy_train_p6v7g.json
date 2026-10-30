@@ -1,0 +1,20 @@
+{
+  "splits": {
+    "train": 10500,
+    "val": 4000,
+    "test": 0
+  },
+  "dagger_eps": "dag_r3_k006,dag_r3_k030,dag_r3_k060,mine_teacher_v7_k30,mine_dag_r3_k060",
+  "hidden": 48,
+  "n_train_steps": 27493,
+  "acc_train": 0.9956,
+  "flap_recall_train": 0.9985,
+  "acc_val": 0.9938,
+  "flap_recall_val": 0.9921,
+  "artifact": {
+    "npz": "/home/z/my-project/ps1ai/data/learn/flappy_student_feat_p6v7g.npz",
+    "json": "/home/z/my-project/ps1ai/data/learn/flappy_student_feat_p6v7g.npz.json",
+    "npz_bytes": 3190,
+    "sha256": "d8a6a6476657062e788a1afc758656fdfe36e7ada1119687feda8e4fdfd4c07e"
+  }
+}

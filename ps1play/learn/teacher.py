@@ -65,8 +65,11 @@ class FlappyTeacher:
     info_sources = ["frame_rgb -> bird y", "frame_rgb -> gap target",
                     "internal pulse/cooldown state"]
 
-    def __init__(self, below_px=None, hover_y=120.0):
+    def __init__(self, below_px=None, hover_y=120.0, flap_below=14.0,
+                 emergency_below=26.0):
         self.hover_y = hover_y
+        self.flap_below = float(flap_below)
+        self.emergency_below = float(emergency_below)
         self.last_gap = None
         self.last_gap_age = 999
         self.press_remaining = 0
@@ -98,7 +101,8 @@ class FlappyTeacher:
             return "HOVER"
         ty = eff if eff is not None else self.hover_y
         falling = vy_screen is None or vy_screen >= -0.5
-        if ((falling and bird_y > ty + 14) or bird_y > ty + 26
+        if ((falling and bird_y > ty + self.flap_below)
+                or bird_y > ty + self.emergency_below
                 or bird_y > 162):
             self.press_remaining = 1
             return "FLAP"
