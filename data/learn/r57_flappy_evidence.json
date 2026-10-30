@@ -1,0 +1,588 @@
+{
+  "/round": "R57-learn",
+  "/date": "2026-10-31",
+  "/mission": "the student must learn beyond the teacher: 20-pipe capped bootstrap -> teacher-off self-improvement (SI + ARS) -> 24 unseen TEST seeds",
+  "base_commit": "2d2c41e217cf",
+  "protocol": {
+    "budget": 10000,
+    "test_seeds": [
+      8,
+      16,
+      20,
+      28,
+      33,
+      40,
+      48,
+      57,
+      63,
+      72,
+      84,
+      96,
+      108,
+      111,
+      117,
+      132,
+      141,
+      156,
+      165,
+      180,
+      195,
+      201,
+      216,
+      228
+    ],
+    "seed_provenance": "never booted in r53-r56 (the committed split file data/learn/r57_seed_splits.json)",
+    "reps": "champion n=3 (identical values within seed \u2014 the determinism finding); references n=1 (disclosed)",
+    "passage_metric": "the single-source-of-truth visual PassageCounter (r53 band-jump convention; validated by reproducing C1=173 exactly)",
+    "no_ram": "student runs read NO RAM (visual death + visual passages only; AST-scanned, teacher-import blocked, hashed traces per run)"
+  },
+  "c1_reproduction": {
+    "6": {
+      "pipes": [
+        51,
+        51,
+        51
+      ],
+      "mean": 51.0,
+      "results": [
+        "budget"
+      ]
+    },
+    "30": {
+      "pipes": [
+        37,
+        37,
+        37
+      ],
+      "mean": 37.0,
+      "results": [
+        "death"
+      ]
+    },
+    "60": {
+      "pipes": [
+        38,
+        38,
+        38
+      ],
+      "mean": 38.0,
+      "results": [
+        "budget"
+      ]
+    },
+    "90": {
+      "pipes": [
+        34,
+        34,
+        34
+      ],
+      "mean": 34.0,
+      "results": [
+        "budget"
+      ]
+    },
+    "210": {
+      "pipes": [
+        13,
+        13,
+        13
+      ],
+      "mean": 13.0,
+      "results": [
+        "death"
+      ]
+    }
+  },
+  "champion": {
+    "name": "r57_es2_dir2p.npz",
+    "lineage": "teacher(20-pipe capped) -> r57_bootstrap_bc -> self-imitation v1 (own lives only) -> ARS iter-0 dir-2-plus selection (sigma 0.03)",
+    "n_seeds": 24,
+    "per_seed_median_of_reps": {
+      "8": 32.0,
+      "16": 49.0,
+      "20": 39.0,
+      "28": 10.0,
+      "33": 23.0,
+      "40": 32.0,
+      "48": 70.0,
+      "57": 19.0,
+      "63": 29.0,
+      "72": 87.0,
+      "84": 42.0,
+      "96": 44.0,
+      "108": 18.0,
+      "111": 69.0,
+      "117": 32.0,
+      "132": 19.0,
+      "141": 85.0,
+      "156": 13.0,
+      "165": 53.0,
+      "180": 25.0,
+      "195": 87.0,
+      "201": 87.0,
+      "216": 29.0,
+      "228": 64.0
+    },
+    "mean": 44.04,
+    "median_of_seed_medians": 35.5,
+    "p25": 24.5,
+    "p75": 65.25,
+    "min": 10.0,
+    "max": 87.0,
+    "std": 25.0,
+    "n10": 24,
+    "n20": 19,
+    "n30": 15,
+    "n40": 11,
+    "n50": 8,
+    "n_alive_at_budget": 3,
+    "per_seed": {
+      "8": [
+        32,
+        32,
+        32
+      ],
+      "16": [
+        49,
+        49,
+        49
+      ],
+      "20": [
+        39,
+        39,
+        39
+      ],
+      "28": [
+        10,
+        10,
+        10
+      ],
+      "33": [
+        23,
+        23,
+        23
+      ],
+      "40": [
+        32,
+        32,
+        32
+      ],
+      "48": [
+        70,
+        70,
+        70
+      ],
+      "57": [
+        19,
+        19,
+        19
+      ],
+      "63": [
+        29,
+        29,
+        29
+      ],
+      "72": [
+        87,
+        87,
+        87
+      ],
+      "84": [
+        42,
+        42,
+        42
+      ],
+      "96": [
+        44,
+        44,
+        44
+      ],
+      "108": [
+        18,
+        18,
+        18
+      ],
+      "111": [
+        69,
+        69,
+        69
+      ],
+      "117": [
+        32,
+        32,
+        32
+      ],
+      "132": [
+        19,
+        19,
+        19
+      ],
+      "141": [
+        85,
+        85,
+        85
+      ],
+      "156": [
+        13,
+        13,
+        13
+      ],
+      "165": [
+        53,
+        53,
+        53
+      ],
+      "180": [
+        25,
+        25,
+        25
+      ],
+      "195": [
+        87,
+        87,
+        87
+      ],
+      "201": [
+        87,
+        87,
+        87
+      ],
+      "216": [
+        29,
+        29,
+        29
+      ],
+      "228": [
+        64,
+        64,
+        64
+      ]
+    },
+    "sha256": "15fa0334b69c4f4b1cdce925bdebfa800a08228be56ff3ed5e82bb8db0928328"
+  },
+  "reference_c1": {
+    "name": "flappy_student_feat_r56_c1.npz",
+    "note": "the frozen R56 champion (NEVER rewritten); historical-only under the 20-pipe rule (its BC data reached the teacher's 51-pipe life)",
+    "n_seeds": 24,
+    "per_seed_median_of_reps": {
+      "8": 36.0,
+      "16": 52.0,
+      "20": 83.0,
+      "28": 10.0,
+      "33": 3.0,
+      "40": 42.0,
+      "48": 26.0,
+      "57": 87.0,
+      "63": 87.0,
+      "72": 22.0,
+      "84": 0.0,
+      "96": 14.0,
+      "108": 18.0,
+      "111": 26.0,
+      "117": 87.0,
+      "132": 35.0,
+      "141": 70.0,
+      "156": 23.0,
+      "165": 49.0,
+      "180": 25.0,
+      "195": 75.0,
+      "201": 86.0,
+      "216": 68.0,
+      "228": 87.0
+    },
+    "mean": 46.29,
+    "median_of_seed_medians": 39.0,
+    "p25": 22.75,
+    "p75": 77.0,
+    "min": 0.0,
+    "max": 87.0,
+    "std": 30.42,
+    "n10": 22,
+    "n20": 19,
+    "n30": 14,
+    "n40": 12,
+    "n50": 10,
+    "n_alive_at_budget": 4,
+    "per_seed": {
+      "8": [
+        36
+      ],
+      "16": [
+        52
+      ],
+      "20": [
+        83
+      ],
+      "28": [
+        10
+      ],
+      "33": [
+        3
+      ],
+      "40": [
+        42
+      ],
+      "48": [
+        26
+      ],
+      "57": [
+        87
+      ],
+      "63": [
+        87
+      ],
+      "72": [
+        22
+      ],
+      "84": [
+        0
+      ],
+      "96": [
+        14
+      ],
+      "108": [
+        18
+      ],
+      "111": [
+        26
+      ],
+      "117": [
+        87
+      ],
+      "132": [
+        35
+      ],
+      "141": [
+        70
+      ],
+      "156": [
+        23
+      ],
+      "165": [
+        49
+      ],
+      "180": [
+        25
+      ],
+      "195": [
+        75
+      ],
+      "201": [
+        86
+      ],
+      "216": [
+        68
+      ],
+      "228": [
+        87
+      ]
+    },
+    "sha256": "985cd751fb79968a77e3e1535375bd6587a56601509ffa05177d1fc43e80528b"
+  },
+  "reference_bootstrap": {
+    "name": "r57_bootstrap_bc.npz",
+    "lineage": "BC on the capped teacher demonstrations only",
+    "n_seeds": 24,
+    "per_seed_median_of_reps": {
+      "8": 20.0,
+      "16": 52.0,
+      "20": 85.0,
+      "28": 10.0,
+      "33": 23.0,
+      "40": 42.0,
+      "48": 23.0,
+      "57": 19.0,
+      "63": 29.0,
+      "72": 22.0,
+      "84": 42.0,
+      "96": 25.0,
+      "108": 18.0,
+      "111": 75.0,
+      "117": 32.0,
+      "132": 16.0,
+      "141": 17.0,
+      "156": 15.0,
+      "165": 49.0,
+      "180": 25.0,
+      "195": 26.0,
+      "201": 26.0,
+      "216": 52.0,
+      "228": 20.0
+    },
+    "mean": 31.79,
+    "median_of_seed_medians": 25.0,
+    "p25": 19.75,
+    "p75": 42.0,
+    "min": 10.0,
+    "max": 85.0,
+    "std": 18.99,
+    "n10": 24,
+    "n20": 18,
+    "n30": 8,
+    "n40": 7,
+    "n50": 4,
+    "n_alive_at_budget": 0,
+    "per_seed": {
+      "8": [
+        20
+      ],
+      "16": [
+        52
+      ],
+      "20": [
+        85
+      ],
+      "28": [
+        10
+      ],
+      "33": [
+        23
+      ],
+      "40": [
+        42
+      ],
+      "48": [
+        23
+      ],
+      "57": [
+        19
+      ],
+      "63": [
+        29
+      ],
+      "72": [
+        22
+      ],
+      "84": [
+        42
+      ],
+      "96": [
+        25
+      ],
+      "108": [
+        18
+      ],
+      "111": [
+        75
+      ],
+      "117": [
+        32
+      ],
+      "132": [
+        16
+      ],
+      "141": [
+        17
+      ],
+      "156": [
+        15
+      ],
+      "165": [
+        49
+      ],
+      "180": [
+        25
+      ],
+      "195": [
+        26
+      ],
+      "201": [
+        26
+      ],
+      "216": [
+        52
+      ],
+      "228": [
+        20
+      ]
+    },
+    "sha256": "2f3605677b9650efd51627bd8574e702b2cde98c9e6298725f0133811e306aa9"
+  },
+  "gates": {
+    "si_v2_rejected": "k60 29->20 (regression > 5)",
+    "es2_iter1_mean_rejected": "k90 68->43, k60 29->20",
+    "dir2p_promoted": "VAL k90 68 (=champ), k210 13 (-3, within the gate); adds k60 87, k12 87"
+  },
+  "determinism_finding": "within-boot restores AND cross-boot episodes are byte-identical for fixed (anchor, k, inputs): the teacher npz shas repeat across 3 boots; n=3 reps return identical values",
+  "perception_latch_audit": {
+    "method": "offline recompute of the EXACT Brain._vector observer vs the full-res beak truth on REAL recorded frames; latch window = >=4 consecutive steps with |obs-beak| > 8 px",
+    "teacher_k6_capped": {
+      "life": "teacher_k6_capped",
+      "steps": 2401,
+      "truth_covered": 2401,
+      "err_p50": 0.0,
+      "err_p90": 0.0,
+      "err_max": 0.0,
+      "frac_err_gt8": 0.0,
+      "latch_windows_ge4": [],
+      "n_latch_windows": 0
+    },
+    "student_k6_87": {
+      "life": "student_k6_87",
+      "steps": 10000,
+      "truth_covered": 9342,
+      "err_p50": 1.22,
+      "err_p90": 2.63,
+      "err_max": 3.2,
+      "frac_err_gt8": 0.0,
+      "latch_windows_ge4": [],
+      "n_latch_windows": 0
+    },
+    "student_k30_37": {
+      "life": "student_k30_37",
+      "steps": 4397,
+      "truth_covered": 4035,
+      "err_p50": 1.45,
+      "err_p90": 2.63,
+      "err_max": 3.3,
+      "frac_err_gt8": 0.0,
+      "latch_windows_ge4": [],
+      "n_latch_windows": 0
+    },
+    "verdict": {
+      "teacher_k6_capped": "the same-tier teacher's flight path stays outside the latch regime (the r54 finding replicated)",
+      "student_lives": "the student's longer lives DO enter the overlap regime; the observer error profile above quantifies it on real frames"
+    },
+    "verdict_final": "FALSIFIED for the R57 lineage on real frames: the v7 observer's worst error across 16,798 recorded steps (teacher + student lives) is 3.3 px; zero >=8 px windows. The r54 overlap-latch does not reproduce under BirdObserverV7; the k210 deficit's cause remains OPEN (honest blocker, not attributed to this latch)"
+  },
+  "ppo_arm": {
+    "status": "EXECUTED, budget-limited, HONEST NEGATIVE",
+    "config": "correct PPO: sampled actions, epsilon-mixture behavior policy (eps=0.08, same distribution for selection AND log-probs), GAE(0.99/0.95), value head, clip 0.2, KL/ratio guard",
+    "result": [
+      {
+        "upd": 0,
+        "pipes": 0,
+        "steps": 218,
+        "adv_mean": -0.0,
+        "kl_stop": true,
+        "wall_s": 2.3
+      },
+      {
+        "upd": 1,
+        "pipes": 4,
+        "steps": 704,
+        "adv_mean": -0.0,
+        "kl_stop": true,
+        "wall_s": 7.1
+      },
+      {
+        "upd": 2,
+        "pipes": 8,
+        "steps": 1078,
+        "adv_mean": -0.0,
+        "kl_stop": true,
+        "wall_s": 10.8
+      },
+      {
+        "upd": 3,
+        "pipes": 0,
+        "steps": 211,
+        "adv_mean": -0.0,
+        "kl_stop": true,
+        "wall_s": 2.1
+      }
+    ],
+    "finding": "the 8% mixture exploration is LETHAL early (dies at 0-8 pipes on k60), the sparse +1 reward yields near-zero advantage signal, the ratio guard stops every update \u2014 the R55/R56 PPO failures REPLICATE under a correct implementation. ES/ARS wins the bake-off on this game/budget",
+    "artifact": "not saved (the in-process gate rollout crashed on a Beetle retro_unserialize failure after 5 restores \u2014 infrastructure finding; the update history is the evidence)"
+  }
+}

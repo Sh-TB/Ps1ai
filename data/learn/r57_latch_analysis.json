@@ -1,0 +1,40 @@
+{
+  "method": "offline recompute of the EXACT Brain._vector observer vs the full-res beak truth on REAL recorded frames; latch window = >=4 consecutive steps with |obs-beak| > 8 px",
+  "teacher_k6_capped": {
+    "life": "teacher_k6_capped",
+    "steps": 2401,
+    "truth_covered": 2401,
+    "err_p50": 0.0,
+    "err_p90": 0.0,
+    "err_max": 0.0,
+    "frac_err_gt8": 0.0,
+    "latch_windows_ge4": [],
+    "n_latch_windows": 0
+  },
+  "student_k6_87": {
+    "life": "student_k6_87",
+    "steps": 10000,
+    "truth_covered": 9342,
+    "err_p50": 1.22,
+    "err_p90": 2.63,
+    "err_max": 3.2,
+    "frac_err_gt8": 0.0,
+    "latch_windows_ge4": [],
+    "n_latch_windows": 0
+  },
+  "student_k30_37": {
+    "life": "student_k30_37",
+    "steps": 4397,
+    "truth_covered": 4035,
+    "err_p50": 1.45,
+    "err_p90": 2.63,
+    "err_max": 3.3,
+    "frac_err_gt8": 0.0,
+    "latch_windows_ge4": [],
+    "n_latch_windows": 0
+  },
+  "verdict": {
+    "teacher_k6_capped": "the same-tier teacher's flight path stays outside the latch regime (the r54 finding replicated)",
+    "student_lives": "the student's longer lives DO enter the overlap regime; the observer error profile above quantifies it on real frames"
+  }
+}

@@ -1,0 +1,16 @@
+{
+  "round": "R57 arm D",
+  "artifact": {
+    "npz": "/home/z/my-project/ps1ai/data/learn/r57_si_v1.npz",
+    "json": "/home/z/my-project/ps1ai/data/learn/r57_si_v1.npz.json",
+    "npz_bytes": 7109,
+    "sha256": "bdc32dc239e50d1e24d8ce56245a4345e271cdf1f8c7c11894fa780b3a61b1c1"
+  },
+  "n_rows": 14397,
+  "self_agreement": 0.9999,
+  "flap_recall": 1.0,
+  "epochs": 15,
+  "lr": 0.001,
+  "train_s": 0.5,
+  "recipe": "fine-tune FROM bootstrap, own-lives only, class-weights balanced, no teacher rows"
+}

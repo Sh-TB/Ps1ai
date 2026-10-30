@@ -1,0 +1,39 @@
+{
+  "hist": [
+    {
+      "upd": 0,
+      "pipes": 0,
+      "steps": 218,
+      "adv_mean": -0.0,
+      "kl_stop": true,
+      "wall_s": 2.3
+    },
+    {
+      "upd": 1,
+      "pipes": 4,
+      "steps": 704,
+      "adv_mean": -0.0,
+      "kl_stop": true,
+      "wall_s": 7.1
+    },
+    {
+      "upd": 2,
+      "pipes": 8,
+      "steps": 1078,
+      "adv_mean": -0.0,
+      "kl_stop": true,
+      "wall_s": 10.8
+    },
+    {
+      "upd": 3,
+      "pipes": 0,
+      "steps": 211,
+      "adv_mean": -0.0,
+      "kl_stop": true,
+      "wall_s": 2.1
+    }
+  ],
+  "eps": 0.08,
+  "clip": 0.2,
+  "init": "r57_si_v1.npz"
+}

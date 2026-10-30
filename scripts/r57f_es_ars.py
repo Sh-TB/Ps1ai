@@ -45,7 +45,8 @@ from ps1play.learn import student_only as SO               # noqa: E402
 from r57_lib import PassageCounter                         # noqa: E402
 
 SCR = os.path.join(REPO, "scratch", "r57")
-BC = os.path.join(REPO, "data", "learn", "r57_bootstrap_bc.npz")
+DEFAULT_INIT = os.path.join(REPO, "data", "learn",
+                            "r57_bootstrap_bc.npz")
 STATE = os.path.join(SCR, "es_state.json")
 THETA = os.path.join(SCR, "es_theta.npz")
 
@@ -91,6 +92,45 @@ class FlatPolicy:
 
     def reset_obs(self):
         self._obs = None
+
+    def vector(self, small):
+        """The exact decision vector (v7 features + artifact norm) —
+        the PPO arm reuses the same sensory pathway. Read-only (does
+        NOT advance the policy history; the PPO loop owns it)."""
+        from ps1play.learn import visual_only as VO
+        if self._obs is None:
+            self._obs = VO.BirdObserverV7()
+            self._gtr = VO.GapTrackerV7()
+            self._since_flap, self._flap_run = 99, 0
+            self._last_gc, self._since_gap = -1.0, 40
+            self._prev_action = None
+        by_obs, vy_obs = self._obs.step(small, self._prev_action)
+        gc_raw, dx, g0, g1, _b = VO._flappy_gap_raw2(small, by_hint=by_obs)
+        gc_obs = self._gtr.step((gc_raw, g0, g1, dx + 160.0))
+        x = VO.features_flappy_v7(
+            small, by_obs, vy_obs, since_flap=self._since_flap,
+            last_gc=self._last_gc, since_gap=self._since_gap,
+            flap_run=self._flap_run, gc_obs=gc_obs)
+        if self.mean is not None:
+            x = (x - self.mean) / (self.std + 1e-6)
+        self._gc_obs_pending = gc_obs
+        return x
+
+    def observe_history(self, action):
+        """Advance the policy-owned history exactly like Brain.act."""
+        self._prev_action = action
+        if action == "FLAP":
+            self._since_flap = 0
+            self._flap_run = min(self._flap_run + 1, 9)
+        else:
+            self._since_flap = min(self._since_flap + 1, 99)
+            self._flap_run = 0
+        gc_obs = getattr(self, "_gc_obs_pending", None)
+        if gc_obs is not None:
+            self._last_gc = float(gc_obs)
+            self._since_gap = 0
+        else:
+            self._since_gap = min(self._since_gap + 1, 40)
 
     def act(self, small):
         from ps1play.learn import visual_only as VO
@@ -169,7 +209,17 @@ def main():
                     help="graceful foreground chunk limit")
     ap.add_argument("--max-rollouts", type=int, default=0,
                     help="optional per-call rollout cap (0 = none)")
+    ap.add_argument("--init", default=DEFAULT_INIT)
+    ap.add_argument("--state", default="",
+                    help="state file name inside scratch/r57 (default "
+                         "es_state.json)")
+    ap.add_argument("--seeds-per-cand", type=int, default=1,
+                    help="rollout seeds per candidate (2 = mean fitness "
+                         "over the pair = the discriminating protocol)")
     a = ap.parse_args()
+    SCR = os.path.join(REPO, "scratch", "r57")
+    STATE = os.path.join(SCR, a.state or "es_state.json")
+    THETA = STATE.replace(".json", ".npz")
 
     trace = SO.NoTeacherTrace(os.path.join(
         SCR, f"noteacher_trace_es_{int(time.time())}.jsonl"))
@@ -179,7 +229,7 @@ def main():
 
     env = FlappyEnv()
     env.reach_ready()
-    pol = FlatPolicy(BC)
+    pol = FlatPolicy(a.init)
     theta = pol.get()
     n_params = len(theta)
     it0, hist, cum = 0, [], {"episodes": 0, "frames": 0}
@@ -207,14 +257,13 @@ def main():
         if pend is None:
             if it0 >= budget_iters:
                 break
-            rng = (np.random.default_rng(57 + it0 * 1_000_003)
-                   if rng_state is None else
-                   np.random.default_rng(rng_state))
+            rng = np.random.default_rng(57 + it0 * 1_000_003)
             t = it0
             deltas = np.asarray([rng.standard_normal(n_params)
                                  for _ in range(N_DIRS)])
             k = TRAIN_SEEDS[t % 2]
-            pend = {"iter": t, "k": k, "rp": {}, "rm": {}}
+            pend = {"iter": t, "k": k, "rp": {}, "rm": {},
+                    "rp2": {}, "rm2": {}}
             pol.set(theta)
         t = pend["iter"]
         k = pend["k"]
@@ -229,7 +278,20 @@ def main():
                     continue
                 pol.set(theta + sign * SIGMA * deltas[i])
                 r, steps, wall = rollout(env, pol, k, TRAIN_BUDGET)
-                pend[key][str(i)] = int(r)
+                if a.seeds_per_cand == 2:
+                    k2 = TRAIN_SEEDS[(TRAIN_SEEDS.index(k) + 1) % 2]
+                    r2, steps2, wall2 = rollout(env, pol, k2, TRAIN_BUDGET)
+                    trace.event("ROLLOUT", iter=t, dir=i, sign=tag,
+                                k=k2, pipes=r2, steps=steps2, wall_s=wall2)
+                    print(json.dumps({"iter": t, "dir": i, "sign": tag,
+                                      "k": k2, "pipes": r2,
+                                      "steps": steps2, "wall_s": wall2}),
+                          flush=True)
+                    cum["episodes"] += 1
+                    cum["frames"] += steps2
+                    pend["rp2" if sign > 0 else "rm2"][str(i)] = int(r2)
+                    r = (r + r2) / 2.0   # mean fitness over the pair
+                pend[key][str(i)] = float(r)
                 cum["episodes"] += 1
                 cum["frames"] += steps
                 trace.event("ROLLOUT", iter=t, dir=i, sign=tag, k=k,
@@ -277,8 +339,9 @@ def main():
                 upd += u[i] * S[i] * deltas[i]
         theta = theta + (ALPHA / (TOP_B * sigma_r)) * upd
         pol.set(theta)
-        row = {"iter": t, "k": k, "returns": [int(r) for _i, _s, r
-                                              in rets],
+        row = {"iter": t, "k": k,
+               "seeds_per_cand": a.seeds_per_cand,
+               "returns": [round(r, 2) for _i, _s, r in rets],
                "mean_ret": round(float(all_r.mean()), 2),
                "max_ret": int(all_r.max()),
                "sigma_r": round(float(sigma_r), 2),
