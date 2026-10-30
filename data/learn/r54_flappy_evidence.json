@@ -1,0 +1,120 @@
+{
+  "protocol": {
+    "seeds": {
+      "train_family": [
+        6,
+        30,
+        60,
+        100,
+        130
+      ],
+      "heldout": [
+        90,
+        210
+      ]
+    },
+    "budgets": "6000 (k=6) / 4500 (k=30,60) / 4000 (k=90,210)",
+    "pipe_count": "vision band-acquisition proxy (r53 convention)",
+    "ceiling_sf_teacher": {
+      "k6": 51,
+      "k30": 38,
+      "k60": 38,
+      "k90": 34,
+      "k210": 34
+    }
+  },
+  "teacher_ceiling_table": {
+    "P1_full_res": {
+      "k6": 38,
+      "k30": 38,
+      "k60": 38,
+      "k90": 34,
+      "k210": 34
+    },
+    "P1s_smallframe": {
+      "k6": 51,
+      "k30": 38,
+      "k60": 38,
+      "k90": 34,
+      "k210": 34
+    },
+    "observer_v1": {
+      "k6": 3,
+      "k30": 0,
+      "k60": 0,
+      "k90": 0,
+      "k210": 5
+    },
+    "observer_v2_latch_guard": {
+      "k6": 6,
+      "k30": 3,
+      "k60": 0,
+      "k90": 0,
+      "k210": 3
+    }
+  },
+  "student_lineage": [
+    {
+      "artifact": "v2 features, full-res teacher labels",
+      "acc": 0.9,
+      "closed_loop": "0-1 pipes"
+    },
+    {
+      "artifact": "p4d1/d2 (DAgger, wrong target column)",
+      "note": "no improvement - fixed"
+    },
+    {
+      "artifact": "p4sf1 (SAME-SENSOR labels, v2)",
+      "acc": 0.919,
+      "closed_loop": "0-1 pipes"
+    },
+    {
+      "artifact": "p4sf3 (v3 stale-gap memory)",
+      "acc": 0.963,
+      "closed_loop": "0-1 pipes"
+    },
+    {
+      "artifact": "p4sf4 (v4 flap_run/since_flap pulse history)",
+      "acc": 0.997,
+      "flap_recall": 1.0,
+      "closed_loop": {
+        "k6": 3,
+        "k30": 5,
+        "k60": 0,
+        "k90": 0,
+        "k210": 4
+      }
+    },
+    {
+      "artifact": "p4sf5 (+DAgger r3 on sf4 states)",
+      "acc": 0.997,
+      "closed_loop": {
+        "k6": 3,
+        "k30": 5,
+        "k60": 0,
+        "k90": 0,
+        "k210": 4
+      }
+    },
+    {
+      "artifact": "p4b8 (gc-bias 8px)",
+      "acc": 0.992,
+      "closed_loop": {
+        "k6": 1,
+        "k30": 5,
+        "k60": 0,
+        "k90": 0,
+        "k210": 2
+      }
+    }
+  ],
+  "diagnosis": [
+    "1. full-res teacher labels carry a 4-8px sensor mismatch vs the small-frame features (25px margins) - fixed by same-sensor labeling (r54i)",
+    "2. the r15 law's stale-gap memory was invisible to the student - fixed by v3 last_gc/since_gap policy-owned history",
+    "3. the 2-frame flap pulse was ambiguous in (prev_FLAP, since_flap) - fixed by v4 flap_run (decision accuracy 92->99.7%)",
+    "4. RESIDUAL (open): in pipe-overlap frames the /4-scale bird centroid LATCHES (frozen at ~95-105 while the true bird falls 77->139, measured in trace_k60.json) - the sf teacher survives because its flight path never enters the overlap regime; every student deviation enters it. Physics-coast observers (v5/v6, data-fitted impulse -8/pulse-2nd-frame, accel +1.0/f^2, terminal +2) recover part of the ceiling (obs-teacher 3-6 pipes) but do not close the gap to the sf teacher's 34-51.",
+    "5. the mask lab (r54k) measured ALL color masks failing in the overlap regime (worst-16% error 76px)."
+  ],
+  "verdict": "P4 flappy student: 99.7% same-sensor decision accuracy (FLAP recall 100% on test), closed-loop 3-5 pipes vs the same-tier teacher's 34-51 - PARTIAL, gap diagnosed and evidenced, not closed this round.",
+  "artifact_bytes": 5558
+}

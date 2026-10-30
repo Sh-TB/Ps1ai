@@ -1,0 +1,81 @@
+{
+  "arch": {
+    "n_in": 9,
+    "hidden": 32,
+    "n_out": 3
+  },
+  "format": "tinymlp-npz-v1",
+  "created": 1793321591.5140412,
+  "game": "pong",
+  "control_mode": "cv+mlp",
+  "feature_version": 2,
+  "classes": [
+    "DOWN",
+    "NONE",
+    "UP"
+  ],
+  "norm": {
+    "mean": [
+      136.92579650878906,
+      105.97395324707031,
+      -0.028536135330796242,
+      0.013706275261938572,
+      144.8422393798828,
+      123.58364868164062,
+      124.3333740234375,
+      0.19948981702327728,
+      0.33666372299194336
+    ],
+    "std": [
+      90.29800415039062,
+      66.78983306884766,
+      3.771702766418457,
+      4.830108165740967,
+      51.58219909667969,
+      59.595157623291016,
+      58.24106216430664,
+      0.3996615707874298,
+      0.4725288152694702
+    ]
+  },
+  "teacher": "pong_teacher_v2_predictive_edge",
+  "dataset": {
+    "roots": [
+      {
+        "root": "/home/z/my-project/ps1ai/scratch/r54/ds_pong_v2",
+        "episodes": [
+          "p4t000",
+          "p4t001",
+          "p4t002",
+          "p4t003",
+          "p4t004",
+          "p4t005",
+          "p4t006"
+        ],
+        "weight": 1.0
+      },
+      {
+        "root": "scratch/r54/ds_pong_dagger_p4",
+        "episodes": [
+          "p4dag_r5_gameai_0",
+          "p4dag_r5_gameai_1",
+          "p4dag_r5_heldout_fam_200",
+          "p4dag_r5_heldout_fam_201",
+          "p4dag_r5_heldout_fam_202",
+          "p4dag_r5_train_fam_100",
+          "p4dag_r5_train_fam_101",
+          "p4dag_r5_train_fam_102"
+        ],
+        "weight": 0.7
+      }
+    ]
+  },
+  "n_steps": 32929,
+  "class_weights": [
+    0.9494592547416687,
+    1.0051566362380981,
+    1.0535434484481812
+  ],
+  "trained_at": 1793321591.5131843,
+  "train_acc": 0.7875
+}

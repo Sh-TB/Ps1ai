@@ -1,0 +1,321 @@
+{
+  "protocol": {
+    "anchor": "pong_anchor (0-0, verified)",
+    "step": 2,
+    "game_ai_eps": 2,
+    "budget_game_ai": 2600,
+    "scenario_eps": "3 seeds per family",
+    "train_fam": {
+      "aim_err": 14,
+      "delay": 10,
+      "seeds": [
+        100,
+        101,
+        102
+      ]
+    },
+    "heldout_fam": {
+      "aim_err": 22,
+      "delay": 16,
+      "seeds": [
+        200,
+        201,
+        202
+      ]
+    },
+    "budget_scenario": 2400,
+    "agents": {
+      "P1_teacher_v1": "PongTeacher (visual tracking, small-frame features)",
+      "P4_teacher_v2": "PongTeacherV2 (RAM-truth predictive edge; ASSISTED ceiling)",
+      "P4_student_feat": "visual-only brain, subprocess, artifact pong_student_feat_p4d4.npz"
+    }
+  },
+  "rounds": {
+    "r1_bc_only": {
+      "P1_teacher_v1": {
+        "scored": 7,
+        "conceded": 0,
+        "game_ai_returns": [
+          19,
+          19
+        ],
+        "per_episode": {
+          "game_ai_0": [
+            0,
+            0,
+            19
+          ],
+          "game_ai_1": [
+            0,
+            0,
+            19
+          ],
+          "train_fam_100": [
+            2,
+            0,
+            17
+          ],
+          "train_fam_101": [
+            0,
+            0,
+            18
+          ],
+          "train_fam_102": [
+            1,
+            0,
+            17
+          ],
+          "heldout_fam_200": [
+            0,
+            0,
+            18
+          ],
+          "heldout_fam_201": [
+            3,
+            0,
+            17
+          ],
+          "heldout_fam_202": [
+            1,
+            0,
+            17
+          ]
+        }
+      },
+      "P4_teacher_v2": {
+        "scored": 7,
+        "conceded": 0,
+        "game_ai_returns": [
+          19,
+          19
+        ],
+        "per_episode": {
+          "game_ai_0": [
+            0,
+            0,
+            19
+          ],
+          "game_ai_1": [
+            0,
+            0,
+            19
+          ],
+          "train_fam_100": [
+            3,
+            0,
+            17
+          ],
+          "train_fam_101": [
+            1,
+            0,
+            17
+          ],
+          "train_fam_102": [
+            1,
+            0,
+            17
+          ],
+          "heldout_fam_200": [
+            0,
+            0,
+            18
+          ],
+          "heldout_fam_201": [
+            1,
+            0,
+            17
+          ],
+          "heldout_fam_202": [
+            1,
+            0,
+            17
+          ]
+        }
+      },
+      "P4_student_feat": {
+        "scored": 3,
+        "conceded": 30,
+        "game_ai_returns": [
+          20,
+          20
+        ],
+        "per_episode": {
+          "game_ai_0": [
+            0,
+            3,
+            20
+          ],
+          "game_ai_1": [
+            0,
+            3,
+            20
+          ],
+          "train_fam_100": [
+            1,
+            5,
+            14
+          ],
+          "train_fam_101": [
+            1,
+            5,
+            10
+          ],
+          "train_fam_102": [
+            0,
+            5,
+            17
+          ],
+          "heldout_fam_200": [
+            1,
+            5,
+            14
+          ],
+          "heldout_fam_201": [
+            0,
+            5,
+            8
+          ],
+          "heldout_fam_202": [
+            0,
+            5,
+            8
+          ]
+        }
+      }
+    },
+    "r6_d4_dagger_r5": {
+      "P4_student_feat": {
+        "scored": 8,
+        "conceded": 2,
+        "game_ai_returns": [
+          19,
+          19
+        ],
+        "per_episode": {
+          "game_ai_0": [
+            0,
+            0,
+            19
+          ],
+          "game_ai_1": [
+            0,
+            0,
+            19
+          ],
+          "train_fam_100": [
+            1,
+            0,
+            17
+          ],
+          "train_fam_101": [
+            1,
+            0,
+            17
+          ],
+          "train_fam_102": [
+            1,
+            1,
+            18
+          ],
+          "heldout_fam_200": [
+            2,
+            0,
+            17
+          ],
+          "heldout_fam_201": [
+            1,
+            0,
+            17
+          ],
+          "heldout_fam_202": [
+            2,
+            1,
+            17
+          ]
+        }
+      }
+    },
+    "r7_d4_final": {
+      "P4_student_feat": {
+        "scored": 8,
+        "conceded": 2,
+        "game_ai_returns": [
+          19,
+          19
+        ],
+        "per_episode": {
+          "game_ai_0": [
+            0,
+            0,
+            19
+          ],
+          "game_ai_1": [
+            0,
+            0,
+            19
+          ],
+          "train_fam_100": [
+            1,
+            0,
+            17
+          ],
+          "train_fam_101": [
+            1,
+            0,
+            17
+          ],
+          "train_fam_102": [
+            1,
+            1,
+            18
+          ],
+          "heldout_fam_200": [
+            2,
+            0,
+            17
+          ],
+          "heldout_fam_201": [
+            1,
+            0,
+            17
+          ],
+          "heldout_fam_202": [
+            2,
+            1,
+            17
+          ]
+        }
+      }
+    }
+  },
+  "lineage": [
+    {
+      "artifact": "pong_student_feat_p4.npz (BC only, 83.1%)",
+      "eval": "r1: scored=3 conceded=30"
+    },
+    {
+      "artifact": "p4d1/d2 (dagger, WRONG target column - actions not teacher relabels)",
+      "note": "degraded (5 returns vs game AI) - caught by the eval table, fixed in r54b"
+    },
+    {
+      "artifact": "p4d3 (correct targets)",
+      "eval": "r4: scored=3 conceded=15"
+    },
+    {
+      "artifact": "p4d4 = base + r5 dagger@0.7 (incl. game-AI states), epochs 100, hidden 32, 2417B",
+      "eval": "r6/r7: scored=8 conceded=2 gameAI 19-19"
+    },
+    {
+      "artifact": "p4d5 (base+r5+r7@0.7)",
+      "eval": "r8: scored=5 conceded=1"
+    },
+    {
+      "artifact": "p4d6 (base+r5+r7@0.5, ep80)",
+      "eval": "r9: scored=6 conceded=3"
+    }
+  ],
+  "verdict": "P4 student OUTSCORES both teachers (8 vs 7) on the identical protocol/seeds and ties the game-AI rally (19-19 returns, 0-0); concedes 2 vs the teachers' 0 - strictly better on offense, slightly behind on defense. Best-of-round artifact = p4d4.",
+  "feature_version": 2,
+  "n_feature_dims": 9,
+  "artifact_bytes": 2417
+}

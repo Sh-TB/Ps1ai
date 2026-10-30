@@ -88,11 +88,50 @@ def _features_pong(cur, prev):
     return features_pong(cur, prev)
 
 
-def features_flappy(cur, prev):
-    """Legal visual features: bird y/vy + the r15 gap-target logic on
-    the 60x80 small RGB (the /4-scaled mirror of
-    perception.flappy_gap_target_r15 — tests assert both readers agree
-    on synthetic frames)."""
+def _fold_playfield(y):
+    """Reflect a raw y into the playfield [0, 240] (pong walls)."""
+    m = 480.0
+    p = y % m
+    if p < 0:
+        p += m
+    return m - p if p > 240.0 else p
+
+
+def features_pong_v2(cur, prev, prev_action=None):
+    """v2 pong features = v1 prefix + PREDICTIVE + policy-history dims.
+
+    NEW in v2 (all image-derived, causal [t-1, t], disclosed):
+      [6] pred_y_at_pad — the ball's y EXTRAPOLATED to the left-paddle
+          contact plane (x=24 full-res) with wall reflection; falls back
+          to the current ball y (moving right / lost ball -> 120).
+          This is the feature that lets the learned controller play
+          PREDICTIVE interception instead of the teacher's instantaneous
+          tracking (the mechanism by which the student can exceed the
+          P1 teacher).
+      [7] prev_action == UP   (own policy history, mission-legal)
+      [8] prev_action == DOWN
+    """
+    base = features_pong(cur, prev)
+    cx, cy, vx, vy, pad_l, pad_r = (float(v) for v in base)
+    if cx >= 0 and vx < -0.01:
+        steps = (24.0 - cx) / vx
+        pred_y = _fold_playfield(cy + vy * steps) \
+            if 0.0 <= steps <= 600.0 else cy
+    elif cx >= 0:
+        pred_y = cy
+    else:
+        pred_y = 120.0
+    a = prev_action or ""
+    return np.asarray(
+        [cx, cy, vx, vy, pad_l, pad_r, pred_y,
+         1.0 if a == "UP" else 0.0, 1.0 if a == "DOWN" else 0.0],
+        dtype=np.float32)
+
+
+def _flappy_gap_raw(cur):
+    """Shared v1/v2 gap finder. Returns (gc, dx, g0, g1) where gc/dx are
+    the v1 gap-center / band-center features and g0/g1 the RAW gap top
+    and bottom small-rows (v2 gap-edge features; -1 when no gap)."""
     r = cur[:, :, 0].astype(int)
     g = cur[:, :, 1].astype(int)
     b = cur[:, :, 2].astype(int)
@@ -107,19 +146,6 @@ def features_flappy(cur, prev):
     yellow[:, 50:] = False
     ys, _xs = np.nonzero(yellow)
     by = ys.mean() * SY if len(ys) >= 2 else -1.0
-    vy = 0.0
-    if prev is not None and by >= 0:
-        pr = prev[:, :, 0].astype(int)
-        pg = prev[:, :, 1].astype(int)
-        pb = prev[:, :, 2].astype(int)
-        pyel = (pr > pb + 25) & (pg > pb + 5) & (pr > 120)
-        pyel[:5, :] = False
-        pyel[46:, :] = False
-        pyel[:, :32] = False
-        pyel[:, 50:] = False
-        pys, _p = np.nonzero(pyel)
-        if len(pys) >= 2:
-            vy = by - pys.mean() * SY
     # blend-robust pipe test on the small frame: pipes keep g the max
     # channel with b LOW; the sky's b is HIGH (the full-res thresholds
     # measured sky false-positives here)
@@ -138,7 +164,7 @@ def features_flappy(cur, prev):
             start = None
     if start is not None and 80 - start >= 2:
         bands.append((start, 80))
-    gc = dx = -1.0
+    gc = dx = g0 = g1 = -1.0
     if bands:
         bx0, bx1 = next((bd for bd in bands if bd[1] > 32), bands[0])
         band = green[:47, bx0:bx1]
@@ -158,11 +184,302 @@ def features_flappy(cur, prev):
                 g0, g1 = gaps[0]
                 gc = (g0 + g1) / 2.0 * SY
                 dx = (bx0 + bx1) / 2.0 * SX - 160.0
+    return gc, dx, g0 * SY, g1 * SY, by
+
+
+def features_flappy(cur, prev):
+    """Legal visual features: bird y/vy + the r15 gap-target logic on
+    the 60x80 small RGB (the /4-scaled mirror of
+    perception.flappy_gap_target_r15 — tests assert both readers agree
+    on synthetic frames)."""
+    gc, dx, _g0, _g1, by = _flappy_gap_raw(cur)
+    vy = 0.0
+    if prev is not None and by >= 0:
+        pr = prev[:, :, 0].astype(int)
+        pg = prev[:, :, 1].astype(int)
+        pb = prev[:, :, 2].astype(int)
+        pyel = (pr > pb + 25) & (pg > pb + 5) & (pr > 120)
+        pyel[:5, :] = False
+        pyel[46:, :] = False
+        pyel[:, :32] = False
+        pyel[:, 50:] = False
+        pys, _p = np.nonzero(pyel)
+        if len(pys) >= 2:
+            vy = by - pys.mean() * SY
     return np.asarray([by, vy, gc, dx], dtype=np.float32)
 
 
 def _features_flappy(cur, prev):
     return features_flappy(cur, prev)
+
+
+def features_flappy_v2(cur, prev, prev_action=None, since_flap=None):
+    """v2 flappy features = v1 prefix + gap EDGES + policy history.
+
+    NEW in v2 (all image-derived, causal [t-1, t], disclosed):
+      [4] gap_top_y   — the top edge of the current gap (full-res px)
+      [5] gap_bot_y   — the bottom edge of the current gap
+      [6] prev_FLAP   — the policy's own previous action (mission-legal
+          history: "frame + policy history")
+      [7] since_flap  — control steps since the last emitted FLAP
+          (capped 10; lets the LEARNED policy implement the flap-edge
+          pulse/cooldown discipline itself instead of relying on a
+          hand-written state machine)
+    """
+    gc, dx, g0, g1, by = _flappy_gap_raw(cur)
+    vy = 0.0
+    if prev is not None and by >= 0:
+        pr = prev[:, :, 0].astype(int)
+        pg = prev[:, :, 1].astype(int)
+        pb = prev[:, :, 2].astype(int)
+        pyel = (pr > pb + 25) & (pg > pb + 5) & (pr > 120)
+        pyel[:5, :] = False
+        pyel[46:, :] = False
+        pyel[:, :32] = False
+        pyel[:, 50:] = False
+        pys, _p = np.nonzero(pyel)
+        if len(pys) >= 2:
+            vy = by - pys.mean() * SY
+    return np.asarray(
+        [by, vy, gc, dx, g0, g1,
+         1.0 if prev_action == "FLAP" else 0.0,
+         float(min(int(since_flap or 0), 10))],
+        dtype=np.float32)
+
+
+def features_flappy_v3(cur, prev, prev_action=None, since_flap=None,
+                       last_gc=None, since_gap=None):
+    """v3 flappy features = v2 + the policy-owned STALE-GAP memory.
+
+    The r15 law keeps the last gap target alive for <= 40 frames when
+    the band finder returns None (the sliver phase between pipes). A
+    student that cannot SEE that memory cannot reproduce the law (the
+    r54sf1 round measured the ambiguity as ~8% decision error).
+    v3 exposes the memory as BRAIN-OWNED history (mission-legal):
+      [8] last_gc   — the last non-negative gap center y (fallback -1)
+      [9] since_gap — control steps since a gap was visible (capped 40)
+    """
+    base = features_flappy_v2(cur, prev, prev_action=prev_action,
+                              since_flap=since_flap)
+    lg = float(last_gc) if last_gc is not None else -1.0
+    sg = float(min(int(since_gap or 0), 40))
+    return np.concatenate([base, np.asarray([lg, sg], dtype=np.float32)])
+
+
+def features_flappy_v4(cur, prev, prev_action=None, since_flap=None,
+                       last_gc=None, since_gap=None, flap_run=0):
+    """v4 flappy features = v2 prefix + FULL policy-owned history.
+
+    The r15 law's button discipline is: a 2-frame FLAP pulse then a
+    3-frame cooldown. v3's (prev_FLAP, since_flap) pair is AMBIGUOUS
+    inside the pulse (both pulse frames reset since_flap to 0) — the
+    r54sf3 round measured the residual as ~3.7% decision error.
+    v4 replaces the prev_FLAP dim with flap_run = the number of
+    consecutive FLAPs the POLICY itself just emitted (0 = none; the
+    pulse frames are run=1 and run=2), making every phase separable:
+      run=1 & since=0 -> pulse frame 2 (keep FLAP)
+      run>=2          -> pulse done -> cooldown HOVER x3 (since 1..3)
+      run=0 & since>=4-> the threshold law
+    All dims are image-derived or BRAIN-OWNED history (mission-legal).
+    """
+    base = features_flappy_v2(cur, prev)
+    lg = float(last_gc) if last_gc is not None else -1.0
+    sg = float(min(int(since_gap or 0), 40))
+    sf = float(min(int(since_flap or 0), 99))
+    fr = float(min(int(flap_run or 0), 9))
+    return np.asarray(
+        [base[0], base[1], base[2], base[3], base[4], base[5],
+         fr, sf, lg, sg], dtype=np.float32)
+
+
+def _flappy_bird_meas(cur):
+    """Raw bird measurement + the pipe-green mask on the small frame.
+
+    The caller (FlappyObserver) gates the measurement: trust it only
+    when NO pipe green sits near the EXPECTED bird row (a global
+    column test is wrong — a pipe far above/below the bird does not
+    corrupt its 4x4 blocks). The r54 trace measured the ungated
+    centroid FROZEN at ~95-105 while the true bird fell 77->139 (the
+    student's first-pipe death). Physics constants are source-verified
+    (r15): gravity 0.125 px/f^2, flap impulse 8 px/f.
+    """
+    r = cur[:, :, 0].astype(int)
+    g = cur[:, :, 1].astype(int)
+    b = cur[:, :, 2].astype(int)
+    yellow = (r > b + 25) & (g > b + 5) & (r > 120)
+    yellow[:5, :] = False
+    yellow[46:, :] = False
+    yellow[:, :32] = False
+    yellow[:, 50:] = False
+    ys, _xs = np.nonzero(yellow)
+    m_by = ys.mean() * SY if len(ys) >= 2 else -1.0
+    green = (g > 110) & (g > r + 10) & (b < 175) & (r < g)
+    return m_by, green
+
+
+class FlappyObserver:
+    """Policy-owned bird-state observer (the v5 perception).
+
+    Integrates the SOURCE-VERIFIED bird dynamics between trusted
+    measurements and corrects ONLY on trusted ones:
+      vy[t]   = -8.0                 if the policy's own previous
+                                     action was FLAP (the impulse
+                                     resets velocity exactly)
+               vy[t-1] + 0.125       otherwise (gravity)
+      y[t]    = y[t-1] + vy[t]
+      y[t]    <- measurement         when the measurement is trusted
+    All inputs are the policy's OWN action history + rendered frames —
+    mission-legal (frame + policy history). Disclosed in the artifact
+    meta and the issue's information-source table.
+    """
+
+    # DATA-FITTED dynamics (r54k fit on 45k recorded frames):
+    # the 2-frame flap pulse applies vy=-8 on its SECOND frame; the
+    # rise decelerates at +1.0 px/f^2; the fall is TERMINAL at +2
+    # px/f. (The r15 note's "gravity 0.125 / impulse 8" is the same
+    # curve in 1/8-px fixed-point units: 0.125*8=1.0, 2=0.25*8.)
+    GRAVITY = 1.0
+    TERMINAL = 2.0
+    IMPULSE = -8.0
+
+    def __init__(self):
+        self.reset()
+
+    def reset(self):
+        self.y = None            # last integrated bird y (full-res px)
+        self.vy = 0.0
+        self.run = 0             # consecutive own-FLAP count
+        self.ever_measured = False
+
+    def step(self, cur, own_prev_action):
+        """Advance one control step; returns the (by, vy) features."""
+        # 1) integrate the motion since the previous decision using
+        #    the action this policy emitted then
+        self.run = (min(self.run + 1, 9) if own_prev_action == "FLAP"
+                    else 0)
+        if self.y is not None:
+            if self.run == 2:            # the pulse's impulse frame
+                self.vy = self.IMPULSE
+            else:
+                self.vy = min(self.vy + self.GRAVITY, self.TERMINAL)
+            self.y = self.y + self.vy
+        # 2) gated measurement correction: trust the centroid ONLY when
+        #    no pipe green sits near the EXPECTED bird row (cols 32..38
+        #    = the bird's body; +/- 8 rows covers the 20px bird box)
+        m_by, green = _flappy_bird_meas(cur)
+        trusted = False
+        if m_by >= 0:
+            if self.y is None:
+                trusted = True
+            else:
+                r_est = int(self.y / SY)
+                lo, hi = max(0, r_est - 8), min(60, r_est + 9)
+                trusted = not bool(green[lo:hi, 32:39].any())
+        if trusted:
+            if self.y is not None and self.ever_measured:
+                # jump sanity at 28px: a 1-frame move beyond it means the
+                # centroid latched onto something else (the 45px bound
+                # let latches THROUGH and blocked coast re-locks)
+                if abs(m_by - self.y) <= 28.0:
+                    self.y = m_by
+            else:
+                self.y = m_by
+            self.ever_measured = True
+        by_feat = self.y if self.ever_measured else -1.0
+        vy_feat = self.vy if self.ever_measured else 0.0
+        return by_feat, vy_feat
+
+
+class FlappyObserverV2:
+    """Latch-guarded bird tracker (v6 perception).
+
+    The raw small-frame centroid is TRUSTED BY DEFAULT; a physics
+    coast (data-fitted: impulse -8 on the 2nd pulse frame, accel
+    +1.0/f^2, terminal fall +2) takes over ONLY while the raw reading
+    is FROZEN (|delta| < 0.8 px for >= 5 consecutive steps) — the
+    r54-measured pipe-overlap latch (centroid stuck at ~95-105 while
+    the bird fell 77->139). When the raw reading moves again, it
+    re-locks automatically: no jump-gate deadlock (the v1 observer's
+    failure mode).
+    """
+
+    GRAVITY = 1.0
+    TERMINAL = 2.0
+    IMPULSE = -8.0
+    FROZEN_STEPS = 5
+
+    def __init__(self):
+        self.reset()
+
+    def reset(self):
+        self.coast_y = None
+        self.coast_vy = 0.0
+        self.run = 0
+        self.last_raw = None
+        self.frozen = 0
+        self.latch = False
+
+    def step(self, cur, own_prev_action):
+        """Advance one control step; returns the (by, vy) features."""
+        # 1) raw measurement (no gate, no jump check)
+        m_by, _green = _flappy_bird_meas(cur)
+        raw_vy = 0.0
+        if m_by >= 0:
+            if self.last_raw is not None:
+                raw_vy = float(np.clip(m_by - self.last_raw, -9.0, 3.0))
+                self.frozen = (self.frozen + 1
+                               if abs(m_by - self.last_raw) < 0.8 else 0)
+            self.last_raw = m_by
+        # 2) physics coast (always integrated; own flap run drives it)
+        self.run = (min(self.run + 1, 9) if own_prev_action == "FLAP"
+                    else 0)
+        if self.coast_y is not None:
+            if self.run == 2:
+                self.coast_vy = self.IMPULSE
+            else:
+                self.coast_vy = min(self.coast_vy + self.GRAVITY,
+                                    self.TERMINAL)
+            self.coast_y += self.coast_vy
+        # 3) latch arbitration
+        self.latch = self.frozen >= self.FROZEN_STEPS
+        if not self.latch and m_by >= 0:
+            self.coast_y = m_by          # the coast re-locks on raw
+            self.coast_vy = raw_vy
+        # 4) outputs
+        if self.latch and self.coast_y is not None:
+            return self.coast_y, self.coast_vy
+        if m_by >= 0:
+            return m_by, raw_vy
+        if self.coast_y is not None:
+            # dropout: the bird is not visible; the coast carries on
+            return self.coast_y, self.coast_vy
+        return -1.0, 0.0
+
+
+def features_flappy_v5(cur, by_obs, vy_obs, since_flap=None,
+                       last_gc=None, since_gap=None, flap_run=0):
+    """v5 flappy features: the OBSERVER bird state replaces the raw
+    centroid/diff pair; the rest is the v2 gap + v4 history block:
+      [0] by_obs  (observer bird y, full-res px)
+      [1] vy_obs  (observer bird vy, screen px/f)
+      [2] gc      gap center (raw finder)
+      [3] dx      band center - 160
+      [4] g0      gap top edge
+      [5] g1      gap bottom edge
+      [6] flap_run    (policy-owned)
+      [7] since_flap  (policy-owned)
+      [8] last_gc     (policy-owned stale-gap memory)
+      [9] since_gap   (policy-owned)
+    """
+    _gc, _dx, g0, g1, _raw_by = _flappy_gap_raw(cur)
+    by = float(by_obs) if by_obs is not None else -1.0
+    vy = float(np.clip(float(vy_obs or 0.0), -10.0, 10.0))
+    lg = float(last_gc) if last_gc is not None else -1.0
+    sg = float(min(int(since_gap or 0), 40))
+    sf = float(min(int(since_flap or 0), 99))
+    fr = float(min(int(flap_run or 0), 9))
+    return np.asarray(
+        [by, vy, _gc, _dx, g0, g1, fr, sf, lg, sg], dtype=np.float32)
 
 
 def _stack_raw(cur, prev):
@@ -190,6 +507,7 @@ class Brain:
                 meta = json.load(f)
         self.game = meta.get("game", "pong")
         self.control_mode = meta.get("control_mode", "cv+mlp")
+        self.feature_version = int(meta.get("feature_version", 1))
         self.classes = list(meta.get("classes", ["DOWN", "NONE", "UP"]))
         self.norm = meta.get("norm", {})
         self.W1 = z["W1"].astype(np.float32)
@@ -203,6 +521,12 @@ class Brain:
         self.std = (np.asarray(std, dtype=np.float32)
                     if std is not None else None)
         self._prev = None
+        self._prev_action = None
+        self._since_flap = 99
+        self._flap_run = 0
+        self._last_gc = -1.0
+        self._since_gap = 40
+        self._observer = None
         self._steps = 0
 
     # -- forward identical to TinyMLP.forward (tests assert equality) --
@@ -212,24 +536,89 @@ class Brain:
 
     def reset_history(self):
         self._prev = None
+        self._prev_action = None
+        self._since_flap = 99
+        self._flap_run = 0
+        self._last_gc = -1.0
+        self._since_gap = 40
+        self._observer = None
         self._steps = 0
+
+    def _vector(self, cur):
+        """The decision input vector: pixels (raw+mlp) or features.
+        v2 adds the policy's OWN history (prev action / since flap) —
+        mission-legal: the deployed policy may always know what IT did."""
+        if self.control_mode == "raw+mlp":
+            pclean = (np.zeros_like(cur) if self._prev is None
+                      else self._prev)
+            return np.concatenate(
+                [_as_gray(pclean).ravel(),
+                 _as_gray(cur).ravel()]).astype(np.float32) / 255.0
+        if self.feature_version >= 6 and self.game == "flappy":
+            if self._observer is None:
+                self._observer = FlappyObserverV2()
+            self._by_obs, self._vy_obs = self._observer.step(
+                cur, self._prev_action)
+            return features_flappy_v5(cur, self._by_obs, self._vy_obs,
+                                      since_flap=self._since_flap,
+                                      last_gc=self._last_gc,
+                                      since_gap=self._since_gap,
+                                      flap_run=self._flap_run)
+        if self.feature_version >= 5 and self.game == "flappy":
+            if self._observer is None:
+                self._observer = FlappyObserver()
+            self._by_obs, self._vy_obs = self._observer.step(
+                cur, self._prev_action)
+            return features_flappy_v5(cur, self._by_obs, self._vy_obs,
+                                      since_flap=self._since_flap,
+                                      last_gc=self._last_gc,
+                                      since_gap=self._since_gap,
+                                      flap_run=self._flap_run)
+        if self.feature_version >= 4 and self.game == "flappy":
+            return features_flappy_v4(cur, self._prev,
+                                      since_flap=self._since_flap,
+                                      last_gc=self._last_gc,
+                                      since_gap=self._since_gap,
+                                      flap_run=self._flap_run)
+        if self.feature_version >= 3 and self.game == "flappy":
+            return features_flappy_v3(cur, self._prev,
+                                      prev_action=self._prev_action,
+                                      since_flap=self._since_flap,
+                                      last_gc=self._last_gc,
+                                      since_gap=self._since_gap)
+        if self.feature_version >= 2:
+            if self.game == "pong":
+                return features_pong_v2(cur, self._prev,
+                                        prev_action=self._prev_action)
+            return features_flappy_v2(cur, self._prev,
+                                      prev_action=self._prev_action,
+                                      since_flap=self._since_flap)
+        return (features_pong(cur, self._prev) if self.game == "pong"
+                else features_flappy(cur, self._prev))
 
     def act(self, rgb_small):
         """THE decision entry point: one small frame in, one action
         out. No other input exists."""
         cur = np.asarray(rgb_small)
-        if self.control_mode == "raw+mlp":
-            pclean = (np.zeros_like(cur) if self._prev is None
-                      else self._prev)
-            x = np.concatenate(
-                [_as_gray(pclean).ravel(),
-                 _as_gray(cur).ravel()]).astype(np.float32) / 255.0
-        else:
-            x = (features_pong(cur, self._prev) if self.game == "pong"
-                 else features_flappy(cur, self._prev))
+        x = self._vector(cur)
         if self.mean is not None:
             x = (x - self.mean) / (self.std + 1e-6)
         out = self._forward(x.reshape(1, -1))[0]
+        action = self.classes[int(np.argmax(out))]
         self._prev = cur.copy()
+        self._prev_action = action
+        if action == "FLAP":
+            self._since_flap = 0
+            self._flap_run = min(self._flap_run + 1, 9)
+        else:
+            self._since_flap = min(self._since_flap + 1, 99)
+            self._flap_run = 0
+        if self.feature_version >= 3 and self.game == "flappy":
+            gc = float(features_flappy(cur, None)[2])
+            if gc >= 0:
+                self._last_gc = gc
+                self._since_gap = 0
+            else:
+                self._since_gap = min(self._since_gap + 1, 40)
         self._steps += 1
-        return self.classes[int(np.argmax(out))]
+        return action

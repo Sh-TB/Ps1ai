@@ -172,6 +172,105 @@ class PongTeacherAgent:
                           f[4] if f[4] > 0 else None)
 
 
+class PongTeacherV2:
+    """PREDICTIVE + EDGE-AIM left-paddle teacher (P4 label source).
+
+    Why a second teacher: the v1 teacher (above) tracks the ball's
+    CURRENT y with a deadband — the classic servo lag; the P3 student
+    cloned it exactly and could only ever TIE it. To give the student
+    labels that EXCEED the P1 baseline, this teacher aims at the ball's
+    PREDICTED crossing y (truth velocity -> contact plane x=24, wall
+    reflection) with a deterministic edge offset, so its returns leave
+    at sharper angles and beatable opponents miss more.
+
+    Information sources (DISCLOSED, assisted modes only — this module
+    never ships to the deployed brain):
+      * ram ball_x/ball_y truth (0x1FFEA0/0x1FFEA4), read per step
+      * the teacher's OWN velocity EWMA state over those readings
+      * ram pad_l truth (0x1FFEB0)
+      * pong geometry constants (contact plane, paddle half-height 30)
+    The edge offset is a DETERMINISTIC function of the predicted
+    crossing y (observable in the image), so the mapping the student
+    must learn stays single-valued.
+    """
+
+    name = "pong_teacher_v2_predictive_edge"
+    info_sources = ["ram ball_x/y truth", "own velocity EWMA",
+                    "ram pad_l truth", "pong geometry constants"]
+
+    def __init__(self, deadband=3.0, aim_offset=12.0, contact_plane=24.0,
+                 vel_alpha=0.8, max_horizon=600.0, close_range=60.0):
+        self.deadband = deadband
+        self.aim_offset = aim_offset
+        self.contact_plane = contact_plane
+        self.vel_alpha = vel_alpha
+        self.max_horizon = max_horizon
+        self.close_range = close_range
+        self.prev = None            # (ball_x, ball_y) truth
+        self.vx = 0.0
+        self.vy = 0.0
+        self.last_pred = None       # diagnostics
+        self.last_target = None     # diagnostics
+
+    def reset_history(self):
+        self.prev = None
+        self.vx = self.vy = 0.0
+        self.last_pred = None
+        self.last_target = None
+
+    def observe_ram(self, ball_x, ball_y):
+        """Update the velocity state from TRUTH readings (privileged,
+        assisted-only; the deployed student never sees this)."""
+        if self.prev is not None:
+            vx = float(ball_x) - self.prev[0]
+            vy = float(ball_y) - self.prev[1]
+            if abs(vx) < 40 and abs(vy) < 40:      # serve-reset guard
+                a = self.vel_alpha
+                self.vx = (1 - a) * self.vx + a * vx
+                self.vy = (1 - a) * self.vy + a * vy
+        self.prev = (float(ball_x), float(ball_y))
+
+    def _predict(self):
+        from ps1play.learn.visual_only import _fold_playfield
+        bx, by = self.prev
+        if self.vx < -0.01:
+            steps = (self.contact_plane - bx) / self.vx
+            if 0.0 <= steps <= self.max_horizon:
+                return _fold_playfield(by + self.vy * steps)
+        return None
+
+    def act(self, pad_l):
+        """pad_l = RAM truth of the left paddle row. UP/DOWN/NONE.
+
+        Law (r54a-measured): at CLOSE range the crossing is imminent —
+        track the current y (the P1-proven servo). Far range: aim at the
+        PREDICTED crossing with a MODERATE deterministic edge offset
+        (the r53b ±26 hold-to-contact experiment MISSED the ball: the
+        paddle must stay within ~30 half-height of the crossing path;
+        ±12 with deadband 3 keeps contact offset in [9,15] = a solid
+        angled hit)."""
+        if pad_l is None or self.prev is None:
+            return "NONE"
+        bx, by = self.prev
+        pred = self._predict()
+        self.last_pred = pred
+        if bx < self.close_range:
+            target = float(by)
+        elif pred is not None:
+            off = self.aim_offset if pred < 120.0 else -self.aim_offset
+            target = pred + off
+        elif 0.0 <= bx <= 320.0:
+            target = float(by)
+        else:
+            target = 120.0
+        self.last_target = target
+        if target < pad_l - self.deadband:
+            return "UP"
+        if target > pad_l + self.deadband:
+            return "DOWN"
+        return "NONE"
+
+
 class ScenarioOpponent:
     """Pong port-1 scripted opponent (ENVIRONMENT, not the learned
     system). Tracks the ball with a reaction delay and gaussian aim

@@ -44,6 +44,28 @@ def _small_rgb(fr, out=(60, 80, 3)):
     """Area-average RGB downsample 320x240 -> (60,80,3) uint8.
     THE frame format sent to the brain (and stored in datasets)."""
     oh, ow = out[0], out[1]
+    # fast path: the default 320x240 -> 60x80 grid splits EXACTLY into
+    # 4x4 blocks (linspace boundaries are exact multiples); the reshape
+    # mean is the same 16-pixel average — tests/_smallrgb check equality
+    # against the loop reference on random frames.
+    if (fr.shape[0] == 240 and fr.shape[1] == 320
+            and (oh, ow) == (60, 80)):
+        return np.clip(
+            fr.reshape(60, 4, 80, 4, 3).mean(axis=(1, 3)),
+            0, 255).astype(np.uint8)
+    hs = np.linspace(0, fr.shape[0], oh + 1).astype(int)
+    ws = np.linspace(0, fr.shape[1], ow + 1).astype(int)
+    outv = np.empty((oh, ow, 3), dtype=np.float32)
+    for i in range(oh):
+        for j in range(ow):
+            outv[i, j] = fr[hs[i]:hs[i + 1], ws[j]:ws[j + 1]] \
+                .reshape(-1, 3).mean(axis=0)
+    return np.clip(outv, 0, 255).astype(np.uint8)
+
+
+def _small_rgb_ref(fr, out=(60, 80, 3)):
+    """The ORIGINAL loop reference (kept for the equality test)."""
+    oh, ow = out[0], out[1]
     hs = np.linspace(0, fr.shape[0], oh + 1).astype(int)
     ws = np.linspace(0, fr.shape[1], ow + 1).astype(int)
     outv = np.empty((oh, ow, 3), dtype=np.float32)
