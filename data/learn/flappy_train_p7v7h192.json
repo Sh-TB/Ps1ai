@@ -1,0 +1,25 @@
+{
+  "tag": "p7v7h192",
+  "hidden": 192,
+  "mined_weight": 0,
+  "n_train_steps": 33882,
+  "mined_labels": 2,
+  "splits": {
+    "k6": 6000,
+    "k30": 4398,
+    "k60": 4500,
+    "k12": 4500,
+    "k45": 3620,
+    "k120": 4000
+  },
+  "acc_train": 0.9966,
+  "flap_recall_train": 0.9994,
+  "acc_val": 0.9955,
+  "flap_recall_val": 0.9961,
+  "artifact": {
+    "npz": "/home/z/my-project/ps1ai/data/learn/flappy_student_feat_p7v7h192.npz",
+    "json": "/home/z/my-project/ps1ai/data/learn/flappy_student_feat_p7v7h192.npz.json",
+    "npz_bytes": 10201,
+    "sha256": "75498b81f0d1031abeb2480d658fb376ec108cecafe9430a3bca7b7ff0795b4b"
+  }
+}

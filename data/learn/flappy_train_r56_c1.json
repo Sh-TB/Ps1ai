@@ -1,0 +1,27 @@
+{
+  "tag": "r56_c1",
+  "train": [
+    6,
+    60
+  ],
+  "mined": 0,
+  "per_seed_steps": {
+    "k6": 6000,
+    "k60": 4500
+  },
+  "n_train": 13172,
+  "acc_val": 0.9955,
+  "flap_recall_val": 0.9921,
+  "teacher_agreement": {
+    "k6": 0.9962,
+    "k60": 0.9971,
+    "k12": 0.9962,
+    "k120": 0.9952
+  },
+  "artifact": {
+    "npz": "/home/z/my-project/ps1ai/data/learn/flappy_student_feat_r56_c1.npz",
+    "json": "/home/z/my-project/ps1ai/data/learn/flappy_student_feat_r56_c1.npz.json",
+    "npz_bytes": 7080,
+    "sha256": "985cd751fb79968a77e3e1535375bd6587a56601509ffa05177d1fc43e80528b"
+  }
+}

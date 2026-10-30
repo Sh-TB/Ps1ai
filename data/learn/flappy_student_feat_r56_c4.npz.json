@@ -1,0 +1,46 @@
+{
+  "arch": {
+    "n_in": 10,
+    "hidden": 128,
+    "n_out": 2
+  },
+  "format": "tinymlp-npz-v1",
+  "created": 1793370947.3791373,
+  "game": "flappy",
+  "control_mode": "cv+mlp",
+  "feature_version": 7,
+  "classes": [
+    "HOVER",
+    "FLAP"
+  ],
+  "norm": {
+    "mean": [
+      104.90071868896484,
+      0.5188437700271606,
+      103.83171844482422,
+      33.06724548339844,
+      70.94915008544922,
+      136.60243225097656,
+      0.1867469847202301,
+      15.291114807128906,
+      104.48925018310547,
+      0.8551957607269287
+    ],
+    "std": [
+      26.8253231048584,
+      2.95131254196167,
+      28.50875473022461,
+      45.031734466552734,
+      25.776182174682617,
+      31.656885147094727,
+      0.47011667490005493,
+      12.936515808105469,
+      28.073455810546875,
+      5.644923686981201
+    ]
+  },
+  "teacher": "flappy_law_on_v7 (r15 law + BirdObserverV7 + GapTrackerV7, same-sensor pathway)",
+  "teacher_provenance": "BC on the tv8 teacher lives k6+k60 (the r55 champion recipe) + the r56 surgical corrections (2 teacher-death walkbacks k30/k45 + 4 real-basin flips from the recorded student lives), jitter x8 sigma 1.2px, tiled x2",
+  "n_steps": 13280,
+  "trained_at": 1793370947.3782237
+}

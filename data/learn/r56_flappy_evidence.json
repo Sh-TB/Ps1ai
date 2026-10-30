@@ -1,0 +1,71 @@
+{
+  "/round": "R56-learn",
+  "/date": "2026-10-30",
+  "/mission": "close the flappy P4 exceed bar (the student must meet-or-exceed its teacher) — the r55-declared open lever: the step-level surgical mining + the widened BC coverage; pong stands at P4 (8>7, r54)",
+  "/environment_rebuild": {
+    "reason": "the sandbox recycle wiped the local-only assets (emu/patched, the scratch corpora, the anchors)",
+    "internet_first": [
+      "FlappyBirdPSX v0.1.0 ISO re-fetched, sha256 b45871d3... verified + license sector 4 + CD001",
+      "hello_pong artifact re-fetched via the r12 Actions route, zip sha 51321870... + bin sha a592f7ed... verified, the MSX-license-patched local image rebuilt",
+      "r53_bootcheck re-run: both games boot (1.3s / 2.3s), the anchors pong_anchor + flappy_ready/flappy_flying re-saved"
+    ],
+    "foreground_only": "the r53 silent-background-launch death reproduced (a nohup trace boot died silently); all boots foreground from then on"
+  },
+  "protocol": {
+    "seeds": {"train_family": [6, 30, 60, 12, 45, 120], "val": [90], "heldout_never_labeled": [210]},
+    "budgets": "6000 (k=6) / 4500 (k=30,60) / 4000 (k=90,210)",
+    "pipe_count": "the eval-side full-res band-acquisition proxy (the r53 convention)",
+    "boot_ledger": [
+      "boot A (r56a #1): the teacher trace sweep, the 5 protocol seeds -> [51,37,38,34,34]=194 — the EXACT r55 reproduction (the k30 death @4398, the k6 382 flaps); traces tv8_k*",
+      "boot B (r56a #2): the 3 new TRAIN seeds -> k12=38 (alive), k45=30 (death @3620), k120=34 (alive)",
+      "boot C (r56e #3): head-to-head #1 — teacher 194; p7v7h192w3=111 [19,37,20,34,1]; p7v7h128w3=107 — the all-levers-at-once regression caught",
+      "boot D (r56e #4): the ladder — teacher 194; C2 (the coverage lever: +k12/k120 BC)=73 [0,19,20,34,0] catastrophic; C3 (C2+the walkback corrections)=131 [51,13,20,34,13]",
+      "boot E (r56e #5): teacher 194; C1 (the r55 champion recipe VERBATIM on the tv8 traces)=173 [51,37,38,34,13]; C4 (C1-recipe + all 6 flips)=119 [51,13,20,34,1]"
+    ]
+  },
+  "teacher_same_boot": [51, 37, 38, 34, 34],
+  "teacher_total": 194,
+  "champion": {
+    "artifact": "data/learn/flappy_student_feat_r56_c1.npz",
+    "bytes": 7080,
+    "recipe": "the r55 champion recipe VERBATIM (BC on the teacher's own k6+k60 lives, hidden 128, no DAgger, seed 11) on this round's tv8 traces — verified against flappy_train_p6v7h128.json",
+    "closed_loop": [51, 37, 38, 34, 13],
+    "total": 173,
+    "teacher_same_boot": [51, 37, 38, 34, 34],
+    "per_seed": [
+      "k6: 51 budget-exact, 384 flaps vs the teacher's 382 (the clone)",
+      "k30: 37, death @4394 vs the teacher's 4398 (the teacher's own death window)",
+      "k60: 38 BUDGET-ALIVE — the first student through the 2488 death basin (the champion: 20)",
+      "k90: 34 budget-exact, 256 vs 254 flaps",
+      "k210 (held-out): 13 vs 34 — the remaining gap"
+    ],
+    "verdict": "173 vs 194 same-boot: MEETS the teacher on 4/5 seeds (the exact per-seed numbers), BELOW on the held-out k210 only; +18 (+11.6%) over the r55 champion (155); the exceeds bar (the cap arithmetic: 195 > 194) NOT met — honest"
+  },
+  "mining": {
+    "r56b_v2_architecture": "the REAL-anchored surgical mining: the labels' features = the real recorded frames through the EXACT Brain._vector mirror (the mirror gate: 0.0000px error on all 8 lives); the sim = LOCAL physics lookaheads only (<=180 steps, the r55k pads re-verified by the local death-reproduction gate 8/8 PASS); zero synthetic frames in the labels — the v1 synthetic-frame pipeline (erase+paste, the phase calibration, fidelity 0.5-3.3px) was abandoned: its closed-loop sim-student died at the first pipe (the perception parity is a research project in itself; 'the lab proposes, the boot disposes')",
+    "teacher_death_walkbacks": {"k30": "the latest surviving flip @4397", "k45": "@3619", "note": "margins weakly verified (the lookahead horizon exhausts the schedule; margin 999 = no rim contact within the horizon)"},
+    "real_basin_flips_r2": "4 flips mined from the RECORDED student lives (the eval boots): c3_k060@2486, h192w3_k060@2487 (the champion's k60 basin), c3_k030@1700 (the early basin ≈ the champion's k210 death @1699), h192w3_k030@4393",
+    "jitter_augmentation": "the single-step labels are smoothed away by the MLP locality (the mined-acceptance 0.000 at w3); the jitter region (sigma 1.2-1.5px, 8-16 copies, the spatial dims) makes them stick offline (the acceptance 1.000)",
+    "honest_negative_3": "C4 = the champion recipe + all 6 flips (jittered, tiled) = 119 [51,13,20,34,1] vs C1's 173: the corrections BREAK the exact-clone behavior that carries the previously-won seeds; the closed-loop verdict: the surgical-flip training HURTS at this data scale; all three mechanisms tried across r55-r56 (the whole-tail relabels, the spurious-risk lookahead labels, the real-basin flips) failed to improve the closed loop — filed, artifacts committed, excluded from the champion",
+    "spurious_label_lesson": "the risky-lookahead mining on the TEACHER's own survived lives emits spurious corrections (a crude law continuation 'kills' flights that really survived); the lookahead mining is only meaningful on lives that actually died"
+  },
+  "coverage_lever": {
+    "finding": "C2 (BC widened with the k12/k120 lives) = 73 [0,19,20,34,0]: the extra seeds' EARLY-phase data blurred the first-pipe behavior — the previously-won seeds died at pipe 0-1; C3 (C2 + the corrections) recovered k6 to the exact clone (51, 384 flaps) but regressed k30/k210",
+    "conclusion": "the widened BC coverage HURTS this exact-clone regime; the champion recipe's narrow data (k6+k60) is load-bearing"
+  },
+  "variance_finding": "C1's recipe is BYTE-IDENTICAL to the r55 champion's (verified from the committed train report: train 10500 steps, hidden 128, no DAgger); the outcome moved 155 -> 173 across trace samples — the recipe's closed-loop outcome carries trace-sample variance (the r53 per-boot seed-timing variation acting through the recorded data); the k60 2488 'basin' is a sample-level phenomenon, not a fixed property of the seed",
+  "artifacts": {
+    "champion": "data/learn/flappy_student_feat_r56_c1.npz (7,080 B, feature_version 7) + .json",
+    "lineage_committed": ["flappy_train_r56_c1.json", "flappy_student_feat_r56_{c2,c3,c4}.npz(+.json)", "flappy_student_feat_p7v7h{128,192}w3.npz(+.json)", "flappy_train_*.json", "r56_flappy_evidence.json"],
+    "budget_ok": "every artifact <= 10,203 B << 4 MiB"
+  },
+  "tests": "629 passed + 1 xfailed (the suite grew from r55's 614; capstone installed so the previously-uncollectable module now collects); test_learning_boundary green (the AST scan, the subprocess selfcheck, the <=4 MiB artifacts, the split integrity)",
+  "scripts": ["r56a_trace.py", "r56b_miner.py", "r56c_train.py", "r56c2_train.py", "r56e_eval.py", "r56f_mine2.py", "r56g_train_c4.py", "r56_issue_report.py"],
+  "honest_limitations": [
+    "the exceeds bar NOT met for flappy: 173 < 194 (the cap is 195); pong's P4 (8>7) stands from r54",
+    "the k210 held-out gap (13 vs 34) is the single remaining per-seed deficit; every attempt to patch it via mined flips regressed other seeds",
+    "the surgical-flip training is an honest negative at this data scale (3 mechanisms, 3 failures)",
+    "the C1-vs-champion delta (155->173 on the identical recipe) is measured but its mechanism (the trace-sample variance vs a better sample) is not fully resolved",
+    "the law re-flight in the offline lab diverges mid-flight (disclosed since r55k) — the lab validated locally only"
+  ]
+}

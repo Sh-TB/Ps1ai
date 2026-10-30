@@ -191,3 +191,90 @@ accelerates +0.125 px/f² with the screen dy rounded HALF-UP, no cap.
 * Tests: 614 passed + 1 xfailed (the pre-existing capstone-dependent
   module uncollectable); `test_learning_boundary` 10/10 including the
   AST scan of the modified `visual_only.py` (numpy + stdlib only).
+
+---
+
+# R56-learn (2026-10-30) — the surgical-mining round: the flappy student 155 -> 173, 4/5 seeds = the teacher exactly
+
+## Environment rebuild
+
+The sandbox recycle wiped the local-only assets (the license-patched
+images, the scratch corpora, the anchors). Internet-first re-fetch:
+the FlappyBirdPSX v0.1.0 ISO (sha `b45871d3...` verified), the
+hello_pong artifact via the r12 Actions route (bin sha `a592f7ed...`
+verified), the MSX-license patch rebuilt, `r53_bootcheck` re-run (both
+games boot; the anchors re-saved). The r53 silent-background-launch
+death REPRODUCED (a nohup trace boot died silently) — every boot since
+is foreground-only.
+
+## The round's arc (5 boots, all in `data/learn/r56_flappy_evidence.json`)
+
+1. **Trace sweep (boots A-B)**: the law-on-v7 teacher re-recorded on
+   8 lives — the 5 protocol seeds reproduce r55 EXACTLY
+   ([51,37,38,34,34] = 194; the k30 death @4398; the k6 382 flaps) +
+   3 new TRAIN seeds (k12=38 alive, k45=30 death @3620, k120=34
+   alive).
+2. **The miner v2 (`r56b_miner.py`, zero boots)**: the REAL-anchored
+   architecture — the labels' features come from the real recorded
+   frames through the EXACT `Brain._vector` mirror (the mirror gate:
+   0.0000 px error on all 8 lives); the simulator is used ONLY for
+   LOCAL physics lookaheads (<= 180 steps; the r55k pads re-verified
+   by the local death-reproduction gate, 8/8 PASS). The v1
+   synthetic-frame pipeline (erase+paste with the phase calibration,
+   fidelity 0.5-3.3 px) was abandoned: its closed-loop sim-student
+   died at the first pipe — perception parity is a research project
+   in itself, and "the lab proposes, the boot disposes" (r55k).
+3. **The ladder lesson (boots C-D)**: the all-levers-at-once
+   candidates regressed (111 / 107 vs the champion's 155); the
+   one-lever ladder exposed the coverage lever as the harmful one —
+   C2 (BC widened with the k12/k120 lives) = 73 with the previously-
+   won seeds dying at pipe 0-1: the extra seeds' EARLY-phase data
+   blurs the first-pipe behavior; the champion recipe's narrow data
+   (k6+k60) is load-bearing.
+4. **Boot E**: **C1 = the r55 champion recipe VERBATIM on this
+   round's traces = 173 [51,37,38,34,13]** — +18 (+11.6%) over the
+   r55 champion; the per-seed numbers equal the teacher's on 4/5
+   seeds (k6 51 budget-exact @384≈382 flaps; k30 37 death @4394 ≈
+   the teacher's 4398; **k60 38 BUDGET-ALIVE — the first student
+   through the 2488 death basin**; k90 34 budget); the held-out k210
+   (13 vs 34) is the single remaining deficit. The recipe is
+   byte-identical to the champion's (verified from the committed
+   train report) — the 155 -> 173 delta is trace-sample variance
+   (the r53 per-boot seed-timing variation acting through the
+   recorded data), measured honestly.
+
+## The mining verdict (three mechanisms, three honest negatives)
+
+* r55 whole-tail relabels: degraded (140 -> 91/123).
+* r56 risky-lookahead labels on the teacher's own survived lives:
+  SPURIOUS (a crude law continuation "kills" flights that really
+  survived) — dropped before training.
+* r56 surgical flips (the teacher-death walkbacks k30/k45 + 4
+  real-basin flips from the RECORDED student lives, jitter-regioned
+  so they actually stick offline: the acceptance 0.000 -> 1.000):
+  C4 = 119 [51,13,20,34,1] vs C1's 173 — the corrections BREAK the
+  exact-clone behavior that carries the won seeds. The flip data and
+  the machinery are committed; the data is excluded from the
+  champion.
+
+## Verdict
+
+The flappy P4 bar (the student meets-or-exceeds its teacher) is
+**narrower but still open**: C1 MEETS the teacher on 4/5 seeds
+within-boot and +18 absolute, but 173 < 194 and the cap arithmetic
+(195 > 194) was not reached. Pong's P4 (8 > 7, r54) stands. The
+honest blockers: the k210 held-out generalization and the
+exact-clone fragility that rejects every corrective perturbation
+tried so far.
+
+## Evidence & reproduction
+
+* Evidence: `data/learn/r56_flappy_evidence.json` (the boot ledger,
+  the mining verdicts, the variance finding).
+* The champion: `data/learn/flappy_student_feat_r56_c1.npz` + `.json`
+  (feature_version 7, hidden 128, 7,080 B).
+* Reproduce: `python3 scripts/r56a_trace.py --lives 6,30,60,90,210
+  --boot-id 1` -> `r56c2_train.py` -> `r56e_eval.py --students
+  r56_c1 --boot-id N` (one boot per process, foreground-only).
+* Tests: 629 passed + 1 xfailed (capstone installed; the previously
+  uncollectable module now collects); `test_learning_boundary` green.
