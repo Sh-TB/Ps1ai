@@ -1,0 +1,1068 @@
+{
+ "/round": "R58-continue",
+ "/date": "2026-10-31",
+ "/parent": "R57-learn (issue #13)",
+ "/mission": "continue the R57 experiment: close the k210 deficit, keep provenance honest, evaluate on fresh unseen TEST seeds",
+ "base_commit": "81b7954 (R57 worklog entry)",
+ "env_recovery": {
+  "disc": "FlappyBirdPSX v0.1.0 ISO re-fetched after the sandbox recycle",
+  "sha256": "b45871d32c7910784b26128c3f4ed48d181e31dfd693f4e5efa187cf2296f0ed",
+  "license_sector4": true,
+  "pvd_cd001": true,
+  "smoke": "r57a_smoke PASS (~140 fps marks)"
+ },
+ "P1_k210_forensics": {
+  "lives_recorded": {
+   "champion_r57_es2_dir2p_k210": "13 pipes, death@1698, 2 reps byte-identical (life sha 73608b1c...)",
+   "bootstrap_k210": "16 pipes, death@1997",
+   "teacher_k210_diag": "42 pipes, death@4968 (ASSISTED diagnostic, separate process, no student labels)"
+  },
+  "path_equivalence_proof": {
+   "method": "replay the champion's recorded 7345-step k6 life frames through BOTH decision paths",
+   "result": "0/7345 action mismatches (r58b) \u2014 the in-process FlatPolicy and the deployed BrainClient are the SAME function on real trajectories",
+   "cross_check": "k72=87 and k195=87 reproduced exactly through the deployed path (r57 TEST standing confirmed)"
+  }
+ },
+ "P1b_PROVENANCE_BREAK": {
+  "finding": "the saved r57_es2_dir2p.npz is NOT the recorded iter-0 dir-2-plus candidate",
+  "evidence": {
+   "offline": {
+    "n_params": 1666,
+    "champ_minus_si_norm": 2.076554420560195,
+    "expected_step_norm": 1.210270823260608,
+    "cosine_vs_each_dir": [
+     -0.032401945,
+     0.000265502,
+     0.562120633,
+     -0.026889033,
+     -0.006112762,
+     0.033133839
+    ],
+    "exact_match_f32": false,
+    "max_abs_diff_vs_dir2plus_f32": 0.4816351979970932,
+    "verdict": "champion is NOT the iter-0 dir-2-plus sample"
+   },
+   "reconstruction": {
+    "theta_true_saved": "r58_dir2p_true.npz",
+    "theta_true_sha256": "0d2cb44352e00d9eb88f3f5a63390e2f2a30f2459524b3d2119bee2eb02bae37",
+    "resid_norm": 1.7179633852096516,
+    "resid_norm_over_expected_step": 1.4194867398201518,
+    "resid_cosine_iter0_dirs": [
+     -0.018096,
+     0.002827,
+     -0.025028,
+     0.004809,
+     -0.014076,
+     0.024695
+    ],
+    "resid_cosine_iter1_dirs": [
+     0.015586,
+     -0.01031,
+     -0.020343,
+     -0.014001,
+     0.021211,
+     0.015872
+    ],
+    "note": "resid = champion - true_dir2p; if the rejected iter-1 mean leaked into the save, the iter-1 cosines should show structure (top dirs aligned); if the champion is an unrelated perturbation, cosines ~ N(0, 1/sqrt(n)).",
+    "noise_level_1sigma": 0.0245
+   },
+   "subspace_projection": "only 32.7% of (champ - si_v1) energy lies in span{iters 0..4 dirs}; 55.1 deg off \u2014 the saved theta cannot be any combination of the recorded ARS streams"
+  },
+  "reconstruction_recovery": {
+   "artifact": "r58_dir2p_true.npz = r57_si_v1.npz + 0.03*delta_2 (seed 57+0*1000003, the committed r57f procedure)",
+   "sha256": "0d2cb44352e00d9eb88f3f5a63390e2f2a30f2459524b3d2119bee2eb02bae37",
+   "verification": "the reconstructed candidate scores EXACTLY the recorded pair: k6=87@10000 budget-alive AND k60=87@10000 budget-alive (640 flaps each) \u2014 the r57 87/87 claim was REAL for the true candidate; only the SAVE was wrong"
+  },
+  "what_survives_vs_superseded": {
+   "survives": "all 24 r57 TEST numbers (deployed-path, reproduce exactly today: k72, k195 re-verified byte-level); the bootstrap/si_v1 lineage claims; the PART 12 causality",
+   "superseded": "'champion = iter-0 dir-2-plus sample' (FALSE for the saved npz); 'champion k6=87, k60=87 budget-alive' (belongs to the true candidate; the saved npz measures k6=63 death@7345, k60=80 death@9253); champion checkpoint provenance downgraded to UNKNOWN-beyond-si_v1"
+  }
+ },
+ "P2_lineage_revalidation": {
+  "r57_es2_dir2p": {
+   "rows": [
+    {
+     "k": 60,
+     "pipes": 80,
+     "steps": 9253,
+     "wall_s": 92.5
+    },
+    {
+     "k": 12,
+     "pipes": 87,
+     "steps": 10000,
+     "wall_s": 98.8
+    },
+    {
+     "k": 90,
+     "pipes": 68,
+     "steps": 7894,
+     "wall_s": 78.2
+    }
+   ],
+   "no_teacher_trace_sha256": "7e9a6fba44fe54ce898d4513224f916e25092a0f4d639e1b3778fbb32955e725",
+   "model_sha256": "15fa0334b69c4f4b1cdce925bdebfa800a08228be56ff3ed5e82bb8db0928328"
+  },
+  "r57_si_v1": {
+   "rows": [
+    {
+     "k": 6,
+     "pipes": 87,
+     "steps": 10000,
+     "wall_s": 101.4
+    },
+    {
+     "k": 60,
+     "pipes": 29,
+     "steps": 3461,
+     "wall_s": 34.4
+    },
+    {
+     "k": 90,
+     "pipes": 68,
+     "steps": 7895,
+     "wall_s": 78.9
+    }
+   ],
+   "no_teacher_trace_sha256": "4daf782a7dbaf2c46bde5eebf38cfe3b407f48a1efdcac12b1135e31d0ff1008",
+   "model_sha256": "bdc32dc239e50d1e24d8ce56245a4345e271cdf1f8c7c11894fa780b3a61b1c1"
+  },
+  "r57_bootstrap_bc": {
+   "rows": [
+    {
+     "k": 6,
+     "pipes": 87,
+     "steps": 10000,
+     "wall_s": 100.1
+    },
+    {
+     "k": 60,
+     "pipes": 20,
+     "steps": 2488,
+     "wall_s": 24.5
+    },
+    {
+     "k": 90,
+     "pipes": 43,
+     "steps": 5079,
+     "wall_s": 50.1
+    }
+   ],
+   "no_teacher_trace_sha256": "0ed873c0d320aab805730e61ae5cee822c232e2027dab3936b11f3b3b07dde83",
+   "model_sha256": "2f3605677b9650efd51627bd8574e702b2cde98c9e6298725f0133811e306aa9"
+  }
+ },
+ "family_table_10000": {
+  "note": "all values re-measured THIS round through the clean protocol (fresh boots, deterministic)",
+  "seeds": [
+   6,
+   12,
+   30,
+   45,
+   60,
+   90,
+   210
+  ],
+  "r58_dir2p_true": {
+   "6": "87 alive",
+   "12": 76,
+   "30": 37,
+   "45": 33,
+   "60": "87 alive",
+   "90": 68,
+   "210": 42
+  },
+  "r57_es2_dir2p": {
+   "6": 63,
+   "12": "87 alive",
+   "30": 37,
+   "45": 30,
+   "60": 80,
+   "90": 68,
+   "210": 13
+  },
+  "r57_si_v1": {
+   "6": "87 alive",
+   "12": null,
+   "30": null,
+   "45": null,
+   "60": 29,
+   "90": 68,
+   "210": null
+  },
+  "r57_bootstrap_bc": {
+   "6": "87 alive",
+   "12": null,
+   "30": null,
+   "45": null,
+   "60": 20,
+   "90": 43,
+   "210": 16
+  },
+  "teacher_refs": {
+   "6": 51,
+   "12": 38,
+   "30": 37,
+   "45": 34,
+   "60": 38,
+   "90": 34,
+   "210": "42 (diag)"
+  },
+  "verdict": "the corrected base meets/beats the teacher on 6 of 7 family seeds (k45 33 vs 34 the one -1); the k210 deficit (13-16) belonged to the MIS-SAVED champion \u2014 the corrected base reaches teacher-level 42 on k210 (dies 2 steps before the teacher's diag run)"
+ },
+ "P3_ARS_round2": {
+  "config": "init=r58_dir2p_true, fitness=mean(k90,k210)@10000, sigma 0.03, alpha 0.015, 6 dirs, top-4, save-at-selection",
+  "iter0": {
+   "returns": "rp=[55,55,55,41.5,42,46.5] rm=[40,43,55,55,55,55] \u2014 ZERO perturbations exceeded the base fitness 55; the entire signal came from collapses",
+   "candidate_t0_gate": {
+    "k6": 87,
+    "k12": 76,
+    "k30": 37,
+    "k45": 30,
+    "k60": 29,
+    "k90": 68,
+    "k210": 42,
+    "verdict": "REJECTED: k60 87->29 catastrophic; k90/k210 unchanged"
+   },
+   "state": "scratch/r57/es_state_r58.json (preserved)"
+  },
+  "sibling_search": {
+   "method": "reconstruct ALL es2 iter-0 siblings (si_v1 +- 0.03*delta_i) offline, measure (k90,k210) on the real emulator",
+   "results": {
+    "dir0_p": {
+     "rows": [
+      {
+       "k": 90,
+       "pipes": 68,
+       "steps": 7895
+      },
+      {
+       "k": 210,
+       "pipes": 42,
+       "steps": 4966
+      }
+     ],
+     "fitness": 55.0,
+     "sha256": "a07b82011c018d3ff536f7f46d3009cd8deee288d3e817de3f5d70d06752d2a0"
+    },
+    "dir0_m": {
+     "rows": [
+      {
+       "k": 90,
+       "pipes": 68,
+       "steps": 7894
+      },
+      {
+       "k": 210,
+       "pipes": 18,
+       "steps": 2264
+      }
+     ],
+     "fitness": 43.0,
+     "sha256": "fffc256a29c9cc2e0d21e3c30c8dd1de94033928620722f1a03c076a7ed3dbc4"
+    },
+    "dir1_p": {
+     "rows": [
+      {
+       "k": 90,
+       "pipes": 68,
+       "steps": 7894
+      },
+      {
+       "k": 210,
+       "pipes": 42,
+       "steps": 4966
+      }
+     ],
+     "fitness": 55.0,
+     "sha256": "c0cafdbbcdfb9fb955cc720d98e3eac90065d6ba8b2b0439d29263868ac3aa97"
+    },
+    "dir1_m": {
+     "rows": [
+      {
+       "k": 90,
+       "pipes": 68,
+       "steps": 7894
+      },
+      {
+       "k": 210,
+       "pipes": 13,
+       "steps": 1697
+      }
+     ],
+     "fitness": 40.5,
+     "sha256": "6b33e0d2391ecdffc822c22cac1c4000260eebec5c755326e9dadb9f7b2d3498"
+    },
+    "dir2_m": {
+     "rows": [
+      {
+       "k": 90,
+       "pipes": 68,
+       "steps": 7895
+      },
+      {
+       "k": 210,
+       "pipes": 42,
+       "steps": 4968
+      }
+     ],
+     "fitness": 55.0,
+     "sha256": "e0fce7c9c3ed5c848130245190723dbd283497b25e02647c2e0f2f15a985183a"
+    },
+    "dir3_p": {
+     "rows": [
+      {
+       "k": 90,
+       "pipes": 68,
+       "steps": 7895
+      },
+      {
+       "k": 210,
+       "pipes": 13,
+       "steps": 1697
+      }
+     ],
+     "fitness": 40.5,
+     "sha256": "abbfcb17b00314d8a40fd90eeb77e9fff9fb308e2c16c165ff40743ffcb6a4ae"
+    },
+    "dir3_m": {
+     "rows": [
+      {
+       "k": 90,
+       "pipes": 68,
+       "steps": 7895
+      },
+      {
+       "k": 210,
+       "pipes": 42,
+       "steps": 4968
+      }
+     ],
+     "fitness": 55.0,
+     "sha256": "50651a77614efc34857d8eb0ee0f159f8a9799d09e2ed10dcee48afa6c21fd49"
+    },
+    "dir4_p": {
+     "rows": [
+      {
+       "k": 90,
+       "pipes": 68,
+       "steps": 7894
+      },
+      {
+       "k": 210,
+       "pipes": 16,
+       "steps": 1997
+      }
+     ],
+     "fitness": 42.0,
+     "sha256": "1feccd115392131f7303a0ea1ce04472bdf06427ade6284c86dfff8682f1f75a"
+    },
+    "dir4_m": {
+     "rows": [
+      {
+       "k": 90,
+       "pipes": 68,
+       "steps": 7894
+      },
+      {
+       "k": 210,
+       "pipes": 42,
+       "steps": 4966
+      }
+     ],
+     "fitness": 55.0,
+     "sha256": "cbbaeafb136c58ad3c57900fe6bafef08f7740cd05c285b347ea28ba0e8f0f18"
+    },
+    "dir5_p": {
+     "rows": [
+      {
+       "k": 90,
+       "pipes": 68,
+       "steps": 7894
+      },
+      {
+       "k": 210,
+       "pipes": 13,
+       "steps": 1701
+      }
+     ],
+     "fitness": 40.5,
+     "sha256": "1a1c9309a93e0043d5656c39093cfa6e63ddaad4d2df1359c48d48ddbfc175ea"
+    },
+    "dir5_m": {
+     "rows": [
+      {
+       "k": 90,
+       "pipes": 43,
+       "steps": 5076
+      },
+      {
+       "k": 210,
+       "pipes": 42,
+       "steps": 4966
+      }
+     ],
+     "fitness": 42.5,
+     "sha256": "5ed7f1994d35f7be9148695612a00b12207b320983a5068a2be4c11819596900"
+    }
+   },
+   "verdict": "6/12 siblings INVARIANT on the pair (exactly 68/42), 6/12 collapse to attractors (k210->13/16/18, k90->43); NONE exceeds fitness 55 \u2014 the base is a collapse plateau at sigma 0.03"
+  },
+  "verdict": "ARS round 2 EXHAUSTED (honest structural negative): no tested weight movement improves the pair"
+ },
+ "P3c_SI_round2": {
+  "lives": "the base's OWN deployed-path lives: k6@10000 (87a, sha f7cb6fca...), k60@10000 (87a, sha 0ce5afc8...), k12@8798 (76, sha d855a306...)",
+  "recipe": "r57 arm-D verbatim: fine-tune from base, own lives only (28,798 rows), flap tile x4 + sqrt class weights, batch 128, lr 1e-3, seed 11, epochs {4,6,8,15,25}",
+  "gates": {
+   "e4": {
+    "6": 76,
+    "12": "87 alive",
+    "30": 37,
+    "45": 47,
+    "60": 14,
+    "90": 68,
+    "210": 42,
+    "verdict": "REJECTED k60 87->14"
+   },
+   "e6": {
+    "6": 76,
+    "12": 76,
+    "30": 37,
+    "45": 44,
+    "60": 29,
+    "90": 41,
+    "210": 42,
+    "verdict": "REJECTED k60 87->29, k90 68->41"
+   },
+   "e8": {
+    "6": 76,
+    "12": 72,
+    "30": 37,
+    "45": 44,
+    "60": "87 alive",
+    "90": 68,
+    "210": 42,
+    "verdict": "REJECTED k6 87->76 (-11 > 5 gate); k45 33->44 (+11) recorded as the SI-direction insight"
+   },
+   "e15": {
+    "90": 41,
+    "210": 42,
+    "verdict": "REJECTED k90 68->41"
+   },
+   "e25": {
+    "90": 43,
+    "210": 42,
+    "verdict": "REJECTED k90 68->43"
+   }
+  },
+  "verdict": "SI round 2: every fine-tune trades the fragile 87s (k6/k60) for mid-depth gains (k12/k45) \u2014 thrice-replicated fragility across ARS/SI/siblings; the base is a sharp local optimum"
+ },
+ "P4_fresh_TEST": {
+  "split_commit": "fd1c1422b053 (data/learn/r58_seed_splits.json, committed BEFORE collection, read-back verified)",
+  "seeds": [
+   9,
+   15,
+   21,
+   27,
+   39,
+   51,
+   69,
+   81,
+   87,
+   93,
+   99,
+   105,
+   123,
+   135,
+   147,
+   159,
+   171,
+   183,
+   207,
+   219
+  ],
+  "protocol": "champion n=3, references n=1, budget 10000, 100 episodes, hashed no-teacher traces per process",
+  "stats": {
+   "n_seeds": 20,
+   "models": {
+    "champion_r58_dir2p_true": {
+     "per_seed_reps": {
+      "9": [
+       15,
+       15,
+       15
+      ],
+      "15": [
+       87,
+       87,
+       87
+      ],
+      "21": [
+       53,
+       53,
+       53
+      ],
+      "27": [
+       39,
+       39,
+       39
+      ],
+      "39": [
+       49,
+       49,
+       49
+      ],
+      "51": [
+       16,
+       16,
+       16
+      ],
+      "69": [
+       55,
+       55,
+       55
+      ],
+      "81": [
+       87,
+       87,
+       87
+      ],
+      "87": [
+       28,
+       28,
+       28
+      ],
+      "93": [
+       80,
+       80,
+       80
+      ],
+      "99": [
+       87,
+       87,
+       87
+      ],
+      "105": [
+       36,
+       36,
+       36
+      ],
+      "123": [
+       87,
+       87,
+       87
+      ],
+      "135": [
+       16,
+       16,
+       16
+      ],
+      "147": [
+       10,
+       10,
+       10
+      ],
+      "159": [
+       28,
+       28,
+       28
+      ],
+      "171": [
+       46,
+       46,
+       46
+      ],
+      "183": [
+       87,
+       87,
+       87
+      ],
+      "207": [
+       74,
+       74,
+       74
+      ],
+      "219": [
+       87,
+       87,
+       87
+      ]
+     },
+     "per_seed_median": {
+      "9": 15.0,
+      "15": 87.0,
+      "21": 53.0,
+      "27": 39.0,
+      "39": 49.0,
+      "51": 16.0,
+      "69": 55.0,
+      "81": 87.0,
+      "87": 28.0,
+      "93": 80.0,
+      "99": 87.0,
+      "105": 36.0,
+      "123": 87.0,
+      "135": 16.0,
+      "147": 10.0,
+      "159": 28.0,
+      "171": 46.0,
+      "183": 87.0,
+      "207": 74.0,
+      "219": 87.0
+     },
+     "mean": 53.35,
+     "median_of_seed_medians": 51.0,
+     "p25": 28.0,
+     "p75": 87.0,
+     "min": 10.0,
+     "max": 87.0,
+     "std": 28.23,
+     "n_ge20": 16,
+     "n_ge30": 14,
+     "n_ge40": 12,
+     "n_ge50": 10,
+     "n_alive_at_budget": 6,
+     "n_episodes": 60
+    },
+    "ref_r57_es2_dir2p": {
+     "per_seed_reps": {
+      "9": [
+       22
+      ],
+      "15": [
+       53
+      ],
+      "21": [
+       50
+      ],
+      "27": [
+       32
+      ],
+      "39": [
+       75
+      ],
+      "51": [
+       22
+      ],
+      "69": [
+       55
+      ],
+      "81": [
+       20
+      ],
+      "87": [
+       43
+      ],
+      "93": [
+       27
+      ],
+      "99": [
+       25
+      ],
+      "105": [
+       36
+      ],
+      "123": [
+       46
+      ],
+      "135": [
+       16
+      ],
+      "147": [
+       10
+      ],
+      "159": [
+       28
+      ],
+      "171": [
+       37
+      ],
+      "183": [
+       87
+      ],
+      "207": [
+       74
+      ],
+      "219": [
+       87
+      ]
+     },
+     "per_seed_median": {
+      "9": 22.0,
+      "15": 53.0,
+      "21": 50.0,
+      "27": 32.0,
+      "39": 75.0,
+      "51": 22.0,
+      "69": 55.0,
+      "81": 20.0,
+      "87": 43.0,
+      "93": 27.0,
+      "99": 25.0,
+      "105": 36.0,
+      "123": 46.0,
+      "135": 16.0,
+      "147": 10.0,
+      "159": 28.0,
+      "171": 37.0,
+      "183": 87.0,
+      "207": 74.0,
+      "219": 87.0
+     },
+     "mean": 42.25,
+     "median_of_seed_medians": 36.5,
+     "p25": 24.25,
+     "p75": 53.5,
+     "min": 10.0,
+     "max": 87.0,
+     "std": 22.79,
+     "n_ge20": 18,
+     "n_ge30": 12,
+     "n_ge40": 9,
+     "n_ge50": 7,
+     "n_alive_at_budget": 2,
+     "n_episodes": 20
+    },
+    "ref_c1_r56": {
+     "per_seed_reps": {
+      "9": [
+       32
+      ],
+      "15": [
+       28
+      ],
+      "21": [
+       38
+      ],
+      "27": [
+       25
+      ],
+      "39": [
+       49
+      ],
+      "51": [
+       87
+      ],
+      "69": [
+       87
+      ],
+      "81": [
+       87
+      ],
+      "87": [
+       43
+      ],
+      "93": [
+       27
+      ],
+      "99": [
+       32
+      ],
+      "105": [
+       36
+      ],
+      "123": [
+       87
+      ],
+      "135": [
+       87
+      ],
+      "147": [
+       10
+      ],
+      "159": [
+       0
+      ],
+      "171": [
+       46
+      ],
+      "183": [
+       36
+      ],
+      "207": [
+       74
+      ],
+      "219": [
+       42
+      ]
+     },
+     "per_seed_median": {
+      "9": 32.0,
+      "15": 28.0,
+      "21": 38.0,
+      "27": 25.0,
+      "39": 49.0,
+      "51": 87.0,
+      "69": 87.0,
+      "81": 87.0,
+      "87": 43.0,
+      "93": 27.0,
+      "99": 32.0,
+      "105": 36.0,
+      "123": 87.0,
+      "135": 87.0,
+      "147": 10.0,
+      "159": 0.0,
+      "171": 46.0,
+      "183": 36.0,
+      "207": 74.0,
+      "219": 42.0
+     },
+     "mean": 47.65,
+     "median_of_seed_medians": 40.0,
+     "p25": 31.0,
+     "p75": 77.25,
+     "min": 0.0,
+     "max": 87.0,
+     "std": 26.8,
+     "n_ge20": 18,
+     "n_ge30": 15,
+     "n_ge40": 10,
+     "n_ge50": 6,
+     "n_alive_at_budget": 5,
+     "n_episodes": 20
+    }
+   },
+   "determinism": {
+    "9": {
+     "reps": [
+      15,
+      15,
+      15
+     ],
+     "identical": true
+    },
+    "15": {
+     "reps": [
+      87,
+      87,
+      87
+     ],
+     "identical": true
+    },
+    "21": {
+     "reps": [
+      53,
+      53,
+      53
+     ],
+     "identical": true
+    },
+    "27": {
+     "reps": [
+      39,
+      39,
+      39
+     ],
+     "identical": true
+    },
+    "39": {
+     "reps": [
+      49,
+      49,
+      49
+     ],
+     "identical": true
+    },
+    "51": {
+     "reps": [
+      16,
+      16,
+      16
+     ],
+     "identical": true
+    },
+    "69": {
+     "reps": [
+      55,
+      55,
+      55
+     ],
+     "identical": true
+    },
+    "81": {
+     "reps": [
+      87,
+      87,
+      87
+     ],
+     "identical": true
+    },
+    "87": {
+     "reps": [
+      28,
+      28,
+      28
+     ],
+     "identical": true
+    },
+    "93": {
+     "reps": [
+      80,
+      80,
+      80
+     ],
+     "identical": true
+    },
+    "99": {
+     "reps": [
+      87,
+      87,
+      87
+     ],
+     "identical": true
+    },
+    "105": {
+     "reps": [
+      36,
+      36,
+      36
+     ],
+     "identical": true
+    },
+    "123": {
+     "reps": [
+      87,
+      87,
+      87
+     ],
+     "identical": true
+    },
+    "135": {
+     "reps": [
+      16,
+      16,
+      16
+     ],
+     "identical": true
+    },
+    "147": {
+     "reps": [
+      10,
+      10,
+      10
+     ],
+     "identical": true
+    },
+    "159": {
+     "reps": [
+      28,
+      28,
+      28
+     ],
+     "identical": true
+    },
+    "171": {
+     "reps": [
+      46,
+      46,
+      46
+     ],
+     "identical": true
+    },
+    "183": {
+     "reps": [
+      87,
+      87,
+      87
+     ],
+     "identical": true
+    },
+    "207": {
+     "reps": [
+      74,
+      74,
+      74
+     ],
+     "identical": true
+    },
+    "219": {
+     "reps": [
+      87,
+      87,
+      87
+     ],
+     "identical": true
+    }
+   },
+   "paired_delta_vs_ref_r57_es2_dir2p": {
+    "mean": 11.1,
+    "median": 0.0,
+    "wins": 8,
+    "ties": 8,
+    "losses": 4,
+    "per_seed": {
+     "9": -7.0,
+     "15": 34.0,
+     "21": 3.0,
+     "27": 7.0,
+     "39": -26.0,
+     "51": -6.0,
+     "69": 0.0,
+     "81": 67.0,
+     "87": -15.0,
+     "93": 53.0,
+     "99": 62.0,
+     "105": 0.0,
+     "123": 41.0,
+     "135": 0.0,
+     "147": 0.0,
+     "159": 0.0,
+     "171": 9.0,
+     "183": 0.0,
+     "207": 0.0,
+     "219": 0.0
+    }
+   },
+   "paired_delta_vs_ref_c1_r56": {
+    "mean": 5.7,
+    "median": 0.0,
+    "wins": 8,
+    "ties": 7,
+    "losses": 5,
+    "per_seed": {
+     "9": -17.0,
+     "15": 59.0,
+     "21": 15.0,
+     "27": 14.0,
+     "39": 0.0,
+     "51": -71.0,
+     "69": -32.0,
+     "81": 0.0,
+     "87": -15.0,
+     "93": 53.0,
+     "99": 55.0,
+     "105": 0.0,
+     "123": 0.0,
+     "135": -71.0,
+     "147": 0.0,
+     "159": 28.0,
+     "171": 0.0,
+     "183": 51.0,
+     "207": 0.0,
+     "219": 45.0
+    }
+   }
+  },
+  "determinism": "champion n=3 IDENTICAL on all 20 seeds (verified per seed)"
+ },
+ "teacher_off": {
+  "layers": "AST denylist + sys.meta_path import blocker + hashed no_teacher_trace per process (student-side); the ONLY teacher episode this round is the disclosed ASSISTED k210 diagnostic in a teacher-only process",
+  "traces": "noteacher_trace_r58test_*.jsonl (4 process traces for the TEST), r58ars/r58d/r58g traces \u2014 shas in the process logs"
+ },
+ "suite": "638 passed + 2 skipped + 1 xfailed (capstone reinstalled after the recycle)",
+ "artifacts": {
+  "r58_dir2p_true.npz": "0d2cb44352e00d9eb88f3f5a63390e2f2a30f2459524b3d2119bee2eb02bae37",
+  "bytes": 7106,
+  "si_v2_variants": [
+   "r58_si_v2_e4/e6/e8/e15/e25.npz (all gate-rejected, preserved)"
+  ]
+ },
+ "honest_limitations": [
+  "the R57 champion npz's theta provenance is UNKNOWN beyond si_v1 (the r57 save incident) \u2014 its published TEST numbers remain valid measurements of THAT theta",
+  "k45 33 vs teacher 34 (-1) is the one family seed below the teacher",
+  "the 87-alive trajectories are razor-edges: every tested weight movement (ARS dirs, siblings, SI gradients) collapses k6/k60 \u2014 the base is a sharp local optimum and one-shot weight moves cannot extend it",
+  "C1 still exceeds the champion on 5/20 fresh seeds (paired) \u2014 the champion wins the mean/median/floor but is not uniformly dominant",
+  "ONNX remains PENDING (the native numpy path is the deployment per the r57 review acceptance bar)"
+ ]
+}

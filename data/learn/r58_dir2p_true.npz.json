@@ -1,0 +1,61 @@
+{
+  "arch": {
+    "n_in": 10,
+    "hidden": 128,
+    "n_out": 2
+  },
+  "format": "tinymlp-npz-v1",
+  "created": 1793382791.175491,
+  "game": "flappy",
+  "control_mode": "cv+mlp",
+  "feature_version": 7,
+  "classes": [
+    "HOVER",
+    "FLAP"
+  ],
+  "norm": {
+    "mean": [
+      97.8950424194336,
+      0.0062432195991277695,
+      98.52149200439453,
+      32.677001953125,
+      66.51093292236328,
+      130.46961975097656,
+      0.09475924074649811,
+      16.047651290893555,
+      98.81202697753906,
+      1.8117332458496094
+    ],
+    "std": [
+      24.330570220947266,
+      2.978083610534668,
+      31.22158432006836,
+      45.460506439208984,
+      26.62419319152832,
+      36.5621452331543,
+      0.3859897553920746,
+      13.82913589477539,
+      30.880252838134766,
+      8.253826141357422
+    ]
+  },
+  "teacher": "SELF (r57 arm D): no teacher data \u2014 fine-tuned from r57_bootstrap_bc on the student's OWN recorded lives",
+  "teacher_provenance": "self-imitation on student-generated lives k6@10000_alive, k30_death4397 (bootstrap sha256 2f3605677b9650ef; teacher-off traces hashed in scratch/r57/noteacher_trace_si_*.jsonl)",
+  "lives": [
+    {
+      "life": "k6@10000_alive",
+      "rows": 10000,
+      "flaps": 640,
+      "sha256": "6900935927d1f5fbe59c6032ba26ad17dfa801f85771b47dca50acb1e9459009"
+    },
+    {
+      "life": "k30_death4397",
+      "rows": 4397,
+      "flaps": 280,
+      "sha256": "6f32dc803b561f31afe4f412dc02c84b8294a5b3339813da3300716db5286844"
+    }
+  ],
+  "n_steps": 14397,
+  "init_checkpoint": "r57_bootstrap_bc.npz",
+  "trained_at": 1793382791.1745946
+}

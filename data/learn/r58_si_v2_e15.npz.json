@@ -1,0 +1,71 @@
+{
+  "arch": {
+    "n_in": 10,
+    "hidden": 128,
+    "n_out": 2
+  },
+  "format": "tinymlp-npz-v1",
+  "created": 1793426102.975074,
+  "game": "flappy",
+  "control_mode": "cv+mlp",
+  "feature_version": 7,
+  "classes": [
+    "HOVER",
+    "FLAP"
+  ],
+  "norm": {
+    "mean": [
+      97.8950424194336,
+      0.0062432195991277695,
+      98.52149200439453,
+      32.677001953125,
+      66.51093292236328,
+      130.46961975097656,
+      0.09475924074649811,
+      16.047651290893555,
+      98.81202697753906,
+      1.8117332458496094
+    ],
+    "std": [
+      24.330570220947266,
+      2.978083610534668,
+      31.22158432006836,
+      45.460506439208984,
+      26.62419319152832,
+      36.5621452331543,
+      0.3859897553920746,
+      13.82913589477539,
+      30.880252838134766,
+      8.253826141357422
+    ]
+  },
+  "teacher": "SELF (r58 arm D): fine-tune from r58_dir2p_true on its OWN deployed-path lives (k6@10000 87a, k60@10000 87a, k12@8798 76)",
+  "teacher_provenance": "self-imitation, student-only; teacher import blocked during collection (hashed no-teacher traces); the base itself is the provenance-corrected si_v1+0.03*delta_2 reconstruction (r58f)",
+  "init_checkpoint": "r58_dir2p_true.npz",
+  "lives": [
+    {
+      "life": "k6_87a",
+      "npz": "life_r58_base_lives_k6_r0.npz",
+      "rows": 10000,
+      "sha256": "f7cb6fcae0bb93461c6a67f1d7b315ce73acc30260fb94b9a6c95b758a1e4755"
+    },
+    {
+      "life": "k60_87a",
+      "npz": "life_r58_base_lives_k60_r0.npz",
+      "rows": 10000,
+      "sha256": "0ce5afc875f56290503957c56eaf133a9fd706741b3961eb6ed9d5cd8932d947"
+    },
+    {
+      "life": "k12_76",
+      "npz": "life_r58_base_lives_k12_r0.npz",
+      "rows": 8798,
+      "sha256": "d855a30676e58d9d000e6cf017802cc6fc23c72c7985f519ef5f99b537b7824c"
+    }
+  ],
+  "epochs": 15,
+  "lr": 0.001,
+  "batch": 128,
+  "seed": 11,
+  "n_steps": 28798,
+  "trained_at": 1793426102.9742396
+}
