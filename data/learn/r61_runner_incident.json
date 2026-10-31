@@ -1,0 +1,10 @@
+{
+ "round": "R61",
+ "what": "the R61 emulator runner initially did NOT reset numpy-path policies (base/c1 FlatPolicy) between episodes; stale perception state produced 60-frame flap-spam deaths (0 pipes) on later episodes of a shard",
+ "detected": "base r58_dir2p_true showed 16/30 seeds at 0 pipes with identical 60-frame/60-flap rows \u2014 mechanically impossible for a policy that flies 87-alive on family seeds",
+ "affected_rows": 157,
+ "fix": "run_episode now calls policy.reset_obs() at every episode start for numpy-path policies (deploy-path perception was always fresh per episode)",
+ "regression_test": "tests/test_r61_deployment.py::test_r61_loop_resets_numpy_policies_between_episodes",
+ "recovery": "all base (30) and c1 (30) episodes re-run with the fixed runner; the 60 deploy episodes were unaffected (fresh perception per episode) and kept; the archived contaminated rows are retained locally (gitignored) for audit",
+ "deploy_rows_unchanged_evidence": "the deploy path re-creates perception per episode and reproduced all 7 family seeds byte-exactly; its rows contain no sub-400-frame episode"
+}

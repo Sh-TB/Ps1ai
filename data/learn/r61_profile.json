@@ -1,0 +1,34 @@
+{
+ "package": "deployment/flappybird_policy",
+ "model_load_s": 0.014,
+ "first_inference_ms": 0.3945,
+ "sustained": {
+  "n_calls": 10000,
+  "wall_s": 0.44,
+  "per_call": {
+   "p50_ms": 0.0367,
+   "p95_ms": 0.0482,
+   "p99_ms": 0.0523,
+   "mean_ms": 0.0384
+  },
+  "calls_per_s": 22485.2,
+  "distinct_actions": [
+   "HOVER"
+  ]
+ },
+ "batch_4096_ms": 2.107,
+ "perception_adapter_ms_per_frame": 1.1099,
+ "peak_rss_kb": {
+  "before": 33068,
+  "after": 51284,
+  "delta": 18216
+ },
+ "sizes_bytes": {
+  "model": 7182,
+  "package_tree": 45549,
+  "onnxruntime_dist": 40533778,
+  "numpy_dist": 29315266
+ },
+ "cpu_only": true,
+ "verdict": "suitable for ordinary CPU-only deployment: per-frame cost dominated by the host perception adapter, not by inference"
+}

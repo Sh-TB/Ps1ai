@@ -1,0 +1,45 @@
+{
+ "round": "R61",
+ "when": "2026-10-31T23:53:26+0000",
+ "head": "d8bcbd3a739dca7aaa6e884c91629f4abdc4c003",
+ "wall_s": 124.3,
+ "gates": {
+  "repo_state": {
+   "status": "PASS",
+   "detail": "HEAD d8bcbd3a739d; artifacts present"
+  },
+  "manifest_hashes": {
+   "status": "PASS",
+   "detail": "manifest<->artifacts bound; soup re-derived bitwise"
+  },
+  "deployment_package": {
+   "status": "PASS",
+   "detail": "fresh-import + identity + CLI smoke green"
+  },
+  "synthetic_parity": {
+   "status": "PASS",
+   "detail": "20k in-gate vectors exact (full 220k evidence committed)"
+  },
+  "emulator_smoke": {
+   "status": "PASS",
+   "detail": "k6 through the package = 87-alive/640 flaps (the exact family record)"
+  },
+  "validation_evidence": {
+   "status": "PASS",
+   "detail": "30 pre-registered seeds; deploy n=2 byte-identical; references n=1; 120 rows"
+  },
+  "regression_tests": {
+   "status": "PASS",
+   "detail": "667 passed, 1 skipped, 1 xfailed in 25.25s"
+  },
+  "pong_regression": {
+   "status": "PASS",
+   "detail": "teachers 7/0 each; student 8/2 (the exact R54/R59/R60 record)"
+  },
+  "reports_complete": {
+   "status": "PASS",
+   "detail": "8 evidence files"
+  }
+ },
+ "release": "PASS"
+}

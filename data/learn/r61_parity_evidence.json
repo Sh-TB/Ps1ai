@@ -1,0 +1,104 @@
+{
+ "round": "R61",
+ "seed": 61,
+ "corpus_vectors": 220522,
+ "corpus_sha256": "63b53abb3feb91d2147198d882e9e56df04a93fa17306b52835c0bdfd069340b",
+ "blocks": {
+  "realistic": 150000,
+  "edges": 42,
+  "boundary_real_perturbed": 50000,
+  "tie_pressing": 20480
+ },
+ "champion_npz_sha256": "72c79f3091ed14e8dd497ddc52570bb4660bfc6367e6b50eb8a8aa1eff8a28f4",
+ "onnx_sha256": "4dd592a7118a5c4de7b44166b42b8d09d53fbb59330d36d0ba2746393dc11044",
+ "numpy_vs_ort": {
+  "paths": "numpy_reference vs onnxruntime",
+  "max_abs_logit_delta": 0.0,
+  "mean_abs_logit_delta": 0.0,
+  "argmax_mismatch_count": 0
+ },
+ "numpy_vs_package": {
+  "paths": "numpy_reference vs deployment_pkg",
+  "max_abs_logit_delta": 0.0,
+  "mean_abs_logit_delta": 0.0,
+  "argmax_mismatch_count": 0
+ },
+ "ort_vs_package": {
+  "paths": "onnxruntime vs deployment_pkg",
+  "max_abs_logit_delta": 0.0,
+  "mean_abs_logit_delta": 0.0,
+  "argmax_mismatch_count": 0
+ },
+ "argmax_3way_agreement": 220522,
+ "argmax_3way_fraction": 1.0,
+ "min_top2_margin": 0.000423431396484375,
+ "mean_top2_margin": 53.08940887451172,
+ "r60_real_vectors_recheck": {
+  "n": 4200,
+  "ort_vs_recorded_max_delta": 0.0,
+  "package_argmax_vs_recorded": 4200,
+  "exact": true
+ },
+ "latency": {
+  "package_b1": {
+   "n": 300,
+   "batch": 1,
+   "p50_ms": 0.0372,
+   "p95_ms": 0.0488,
+   "p99_ms": 0.0517,
+   "mean_ms": 0.0387
+  },
+  "package_b1024": {
+   "n": 100,
+   "batch": 1024,
+   "p50_ms": 0.1942,
+   "p95_ms": 0.2105,
+   "p99_ms": 0.229,
+   "mean_ms": 0.1951
+  },
+  "ort_session_load_s": 0.0233,
+  "package_load_s": 0.0011,
+  "numpy_forward_full_corpus_s": 0.091,
+  "ort_full_corpus_s": 0.06,
+  "package_full_corpus_s": 0.097
+ },
+ "peak_rss_kb": {
+  "before": 34684,
+  "after": 388152,
+  "delta": 353468
+ },
+ "malformed_rejection": [
+  {
+   "case": "nan",
+   "rejected": true,
+   "error": "InputValidationError"
+  },
+  {
+   "case": "inf",
+   "rejected": true,
+   "error": "InputValidationError"
+  },
+  {
+   "case": "float64",
+   "rejected": true,
+   "error": "InputValidationError"
+  },
+  {
+   "case": "list",
+   "rejected": true,
+   "error": "InputValidationError"
+  },
+  {
+   "case": "short",
+   "rejected": true,
+   "error": "InputValidationError"
+  },
+  {
+   "case": "out_of_range",
+   "rejected": true,
+   "error": "InputValidationError"
+  }
+ ],
+ "wall_s": 0.6,
+ "verdict": "PASS"
+}

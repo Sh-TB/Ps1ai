@@ -1,0 +1,111 @@
+{
+ "round": "R61",
+ "mission": "FINAL TRAINING CLOSURE, DEPLOYMENT, VALIDATION & HANDOFF",
+ "baseline_commit": "d8bcbd3",
+ "statuses": {
+  "TRAINING_STATUS": "CLOSED",
+  "DEPLOYMENT_STATUS": "VERIFIED",
+  "EMULATOR_STATUS": "VERIFIED",
+  "REGRESSION_STATUS": "PASS",
+  "RELEASE_STATUS": "PASS"
+ },
+ "final_model": {
+  "checkpoint": "data/learn/r59_soup_e6a010.npz",
+  "checkpoint_sha256": "72c79f3091ed14e8dd497ddc52570bb4660bfc6367e6b50eb8a8aa1eff8a28f4",
+  "onnx": "data/learn/r60_soup_e6a010.onnx",
+  "onnx_sha256": "4dd592a7118a5c4de7b44166b42b8d09d53fbb59330d36d0ba2746393dc11044",
+  "manifest": "data/learn/FINAL_MODEL_MANIFEST.json",
+  "manifest_sha256": "10d9ec7f9ee96373927d6b006d0569a2f3083c10d2f035f0d7657dbd6133352b",
+  "provenance_audit": "scripts/r61a_model_audit.py: 14/14 PASS (soup re-derived bitwise; ONNX initializers bitwise; topology/opset/dtype verified)"
+ },
+ "deployment_package": "deployment/flappybird_policy/ (numpy+onnxruntime only; AST + subprocess import isolation verified; clean-room install PASS)",
+ "parity": {
+  "corpus_vectors": 220522,
+  "argmax_3way": 1.0,
+  "max_abs_logit_delta": 0.0,
+  "evidence": "data/learn/r61_parity_evidence.json"
+ },
+ "emulator": {
+  "family_reproduction": "7/7 seeds byte-exact through the deployment package (k6 87-alive/640 flaps ... k210 42@4966/322)",
+  "fresh_validation": {
+   "split": "data/learn/r61_validation_split.json (pre-registered; 30 seeds, k%7 rule, all prior uses excluded)",
+   "episodes": 180,
+   "frames": 719714,
+   "reps": "champion n=2 byte-identical on all 30 seeds; 37 cross-process dup groups all byte-identical"
+  }
+ },
+ "comparison": {
+  "deploy": {
+   "mean": 52.3,
+   "median": 48.0,
+   "stdev": 26.29,
+   "min": 10,
+   "max": 87,
+   "alive_at_budget": 6
+  },
+  "base": {
+   "mean": 46.87,
+   "median": 38.0,
+   "stdev": 25.26,
+   "min": 10,
+   "max": 87,
+   "alive_at_budget": 2
+  },
+  "c1": {
+   "mean": 53.37,
+   "median": 50.0,
+   "stdev": 24.83,
+   "min": 12,
+   "max": 87,
+   "alive_at_budget": 5
+  }
+ },
+ "wtl": {
+  "deploy_vs_base": [
+   6,
+   23,
+   1
+  ],
+  "deploy_vs_c1": [
+   7,
+   11,
+   12
+  ]
+ },
+ "regressions": {
+  "pytest": "667 passed, 1 skipped (owner-local exe), 1 xfailed",
+  "hello_pong": "teachers 7/0 each; student 8/2; gameAI [19,19] \u2014 the exact R54/R59/R60 record (data/learn/r61_pong_regression.json)"
+ },
+ "profile": {
+  "p50_ms": 0.0367,
+  "p95_ms": 0.0482,
+  "calls_per_s": 22485.2,
+  "perception_ms_per_frame": 1.1099,
+  "peak_rss_delta_kb": 18216,
+  "verdict": "CPU-only suitable; perception dominates"
+ },
+ "release_gate": {
+  "command": "python3 scripts/r61_final_verify.py",
+  "result": "PASS",
+  "gates": {
+   "repo_state": "PASS",
+   "manifest_hashes": "PASS",
+   "deployment_package": "PASS",
+   "synthetic_parity": "PASS",
+   "emulator_smoke": "PASS",
+   "validation_evidence": "PASS",
+   "regression_tests": "PASS",
+   "pong_regression": "PASS",
+   "reports_complete": "PASS"
+  }
+ },
+ "incidents": [
+  "stale-perception reset bug in the R61 runner (numpy-path references): detected by the 60-frame flap-spam signature, fixed, regression-tested, affected episodes re-run (data/learn/r61_runner_incident.json)",
+  "parallel emulator workers shared one workspace -> loud IndexError; fixed by per-worker workspace isolation"
+ ],
+ "known_limitations": "deployment/flappybird_policy/KNOWN_LIMITATIONS.md",
+ "reports": [
+  "docs/r61_final_closure.md",
+  "docs/r61_training_record.md"
+ ]
+}

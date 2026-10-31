@@ -1,0 +1,244 @@
+{
+ "format": "final-model-manifest-v1",
+ "round": "R61",
+ "game": "flappy",
+ "status": "FROZEN",
+ "source_checkpoint": {
+  "path": "data/learn/r59_soup_e6a010.npz",
+  "sha256": "72c79f3091ed14e8dd497ddc52570bb4660bfc6367e6b50eb8a8aa1eff8a28f4",
+  "meta_path": "data/learn/r59_soup_e6a010.npz.json",
+  "provenance": "R59 soup: r58_dir2p_true + 0.10 * (r58_si_v2_e6 - r58_dir2p_true); no new training, a convex combination of two working self-imitation checkpoints",
+  "soup": {
+   "base": "r58_dir2p_true.npz",
+   "donor": "r58_si_v2_e6.npz",
+   "alpha": 0.1,
+   "base_sha256": "0d2cb44352e00d9eb88f3f5a63390e2f2a30f2459524b3d2119bee2eb02bae37",
+   "donor_sha256": "83932113116d77d6eb634c7ef787a0ffcfaa452563b955582323e3034e9ad5b0",
+   "rederived_bitwise": true
+  }
+ },
+ "onnx_artifact": {
+  "path": "data/learn/r60_soup_e6a010.onnx",
+  "sha256": "4dd592a7118a5c4de7b44166b42b8d09d53fbb59330d36d0ba2746393dc11044",
+  "bytes": 7182,
+  "sidecar_path": "data/learn/r60_soup_e6a010.onnx.json",
+  "opset": 17,
+  "ir_version": 8,
+  "dtype": "float32",
+  "graph": "Sub(mean) -> Div(std+eps) -> Gemm(W1,b1) -> Relu -> Gemm(W2,b2) -> logits; ArgMax(axis=1, first-max) -> action_idx",
+  "covers": "decision function ONLY (normalize+MLP+argmax); perception (BirdObserverV7/GapTrackerV7/history counters) is host-side numpy frame processing without learned weights"
+ },
+ "architecture": {
+  "n_in": 10,
+  "hidden": 128,
+  "n_out": 2,
+  "activation": "ReLU",
+  "params": 1466
+ },
+ "input_schema": {
+  "name": "x",
+  "shape": [
+   "N",
+   10
+  ],
+  "dtype": "float32",
+  "content": "RAW v7 decision vector (normalization is INSIDE the graph)",
+  "features": [
+   {
+    "i": 0,
+    "name": "by",
+    "desc": "bird y, small-frame px (BirdObserverV7)",
+    "range": [
+     0,
+     60
+    ]
+   },
+   {
+    "i": 1,
+    "name": "vy",
+    "desc": "bird vertical velocity px/frame (observer diff), clipped [-10,10]"
+   },
+   {
+    "i": 2,
+    "name": "gc",
+    "desc": "gap center y, small frame px (GapTrackerV7-filtered; raw finder value when the tracker has no lock)"
+   },
+   {
+    "i": 3,
+    "name": "dx",
+    "desc": "gap dx, small-frame px (gap band center minus the tracked column origin)"
+   },
+   {
+    "i": 4,
+    "name": "g0",
+    "desc": "gap top edge y, small-frame px"
+   },
+   {
+    "i": 5,
+    "name": "g1",
+    "desc": "gap bottom edge y, small-frame px"
+   },
+   {
+    "i": 6,
+    "name": "flap_run",
+    "desc": "consecutive FLAP actions by THIS policy, capped 9"
+   },
+   {
+    "i": 7,
+    "name": "since_flap",
+    "desc": "frames since the last FLAP action, capped 99"
+   },
+   {
+    "i": 8,
+    "name": "last_gc",
+    "desc": "last valid gap center y, -1.0 until the first lock"
+   },
+   {
+    "i": 9,
+    "name": "since_gap",
+    "desc": "frames since the last valid gap reading, capped 40, starts 40"
+   }
+  ]
+ },
+ "output_schema": {
+  "logits": {
+   "shape": [
+    "N",
+    2
+   ],
+   "dtype": "float32",
+   "order": [
+    "HOVER",
+    "FLAP"
+   ]
+  },
+  "action_idx": {
+   "shape": [
+    "N"
+   ],
+   "dtype": "int64",
+   "argmax": "first-max (select_last_index=0), ties -> HOVER"
+  }
+ },
+ "action_semantics": {
+  "HOVER": "no controller input this frame",
+  "FLAP": "press the B button (Cross) this frame \u2014 a 2-frame pulse is applied by the host action adapter"
+ },
+ "normalization": {
+  "mean": [
+   97.8950424194336,
+   0.0062432195991277695,
+   98.52149200439453,
+   32.677001953125,
+   66.51093292236328,
+   130.46961975097656,
+   0.09475924074649811,
+   16.047651290893555,
+   98.81202697753906,
+   1.8117332458496094
+  ],
+  "std_eps": [
+   24.3305721282959,
+   2.9780845642089844,
+   31.221586227416992,
+   45.460506439208984,
+   26.624195098876953,
+   36.5621452331543,
+   0.38599076867103577,
+   13.829136848449707,
+   30.8802547454834,
+   8.253827095031738
+  ],
+  "epsilon": 1e-06,
+  "formula": "x_norm = (x - mean) / (std + 1e-6), float32, inside the graph"
+ },
+ "provenance_commits": {
+  "champion_created": "5e0d6d3 (R59 EXECUTED)",
+  "onnx_created": "399af47 (R60 EXECUTED)",
+  "manifest_created_round": "R61"
+ },
+ "evaluation_anchor": {
+  "family_seeds": {
+   "k6": "87 alive",
+   "k12": "76@8798",
+   "k30": "37@4401",
+   "k45": "40@4753",
+   "k60": "87 alive",
+   "k90": "68@7895",
+   "k210": "42@4966"
+  },
+  "budget": 10000
+ },
+ "audit": [
+  {
+   "step": "enumerate",
+   "ok": true,
+   "detail": "9 R58/R59/R60 artifacts; champion sha 72c79f3091ed14e8"
+  },
+  {
+   "step": "sidecar-source-hash",
+   "ok": true,
+   "detail": "sidecar source_sha256 == npz sha256"
+  },
+  {
+   "step": "onnx-recorded-hash",
+   "ok": true,
+   "detail": "sidecar onnx sha256 == file sha256"
+  },
+  {
+   "step": "soup-rederivation",
+   "ok": true,
+   "detail": "W1:eq b1:eq W2:eq b2:eq (alpha=0.10, float64 math -> float32 cast, bitwise)"
+  },
+  {
+   "step": "onnx-initializers",
+   "ok": true,
+   "detail": "initializers: W1,W2,b1,b2,mean,std_eps"
+  },
+  {
+   "step": "onnx-weights-bitwise",
+   "ok": true,
+   "detail": "W1:eq b1:eq W2:eq b2:eq mean:eq std_eps:eq"
+  },
+  {
+   "step": "onnx-topology",
+   "ok": true,
+   "detail": "Sub->Div->Gemm->Relu->Gemm->ArgMax"
+  },
+  {
+   "step": "onnx-argmax-first-max",
+   "ok": true,
+   "detail": "axis=1 select_last_index=0"
+  },
+  {
+   "step": "onnx-opset-ir",
+   "ok": true,
+   "detail": "opset=17 ir=8"
+  },
+  {
+   "step": "onnx-dtype",
+   "ok": true,
+   "detail": "input elem_type=FLOAT, weights float32"
+  },
+  {
+   "step": "onnx-input-schema",
+   "ok": true,
+   "detail": "input dims ['N', 10]"
+  },
+  {
+   "step": "onnx-output-schema",
+   "ok": true,
+   "detail": "outputs {'logits': ['N', 2], 'action_idx': ['N']}"
+  },
+  {
+   "step": "no-checkpoint-swap",
+   "ok": true,
+   "detail": "champion differs from both soup inputs"
+  },
+  {
+   "step": "arch-assert",
+   "ok": true,
+   "detail": "10->128->2, classes [HOVER, FLAP]"
+  }
+ ]
+}
