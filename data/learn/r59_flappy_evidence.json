@@ -1,0 +1,513 @@
+{
+ "round": "R59-continue",
+ "parent": "R58-continue (issue #13, the R57 workstream)",
+ "date": "2026-10-31",
+ "env": {
+  "emulator": "Beetle PSX 0.9.44.1 (mednafen_psx_libretro) + OpenBIOS (MIT, repo third_party, hash-verified)",
+  "iso": "flappybirdpsx-v0.1.0.iso sha256 b45871d32c791078... (manifest-verified, Unlicense homebrew, IcePanorama/FlappyBirdPSX v0.1.0 release)",
+  "boot": "one boot per process; episodes from the pre-seed ready anchor; budget 10000 frames",
+  "smoke": "base r58_dir2p_true k6 = 87 pipes budget-alive, 640 flaps (exact R58 reproduction; artifact sha 0d2cb44352e00d9e...)"
+ },
+ "motivation": "R58 left the base a thrice-replicated SHARP LOCAL OPTIMUM: every one-shot weight move (ARS, siblings, SI fine-tunes) either did nothing or collapsed a razor-edge (k6/k60 87-alive). R59 tests the one untested move class: LINEAR-PATH interpolation between two working checkpoints.",
+ "r59a_linpath_probe": {
+  "protocol": "theta(alpha) = (1-alpha)*base + alpha*cand; real emulator, in-process FlatPolicy (the proven 0/7345-mismatch decision path), razor seeds k6/k60 first, then gains; teacher import-blocked + hashed no-teacher trace per process",
+  "e4_path_verdict": "NO soup point: gains (k12 87a, k45 47) arrive only near alpha=1 while both razor-edges die by alpha=0.5 (k6 63, k60 14); k45 even dips 33->30 at alpha=0.25",
+  "e6_path_verdict": "SOUP POINT FOUND at alpha=0.10: k45 +7 with EVERY other family seed identical (k210 at the base's exact death frame 4966); the k210 collapse onsets between alpha=0.10 (42@4966) and 0.15 (18@2260)",
+  "table": [
+   {
+    "cand": "r58_si_v2_e4",
+    "alpha": 0.1,
+    "results": {
+     "k6": {
+      "pipes": 87,
+      "steps": 10000,
+      "result": "alive"
+     },
+     "k12": {
+      "pipes": 76,
+      "steps": 8798,
+      "result": "death"
+     },
+     "k45": {
+      "pipes": 33,
+      "steps": 3957,
+      "result": "death"
+     },
+     "k60": {
+      "pipes": 87,
+      "steps": 10000,
+      "result": "alive"
+     }
+    }
+   },
+   {
+    "cand": "r58_si_v2_e4",
+    "alpha": 0.25,
+    "results": {
+     "k6": {
+      "pipes": 87,
+      "steps": 10000,
+      "result": "alive"
+     },
+     "k12": {
+      "pipes": 76,
+      "steps": 8798,
+      "result": "death"
+     },
+     "k45": {
+      "pipes": 30,
+      "steps": 3620,
+      "result": "death"
+     },
+     "k60": {
+      "pipes": 87,
+      "steps": 10000,
+      "result": "alive"
+     }
+    }
+   },
+   {
+    "cand": "r58_si_v2_e4",
+    "alpha": 0.5,
+    "results": {
+     "k6": {
+      "pipes": 63,
+      "steps": 7346,
+      "result": "death"
+     },
+     "k12": {
+      "pipes": 76,
+      "steps": 8798,
+      "result": "death"
+     },
+     "k45": {
+      "pipes": 33,
+      "steps": 3957,
+      "result": "death"
+     },
+     "k60": {
+      "pipes": 14,
+      "steps": 1809,
+      "result": "death"
+     }
+    }
+   },
+   {
+    "cand": "r58_si_v2_e6",
+    "alpha": 0.1,
+    "results": {
+     "k6": {
+      "pipes": 87,
+      "steps": 10000,
+      "result": "alive"
+     },
+     "k12": {
+      "pipes": 76,
+      "steps": 8798,
+      "result": "death"
+     },
+     "k30": {
+      "pipes": 37,
+      "steps": 4401,
+      "result": "death"
+     },
+     "k45": {
+      "pipes": 40,
+      "steps": 4753,
+      "result": "death"
+     },
+     "k60": {
+      "pipes": 87,
+      "steps": 10000,
+      "result": "alive"
+     },
+     "k90": {
+      "pipes": 68,
+      "steps": 7895,
+      "result": "death"
+     },
+     "k210": {
+      "pipes": 42,
+      "steps": 4966,
+      "result": "death"
+     }
+    }
+   },
+   {
+    "cand": "r58_si_v2_e6",
+    "alpha": 0.15,
+    "results": {
+     "k210": {
+      "pipes": 18,
+      "steps": 2260,
+      "result": "death"
+     }
+    }
+   },
+   {
+    "cand": "r58_si_v2_e6",
+    "alpha": 0.25,
+    "results": {
+     "k6": {
+      "pipes": 87,
+      "steps": 10000,
+      "result": "alive"
+     },
+     "k12": {
+      "pipes": 87,
+      "steps": 10000,
+      "result": "alive"
+     },
+     "k30": {
+      "pipes": 37,
+      "steps": 4401,
+      "result": "death"
+     },
+     "k45": {
+      "pipes": 40,
+      "steps": 4753,
+      "result": "death"
+     },
+     "k60": {
+      "pipes": 87,
+      "steps": 10000,
+      "result": "alive"
+     },
+     "k90": {
+      "pipes": 68,
+      "steps": 7895,
+      "result": "death"
+     },
+     "k210": {
+      "pipes": 18,
+      "steps": 2260,
+      "result": "death"
+     }
+    }
+   },
+   {
+    "cand": "r58_si_v2_e6",
+    "alpha": 0.5,
+    "results": {
+     "k6": {
+      "pipes": 76,
+      "steps": 8808,
+      "result": "death"
+     },
+     "k45": {
+      "pipes": 33,
+      "steps": 3961,
+      "result": "death"
+     },
+     "k60": {
+      "pipes": 87,
+      "steps": 10000,
+      "result": "alive"
+     }
+    }
+   }
+  ],
+  "no_teacher_trace_sha256": [
+   "8d71e2c4fac3131e...",
+   "9396e21c3794dbce...",
+   "7019b7b3b086ea26...",
+   "3113f030bf2a3478...",
+   "343dbe5ecb69e53a...",
+   "978b75af1308b2b1...",
+   "1444135a9287ca0c...",
+   "1a5cb3192f6d0b69..."
+  ]
+ },
+ "r59_candidate": {
+  "artifact": "data/learn/r59_soup_e6a010.npz (7.1 KB)",
+  "weights_sha256": "72c79f3091ed14e8dd497ddc52570bb4660bfc636e6b50eb8a8aa1eff8a28f4",
+  "definition": "r58_dir2p_true + 0.10 * (r58_si_v2_e6 - r58_dir2p_true); no new training; a convex combination of two working self-imitation checkpoints",
+  "family_deployed_path": {
+   "protocol": "BrainClient subprocess (the deployment bar), budget 10000; VAL seeds n=3 boots",
+   "k6": "87 alive (640 flaps)",
+   "k12": "76 @8798",
+   "k30": "37 @4401",
+   "k45": "40 @4753 (base: 33 @3957 -> +7)",
+   "k60": "87 alive (640 flaps)",
+   "k90": "68 @7895 x3 boots (byte-identical)",
+   "k210": "42 @4966 x3 boots (byte-identical; the base's exact death frame)",
+   "vs_base": "strictly dominates: 6 seeds identical, k45 +7",
+   "regression_gate": "PASS (VAL median delta 0 <= 2; max drop 0 <= 5; 10-pipe survival unchanged)",
+   "no_teacher_trace_sha256": [
+    "7b552ca9aec20587...",
+    "1d4e1af3ac93071c...",
+    "8a571a346379cbf1..."
+   ]
+  }
+ },
+ "fresh_test": {
+  "split": "data/learn/r59_seed_splits.json committed 21f3e0d3c8d1 BEFORE collection (multiples-of-4 rule, every prior use excluded)",
+  "seeds": [
+   4,
+   32,
+   44,
+   52,
+   56,
+   64,
+   68,
+   76,
+   80,
+   88,
+   92,
+   104,
+   112,
+   116,
+   124,
+   128,
+   136,
+   140,
+   144,
+   148
+  ],
+  "episodes": 100,
+  "protocol": "candidate n=3, references n=1 (base r58_dir2p_true and frozen C1), budget 10000, single-source-of-truth PassageCounter, visual death only, no RAM in the student pipeline",
+  "table": {
+   "soup": {
+    "mean": 57.55,
+    "median": 52.5,
+    "min": 24.0,
+    "max": 87.0,
+    "ge40": 14,
+    "ge50": 11,
+    "ge60": 9,
+    "alive": 5
+   },
+   "base(r58champ)": {
+    "mean": 53.65,
+    "median": 49.0,
+    "min": 10.0,
+    "max": 87.0,
+    "ge40": 13,
+    "ge50": 10,
+    "ge60": 9,
+    "alive": 3
+   },
+   "C1": {
+    "mean": 55.0,
+    "median": 49.5,
+    "min": 0.0,
+    "max": 87.0,
+    "ge40": 14,
+    "ge50": 10,
+    "ge60": 8,
+    "alive": 6
+   }
+  },
+  "per_seed": {
+   "soup": {
+    "4": 87.0,
+    "32": 43.0,
+    "44": 40.0,
+    "52": 25.0,
+    "56": 73.0,
+    "64": 85.0,
+    "68": 50.0,
+    "76": 87.0,
+    "80": 36.0,
+    "88": 87.0,
+    "92": 87.0,
+    "104": 32.0,
+    "112": 36.0,
+    "116": 29.0,
+    "124": 78.0,
+    "128": 48.0,
+    "136": 77.0,
+    "140": 55.0,
+    "144": 72.0,
+    "148": 24.0
+   },
+   "base(r58champ)": {
+    "4": 87.0,
+    "32": 43.0,
+    "44": 40.0,
+    "52": 25.0,
+    "56": 76.0,
+    "64": 37.0,
+    "68": 50.0,
+    "76": 10.0,
+    "80": 62.0,
+    "88": 87.0,
+    "92": 87.0,
+    "104": 32.0,
+    "112": 36.0,
+    "116": 29.0,
+    "124": 78.0,
+    "128": 48.0,
+    "136": 77.0,
+    "140": 73.0,
+    "144": 72.0,
+    "148": 24.0
+   },
+   "C1": {
+    "4": 87.0,
+    "32": 43.0,
+    "44": 87.0,
+    "52": 25.0,
+    "56": 87.0,
+    "64": 85.0,
+    "68": 50.0,
+    "76": 87.0,
+    "80": 78.0,
+    "88": 0.0,
+    "92": 87.0,
+    "104": 32.0,
+    "112": 39.0,
+    "116": 29.0,
+    "124": 53.0,
+    "128": 48.0,
+    "136": 44.0,
+    "140": 18.0,
+    "144": 72.0,
+    "148": 49.0
+   }
+  },
+  "paired_soup_vs_base": {
+   "mean_delta": 3.9,
+   "W/T/L": "2/15/3",
+   "detail": "k64 +48 (37->85), k76 +77 (10->87 ALIVE), k56 -3, k140 -18 (73->55), k80 -26 (62->36)"
+  },
+  "paired_soup_vs_c1": {
+   "mean_delta": 2.55,
+   "W/T/L": "4/11/5",
+   "detail": "k88 +87 (C1 0-catastrophe -> 87), k136 +33, k140 +37, k124 +25 vs k44 -47 (C1 87), k80 -42 (C1 78), k148 -25, k56 -14, k112 -3"
+  },
+  "rep_consistency": true,
+  "test_trace_shas256_16": [
+   "0197e72bf9926259",
+   "01bf7da8fc64a38a",
+   "044c844e3cf51482",
+   "0816b06ece6ee166",
+   "08a8249341562791",
+   "0a47530247a78e44",
+   "0afd6d3a9b13bf35",
+   "0b74d5504b0cce00",
+   "0dc9a4b53d9de87d",
+   "1778a1eef6211e0f",
+   "1778c083c1e3d611",
+   "182e7930413297ce",
+   "18cb9e512cfead3f",
+   "197e4c7c3efcde94",
+   "1f90b484091f09c1",
+   "210b10618a7ab5fd",
+   "2127ea31c5327dc2",
+   "23e6e96adb0cfb6b",
+   "23f796f6e2e0a42f",
+   "26ef29a85ab30259",
+   "2b30d8257746137a",
+   "31cadf8b2009b3ec",
+   "3401199652e10230",
+   "419fc3a1acaf2b67",
+   "422c3631689607fe",
+   "48d6eab6ee323d89",
+   "4a2f500c9202353d",
+   "4a79750a9fe33cf8",
+   "4af5461abfd441c2",
+   "4b3fc98fe3eed0f6",
+   "4da619019b1feddd",
+   "4fa136eee3b44dea",
+   "5419fc0720ffceec",
+   "5813277753ef2077",
+   "596968bf1b71601e",
+   "5a66720e5e9a3fd8",
+   "5a9f611dbb672d57",
+   "5ac7a502e881043f",
+   "5bb6636f80b4262a",
+   "5c0015cc10b70879",
+   "6067fa6f316f2a89",
+   "621bacc9e71d6d91",
+   "6e521c888a44494b",
+   "7042ca760bc893d0",
+   "70627b4585b7a6a1",
+   "76157df32062cbd4",
+   "79f10babe91948bd",
+   "7b950d862822ec45",
+   "805cda26ae368552",
+   "81560bd4ab1a1f99",
+   "81921ebe1add2cbc",
+   "891977885e4e76f2",
+   "8a13ea5d8228308b",
+   "8b70d342b7e03d70",
+   "8d20894fbbf8552d",
+   "953ba4960ded9017",
+   "985d389537f13c31",
+   "9949d7c7c23ea81a",
+   "99aacb10d9d9efeb",
+   "9a3f567ee70932de",
+   "9a972e21b0bbb8c7",
+   "9c941e0271b119cf",
+   "a34ce8fe6039de20",
+   "a45b75607abda537",
+   "aaadaf4235fff540",
+   "ac9a70ed09f40e79",
+   "ad516c6b77d90aa5",
+   "ad5bc80bd6a3c416",
+   "adf49b3042dc63c5",
+   "af513b17c1dda377",
+   "af70f5babcdc4bfd",
+   "b3d92188e370dc0c",
+   "b41607c8b4f19653",
+   "b56bf483215a1624",
+   "b64b868a0e2c65fd",
+   "b658b809e8f9ba5a",
+   "b73607dbf7b85d7c",
+   "b78f5b10ddca8029",
+   "ba81eca8e2e6a438",
+   "bab10b0a5b4a83b1",
+   "bbe4d9915ac94726",
+   "c1313babbe169d91",
+   "c4613303f50a79a2",
+   "c5dde45d9968d05c",
+   "cc0fd8f2e9bd5a31",
+   "ce37184c0ec5f0e6",
+   "cf63f1d985ef9a0b",
+   "d574db6d57a9aa73",
+   "dc327a50c91a3a0f",
+   "dc9ef2ee20bd0cc3",
+   "dd7299eb665b6914",
+   "e920e8fa4d990b4f",
+   "ed244f78b5c5d8c3",
+   "ede341d2eeb964bc",
+   "ee0fbdb1a22477bd",
+   "fa6855494ffa3df1",
+   "fb88dede40003101",
+   "fbad77616827aef1",
+   "fc3976a6c4a86e68",
+   "fcae6bf61b3bfec8"
+  ],
+  "verdict": "AGGREGATE WIN, NOT UNIFORM DOMINANCE: the soup improves the mean (+3.9 / +2.55), the median (52.5 vs 49.0 / 49.5) and the floor (24 vs 10 / 0) against BOTH references, but 15/20 seeds are byte-identical to the base and the 5 divergent seeds swing BOTH ways (2W/3L vs base, 4W/5L vs C1). The per-seed evidence is weak; the claim is kept at the aggregate level.",
+  "promotion": "r59_soup_e6a010 promoted to champion: every pre-registered gate passes (family strict dominance, VAL untouched) and all three TEST aggregates favor it (mean/median/floor); disclosures: heavy-tailed paired deltas, C1 keeps the alive-depth count (6 vs 5 seeds >=85), the razor-edge gains did NOT generalize as per-seed dominance"
+ },
+ "hello_pong_regression": {
+  "protocol": "the R54 head-to-head verbatim (r54c_pong_eval.py; same anchors, opponents, seeds, step budgets; artifact re-fetched via the documented r12 procedure, zip+bin sha256 verified)",
+  "P1_teacher_v1": "scored 7 / conceded 0, gameAI returns [19,19]",
+  "P4_teacher_v2": "scored 7 / conceded 0, gameAI returns [19,19]",
+  "P4_student_feat": "scored 8 / conceded 2, gameAI returns [19,19] \u2014 EXACT R54 reproduction; the student still outscores both teachers (8 vs 7)",
+  "verdict": "REGRESSION PASS"
+ },
+ "honest_limitations": [
+  "the soup's TEST advantage is aggregate-level; per-seed paired evidence is weak (2W/3L vs base, heavy tails both directions); 15/20 seeds byte-identical to the base",
+  "the divergent seeds (k64/k76/k80/k140) show the tiny 0.10-norm weight move acts as a butterfly trigger on branch-prone lives \u2014 the improvement is not a reliability improvement",
+  "k45 remains the only family seed where the candidate does not meet the teacher (40 vs 34: now MET at the family level \u2014 the R58 k45 -1 is CLOSED by +7)",
+  "the razor-edge 87s remain razor-edges (unchanged by design: the soup keeps them byte-identical)",
+  "ONNX export remains PENDING (native numpy is the deployment per the review bar)",
+  "the R59 TEST seeds are retired after this round per the protocol"
+ ],
+ "artifacts": {
+  "candidate": "data/learn/r59_soup_e6a010.npz",
+  "candidate_meta": "data/learn/r59_soup_e6a010.npz.json",
+  "split": "data/learn/r59_seed_splits.json",
+  "linpath_dev_evidence": "data/learn/r59_linpath_results.json",
+  "scripts": [
+   "scripts/r59a_linpath.py",
+   "scripts/r59_prep.py",
+   "scripts/r59b_test.py",
+   "scripts/r59c_stats.py",
+   "scripts/r59_evidence.py"
+  ]
+ }
+}
