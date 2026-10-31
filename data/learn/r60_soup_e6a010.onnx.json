@@ -1,0 +1,81 @@
+{
+ "format": "onnx-decision-v1",
+ "created": 1793451699.4924412,
+ "game": "flappy",
+ "source_checkpoint": "r59_soup_e6a010.npz",
+ "source_sha256": "72c79f3091ed14e8dd497ddc52570bb4660bfc6367e6b50eb8a8aa1eff8a28f4",
+ "source_provenance": "R59 soup: r58_dir2p_true + 0.10 * (r58_si_v2_e6 - r58_dir2p_true); no new training, a convex combination of two working self-imitation checkpoints",
+ "soup": {
+  "base": "r58_dir2p_true.npz",
+  "donor": "r58_si_v2_e6.npz",
+  "alpha": 0.1,
+  "direction_norm": 1.0254,
+  "family": {
+   "k6": "87 alive",
+   "k12": "76@8798",
+   "k30": "37@4401",
+   "k45": "40@4753",
+   "k60": "87 alive",
+   "k90": "68@7895",
+   "k210": "42@4966"
+  },
+  "regression_gate": "PASS (VAL median delta 0, max drop 0)"
+ },
+ "arch": {
+  "n_in": 10,
+  "hidden": 128,
+  "n_out": 2
+ },
+ "classes": [
+  "HOVER",
+  "FLAP"
+ ],
+ "norm": {
+  "mean": [
+   97.8950424194336,
+   0.0062432195991277695,
+   98.52149200439453,
+   32.677001953125,
+   66.51093292236328,
+   130.46961975097656,
+   0.09475924074649811,
+   16.047651290893555,
+   98.81202697753906,
+   1.8117332458496094
+  ],
+  "std_eps": [
+   24.3305721282959,
+   2.9780845642089844,
+   31.221586227416992,
+   45.460506439208984,
+   26.624195098876953,
+   36.5621452331543,
+   0.38599076867103577,
+   13.829136848449707,
+   30.8802547454834,
+   8.253827095031738
+  ],
+  "epsilon": 1e-06,
+  "note": "the graph input x is the RAW v7 decision vector; normalization is INSIDE the graph (std_eps = std + epsilon, float32)"
+ },
+ "feature_version": 7,
+ "control_mode": "cv+mlp",
+ "onnx": {
+  "opset": 17,
+  "ir_version": 8,
+  "epsilon_folded_into_std": 1e-06,
+  "graph": "Sub(mean) -> Div(std+eps) -> Gemm(W1,b1) -> Relu -> Gemm(W2,b2) -> logits; ArgMax(axis=1, first-max) -> action_idx",
+  "float32_verbatim_weights": true,
+  "bytes": 7182,
+  "sha256": "4dd592a7118a5c4de7b44166b42b8d09d53fbb59330d36d0ba2746393dc11044"
+ },
+ "export_parity_sweep": {
+  "sweep_vectors": 200000,
+  "argmax_parity": 1.0,
+  "logit_max_abs_delta": 0.0,
+  "logit_mean_abs_delta": 0.0,
+  "min_top2_margin": 0.00011646747589111328,
+  "argmax_mismatch_count": 0
+ },
+ "boundary_disclosure": "the ONNX graph covers the decision function ONLY (normalize+MLP+argmax); the perception state machine (BirdObserverV7, GapTrackerV7, since_flap/flap_run/last_gc/since_gap) is pure numpy frame processing in the host (ps1play/learn/visual_only.py Brain._vector) and carries no learned weights"
+}

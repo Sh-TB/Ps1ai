@@ -1,0 +1,208 @@
+{
+ "round": "R60 (the ONNX deployment round, issue #13)",
+ "artifact": {
+  "path": "data/learn/r60_soup_e6a010.onnx",
+  "bytes": 7182,
+  "sha256": "4dd592a7118a5c4de7b44166b42b8d09d53fbb59330d36d0ba2746393dc11044",
+  "source_checkpoint": "r59_soup_e6a010.npz (the R59 champion)",
+  "source_sha256": "72c79f3091ed14e8dd497ddc52570bb4660bfc6367e6b50eb8a8aa1eff8a28f4",
+  "sidecar": "r60_soup_e6a010.onnx.json"
+ },
+ "export_sweep": {
+  "vectors": 200000,
+  "argmax_parity": 1.0,
+  "logit_max_abs_delta": 0.0
+ },
+ "closed_loop_dual": {
+  "description": "real emulator, every frame: the deployed numpy forward AND onnxruntime forward on the SAME decision vector; per-frame action equality",
+  "episodes": [
+   {
+    "mode": "dual",
+    "seed": "k6",
+    "k": 6,
+    "pipes": 87,
+    "steps": 10000,
+    "flaps": 640,
+    "expect": "87-alive",
+    "steps_match": true,
+    "pipes_match": true,
+    "policy_steps": 10000,
+    "action_mismatches": 0,
+    "max_logit_delta": 6.103515625e-05,
+    "wall_s": 100.0
+   },
+   {
+    "mode": "dual",
+    "seed": "k12",
+    "k": 12,
+    "pipes": 76,
+    "steps": 8798,
+    "flaps": 560,
+    "expect": "76-8798",
+    "steps_match": true,
+    "pipes_match": true,
+    "policy_steps": 8798,
+    "action_mismatches": 0,
+    "max_logit_delta": 5.340576171875e-05,
+    "wall_s": 88.3
+   },
+   {
+    "mode": "dual",
+    "seed": "k30",
+    "k": 30,
+    "pipes": 37,
+    "steps": 4401,
+    "flaps": 281,
+    "expect": "37-4401",
+    "steps_match": true,
+    "pipes_match": true,
+    "policy_steps": 4401,
+    "action_mismatches": 0,
+    "max_logit_delta": 4.57763671875e-05,
+    "wall_s": 43.8
+   },
+   {
+    "mode": "dual",
+    "seed": "k45",
+    "k": 45,
+    "pipes": 40,
+    "steps": 4753,
+    "flaps": 302,
+    "expect": "40-4753",
+    "steps_match": true,
+    "pipes_match": true,
+    "policy_steps": 4753,
+    "action_mismatches": 0,
+    "max_logit_delta": 6.103515625e-05,
+    "wall_s": 47.4
+   },
+   {
+    "mode": "dual",
+    "seed": "k60",
+    "k": 60,
+    "pipes": 87,
+    "steps": 10000,
+    "flaps": 640,
+    "expect": "87-alive",
+    "steps_match": true,
+    "pipes_match": true,
+    "policy_steps": 10000,
+    "action_mismatches": 0,
+    "max_logit_delta": 4.57763671875e-05,
+    "wall_s": 99.5
+   },
+   {
+    "mode": "dual",
+    "seed": "k90",
+    "k": 90,
+    "pipes": 68,
+    "steps": 7895,
+    "flaps": 512,
+    "expect": "68-7895",
+    "steps_match": true,
+    "pipes_match": true,
+    "policy_steps": 7895,
+    "action_mismatches": 0,
+    "max_logit_delta": 5.340576171875e-05,
+    "wall_s": 78.6
+   },
+   {
+    "mode": "dual",
+    "seed": "k210",
+    "k": 210,
+    "pipes": 42,
+    "steps": 4966,
+    "flaps": 322,
+    "expect": "42-4966",
+    "steps_match": true,
+    "pipes_match": true,
+    "policy_steps": 4966,
+    "action_mismatches": 0,
+    "max_logit_delta": 7.62939453125e-05,
+    "wall_s": 49.4
+   }
+  ],
+  "total_frames": 50813,
+  "total_action_mismatches": 0,
+  "max_logit_delta": 7.62939453125e-05,
+  "family_scores_reproduced": true
+ },
+ "closed_loop_solo": {
+  "description": "the ORT forward ALONE decides (no numpy forward in the loop) \u2014 byte-identical pipes/steps/flaps to the deployed record",
+  "episodes": [
+   {
+    "mode": "solo",
+    "seed": "k6",
+    "k": 6,
+    "pipes": 87,
+    "steps": 10000,
+    "flaps": 640,
+    "expect": "87-alive",
+    "steps_match": true,
+    "pipes_match": true,
+    "policy_steps": 10000,
+    "action_mismatches": 0,
+    "max_logit_delta": 0.0,
+    "wall_s": 102.3
+   },
+   {
+    "mode": "solo",
+    "seed": "k45",
+    "k": 45,
+    "pipes": 40,
+    "steps": 4753,
+    "flaps": 302,
+    "expect": "40-4753",
+    "steps_match": true,
+    "pipes_match": true,
+    "policy_steps": 4753,
+    "action_mismatches": 0,
+    "max_logit_delta": 0.0,
+    "wall_s": 48.6
+   },
+   {
+    "mode": "solo",
+    "seed": "k30",
+    "k": 30,
+    "pipes": 37,
+    "steps": 4401,
+    "flaps": 281,
+    "expect": "37-4401",
+    "steps_match": true,
+    "pipes_match": true,
+    "policy_steps": 4401,
+    "action_mismatches": 0,
+    "max_logit_delta": 0.0,
+    "wall_s": 44.3
+   }
+  ],
+  "all_match": true
+ },
+ "parity_dataset": {
+  "path": "data/learn/r60_onnx_parity_vectors.npz",
+  "vectors": 4200,
+  "episodes_covered": [
+   "k12",
+   "k210",
+   "k30",
+   "k45",
+   "k6",
+   "k60",
+   "k90"
+  ],
+  "input_contract": "x = the RAW v7 decision vector (the graph normalizes internally; norm in the sidecar)",
+  "offline_recheck": {
+   "column_argmax_mismatches": 0,
+   "column_max_logit_abs_delta": 7.62939453125e-05,
+   "ort_rerun_argmax_vs_numpy_mismatches": 0,
+   "ort_rerun_not_exact_vs_recorded": 0,
+   "ort_rerun_max_logit_abs_delta": 0.0
+  }
+ },
+ "honest_boundaries": [
+  "the ONNX graph is the DECISION FUNCTION only (normalize+MLP+ArgMax); the perception state machine (BirdObserverV7/GapTrackerV7 + history counters) is numpy frame processing in the host \u2014 no learned weights, disclosed in the sidecar",
+  "parity is float32-ULP-level (max logit delta 7.6e-5 on 51,773 real frames, 0.0 on the 200k sweep); argmax never flipped; min top-2 margin on the sweep 1.16e-4",
+  "onnxruntime 1.31.1 CPUExecutionProvider is the reference executor for the parity claim; native numpy remains the default deployment per the review bar",
+  "the solo episodes cover the alive razor-edge (k6), the soup gain (k45) and an exact death point (k30); the other family seeds are covered by the dual per-frame path"
+ ]
+}
