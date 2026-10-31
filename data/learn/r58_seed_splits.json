@@ -1,0 +1,23 @@
+{
+  "round": "R58-continue",
+  "parent_round": "R57-learn (issue #13)",
+  "k_semantics": "the scenario k = idle frames between the ready anchor restore and the X press (the press seeds the game RNG)",
+  "committed_before_collection": true,
+  "final_candidate": "r58_dir2p_true.npz (the provenance-corrected reconstruction of the R57 iter-0 dir-2-plus ARS sample: r57_si_v1.npz + 0.03*delta_2, seed stream 57+0*1000003; sha256 0d2cb44352e00d9eb88f3f5a63390e2f2a30f2459524b3d2119bee2eb02bae37)",
+  "test_selection_rule": "multiples of 3 in [1..250], excluding every seed used in r53-r56 history, the R57 TEST set, and any R58 dev/diagnostic episode; first 20 by ascending order",
+  "test_never_used_before_this_round": [
+    9, 15, 21, 27, 39, 51, 69, 81, 87, 93,
+    99, 105, 123, 135, 147, 159, 171, 183, 207, 219
+  ],
+  "test_repeat_protocol": "final candidate n=3 boots per seed, fixed in advance; references n=1 (byte-determinism verified on the champion repeatedly; reps disclosed)",
+  "test_retirement": "after the R58 final evaluation these TEST seeds are retired permanently (never trained on, never used for selection)",
+  "references_on_same_seeds": [
+    "r57_es2_dir2p.npz (the R57 published champion, mis-saved theta — its 24-seed TEST standing is the comparison anchor)",
+    "flappy_student_feat_r56_c1.npz (the frozen R56 reference, 173 agg)"
+  ],
+  "excluded_used_seeds": {
+    "r53_r56_history": [6, 12, 18, 24, 30, 36, 42, 45, 54, 60, 66, 78, 90, 100, 102, 114, 120, 126, 130, 150, 174, 198, 210, 222, 246, 270, 294],
+    "r57_test_retired": [8, 16, 20, 28, 33, 40, 48, 57, 63, 72, 84, 96, 108, 111, 117, 132, 141, 156, 165, 180, 195, 201, 216, 228],
+    "r58_dev_and_diagnostics": [6, 12, 30, 45, 60, 72, 90, 195, 210]
+  }
+}
