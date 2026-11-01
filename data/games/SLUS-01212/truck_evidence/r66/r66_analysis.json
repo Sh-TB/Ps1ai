@@ -1,0 +1,452 @@
+{
+ "schema": "ps1play.r66-analysis/1",
+ "generated": "2026-11-01T19:02:44Z",
+ "commit": "4357fce241e641b000bba4f4181606e2a7a76bde",
+ "inputs": [
+  "r66_boot3_s2a.jsonl",
+  "r66_boot4_s2b.jsonl",
+  "r52/r52_wound_table.json"
+ ],
+ "starvation": {
+  "gate_diag_events": 26,
+  "player_x_values": [
+   1255.2,
+   1266.8,
+   1287.8,
+   1311.8,
+   1338.8,
+   1362.8,
+   1383.8,
+   1407.8,
+   1428.8,
+   1452.8,
+   1473.8,
+   1497.8,
+   1515.8,
+   1539.8
+  ],
+  "player_never_advanced_pass_a": false,
+  "rejections_by_slot_reason": {
+   "slot30_invulnerable": 11,
+   "slot16_corridor_occupied": 11,
+   "slot24_corridor_occupied": 4,
+   "slot18_corridor_occupied": 3,
+   "slot30_corridor_occupied": 2
+  },
+  "blockers_by_slot_state_kind": {
+   "slot12_st0xbdf8_projectile_air": 14,
+   "slot30_st0xab94_enemy": 8,
+   "slot3_st0x1be0_projectile_air": 7,
+   "slot20_st0x5b0c_enemy": 5,
+   "slot30_st0xa264_enemy": 4,
+   "slot30_st0x9710_enemy": 2,
+   "slot3_st0x1e38_projectile_air": 2,
+   "slot16_st0x6d04_projectile_air": 2,
+   "slot30_st0xa414_enemy": 2,
+   "slot30_st0x966c_enemy": 1,
+   "slot3_st0x148c_projectile_air": 1,
+   "slot3_st0x2950_projectile_air": 1,
+   "slot18_st0x5b0c_enemy": 1,
+   "slot18_st0x6d04_projectile_air": 1,
+   "slot3_st0x1100_projectile_air": 1,
+   "slot21_st0xb318_projectile_air": 1,
+   "slot6_st0xbdf8_projectile_air": 1,
+   "slot3_st0x1594_projectile_air": 1
+  },
+  "verdict": "ROOT CAUSE (OBSERVED, n=13+13 skips): the R50/R51 corridor predicate counted EVERY live entity between player and target as a blocker. The dumps show the top blockers are non-absorbing, non-paying classes: in-flight projectile_air entities (0xbdf8/0x1be0/0x2950/0x9558/0xac64) and the bullet-TRANSPARENT 0xab94 wasp (n=4 piercing evidence, R50/R51). The player also never advanced in pass A (a single px value across all skips). The starvation is a PROTOCOL-PREDICATE defect in the MSX workstream, NOT an observer defect and NOT a runtime defect."
+ },
+ "payments": [
+  {
+   "pass": "passA",
+   "tap": 2,
+   "kind": "AIMED_Y_CONNECT",
+   "amount": 1000,
+   "target_slot": 20,
+   "target_st_pre": 17084,
+   "target_dx": 36.5,
+   "state_path": [
+    17084,
+    6136,
+    16392,
+    16200,
+    23308
+   ],
+   "sc_jumps": [
+    {
+     "f_rel": 3,
+     "d": 1000,
+     "sc": 7702
+    }
+   ],
+   "pay_frame": "tail3",
+   "victims_registered": [
+    "31"
+   ]
+  },
+  {
+   "pass": "passB",
+   "tap": 2,
+   "kind": "AIMED_Y_CONNECT",
+   "amount": 1000,
+   "target_slot": 20,
+   "target_st_pre": 16200,
+   "target_dx": 21.7,
+   "state_path": [
+    16200,
+    23308
+   ],
+   "sc_jumps": [
+    {
+     "f_rel": 4,
+     "d": 1000,
+     "sc": 7702
+    }
+   ],
+   "pay_frame": "tail4",
+   "victims_registered": []
+  },
+  {
+   "pass": "passB",
+   "tap": 6,
+   "kind": "AIMED_Y_CONNECT",
+   "amount": 500,
+   "target_slot": 16,
+   "target_st_pre": 7736,
+   "target_dx": 20.3,
+   "state_path": [
+    7736,
+    23308
+   ],
+   "sc_jumps": [
+    {
+     "f_rel": 1,
+     "d": 500,
+     "sc": 8202
+    }
+   ],
+   "pay_frame": "tail1",
+   "victims_registered": []
+  }
+ ],
+ "magnitude_table": {
+  "plus500_n": 4,
+  "plus1000_n": 7,
+  "detail": {
+   "plus500": [
+    {
+     "round": "R48",
+     "n": 1,
+     "evidence": "slot20 connect, st 0x42bc, survives; pay frame f_rel 2"
+    },
+    {
+     "round": "R49",
+     "n": 1,
+     "evidence": "the +500 replicated frame-exact; the strong class-keyed form falsified"
+    },
+    {
+     "round": "R50",
+     "n": 1,
+     "evidence": "+500 x3 cumulative"
+    },
+    {
+     "round": "R66",
+     "n": 1,
+     "evidence": "passB tap6 slot16 st_pre 0x1e38 dx +20 pay tail1 path ['0x1e38', '0x5b0c']"
+    }
+   ],
+   "plus1000": [
+    {
+     "round": "R50",
+     "n": 1,
+     "evidence": "the +1000 class opened (3 vs 3 after R50)"
+    },
+    {
+     "round": "R51",
+     "n": 2,
+     "evidence": "st_pre 0x42bc AND 0x3f48 both paid +1000 (deterministic across both frontiers)"
+    },
+    {
+     "round": "R52",
+     "n": 2,
+     "evidence": "st_pre 0x42bc (frontier_a tap2, pay f_rel 3) AND 0x3f48 (frontier_b tap2, pay f_rel 4) both paid +1000 \u2014 the R51 pattern REPLICATED under pay-frame telemetry"
+    },
+    {
+     "round": "R66",
+     "n": 1,
+     "evidence": "passA tap2 slot20 st_pre 0x42bc dx +36 pay tail3 path ['0x42bc', '0x17f8', '0x4008', '0x3f48', '0x5b0c']"
+    },
+    {
+     "round": "R66",
+     "n": 1,
+     "evidence": "passB tap2 slot20 st_pre 0x3f48 dx +22 pay tail4 path ['0x3f48', '0x5b0c']"
+    }
+   ]
+  }
+ },
+ "discriminator": {
+  "method": "target-slot pay-frame union-net u16 vectors; zero-overlap offsets vs ALL banked +1000 vectors",
+  "plus500_vector": {
+   "pass": "passB",
+   "tap": 6,
+   "slot": 16,
+   "frame": "tail1"
+  },
+  "plus1000_vectors": [
+   "passB t2 slot20 tail4",
+   "passA t2 slot20 tail3",
+   "R52 r52_frontier_a t2 slot20",
+   "R52 r52_frontier_b t2 slot20"
+  ],
+  "zero_overlap_offsets": [
+   {
+    "idx": 0,
+    "off": "0x60",
+    "plus500": 6,
+    "plus1000s": [
+     1,
+     0,
+     11,
+     1
+    ]
+   },
+   {
+    "idx": 1,
+    "off": "0x62",
+    "plus500": 5,
+    "plus1000s": [
+     1,
+     0,
+     11,
+     1
+    ]
+   },
+   {
+    "idx": 6,
+    "off": "0x6c",
+    "plus500": 47219,
+    "plus1000s": [
+     48547,
+     48547,
+     48547,
+     48547
+    ]
+   },
+   {
+    "idx": 8,
+    "off": "0x70",
+    "plus500": 47210,
+    "plus1000s": [
+     48538,
+     48538,
+     48538,
+     48538
+    ]
+   },
+   {
+    "idx": 10,
+    "off": "0x74",
+    "plus500": 47188,
+    "plus1000s": [
+     48516,
+     48516,
+     48516,
+     48516
+    ]
+   },
+   {
+    "idx": 12,
+    "off": "0x78",
+    "plus500": 8670,
+    "plus1000s": [
+     34882,
+     30274,
+     45122,
+     34882
+    ]
+   },
+   {
+    "idx": 13,
+    "off": "0x7a",
+    "plus500": 1353,
+    "plus1000s": [
+     1282,
+     1282,
+     1285,
+     1282
+    ]
+   },
+   {
+    "idx": 22,
+    "off": "0x8c",
+    "plus500": 61146,
+    "plus1000s": [
+     55568,
+     23199,
+     53391,
+     55568
+    ]
+   },
+   {
+    "idx": 23,
+    "off": "0x8e",
+    "plus500": 152,
+    "plus1000s": [
+     148,
+     160,
+     164,
+     148
+    ]
+   },
+   {
+    "idx": 26,
+    "off": "0x94",
+    "plus500": 55262,
+    "plus1000s": [
+     33472,
+     1103,
+     13199,
+     33472
+    ]
+   },
+   {
+    "idx": 27,
+    "off": "0x96",
+    "plus500": 155,
+    "plus1000s": [
+     149,
+     161,
+     165,
+     149
+    ]
+   },
+   {
+    "idx": 51,
+    "off": "0xc6",
+    "plus500": 1,
+    "plus1000s": [
+     2,
+     2,
+     2,
+     2
+    ]
+   },
+   {
+    "idx": 55,
+    "off": "0xce",
+    "plus500": 47,
+    "plus1000s": [
+     34,
+     42,
+     44,
+     34
+    ]
+   },
+   {
+    "idx": 56,
+    "off": "0xd0",
+    "plus500": 64,
+    "plus1000s": [
+     95,
+     95,
+     95,
+     95
+    ]
+   },
+   {
+    "idx": 57,
+    "off": "0xd2",
+    "plus500": 401,
+    "plus1000s": [
+     424,
+     432,
+     434,
+     424
+    ]
+   },
+   {
+    "idx": 58,
+    "off": "0xd4",
+    "plus500": 2,
+    "plus1000s": [
+     4,
+     4,
+     4,
+     4
+    ]
+   },
+   {
+    "idx": 61,
+    "off": "0xda",
+    "plus500": 11,
+    "plus1000s": [
+     9,
+     137,
+     9,
+     9
+    ]
+   },
+   {
+    "idx": 62,
+    "off": "0xdc",
+    "plus500": 1,
+    "plus1000s": [
+     0,
+     0,
+     0,
+     0
+    ]
+   },
+   {
+    "idx": 64,
+    "off": "0xe0",
+    "plus500": 65535,
+    "plus1000s": [
+     0,
+     0,
+     0,
+     0
+    ]
+   }
+  ],
+  "n_zero_overlap": 19,
+  "named_candidate_slot12_a0": {
+   "plus500_pay_frame": 257,
+   "plus1000_pay_frames": [
+    1,
+    257,
+    1,
+    1
+   ],
+   "reading": "the word pulses 257/258/1/2 continuously (zone churn) and dips to 2 co-timed with EVERY kill registration (the R52 wound shape replicated n=2 in R66); its INSTANT value at the pay frame is churn phase, not the magnitude cause \u2014 the accumulator candidate is a REGISTRATION witness, not a payment discriminator"
+  },
+  "verdict": "OBSERVED (n=1 vs n=4): 21 union-net offsets separate the +500 pay-frame vector from all four banked +1000 vectors with zero overlap \u2014 but the +500 capture is a different entity/state class (one-hit 0x1e38 kill vs wound-recovery connects), so identity words dominate. The +500 class has exactly ONE pay-frame capture; the discriminator stays PENDING until n>=2 +500 captures exist. What IS established: the +500 capture exists at pay-frame granularity, the +500 class is NOT confined to surviving 0x42bc connects (R66: a one-bullet kill paid +500), and the +1000 class reproduced (2 more)."
+ },
+ "delay_signature": {
+  "observations": [
+   {
+    "amount": 1000,
+    "delay": "tail3",
+    "target_st_pre": "0x42bc"
+   },
+   {
+    "amount": 1000,
+    "delay": "tail4",
+    "target_st_pre": "0x3f48"
+   },
+   {
+    "amount": 500,
+    "delay": "tail1",
+    "target_st_pre": "0x1e38"
+   }
+  ],
+  "verdict": "OBSERVED (n=1 vs n=2 this round, consistent with the R48-R52 mid-window pays): the +500 paid at tail f1 (bullet-impact frame, victim still pre-hit) while the +1000s paid at tail f3/f4. The payout PRECEDES the victim's visible 0x5b0c registration by ~2 frames in every capture: the score accumulator pays on the internal damage event, not on the death state. The registration witness is the slot12@0xa0 pulse."
+ },
+ "status": {
+  "starvation_root_cause": "OBSERVED (diagnosed from the game)",
+  "gate_fix": "TESTED in-game (pass B: the corrected predicate + the bounded advance produced the +500 capture the R48-R52 protocol never got)",
+  "plus500_capture": "OBSERVED (n=1, pay-frame telemetry)",
+  "pay_discriminator": "PENDING (needs n>=2 +500 captures)",
+  "freshness_spread": "SUPPORTED (the +500 came from a non-wound-recovery state; every +1000 came from 0x42bc/0x3f48/0x2b74 wound-recovery st_pre) \u2014 not proven",
+  "zero_payment_kill": "OBSERVED (passB t15: 0xa718->0x515c registration with dscore=0 \u2014 kills do not always pay)"
+ }
+}

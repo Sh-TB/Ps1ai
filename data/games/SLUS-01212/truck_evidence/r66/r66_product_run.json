@@ -1,0 +1,69 @@
+{
+ "schema": "ps1play.r66-product-run/1",
+ "generated": "2026-11-01T19:16:25Z",
+ "commit": "4357fce241e641b000bba4f4181606e2a7a76bde",
+ "command": "python3 -m ps1play play metal_slug_x --episodes 2 --max-frames 10000 --verbose --screenshot --output data/r66",
+ "repeat_command": "python3 -m ps1play play metal_slug_x --episodes 2 --max-frames 10000 --output /tmp/r66_rep",
+ "disc": {
+  "cue": "ps1play/runtime/session.py:GAME_DEFAULT_ISO['metal_slug_x']",
+  "sha256": "45cde149878fe945d0219fd0f61ca09856aee66bdcc9119de21c0583f1d0667d",
+  "serial": "SLUS-01212"
+ },
+ "policy": {
+  "name": "msx_mission1_rules:1.0.0",
+  "sha256": "4e6470053115cb419133175f9cb198eccf83d1e51921125cec2a903900465521",
+  "kind": "built-in rules (no model, no training)",
+  "corridor_predicate": "r66_corrected"
+ },
+ "legality": {
+  "ram_writes": 0,
+  "cheats": 0,
+  "save_state_rewinds": 0,
+  "runtime_llm": 0,
+  "training": 0,
+  "inputs": "legal pad buttons only (RIGHT/Y/B/A/START)"
+ },
+ "run1": {
+  "ep1": {
+   "result": "death",
+   "reason": "game_over",
+   "frames": 1666,
+   "score_max": 1100,
+   "actions": 87
+  },
+  "ep2": {
+   "result": "death",
+   "reason": "game_over",
+   "frames": 388,
+   "score_max": 1300,
+   "actions": 13
+  },
+  "px_at_status_1200f": 1164.0,
+  "death_scene": "the armored-truck encounter (the R38-R52 known blocker) \u2014 ep001_k6_end_death.png: truck + 2 soldiers + score 1100 + the PRESS START banner"
+ },
+ "run2_repeat": {
+  "ep1": {
+   "frames": 1666,
+   "score_max": 1100,
+   "actions": 87
+  },
+  "ep2": {
+   "frames": 388,
+   "score_max": 1300,
+   "actions": 13
+  }
+ },
+ "determinism": "BYTE-IDENTICAL outcome metrics across two independent product-path runs (same frames, scores, action counts)",
+ "milestone": {
+  "status": "OBSERVED",
+  "furthest_px_product_path": 1164.0,
+  "note": "the R65 baseline had NO product path for MSX at all; R66 adds the fourth registered runtime game. The furthest clean-product-path milestone is the truck encounter zone (px ~1164); the experiment frontiers (px 1224.9/1254.8, 6 continue-rescues) are TAINTED-lineage postures and are labeled as such, never a clean claim. Mission 1 NOT cleared."
+ },
+ "evidence": [
+  "data/games/SLUS-01212/truck_evidence/r66/product_run/episodes.jsonl",
+  "data/games/SLUS-01212/truck_evidence/r66/product_run/episode_001.json",
+  "data/games/SLUS-01212/truck_evidence/r66/product_run/shots/ep001_k6_end_death.png",
+  "data/games/SLUS-01212/truck_evidence/r66/product_run/shots/ep002_k12_end_death.png",
+  "data/games/SLUS-01212/truck_evidence/r66/product_run/runtime_manifest.json"
+ ]
+}

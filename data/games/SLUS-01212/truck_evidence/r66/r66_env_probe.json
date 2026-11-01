@@ -1,0 +1,57 @@
+{
+ "schema": "ps1play.r66-env-probe/1",
+ "generated_utc": "2026-11-01T18:46:46Z",
+ "commit": "4357fce241e641b000bba4f4181606e2a7a76bde",
+ "boot_ledger": {
+  "n": 1,
+  "purpose": "env_probe"
+ },
+ "boot": {
+  "fw_mode": "openbios+start_taps",
+  "wall_s": 28.8,
+  "world": {
+   "px": 258.6,
+   "score": 0,
+   "gren": 10,
+   "php": 144,
+   "sec": [
+    6,
+    1
+   ],
+   "prog": 4294967295,
+   "alive": true
+  },
+  "png": "/home/z/my-project/ps1ai/scratch/r66/pngs/r66_env_boot.png"
+ },
+ "checkpoint": {
+  "name": "issue5_m1_start",
+  "on_disk": true,
+  "restored_world": {
+   "px": 258.6,
+   "score": 0,
+   "gren": 10,
+   "php": 128,
+   "sec": [
+    6,
+    1
+   ],
+   "prog": 4294967295,
+   "alive": true
+  },
+  "valid": true,
+  "after_60f_idle": {
+   "px": 258.6,
+   "score": 0,
+   "gren": 10,
+   "php": 128,
+   "sec": [
+    6,
+    1
+   ],
+   "prog": 4294967295,
+   "alive": true
+  },
+  "survives_60f": true
+ },
+ "wall_s": 29.1
+}
