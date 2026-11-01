@@ -1,0 +1,23 @@
+{
+ "game": "zenmai",
+ "cue": "/home/z/my-project/emu/games_homebrew/patched/zenmai_lic.cue",
+ "meta": {
+  "license": "MIT (+SIL-OFL font, +zlib MojoZork)",
+  "size_bytes": 858480
+ },
+ "ts": "2026-11-01T19:42:46Z",
+ "boot_settle_s": 1.0,
+ "frames_run": 600,
+ "probe": {
+  "idle_ram_churn": 0,
+  "idle_px_churn": 6.91,
+  "right_ram_churn": 0,
+  "right_px_churn": 6.81,
+  "movement_corr_u32": [],
+  "n_movement_corr": 0
+ },
+ "shot_idle": "/home/z/my-project/ps1ai/data/homebrew/r66_side_probe/shots/zenmai_idle.png",
+ "shot_right": "/home/z/my-project/ps1ai/data/homebrew/r66_side_probe/shots/zenmai_right.png",
+ "input_causal": false,
+ "verdict": "INCONCLUSIVE (booted; input causality not shown by the generic probe \u2014 game-specific anchors needed)"
+}

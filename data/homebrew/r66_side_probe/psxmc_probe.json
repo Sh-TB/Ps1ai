@@ -1,0 +1,37 @@
+{
+ "game": "psxmc",
+ "cue": "/home/z/my-project/emu/games_homebrew/patched/PSXMC_lic.cue",
+ "meta": {
+  "license": "MIT",
+  "size_bytes": 329280,
+  "sha256_lic_bin": "5262f511807453e0\u2026"
+ },
+ "ts": "2026-11-01T19:42:44Z",
+ "boot_settle_s": 1.1,
+ "frames_run": 600,
+ "probe": {
+  "idle_ram_churn": 15834,
+  "idle_px_churn": 1.84,
+  "right_ram_churn": 40527,
+  "right_px_churn": 1.78,
+  "movement_corr_u32": [
+   "0x90d4",
+   "0x90dc",
+   "0x90e8",
+   "0x3c65c",
+   "0x3c71c",
+   "0x3ebfc",
+   "0x3ec8c",
+   "0x73a4c",
+   "0x73a58",
+   "0x73a5c",
+   "0x73a64",
+   "0x73a6c"
+  ],
+  "n_movement_corr": 391
+ },
+ "shot_idle": "/home/z/my-project/ps1ai/data/homebrew/r66_side_probe/shots/psxmc_idle.png",
+ "shot_right": "/home/z/my-project/ps1ai/data/homebrew/r66_side_probe/shots/psxmc_right.png",
+ "input_causal": false,
+ "verdict": "INCONCLUSIVE (booted; input causality not shown by the generic probe \u2014 game-specific anchors needed)"
+}
