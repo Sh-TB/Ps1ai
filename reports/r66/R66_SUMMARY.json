@@ -1,0 +1,102 @@
+{
+ "round": "R66",
+ "date_utc": "2026-11-01",
+ "mission": "Metal Slug X Mission 1 gameplay breakthrough, runtime validation & knowledge package delivery",
+ "base_commit": "4357fce",
+ "primary_deliverables": {
+  "metal_slug_x_runtime_game": {
+   "status": "IMPLEMENTED",
+   "registered": true,
+   "adapter": "ps1play/adapters/metal_slug_x/adapter.py (0.2.0)",
+   "policy": "ps1play/adapters/metal_slug_x/policy.py (msx_mission1_rules:1.0.0, deterministic, trained=false)",
+   "disc_pin": "45cde149878fe945d0219fd0f61ca09856aee66bdcc9119de21c0583f1d0667d",
+   "tests": "tests/test_r66_msx_adapter.py (19)",
+   "product_run": {
+    "command": "python3 -m ps1play play metal_slug_x --episodes 2 --max-frames 10000",
+    "ep1": {
+     "result": "death",
+     "frames": 1666,
+     "score_max": 1100,
+     "actions": 87
+    },
+    "ep2": {
+     "result": "death",
+     "frames": 388,
+     "score_max": 1300,
+     "actions": 13
+    },
+    "determinism": "byte-identical outcome metrics across two independent runs",
+    "furthest_px": 1164.0,
+    "death_scene": "armored-truck encounter (the R38-R52 known blocker)",
+    "mission1_cleared": false
+   }
+  },
+  "corridor_gate_starvation": {
+   "status": "OBSERVED",
+   "root_cause": "the R50/R51 predicate counted non-absorbing, non-paying entities as blockers: in-flight projectile_air rows and the bullet-TRANSPARENT 0xab94 wasp (8 of 13 rejections); the player also never advanced (a single px value across all 13 skips)",
+   "fix": "the corrected predicate: blockers must absorb the bullet or register the payment (mortal ground rows only)",
+   "fix_verification": "TESTED in-game: pass B (corrected gate + bounded advance) immediately captured the +500 the R48-R52 protocol never reached",
+   "fix_location": "scripts/r66t1_payframe_destarve.py::corridor_occupants_r66 + ps1play/adapters/metal_slug_x/policy.py",
+   "evidence": "data/games/SLUS-01212/truck_evidence/r66/r66_boot3_s2a.jsonl (GATE_DIAG x13), r66_boot4_s2b.jsonl"
+  },
+  "plus500_payframe_capture": {
+   "status": "OBSERVED",
+   "capture": "pass B tap 6: slot16 st_pre 0x1e38 dx+20.3, score 7702->8202 (+500) at tail f1 (the bullet-impact frame), victim still pre-hit; 0x5b0c registration at tail f3",
+   "causal_chain": "bullet impact -> score accumulation (+500, tail f1) -> death registration (tail f3) -> slot12@0xa0 registration pulse (257->2, rec 4)",
+   "pay_frame_law": "the accumulator pays on the internal damage event ~2 frames BEFORE the visible death registration (true for +500 AND both +1000 captures)",
+   "magnitude_table": {
+    "plus500_n": 4,
+    "plus1000_n": 7
+   },
+   "new_plus1000s": [
+    "passA tap2 slot20 st_pre 0x42bc path ...->0x5b0c pay tail f3",
+    "passB tap2 slot20 st_pre 0x3f48 path ...->0x5b0c pay tail f4"
+   ],
+   "discriminator": "PENDING (n=1 vs n=4; 19 zero-overlap offsets are candidates; the delay signature is the lead)",
+   "accumulator_candidate": "slot12@0xa0 = the REGISTRATION witness (pulses on every kill registration, n=2 replicated); its instant value is churn phase, NOT a magnitude discriminator (a banked +1000 pay frame also shows 257)"
+  },
+  "knowledge_package": {
+   "file": "metal_slug_x.ps1game",
+   "version": "0.2.0",
+   "maturity": "GAMEPLAY_VERIFIED",
+   "sha256": "cc5af6c65433dd4272e386fe13336b4988510406653695f4ba7af1f935817976",
+   "files": 10,
+   "validated": true,
+   "clean_root_install": "/tmp/msx_install_root verified",
+   "other_packages": "flappybird 1.0.0 / tetrade 1.1.0 / buzzybee 1.0.0 UNCHANGED",
+   "note": "re-exported after the capsule update (56 events); sha256 above is the released archive"
+  }
+ },
+ "experiments": {
+  "boots_used": 4,
+  "boot_ledger": "scratch/r66/boots_used.json (cap 5, disclosed pre-run; 1 disclosed ledger-pollution refund, zero core loads)",
+  "frontier_rebuild": "6-for-6 deterministic: r66_frontier_a px 1224.9 census 13 / r66_frontier_b px 1254.8 census 14, 6 deaths/6 rescues, 48s push",
+  "offline_dryrun": "scripts/r66_dryrun.py: 20/20 checks green before every boot"
+ },
+ "regression": {
+  "r65_baseline": "821 passed + 2 skipped + 1 xfailed",
+  "r66_delta": "+19 R66 tests (offline adapter/policy/registry/isolation); counts to be re-baselined by the full-suite run recorded in docs/r66_final_report.md",
+  "weakened_tests": 0
+ },
+ "legality": {
+  "ram_writes": 0,
+  "cheats": 0,
+  "save_state_rewinds_in_claimed_play": 0,
+  "runtime_llm": 0,
+  "training": 0,
+  "cross_game_knowledge": 0,
+  "notes": "save states used ONLY as experiment restore points (labeled TAINTED lineage); the product path never touches them"
+ },
+ "issue_updates": [
+  "#4",
+  "#5",
+  "#6",
+  "#9",
+  "#10"
+ ],
+ "next_blockers": [
+  "the armored-truck fight (grenade sequencing hp_a4 300/-100; soldier prioritization)",
+  "n>=2 +500 pay-frame captures for the zero-overlap discriminator",
+  "boss HP (BLOCKED, standing)"
+ ]
+}
