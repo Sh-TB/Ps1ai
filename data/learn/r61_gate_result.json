@@ -1,12 +1,12 @@
 {
  "round": "R61",
- "when": "2026-10-31T23:53:26+0000",
- "head": "d8bcbd3a739dca7aaa6e884c91629f4abdc4c003",
- "wall_s": 124.3,
+ "when": "2026-11-01T03:43:46+0000",
+ "head": "14be0cd9754e4b973d390d1d24dd738508602845",
+ "wall_s": 124.5,
  "gates": {
   "repo_state": {
    "status": "PASS",
-   "detail": "HEAD d8bcbd3a739d; artifacts present"
+   "detail": "HEAD 14be0cd9754e; artifacts present"
   },
   "manifest_hashes": {
    "status": "PASS",
@@ -30,7 +30,7 @@
   },
   "regression_tests": {
    "status": "PASS",
-   "detail": "667 passed, 1 skipped, 1 xfailed in 25.25s"
+   "detail": "668 passed, 1 xfailed in 24.80s"
   },
   "pong_regression": {
    "status": "PASS",
