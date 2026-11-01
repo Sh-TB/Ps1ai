@@ -38,8 +38,7 @@ from .errors import (AssetError, EmulatorError, EmergencyStop,
                      FrameError, Ps1RuntimeError, RuntimePolicyError)
 from .lifecycle import (Lifecycle, RestartPolicy, StopWatch,
                         raise_if_stopped)
-from .policy_runtime import RuntimePolicy
-from .registry import adapter_for_game
+from .registry import adapter_for_game, policy_for_game
 from .session import EnvSession, preflight, resolve_iso
 from .telemetry import TelemetryLog, build_manifest, manifest_sha
 
@@ -87,21 +86,52 @@ class RuntimeEngine:
         return assets
 
     def boot(self, assets: Dict[str, Any]) -> None:
-        self.session = EnvSession.boot_new(
-            self.cfg, deadline_s=self.cfg.boot_timeout_s,
-            telemetry=self.tel)
-        self.tel.emit("emulator_boot", tag=self.session.tag(),
-                      boot_info=str(self.session.boot_info)[:200])
-        self.adapter = adapter_for_game(self.cfg.game,
-                                        self.session.env,
-                                        telemetry=self.tel)
-        self.policy = RuntimePolicy(self.cfg, telemetry=self.tel)
-        self.controller = SafetyController(self.adapter, self.session,
-                                           telemetry=self.tel)
-        self.tel.emit("policy_loaded", **self.policy.identity())
-        self.adapter.wait_ready(self.cfg.ready_timeout_s)
-        self.lifecycle.transition("READY", reason="game ready")
-        self.tel.emit("ready", game=self.cfg.game)
+        """Boot the emulator, wire adapter/policy/controller and reach
+        the game's verified ready state. RETRIES with a fresh core:
+        beetle keeps global emulator state, so an in-process boot may
+        stick (observed: a second core stuck at the OpenBIOS cube,
+        2026-11-01; the #5 worklog records the same) — a fresh boot
+        normally clears it. The adapter's wait_ready is the VERDICT:
+        only its success marks READY."""
+        attempts = max(1, int(self.cfg.boot_retries) + 1)
+        last_err: Optional[Ps1RuntimeError] = None
+        for attempt in range(attempts):
+            try:
+                self.session = EnvSession.boot_new(
+                    self.cfg, deadline_s=self.cfg.boot_timeout_s,
+                    telemetry=self.tel)
+                self.tel.emit("emulator_boot", attempt=attempt,
+                              tag=self.session.tag(),
+                              boot_info=str(
+                                  self.session.boot_info)[:200])
+                self.adapter = adapter_for_game(self.cfg.game,
+                                                self.session.env,
+                                                telemetry=self.tel)
+                # the per-game Policy: a registered built-in policy
+                # factory (tetrade: the hand-written Dellacherie
+                # heuristic) or the frozen-model RuntimePolicy
+                # (flappybird) — R64 generic seam
+                self.policy = policy_for_game(self.cfg,
+                                              telemetry=self.tel)
+                self.controller = SafetyController(
+                    self.adapter, self.session, telemetry=self.tel)
+                self.tel.emit("policy_loaded",
+                              **self.policy.identity())
+                self.adapter.wait_ready(self.cfg.ready_timeout_s)
+                self.lifecycle.transition("READY",
+                                          reason="game ready")
+                self.tel.emit("ready", game=self.cfg.game,
+                              boot_attempt=attempt)
+                return
+            except Ps1RuntimeError as e:
+                last_err = e
+                self.tel.emit("boot_retry", attempt=attempt,
+                              error=type(e).__name__,
+                              detail=str(e)[:200])
+                self._safe_cleanup(
+                    reason=f"boot attempt {attempt} failed")
+        raise last_err if last_err is not None \
+            else EmulatorError("boot failed")
 
     # ------------------------------------------------------------ --
     # the episode loop
@@ -384,12 +414,21 @@ class RuntimeEngine:
     def _print_status(self, ep, k, steps, budget, post, decision) \
             -> None:
         snap = self.adapter.snapshot()
-        print(f"[ep{ep} k={k}] {steps}/{budget}f "
-              f"pipes={post.get('pipes')} bird_y="
-              f"{snap.get('bird_y')} gap={snap.get('gap_center')} "
-              f"act={decision.action} "
-              f"cap={self.session.frames().capture_latency_ms():.1f}ms",
-              flush=True)
+        if "bird_y" in snap:          # the flappy-style status line
+            print(f"[ep{ep} k={k}] {steps}/{budget}f "
+                  f"pipes={post.get('pipes')} bird_y="
+                  f"{snap.get('bird_y')} gap={snap.get('gap_center')} "
+                  f"act={decision.action} "
+                  f"cap={self.session.frames().capture_latency_ms():.1f}ms",
+                  flush=True)
+        else:                         # generic games: compact snapshot
+            items = list(snap.items())[:6]
+            extra = " ".join(f"{kk}={vv}" for kk, vv in items)
+            print(f"[ep{ep} k={k}] {steps}/{budget}f "
+                  f"{self.cfg.game}:{post.get('pipes')} "
+                  f"act={decision.action} {extra} "
+                  f"cap={self.session.frames().capture_latency_ms():.1f}ms",
+                  flush=True)
 
     # ------------------------------------------------------------ --
     # cleanup

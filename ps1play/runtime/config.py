@@ -36,6 +36,7 @@ DEFAULTS = {
     "status_every_frames": 600,
     "boot_timeout_s": 120.0,
     "ready_timeout_s": 60.0,
+    "boot_retries": 2,
     "max_consecutive_failures": 2,
 }
 
@@ -70,6 +71,7 @@ class RuntimeConfig:
     seed_ladder_step: int = 6
     boot_timeout_s: float = float(DEFAULTS["boot_timeout_s"])
     ready_timeout_s: float = float(DEFAULTS["ready_timeout_s"])
+    boot_retries: int = int(DEFAULTS["boot_retries"])
     log_every_frames: int = int(DEFAULTS["log_every_frames"])
     screenshot_interval: int = int(DEFAULTS["screenshot_interval"])
     status_every_frames: int = int(DEFAULTS["status_every_frames"])
@@ -79,11 +81,15 @@ class RuntimeConfig:
 
     # ------------------------------------------------------------ --
     def validated(self) -> "RuntimeConfig":
-        """Fail-early validation. Returns self."""
-        if self.game not in ("flappybird",):
+        """Fail-early validation. Returns self. The game must be
+        REGISTERED (the registry is the single source of truth — R64:
+        flappybird + tetrade)."""
+        from .registry import registered_games  # noqa: PLC0415
+        known = registered_games()
+        if self.game not in known:
             raise ConfigError(
                 f"unknown game {self.game!r}: registered games are "
-                f"['flappybird'] (see ps1play/runtime/registry.py)")
+                f"{known} (see ps1play/runtime/registry.py)")
         if self.episodes < 0:
             raise ConfigError("episodes must be >= 0 (0 = unlimited)")
         if self.episodes == 0 and self.restart_policy == "fixed":
@@ -105,6 +111,8 @@ class RuntimeConfig:
             raise ConfigError("seed_k out of range [0, 1e9]")
         if self.restart_policy not in ("fixed", "time", "frames"):
             raise ConfigError("restart_policy must be fixed|time|frames")
+        if self.boot_retries < 0 or self.boot_retries > 5:
+            raise ConfigError("boot_retries must be in [0, 5]")
         if self.screenshot_interval < 0 or self.status_every_frames < 0:
             raise ConfigError("intervals must be >= 0")
         if not self.output_dir:

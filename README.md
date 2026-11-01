@@ -312,6 +312,23 @@ each (~4.7× realtime), suite 334 passed + 1 xfailed.
   `scripts/tetrade_calib.py`
 - Runner: `scripts/run_tetrade_playthrough.py`
 
+## R64 — Tetrade is the SECOND RUNTIME GAME (`ps1play play tetrade`)
+
+The R62 one-command runtime now drives TWO games. Tetrade ships as a
+registered `GameAdapter` + a built-in hand-written Dellacherie 2-ply
+policy (no model, no training) — the R62 architecture's "adding a
+second game" recipe executed for real, with two generic core
+amendments (per-game policy factory + engine boot-retry until the
+adapter declares a VERIFIED ready state). Acceptance through the
+product path: 2 recorded episodes, natural game overs, a verified
+line clear, the NEXT-promotion cross-check 53/53, and the R62 release
+gate still 15/15 PASS (flappy byte-exact R61 records unchanged).
+See `docs/r64_tetrade_second_game.md`.
+
+```bash
+python3 -m ps1play play tetrade --episodes 2 --record --verbose
+```
+
 ## Source-of-truth table (live status of every claim)
 
 | Claim | Evidence today | Status |

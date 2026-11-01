@@ -36,15 +36,34 @@ BIOS_SRC = os.path.join(os.path.dirname(os.path.dirname(
     "openbios", "openbios.bin")
 
 
+# Per-game default disc (cue preferred). Registered games add their
+# entry here (R64: tetrade) — the map IS the registry's disc column.
+GAME_DEFAULT_ISO = {
+    "flappybird": os.path.join("/home/z/my-project/emu/games_homebrew",
+                               "flappybird.cue"),
+    "tetrade": os.path.join("/home/z/my-project/emu/games_homebrew",
+                            "patched", "tetrade_lic.cue"),
+}
+
+# The exact disc bytes every record was made with (R64: the
+# license-patched Tetrade image, sha256 over TETRADE_lic.bin).
+EXPECTED_ISO_SHA = {
+    "flappybird": "b45871d32c7910784b26128c3f4ed48d181e31dfd693f4e5efa"
+                  "187cf2296f0ed",
+    "tetrade": "7eb38eda1274b6c2dba81dc490598d5b8a9e683025a0afd604ec"
+               "130d063c3cc1",
+}
+
+
 def resolve_iso(config) -> str:
     """The disc path for the configured game (cue preferred)."""
     if config.iso_path:
         return config.iso_path
-    if config.game == "flappybird":
-        return os.path.join("/home/z/my-project/emu/games_homebrew",
-                            "flappybird.cue")
-    raise AssetError(f"no default ISO registered for game "
-                     f"{config.game!r}")
+    default = GAME_DEFAULT_ISO.get(config.game)
+    if default is None:
+        raise AssetError(
+            f"no default ISO registered for game {config.game!r}")
+    return default
 
 
 def disc_image_path(disc_path: str) -> str:
@@ -78,15 +97,14 @@ def preflight(config, *, iso_path: str,
     assets["iso_path"] = image
     assets["iso_sha256"] = sha256_file(image)
     assets["iso_bytes"] = os.path.getsize(image)
-    if config.game == "flappybird":
-        expected = "b45871d32c7910784b26128c3f4ed48d181e31dfd693f4e5efa" \
-                   "187cf2296f0ed"
-        if config.verify_hashes and assets["iso_sha256"] != expected:
-            raise AssetError(
-                f"ISO hash mismatch: {iso_path}: got "
-                f"{assets['iso_sha256'][:16]}..., expected "
-                f"{expected[:16]}... (the exact FlappyBirdPSX v0.1.0 "
-                f"release the R59/R61 records were made with)")
+    expected = EXPECTED_ISO_SHA.get(config.game)
+    if expected and config.verify_hashes and \
+            assets["iso_sha256"] != expected:
+        raise AssetError(
+            f"ISO hash mismatch: {iso_path}: got "
+            f"{assets['iso_sha256'][:16]}..., expected "
+            f"{expected[:16]}... (the exact disc the published "
+            f"records for {config.game} were made with)")
     if not os.path.exists(BIOS_SRC):
         raise AssetError(f"OpenBIOS not found: {BIOS_SRC}")
     assets["bios_path"] = BIOS_SRC

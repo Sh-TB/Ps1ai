@@ -121,6 +121,8 @@ class TelemetryLog:
         st.add(ms)
 
     def flush(self) -> None:
+        if self._closed:
+            return                 # idempotent (R64: teardown order)
         try:
             self._fh.flush()
             try:
@@ -180,7 +182,7 @@ def build_manifest(config, *, iso_path: Optional[str] = None,
         adapter_ver = "local"
     man: Dict[str, Any] = {
         "runtime_version": RUNTIME_VERSION,
-        "runtime_manifest_version": 1,
+        "runtime_manifest_version": 2,   # 2 = per-game components (R64)
         "repo_commit": _git_commit(),
         "generated_ts": round(time.time(), 3),
         "config": config.to_dict(),
@@ -188,12 +190,25 @@ def build_manifest(config, *, iso_path: Optional[str] = None,
         "python_deps": dep_versions(),
         "component_versions": {
             "runtime": RUNTIME_VERSION,
-            "adapter_flappybird": "1.0.0",
             "observer": "v7 (ps1play.learn.visual_only)",
             "controller": "1.0.0",
-            "policy_package": "flappybird_policy 1.0.0",
         },
     }
+    # per-game component identity from the registry (R64: the manifest
+    # describes the game that actually runs — flappybird adds its
+    # frozen policy package, tetrade its built-in heuristic)
+    from .registry import component_versions  # noqa: PLC0415
+    man["component_versions"].update(component_versions())
+    if config.game == "flappybird":
+        man["component_versions"]["policy_package"] = \
+            "flappybird_policy 1.0.0"
+    else:
+        try:
+            from .registry import policy_for_game  # noqa: PLC0415
+            man["component_versions"]["policy"] = \
+                str(policy_for_game(config).identity().get("name", "?"))
+        except Exception:
+            pass
     for key, p in (("model", config.model_path),
                    ("model_manifest", man_path),
                    ("authority_manifest", config.authority_manifest_path)):

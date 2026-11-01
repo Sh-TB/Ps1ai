@@ -1,0 +1,29 @@
+{
+ "episode": 2,
+ "game": "tetrade",
+ "seed_k": 12,
+ "rep": 0,
+ "result": "death",
+ "death_reason": "game_over",
+ "pipes": 1,
+ "frames": 2831,
+ "flaps": 165,
+ "actions": 165,
+ "decisions": 2831,
+ "errors": [],
+ "wall_s": 19.96,
+ "started_ts": 1793538988.362,
+ "ended_ts": 1793539008.325,
+ "trace_sha256": "8fa056a3f450e39f4df494560a98b80493299cd053260f84a632fd4222f52825",
+ "policy_name": "tetrade_dellacherie_2ply (R64 built-in, hand-written; R63-ported)",
+ "policy_sha256": "70a4c5bc81f633cd781e492bb0a41a43094f5846c182f716690c3895993d0a95",
+ "manifest_sha256": "5a32a3e5cb0952c84f972b9c6161772fbdfd8355aa30525c31cdb9d5044c57a5",
+ "emulator_tag": "beetle=mednafen_psx_libretro.so; boot={'core': 'Beetle PSX 0.9.44.1 df2b53b', 'serial': None, 'plugin': 'tetrade', 'input_device': 1, 'ram_bytes': 2",
+ "screenshots": [
+  "/tmp/r64_accept/shots/ep002_k12_start.png",
+  "/tmp/r64_accept/shots/ep002_k12_pipeNone.png",
+  "/tmp/r64_accept/shots/ep002_k12_end_death.png"
+ ],
+ "video": "/tmp/r64_accept/video_ep002_k12.gif",
+ "trace_file": "/tmp/r64_accept/trace_ep002_k12.jsonl"
+}

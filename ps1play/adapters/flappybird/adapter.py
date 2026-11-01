@@ -37,6 +37,7 @@ ADAPTER_VERSION = "1.0.0"
 
 class FlappyBirdAdapter(GameAdapter):
     game_id = "flappybird"
+    version = "1.0.0"
 
     # The 10-feature v7 layout (the frozen model's input contract).
     FEATURE_NAMES = ("by", "vy", "gc", "dx", "g0", "g1",

@@ -119,7 +119,9 @@ then register it:
 from ps1play.runtime import registry
 registry.register_game("mygame",
                        env_factory=my_env_factory,
-                       adapter=MyGameAdapter)
+                       adapter=MyGameAdapter,
+                       policy_factory=None,   # or a built-in Policy
+                       progress_label="pipes")
 ```
 
 The engine, CLI, telemetry, lifecycle, fault handling and release gate
@@ -128,6 +130,21 @@ pick it up unchanged. `ScriptedGameAdapter`
 game driven by the REAL `RuntimeEngine` loop — the same code path that
 plays FlappyBird. A second real game still needs its own perception
 (e.g. its own observer) — the FlappyBird model does NOT generalize.
+
+**R64 worked example: Tetrade** (`ps1play/adapters/tetrade`,
+`docs/r64_tetrade_second_game.md`) is the second real game. It added
+two GENERIC extension points, no game knowledge in the core:
+
+* `policy_factory` — a game may ship a BUILT-IN policy (a hand-written
+  heuristic behind the `Policy` contract) instead of the frozen-model
+  `RuntimePolicy`; `registry.policy_for_game()` picks per game.
+* `boot_retries` — `engine.boot` re-boots a fresh core until the
+  adapter's `wait_ready` declares a VERIFIED ready state (beetle's
+  in-process boot may stick at the OpenBIOS cube; the scan/ready
+  failure is the detector, a fresh boot is the cure).
+* `progress_label` — the CLI summary prints the game's own name for
+  the generic per-episode progress counter (flappy: `pipes`, tetrade:
+  `lines`).
 
 ## What the runtime is NOT
 

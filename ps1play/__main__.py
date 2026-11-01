@@ -43,15 +43,19 @@ def _build_parser() -> argparse.ArgumentParser:
     sub = ap.add_subparsers(dest="cmd", required=True)
 
     p = sub.add_parser(
-        "play", help="play a game autonomously with the frozen policy")
-    p.add_argument("game", help="registered game id, e.g. flappybird")
+        "play", help="play a game autonomously (frozen policy or the "
+                     "game's built-in policy)")
+    p.add_argument("game", help="registered game id: flappybird | "
+                                "tetrade (see ps1play/runtime/registry)")
     p.add_argument("--episodes", type=int, default=1,
                    help="number of consecutive autonomous episodes "
                         "(default 1)")
     p.add_argument("--seed", type=int, default=None,
-                   help="the episode seed k (the RNG-seeding start "
-                        "press timing); default = deterministic ladder "
-                        "6, 12, 18, ...")
+                   help="the episode seed k (flappybird: the "
+                        "RNG-seeding start press timing; tetrade: "
+                        "recorded for labeling only — the zero-writes "
+                        "rule never seeds the game RNG); default = "
+                        "deterministic ladder 6, 12, 18, ...")
     p.add_argument("--seed-start", type=int, default=None,
                    help="episode-ladder start (default 6); with "
                         "--seed-step builds k for episode i as "
@@ -218,6 +222,12 @@ def _cmd_play(a: argparse.Namespace) -> int:
 
 def _print_summary(cfg: RuntimeConfig,
                    results: List[Dict[str, Any]]) -> int:
+    from ps1play.runtime.registry import progress_label_for  \
+        # noqa: PLC0415
+    try:
+        prog = progress_label_for(cfg.game)
+    except Exception:
+        prog = "pipes"
     print("\n" + "=" * 64)
     print(f"RUN SUMMARY — {cfg.game}")
     print("=" * 64)
@@ -225,14 +235,14 @@ def _print_summary(cfg: RuntimeConfig,
         print("no episodes ran")
         return 1
     n_played = n_alive = 0
-    pipes_sum = 0
+    prog_sum = 0
     for r in results:
         status = r["result"]
         mark = {"alive": "ALIVE", "death": "death", "stopped":
                 "stopped", "error": "ERROR"}.get(status, status)
         line = (f"ep{r['episode']:03d} k={r['seed_k']:<4d} "
-                f"{mark:<8} pipes={r['pipes']:<3d} "
-                f"frames={r['frames']:<5d} flaps={r['flaps']:<4d} "
+                f"{mark:<8} {prog}={r['pipes']:<3d} "
+                f"frames={r['frames']:<5d} acts={r['actions']:<4d} "
                 f"wall={r['wall_s']:.1f}s")
         if r.get("video"):
             line += f"\n         video: {r['video']}"
@@ -246,7 +256,7 @@ def _print_summary(cfg: RuntimeConfig,
         if status == "alive":
             n_alive += 1
         if status in ("alive", "death"):
-            pipes_sum += r["pipes"]
+            prog_sum += r["pipes"]
     played = [r for r in results
               if r["result"] in ("alive", "death")]
     print("-" * 64)
@@ -254,7 +264,7 @@ def _print_summary(cfg: RuntimeConfig,
           f"alive-at-budget: {n_alive}")
     if played:
         ps = [r["pipes"] for r in played]
-        print(f"pipes: mean={sum(ps) / len(ps):.2f} "
+        print(f"{prog}: mean={sum(ps) / len(ps):.2f} "
               f"min={min(ps)} max={max(ps)}")
     print(f"results: {cfg.output_dir}{os.sep}episodes.jsonl")
     print(f"events : {cfg.output_dir}{os.sep}events.jsonl")

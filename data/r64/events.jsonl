@@ -1,0 +1,35 @@
+{"seq": 1, "t": 0.0, "ts": 1793538969.593, "event": "run_start", "cmd": "play", "game": "tetrade", "argv": ["play", "tetrade", "--episodes", "2", "--record", "--verbose", "--output", "/tmp/r64_accept"]}
+{"seq": 2, "t": 0.006, "ts": 1793538969.599, "event": "lifecycle", "state": "BOOTING", "reason": "preflight"}
+{"seq": 3, "t": 0.02, "ts": 1793538969.612, "event": "preflight", "disc_path": "/home/z/my-project/emu/games_homebrew/patched/tetrade_lic.cue", "iso_path": "/home/z/my-project/emu/games_homebrew/patched/TETRADE_lic.bin", "iso_sha256": "7eb38eda1274b6c2", "iso_bytes": 3196368, "bios_path": "/home/z/my-project/ps1ai/third_party/openbios/openbios.bin", "bios_sha256": "0a9685d9895b422f", "core_path": "/home/z/my-project/emu/cores/mednafen_psx_libretro.so", "core_sha256": "effff7bb75e2403d"}
+{"seq": 4, "t": 0.068, "ts": 1793538969.661, "event": "manifest", "sha256": "5a32a3e5cb0952c84f972b9c6161772fbdfd8355aa30525c31cdb9d5044c57a5", "path": "/tmp/r64_accept/runtime_manifest.json"}
+{"seq": 5, "t": 0.089, "ts": 1793538969.681, "event": "emulator_boot", "attempt": 0, "tag": "beetle=mednafen_psx_libretro.so; boot={'core': 'Beetle PSX 0.9.44.1 df2b53b', 'serial': None, 'plugin': 'tetrade', 'input_device': 1, 'ram_bytes': 2", "boot_info": "{'core': 'Beetle PSX 0.9.44.1 df2b53b', 'serial': None, 'plugin': 'tetrade', 'input_device': 1, 'ram_bytes': 2097152, 'profile_reused': True}"}
+{"seq": 6, "t": 0.089, "ts": 1793538969.682, "event": "policy_loaded", "name": "tetrade_dellacherie_2ply (R64 built-in, hand-written; R63-ported)", "version": "1.0.0", "model_sha256": "70a4c5bc81f633cd781e492bb0a41a43094f5846c182f716690c3895993d0a95", "manifest_sha256": null, "kind": "built-in heuristic (no model, no training)"}
+{"seq": 7, "t": 5.625, "ts": 1793538975.217, "event": "tetrade_ready", "base": 2092192, "hex_base": "0x1feca0", "start_frames": 480, "score": 0, "lines": 0}
+{"seq": 8, "t": 5.625, "ts": 1793538975.217, "event": "lifecycle", "state": "READY", "reason": "game ready"}
+{"seq": 9, "t": 5.625, "ts": 1793538975.217, "event": "ready", "game": "tetrade", "boot_attempt": 0}
+{"seq": 10, "t": 5.625, "ts": 1793538975.217, "event": "lifecycle", "state": "EPISODE_ACTIVE", "reason": "episode 1"}
+{"seq": 11, "t": 5.626, "ts": 1793538975.218, "event": "tetrade_episode_start", "seed_k": 6, "base": 2092192, "hex_base": "0x1feca0", "start_frames": 0, "reused_ready": true, "score": 0, "lines": 0}
+{"seq": 12, "t": 5.865, "ts": 1793538975.458, "event": "screenshot", "path": "/tmp/r64_accept/shots/ep001_k6_start.png", "tag": "start"}
+{"seq": 13, "t": 18.345, "ts": 1793538987.937, "event": "terminal", "episode": 1, "steps": 2038, "pipes": 0, "reason": "game_over"}
+{"seq": 14, "t": 18.362, "ts": 1793538987.955, "event": "screenshot", "path": "/tmp/r64_accept/shots/ep001_k6_end_death.png", "tag": "end_death"}
+{"seq": 15, "t": 18.717, "ts": 1793538988.309, "event": "video", "path": "/tmp/r64_accept/video_ep001_k6.gif", "frames": 170}
+{"seq": 16, "t": 18.763, "ts": 1793538988.356, "event": "lifecycle", "state": "EPISODE_END", "reason": "death at 2038f"}
+{"seq": 17, "t": 18.763, "ts": 1793538988.356, "event": "episode_end", "episode": 1, "seed_k": 6, "result": "death", "death_reason": "game_over", "pipes": 0, "frames": 2038, "flaps": 124, "actions": 124, "decisions": 2038, "trace_sha256": "6f0981f71f625c599a6421193b0ea9bc81e90353362bde783f04292629754bd8", "wall_s": 13.09}
+{"seq": 18, "t": 18.768, "ts": 1793538988.361, "event": "lifecycle", "state": "READY", "reason": "next episode"}
+{"seq": 19, "t": 18.768, "ts": 1793538988.361, "event": "lifecycle", "state": "EPISODE_ACTIVE", "reason": "episode 2"}
+{"seq": 20, "t": 22.018, "ts": 1793538991.611, "event": "tetrade_episode_start", "seed_k": 12, "base": 2092192, "hex_base": "0x1feca0", "start_frames": 1058, "entry_attempt": 0, "score": 0, "lines": 0}
+{"seq": 21, "t": 22.114, "ts": 1793538991.706, "event": "screenshot", "path": "/tmp/r64_accept/shots/ep002_k12_start.png", "tag": "start"}
+{"seq": 22, "t": 27.018, "ts": 1793538996.611, "event": "screenshot", "path": "/tmp/r64_accept/shots/ep002_k12_pipeNone.png", "tag": "pipeNone"}
+{"seq": 23, "t": 38.243, "ts": 1793539007.835, "event": "terminal", "episode": 2, "steps": 2831, "pipes": 1, "reason": "game_over"}
+{"seq": 24, "t": 38.26, "ts": 1793539007.853, "event": "screenshot", "path": "/tmp/r64_accept/shots/ep002_k12_end_death.png", "tag": "end_death"}
+{"seq": 25, "t": 38.732, "ts": 1793539008.324, "event": "video", "path": "/tmp/r64_accept/video_ep002_k12.gif", "frames": 236}
+{"seq": 26, "t": 38.798, "ts": 1793539008.39, "event": "lifecycle", "state": "EPISODE_END", "reason": "death at 2831f"}
+{"seq": 27, "t": 38.798, "ts": 1793539008.39, "event": "episode_end", "episode": 2, "seed_k": 12, "result": "death", "death_reason": "game_over", "pipes": 1, "frames": 2831, "flaps": 165, "actions": 165, "decisions": 2831, "trace_sha256": "8fa056a3f450e39f4df494560a98b80493299cd053260f84a632fd4222f52825", "wall_s": 19.96}
+{"seq": 28, "t": 38.805, "ts": 1793539008.398, "event": "run_stop", "reason": "episode limit reached (2)"}
+{"seq": 29, "t": 38.805, "ts": 1793539008.398, "event": "lifecycle", "state": "STOPPING", "reason": "run complete"}
+{"seq": 30, "t": 38.809, "ts": 1793539008.401, "event": "emulator_close", "reason": "run complete", "tag": "beetle=mednafen_psx_libretro.so; boot={'core': 'Beetle PSX 0.9.44.1 df2b53b', 'serial': None, 'plugin': 'tetrade', 'input_device': 1, 'ram_bytes': 2"}
+{"seq": 31, "t": 38.809, "ts": 1793539008.402, "event": "lifecycle", "state": "STOPPED", "reason": ""}
+{"seq": 32, "t": 38.809, "ts": 1793539008.402, "event": "run_end", "exit_code": 0, "wall_s": 38.82}
+{"seq": 33, "t": 38.809, "ts": 1793539008.402, "event": "engine_close", "results": 2}
+{"seq": 34, "t": 38.812, "ts": 1793539008.404, "event": "latency_summary", "controller_send_ms": {"n": 4869, "p50_ms": 3.0422, "p95_ms": 3.3808, "p99_ms": 4.0814, "mean_ms": 3.1077, "max_ms": 9.0151}, "emulator_boot_s": {"n": 1, "p50_ms": 20.7305, "p95_ms": 20.7305, "p99_ms": 20.7305, "mean_ms": 20.7305, "max_ms": 20.7305}, "perception_ms": {"n": 4869, "p50_ms": 0.4058, "p95_ms": 0.5239, "p99_ms": 0.6012, "mean_ms": 0.4256, "max_ms": 2.656}, "policy_ms": {"n": 4869, "p50_ms": 0.0432, "p95_ms": 0.066, "p99_ms": 60.1392, "mean_ms": 0.8181, "max_ms": 89.8892}}
+{"seq": 35, "t": 38.812, "ts": 1793539008.404, "event": "telemetry_close", "warnings": []}

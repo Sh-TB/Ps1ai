@@ -1,0 +1,84 @@
+{
+ "run_dir": "/tmp/r64_accept",
+ "boot_ledger": {
+  "emulator_boots": 1,
+  "boot_retries": 0,
+  "ready_base": "0x1feca0"
+ },
+ "episodes": [
+  {
+   "episode": 1,
+   "seed_k": 6,
+   "result": "death",
+   "death_reason": "game_over",
+   "pipes": 0,
+   "frames": 2038,
+   "actions": 124,
+   "decisions": 2038,
+   "trace_sha256": "6f0981f71f625c599a6421193b0ea9bc81e90353362bde783f04292629754bd8",
+   "wall_s": 13.09,
+   "pieces_hard_dropped": 23,
+   "next_promotion_check": {
+    "checked": 22,
+    "ok": 22
+   },
+   "line_clears": [],
+   "action_histogram": {
+    "ROT_CW": 32,
+    "IDLE": 1914,
+    "MOVE_L": 46,
+    "HARD_DROP": 23,
+    "MOVE_R": 23
+   },
+   "trace": "trace_ep001_k6.jsonl"
+  },
+  {
+   "episode": 2,
+   "seed_k": 12,
+   "result": "death",
+   "death_reason": "game_over",
+   "pipes": 1,
+   "frames": 2831,
+   "actions": 165,
+   "decisions": 2831,
+   "trace_sha256": "8fa056a3f450e39f4df494560a98b80493299cd053260f84a632fd4222f52825",
+   "wall_s": 19.96,
+   "pieces_hard_dropped": 33,
+   "next_promotion_check": {
+    "checked": 31,
+    "ok": 31
+   },
+   "line_clears": [
+    {
+     "at_step": 857,
+     "from": 0,
+     "to": 1,
+     "score_before": 208,
+     "score_after": 234,
+     "score_delta": 26
+    }
+   ],
+   "action_histogram": {
+    "IDLE": 2666,
+    "MOVE_L": 66,
+    "HARD_DROP": 33,
+    "ROT_CW": 35,
+    "MOVE_R": 31
+   },
+   "trace": "trace_ep002_k12.jsonl"
+  }
+ ],
+ "totals": {
+  "pieces": 56,
+  "lines": 1,
+  "presses": 289,
+  "frames": 4869,
+  "deaths": 2
+ },
+ "verdict": {
+  "natural_game_overs": 2,
+  "line_clears_via_product": 1,
+  "restart_flow_exercised": true,
+  "fresh_start_after_restart": true
+ }
+}

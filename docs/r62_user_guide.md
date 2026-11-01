@@ -44,7 +44,25 @@ python3 -m ps1play play flappybird --seed 45
 
 # long evening run: as many 10k-frame episodes as fit in 30 minutes
 python3 -m ps1play play flappybird --episodes 40 --max-runtime 1800 --record
+
+# the second game (R64): Tetrade, same runtime, built-in policy
+python3 -m ps1play play tetrade --episodes 2 --record --verbose
 ```
+
+## Playing Tetrade (the second game, R64)
+
+`python3 -m ps1play play tetrade` plays the homebrew Tetris
+(`Tetrade_lic` disc, hash-pinned at preflight) through the SAME
+engine — the only difference is the policy: a built-in hand-written
+Dellacherie 2-ply heuristic (no model, no training), and perception
+that reads the game's RAM struct (the loop its own Issue #8
+documents). The CLI prints `lines=N` in the status line — the generic
+progress counter is LINES CLEARED for this game. `--seed` is recorded
+for labeling only (the zero-writes rule never seeds the game's RNG).
+Episode 1 plays a fresh Marathon; every later episode legally
+finishes the previous game (hard-drops to a natural game over when it
+ended alive at its frame budget), refuses the CONTINUE prompt with
+CIRCLE and restarts fresh. See `docs/r64_tetrade_second_game.md`.
 
 ## Stopping the runtime
 
