@@ -59,12 +59,24 @@
    "file": "metal_slug_x.ps1game",
    "version": "0.2.0",
    "maturity": "GAMEPLAY_VERIFIED",
-   "sha256": "cc5af6c65433dd4272e386fe13336b4988510406653695f4ba7af1f935817976",
+   "sha256": "54fdacc10130833823e171ccf55e6467b3154a5bb602c93c61fac88b78fbff0c",
    "files": 10,
    "validated": true,
    "clean_root_install": "/tmp/msx_install_root verified",
    "other_packages": "flappybird 1.0.0 / tetrade 1.1.0 / buzzybee 1.0.0 UNCHANGED",
-   "note": "re-exported after the capsule update (56 events); sha256 above is the released archive"
+   "note": "v0.2.0 re-exported by the FIXED exporter (see exporter_content_fix) after the R66 session shipped the capsule edit past the gate; content verified in a fresh root by scripts/r66_content_verify.py"
+  },
+  "exporter_content_fix": {
+   "status": "FIXED_AND_REGRESSED",
+   "defect": "build_package treated a 3-tuple str first element as inline content, so every (repo_path, arcpath, role) entry archived a path-STRING stub (\"/home/z/...\") instead of the file bytes — ALL FOUR r65/r66 packages were structurally valid but content-hollow; earlier package verification checked structure and hashes only, never content fidelity",
+   "fix": "ps1play/knowledge/package.py: dict first element = inline JSON, str = source path read from disk; regression test test_package_carries_real_content_not_path_stubs (byte-equality in the archive + a stub detector)",
+   "regenerated": {
+    "metal_slug_x.ps1game": "54fdacc10130833823e171ccf55e6467b3154a5bb602c93c61fac88b78fbff0c",
+    "flappybird.ps1game": "3b659f0ca1d7baa3b71c451cbfc8bf08882c123974131027f09616ca219dd588",
+    "tetrade.ps1game": "4362a5b8d174ed9ef79d9926545c40b5b7a8541777eb0768c08fbab8c89ea1ec",
+    "buzzybee.ps1game": "3286aa179fcedf5284fe1e066221acaeb889c8b08f6f15ce02322c610d8703ac"
+   },
+   "content_verify": "scripts/r66_content_verify.py: fresh-root install + read-back for all four (capsule 56/15 events, adapters/policies/tables real bytes)"
   }
  },
  "experiments": {
@@ -76,7 +88,8 @@
  "regression": {
   "r65_baseline": "821 passed + 2 skipped + 1 xfailed",
   "r66_delta": "+19 R66 tests (offline adapter/policy/registry/isolation); counts to be re-baselined by the full-suite run recorded in docs/r66_final_report.md",
-  "weakened_tests": 0
+  "weakened_tests": 0,
+  "suite": "841 passed + 2 skipped + 1 xfailed"
  },
  "legality": {
   "ram_writes": 0,

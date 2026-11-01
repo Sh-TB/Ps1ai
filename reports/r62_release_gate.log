@@ -1,4 +1,4 @@
-[         PASS] repo_state: HEAD 4357fce241e6; artifacts present
+[         PASS] repo_state: HEAD 5b660e8584c4; artifacts present
 [         PASS] model_manifest: manifest<->npz/onnx/package bound
 [         PASS] deployment_package: fresh CLI smoke green (SMOKE PASS)
 [         PASS] policy_runtime: authority-checked load + predict OK (4dd592a7118a...)
@@ -9,7 +9,7 @@
 [         PASS] full_loop_smoke: k=30 through the runtime = 37@4401, trace byte-matches the R61 record
 [         PASS] multi_episode: 3 consecutive episodes (k=45) all byte-match the R61 record (40@4753) — no stale state across episodes
 [         PASS] process_cleanup: close idempotent + same-process re-boot works (beetle=mednafen_psx_libretro.so; boot={'...)
-[         PASS] regression_suite: 840 passed, 2 skipped, 1 xfailed in 165.41s (0:02:45)
+[         PASS] regression_suite: 841 passed, 2 skipped, 1 xfailed in 158.93s (0:02:38)
 [         PASS] docs_commands: 3 documented commands exit 0
 [         PASS] evidence_complete: 8 docs + 4 evidence summaries, all asserting success
 [         PASS] clean_install: fresh venv + pinned deps + smoke green

@@ -142,3 +142,45 @@ def test_shipped_capsules_validate_and_size():
         p = os.path.join(REPO, "data", "knowledge", gid, "capsule.json")
         c = Capsule.load(p)
         assert c.size_bytes() < 64 * 1024, gid
+
+
+def test_package_carries_real_content_not_path_stubs(tmp_path):
+    """R66 final-mile regression: build_package used to treat a
+    3-tuple str first element as INLINE content, so every file entry
+    built with the standard (repo_path, arcpath, role) shape shipped a
+    path-STRING stub ("/home/z/...") instead of the file's bytes —
+    structurally valid packages (hashes matched) with hollow content.
+    Pin the fixed semantics: str = source path (bytes archived), dict =
+    inline JSON."""
+    import zipfile
+
+    from ps1play.knowledge import package as pkg
+
+    src = tmp_path / "real_knowledge.json"
+    src.write_text(json.dumps({"facts": [1, 2, 3]}), encoding="utf-8")
+    spec = {
+        "game_id": "tt", "title": "T", "version": "0.0.1",
+        "maturity": "INPUT_VERIFIED", "serial": "SLUS-00000",
+        "region": "NTSC-U", "revision": "test",
+        "files": [
+            (str(src), "knowledge/real.json", "re_knowledge"),
+            ({"inline": True}, "knowledge/inline.json", "re_knowledge"),
+        ],
+        "readme": "test package",
+        "runtime": {"runtime_version_compat": ["1.0.0"],
+                    "components": {}, "python_packages": []},
+        "capabilities": {}, "legal": {"notice": "test"},
+    }
+    res = pkg.build_package(spec, str(tmp_path / "out"))
+    with zipfile.ZipFile(res["path"]) as zf:
+        assert zf.read("knowledge/real.json") == src.read_bytes()
+        assert json.loads(zf.read("knowledge/inline.json")) == \
+            {"inline": True}
+        # the stub detector: no archived file may BE a path string that
+        # points at an existing filesystem file
+        for name in zf.namelist():
+            if name.endswith((".json", ".py", ".md", ".txt")):
+                text = zf.read(name).decode("utf-8", "replace").strip()
+                if text.startswith("/home/") or text.startswith("/tmp/"):
+                    assert not os.path.exists(text), \
+                        f"{name} archived a path stub, not content"

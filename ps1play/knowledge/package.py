@@ -391,12 +391,18 @@ def build_package(spec: Dict[str, Any], out_dir: str) -> Dict[str, Any]:
     payload: List[tuple] = []          # (arcpath, bytes)
     seen: set = set()
     for entry in spec["files"]:
-        if len(entry) == 3 and isinstance(entry[0], (dict, str)):
+        # (R66 final-mile fix) a 3-tuple whose FIRST element is a dict
+        # ships that dict inline as JSON; a 3-tuple whose first element
+        # is a str is a SOURCE PATH read from disk.  The previous rule
+        # (str == inline text) silently shipped path-STRING stubs for
+        # every file entry built with the standard rp() helper — all
+        # four r65/r66 packages archived "/home/z/..." instead of the
+        # knowledge they documented.  Inline TEXT is no longer a
+        # supported 3-tuple form: pass a dict (JSON) or a file path.
+        if len(entry) == 3 and isinstance(entry[0], dict):
             src, arc, role = None, entry[1], entry[2]
             data = json.dumps(entry[0], indent=1,
-                              sort_keys=True).encode("utf-8") \
-                if isinstance(entry[0], dict) else entry[0].encode(
-                    "utf-8")
+                              sort_keys=True).encode("utf-8")
         else:
             src, arc, role = entry
         _check_arcname(arc)
