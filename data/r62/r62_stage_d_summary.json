@@ -1,0 +1,35 @@
+{
+ "stage": "D",
+ "round": "R62",
+ "when": "2026-11-01T05:20:33+0000",
+ "cases": [
+  {
+   "case": "D1_missing_model",
+   "exit_code": 3,
+   "expected_exit": 3,
+   "wall_s": 0.4,
+   "error_surfaced": true,
+   "leaked": "none",
+   "ok": true
+  },
+  {
+   "case": "D2_model_hash_mismatch",
+   "exit_code": 3,
+   "expected_exit": 3,
+   "wall_s": 0.4,
+   "error_surfaced": true,
+   "leaked": "none",
+   "ok": true
+  },
+  {
+   "case": "D3_sigint_mid_episode",
+   "was_running_when_signalled": true,
+   "exit_code": 130,
+   "expected_exit": 130,
+   "stopped_record": true,
+   "leaked": "none",
+   "ok": true
+  }
+ ],
+ "all_ok": true
+}

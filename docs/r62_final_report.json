@@ -1,0 +1,147 @@
+{
+ "round": "R62",
+ "mission": "AUTONOMOUS GAME PLAYER FOUNDATION",
+ "when": "2026-11-01T05:38:36+0000",
+ "base_commit": "4797af2",
+ "statuses": {
+  "R61_TRAINING": "CLOSED",
+  "R62_RUNTIME": "VERIFIED",
+  "R62_AUTOPLAY": "VERIFIED",
+  "R62_20_EPISODES": "PASS",
+  "R62_REGRESSION": "PASS",
+  "R62_CLEAN_INSTALL": "PASS",
+  "R62_RELEASE": "PASS"
+ },
+ "model": {
+  "checkpoint": "data/learn/r59_soup_e6a010.npz",
+  "checkpoint_sha256": "72c79f3091ed14e8dd497ddc52570bb4660bfc6367e6b50eb8a8aa1eff8a28f4",
+  "onnx": "deployment/flappybird_policy/models/r60_soup_e6a010.onnx",
+  "onnx_sha256": "4dd592a7118a5c4de7b44166b42b8d09d53fbb59330d36d0ba2746393dc11044",
+  "unchanged": true,
+  "authority_checked_every_run": true
+ },
+ "runtime_command": "python3 -m ps1play play flappybird",
+ "byte_exact_equivalence_with_r61": {
+  "stage_a_k6": "alive/87/640/10000, trace d510e758... == R61",
+  "gate_k30": "37@4401 trace == R61",
+  "gate_3x_k45_one_launch": "3x 40@4753 traces == R61 and each other",
+  "integration_2x_k45": "byte-match",
+  "stage_b_family": {
+   "6": true,
+   "12": true,
+   "30": true,
+   "60": true,
+   "90": true
+  }
+ },
+ "stage_b": {
+  "episodes": 20,
+  "seeds": [
+   6,
+   12,
+   18,
+   24,
+   30,
+   36,
+   42,
+   48,
+   54,
+   60,
+   66,
+   72,
+   78,
+   84,
+   90,
+   96,
+   102,
+   108,
+   114,
+   120
+  ],
+  "constraint": "sandbox kills processes between tool calls (~10 min) -> 4 launches x 5 consecutive autonomous episodes; same-launch continuity proven byte-exactly by the release gate (3x k45) and the integration test (2x k45)",
+  "frames_total": 104737,
+  "pipes": {
+   "mean": 44.45,
+   "min": 10,
+   "max": 87,
+   "alive_at_budget": 3
+  },
+  "videos": 20,
+  "screenshots": 929,
+  "family_byte_match_all": true
+ },
+ "stage_c": {
+  "launches": 3,
+  "all_ok": true,
+  "leaked_processes": "none"
+ },
+ "stage_d": {
+  "cases": [
+   "D1_missing_model",
+   "D2_model_hash_mismatch",
+   "D3_sigint_mid_episode"
+  ],
+  "exit_codes": [
+   3,
+   3,
+   130
+  ],
+  "all_ok": true
+ },
+ "profile": {
+  "decision_cycles": 10000,
+  "fps": 110.78,
+  "ms_per_cycle": 9.027,
+  "model_load_s": 0.0157,
+  "first_inference_ms": 0.4285,
+  "warm_p50_ms": 0.0411,
+  "perception_p50_ms": 4.889,
+  "controller_send_p50_ms": 2.645,
+  "bottleneck": "host-side perception; ONNX inference 0.4% of the loop",
+  "cpu_only_suitable": true,
+  "sustained_note": "10k-cycle single episode + 104,737 Stage-B cycles + gate/integration runs (>>30 min autonomous emulator time across the round)"
+ },
+ "tests": {
+  "total": "731 passed + 1 xfailed",
+  "new_r62": 63,
+  "regressions": 0,
+  "weakened": 0
+ },
+ "release_gate": {
+  "command": "python3 -m ps1play verify --profile final",
+  "gates": {
+   "repo_state": "PASS",
+   "model_manifest": "PASS",
+   "deployment_package": "PASS",
+   "policy_runtime": "PASS",
+   "adapter_contract": "PASS",
+   "controller_legality": "PASS",
+   "episode_lifecycle": "PASS",
+   "frame_capture": "PASS",
+   "full_loop_smoke": "PASS",
+   "multi_episode": "PASS",
+   "process_cleanup": "PASS",
+   "regression_suite": "PASS",
+   "docs_commands": "PASS",
+   "evidence_complete": "PASS",
+   "clean_install": "PASS"
+  },
+  "release": "PASS",
+  "wall_s": 309.7,
+  "result_file": "reports/r62_release_gate.json"
+ },
+ "artifacts_sha256": {
+  "reports/r62_release_gate.json": "685cc871cbe934803b4ce48c1be9b1c4cedefad229878d03dc937d76ca7f63ce",
+  "data/r62/r62_stage_b_summary.json": "4222f8332fbdcbc42c7c423e494155cfa5d93b8c3e656355c77e65f3a5c5246f",
+  "data/r62/r62_stage_c_summary.json": "03c99e50cd7b5fd25387a40aa5a2914e6dd9b006352ec0a5c0a3ed2fc7c4723a",
+  "data/r62/r62_stage_d_summary.json": "ce174562c29ec714aead54bc5e7336a2ec04eda3344822c1b553b82021b7e15c",
+  "data/r62/r62_profile.json": "a0fa6d7c3dc302eb88c014c9618249c207729e4ede9179f905810f3ac12cc570"
+ },
+ "known_limitations": [
+  "headless-only (show-window refused by design; watch = --record GIFs)",
+  "Stage B = 4 launches x 5 consecutive episodes (sandbox tool-call wall limit); same-launch continuity proven byte-exactly at 3xk45/2xk45",
+  "Linux/x86-64 only (tested)",
+  "clean-install gate needs network for the fresh venv",
+  "R61 model limitations carry over unchanged (decision-only ONNX, numpy host dependency, heavy-tailed seeds)"
+ ]
+}

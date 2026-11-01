@@ -1,0 +1,70 @@
+{
+ "round": "R62",
+ "profile": "final",
+ "when": "2026-11-01T05:38:12+0000",
+ "wall_s": 309.7,
+ "gates": {
+  "repo_state": {
+   "status": "PASS",
+   "detail": "HEAD 4797af2e16c5; artifacts present"
+  },
+  "model_manifest": {
+   "status": "PASS",
+   "detail": "manifest<->npz/onnx/package bound"
+  },
+  "deployment_package": {
+   "status": "PASS",
+   "detail": "fresh CLI smoke green (SMOKE PASS)"
+  },
+  "policy_runtime": {
+   "status": "PASS",
+   "detail": "authority-checked load + predict OK (4dd592a7118a...)"
+  },
+  "adapter_contract": {
+   "status": "PASS",
+   "detail": "observe/act/reset contract green (fake env)"
+  },
+  "controller_legality": {
+   "status": "PASS",
+   "detail": "legality + sequencing + stop latch enforced"
+  },
+  "episode_lifecycle": {
+   "status": "PASS",
+   "detail": "state machine + restart policy rules green"
+  },
+  "frame_capture": {
+   "status": "PASS",
+   "detail": "ordered capture + staleness enforced (emu frames 2->3)"
+  },
+  "full_loop_smoke": {
+   "status": "PASS",
+   "detail": "k=30 through the runtime = 37@4401, trace byte-matches the R61 record"
+  },
+  "multi_episode": {
+   "status": "PASS",
+   "detail": "3 consecutive episodes (k=45) all byte-match the R61 record (40@4753) \u2014 no stale state across episodes"
+  },
+  "process_cleanup": {
+   "status": "PASS",
+   "detail": "close idempotent + same-process re-boot works (beetle=mednafen_psx_libretro.so; boot={'...)"
+  },
+  "regression_suite": {
+   "status": "PASS",
+   "detail": "731 passed, 1 xfailed in 119.86s (0:01:59)"
+  },
+  "docs_commands": {
+   "status": "PASS",
+   "detail": "3 documented commands exit 0"
+  },
+  "evidence_complete": {
+   "status": "PASS",
+   "detail": "8 docs + 4 evidence summaries, all asserting success"
+  },
+  "clean_install": {
+   "status": "PASS",
+   "detail": "fresh venv + pinned deps + smoke green"
+  }
+ },
+ "required_failures": [],
+ "release": "PASS"
+}

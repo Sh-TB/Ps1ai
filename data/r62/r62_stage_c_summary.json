@@ -1,0 +1,40 @@
+{
+ "stage": "C",
+ "round": "R62",
+ "when": "2026-11-01T05:19:03+0000",
+ "seed_k": 45,
+ "n_launches": 3,
+ "launches": [
+  {
+   "launch": 1,
+   "exit_code": 0,
+   "wall_s": 45.1,
+   "trace_sha256": "5f3d0aa2e61e0ed5451d83b83525c36c807d0f7012533b4d7e451a5ab3a9dca7",
+   "byte_match_r61": true,
+   "policy_identity_ok": true,
+   "leaked_processes": "none",
+   "ok": true
+  },
+  {
+   "launch": 2,
+   "exit_code": 0,
+   "wall_s": 45.3,
+   "trace_sha256": "5f3d0aa2e61e0ed5451d83b83525c36c807d0f7012533b4d7e451a5ab3a9dca7",
+   "byte_match_r61": true,
+   "policy_identity_ok": true,
+   "leaked_processes": "none",
+   "ok": true
+  },
+  {
+   "launch": 3,
+   "exit_code": 0,
+   "wall_s": 45.8,
+   "trace_sha256": "5f3d0aa2e61e0ed5451d83b83525c36c807d0f7012533b4d7e451a5ab3a9dca7",
+   "byte_match_r61": true,
+   "policy_identity_ok": true,
+   "leaked_processes": "none",
+   "ok": true
+  }
+ ],
+ "all_ok": true
+}

@@ -1,0 +1,4 @@
+# R62 autonomous runtime — pinned runtime dependencies (Linux x86-64)
+numpy==2.1.3
+onnxruntime==1.19.2
+pillow>=10.0.0

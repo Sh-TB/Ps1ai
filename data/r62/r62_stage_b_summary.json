@@ -1,0 +1,304 @@
+{
+ "stage": "B",
+ "round": "R62",
+ "when": "2026-11-01T05:16:19+0000",
+ "constraint": "sandbox kills processes between tool calls (~10 min) -> 4 launches x 5 consecutive autonomous episodes; same-launch continuity proven byte-exactly by the release gate (3x k45) and the integration test (2x k45)",
+ "seeds_preregistered": [
+  6,
+  12,
+  18,
+  24,
+  30,
+  36,
+  42,
+  48,
+  54,
+  60,
+  66,
+  72,
+  78,
+  84,
+  90,
+  96,
+  102,
+  108,
+  114,
+  120
+ ],
+ "seeds_run": [
+  6,
+  12,
+  18,
+  24,
+  30,
+  36,
+  42,
+  48,
+  54,
+  60,
+  66,
+  72,
+  78,
+  84,
+  90,
+  96,
+  102,
+  108,
+  114,
+  120
+ ],
+ "episodes_per_launch": {
+  "0": 5,
+  "1": 5,
+  "2": 5,
+  "3": 5
+ },
+ "n_episodes_completed": 20,
+ "results": [
+  {
+   "episode": 1,
+   "seed_k": 6,
+   "result": "alive",
+   "pipes": 87,
+   "frames": 10000,
+   "flaps": 640,
+   "wall_s": 99.5,
+   "trace_sha256": "d510e758940363dfb985050a28e683187a4b03836b7c03a6252c39432b447a1e",
+   "launch": 0
+  },
+  {
+   "episode": 2,
+   "seed_k": 12,
+   "result": "death",
+   "pipes": 76,
+   "frames": 8798,
+   "flaps": 560,
+   "wall_s": 87.2,
+   "trace_sha256": "363f273ccc390a0927e61f73c5658a115e6fe2e8f0fdaa7168dbc514da9e8ba6",
+   "launch": 0
+  },
+  {
+   "episode": 3,
+   "seed_k": 18,
+   "result": "death",
+   "pipes": 69,
+   "frames": 8004,
+   "flaps": 512,
+   "wall_s": 78.99,
+   "trace_sha256": "439d2f8550cd40909154f4956629a5c3153d31eb119defa57bc9fa2c0caab141",
+   "launch": 0
+  },
+  {
+   "episode": 4,
+   "seed_k": 24,
+   "result": "death",
+   "pipes": 24,
+   "frames": 2937,
+   "flaps": 190,
+   "wall_s": 29.17,
+   "trace_sha256": "c7022261ab132bb6a593655291a3727fb77584085fe9d746eac93933c744979b",
+   "launch": 0
+  },
+  {
+   "episode": 5,
+   "seed_k": 30,
+   "result": "death",
+   "pipes": 37,
+   "frames": 4401,
+   "flaps": 281,
+   "wall_s": 43.59,
+   "trace_sha256": "5688867041b5f49af91b158c73b51e3c8cc4a9f89d40b76d69fccf5547b5f90a",
+   "launch": 0
+  },
+  {
+   "episode": 1,
+   "seed_k": 36,
+   "result": "death",
+   "pipes": 34,
+   "frames": 4068,
+   "flaps": 260,
+   "wall_s": 42.66,
+   "trace_sha256": "80ed353fe5e6d4fd92592f78af7f61026dcfff6129ab0e366e12df9838e0a386",
+   "launch": 1
+  },
+  {
+   "episode": 2,
+   "seed_k": 42,
+   "result": "death",
+   "pipes": 55,
+   "frames": 6428,
+   "flaps": 410,
+   "wall_s": 63.28,
+   "trace_sha256": "26a504fd26c8e504a3845b2c0b3c1504891aa6d74858d1afe794b992b1f6948e",
+   "launch": 1
+  },
+  {
+   "episode": 3,
+   "seed_k": 48,
+   "result": "death",
+   "pipes": 23,
+   "frames": 2829,
+   "flaps": 180,
+   "wall_s": 27.84,
+   "trace_sha256": "a0c886837185ded6674c8caa334899fef33a7c4d4834ffcc96a5af39aa338179",
+   "launch": 1
+  },
+  {
+   "episode": 4,
+   "seed_k": 54,
+   "result": "death",
+   "pipes": 10,
+   "frames": 1353,
+   "flaps": 88,
+   "wall_s": 13.49,
+   "trace_sha256": "4cdb8661c5a69834ca83d15e9d2bb9e90816be6b0254803f3fb9f55f06721c0d",
+   "launch": 1
+  },
+  {
+   "episode": 5,
+   "seed_k": 60,
+   "result": "alive",
+   "pipes": 87,
+   "frames": 10000,
+   "flaps": 640,
+   "wall_s": 98.58,
+   "trace_sha256": "995a39630a92e7f5bac25cd6bcb35723c3ea470e9e9073b2a107628aa9d57da3",
+   "launch": 1
+  },
+  {
+   "episode": 1,
+   "seed_k": 66,
+   "result": "death",
+   "pipes": 68,
+   "frames": 7895,
+   "flaps": 514,
+   "wall_s": 79.03,
+   "trace_sha256": "a3df51d4d9deecaddd354bea8fb949392e27047de24c2ee8887a76e9fbbc8acf",
+   "launch": 2
+  },
+  {
+   "episode": 2,
+   "seed_k": 72,
+   "result": "death",
+   "pipes": 22,
+   "frames": 2720,
+   "flaps": 174,
+   "wall_s": 27.01,
+   "trace_sha256": "7238d5e842cc199cfaf8c24798044c49ce1b00c34585ca14107ee1d170a3fb58",
+   "launch": 2
+  },
+  {
+   "episode": 3,
+   "seed_k": 78,
+   "result": "death",
+   "pipes": 15,
+   "frames": 1917,
+   "flaps": 120,
+   "wall_s": 19.12,
+   "trace_sha256": "7fd9c8b4d4c7e755491454bdf2061b9b37f7dee082c92bb4dcdaa2c42fae102b",
+   "launch": 2
+  },
+  {
+   "episode": 4,
+   "seed_k": 84,
+   "result": "death",
+   "pipes": 42,
+   "frames": 4974,
+   "flaps": 318,
+   "wall_s": 49.39,
+   "trace_sha256": "62e1bb5cf253f0765bf231163070cf88850c718712cf934ec21779fbd2d38c9f",
+   "launch": 2
+  },
+  {
+   "episode": 5,
+   "seed_k": 90,
+   "result": "death",
+   "pipes": 68,
+   "frames": 7895,
+   "flaps": 512,
+   "wall_s": 78.84,
+   "trace_sha256": "f11010a5c05ec3ba7da9c4119389df61d61233ffce8ac28e331af203b7794686",
+   "launch": 2
+  },
+  {
+   "episode": 1,
+   "seed_k": 96,
+   "result": "death",
+   "pipes": 14,
+   "frames": 1812,
+   "flaps": 122,
+   "wall_s": 18.02,
+   "trace_sha256": "2dc43a0a82aee305a56072af2ad2c45f7031fdaa90b08c8833c1bff78bd387f9",
+   "launch": 3
+  },
+  {
+   "episode": 2,
+   "seed_k": 102,
+   "result": "death",
+   "pipes": 16,
+   "frames": 2032,
+   "flaps": 130,
+   "wall_s": 19.96,
+   "trace_sha256": "a5fcb29a5de799ddde609527bac1d232ec89df43572ce488f5dc8c9a0c97433a",
+   "launch": 3
+  },
+  {
+   "episode": 3,
+   "seed_k": 108,
+   "result": "death",
+   "pipes": 18,
+   "frames": 2263,
+   "flaps": 146,
+   "wall_s": 22.05,
+   "trace_sha256": "0bd2b7b75c0c6f454fbaf0119b066650d9a9ffc89951cc018447eb4e838e24df",
+   "launch": 3
+  },
+  {
+   "episode": 4,
+   "seed_k": 114,
+   "result": "alive",
+   "pipes": 87,
+   "frames": 10000,
+   "flaps": 632,
+   "wall_s": 97.78,
+   "trace_sha256": "8df46e7bb5b0db079acca350fab6b22f84b3e460800686d821462132bef6d343",
+   "launch": 3
+  },
+  {
+   "episode": 5,
+   "seed_k": 120,
+   "result": "death",
+   "pipes": 37,
+   "frames": 4411,
+   "flaps": 283,
+   "wall_s": 43.08,
+   "trace_sha256": "8310c8838ae76c177a9393eba3b74b16873e89ea504dc3a3770bc4f53a9434c4",
+   "launch": 3
+  }
+ ],
+ "family_byte_matches": [
+  {
+   "k": 6,
+   "byte_match_r61": true
+  },
+  {
+   "k": 12,
+   "byte_match_r61": true
+  },
+  {
+   "k": 30,
+   "byte_match_r61": true
+  },
+  {
+   "k": 60,
+   "byte_match_r61": true
+  },
+  {
+   "k": 90,
+   "byte_match_r61": true
+  }
+ ],
+ "family_byte_match_all": true,
+ "n_videos": 20,
+ "n_screenshots": 929
+}
