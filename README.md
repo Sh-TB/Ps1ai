@@ -329,6 +329,43 @@ See `docs/r64_tetrade_second_game.md`.
 python3 -m ps1play play tetrade --episodes 2 --record --verbose
 ```
 
+## R65 — Universal platform: THREE runtime games + downloadable per-game knowledge (`.ps1game`)
+
+The R62 one-command runtime now drives **THREE** games, and every game's
+complete knowledge ships as a **downloadable, versioned, hash-pinned
+package**:
+
+```bash
+python3 -m ps1play play flappybird      # the R61 frozen champion (87-pipe records)
+python3 -m ps1play play tetrade         # anchor-corrected Dellacherie (R65)
+python3 -m ps1play play buzzybee        # NEW — the R52-B proven planner (R65)
+
+python3 -m ps1play knowledge list                    # the package catalog
+python3 -m ps1play knowledge export tetrade          # build <game>.ps1game
+python3 -m ps1play knowledge validate ./tetrade.ps1game
+python3 -m ps1play knowledge install  ./tetrade.ps1game
+python3 -m ps1play test tetrade                      # the package's tests
+python3 -m ps1play knowledge show metal_slug_x       # manifest summary
+```
+
+| game | status | R65 result |
+|---|---|---|
+| **flappybird** | PARTIAL_AUTONOMOUS_PLAYER | fresh reserve-seed product run: mean 45.7, **87-pipe record reproduced 3×**; champion sha unchanged |
+| **tetrade** | PARTIAL_AUTONOMOUS_PLAYER | **the R65 discovery**: the game renders 3-wide pieces one column left of the policy's model at rotations 1–2 (28/28 measured combos) → the corrected policy went from **1.0 to 23.83 lines/life** (~24×) |
+| **buzzybee** (new, MIT homebrew) | PARTIAL_AUTONOMOUS_PLAYER | third runtime game: boot → play → natural game over → restart verified; the score law **EXACT** on every episode; the gs=5 game-over state characterized; the 2-frame flap press discovered |
+| **metal_slug_x** | INPUT_VERIFIED (knowledge package only — no play claimed) | the RE knowledge (capsule, entity table, death paths, Mission 1 map/route) ships as a diagnostic package; Mission 1 remains OPEN |
+
+Download: the **GitHub Releases → `r65`** page carries `flappybird.ps1game`,
+`tetrade.ps1game`, `buzzybee.ps1game`, `metal_slug_x.ps1game` +
+`SHA256SUMS.txt`. Format: ZIP with a hash-pinned manifest, honest maturity
+ladder, zero game assets (you provide your own legal copy; the runtime
+verifies its SHA-256 before playing). Details:
+`docs/r65_downloadable_knowledge_packages.md` · round report:
+`docs/r65_final_report.md` · audit: `docs/r65_baseline_audit.md`.
+
+Release gate: **15/15 PASS** (the flappy R61 records stay byte-exact;
+821 tests green; fresh-venv clean install proven).
+
 ## Source-of-truth table (live status of every claim)
 
 | Claim | Evidence today | Status |

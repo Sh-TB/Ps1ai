@@ -34,9 +34,9 @@ from ps1play.runtime.errors import RuntimePolicyError
 from ps1play.runtime.interfaces import (ActionDecision, GameObservation,
                                         Policy)
 
-POLICY_VERSION = "1.0.0"
-POLICY_NAME = "tetrade_dellacherie_2ply (R64 built-in, hand-written; " \
-              "R63-ported)"
+POLICY_VERSION = "1.1.0"
+POLICY_NAME = "tetrade_dellacherie_2ply (R65 anchor-corrected, " \
+              "hand-written; R63-ported)"
 
 # ---- piece geometry (verbatim semantics from the MIT-licensed source)
 BASE = {
@@ -59,6 +59,23 @@ DROP_SETTLE = 40       # idle frames after the hard drop
 MAX_ROT_TAPS = 4       # full circle; more means the plan is stale
 MAX_MOVES = 12         # R63's horizontal-tap cap
 MAX_FRAMES_ON_PLAN = 240   # stuck-plan fuse (forces the drop)
+
+# ---- R65 measured anchor table (scripts/r65_tetrade_anchor.json) ----
+# The struct's x is NOT the left edge of the policy's rot90 model for
+# every rotation.  Measured on the real game (28/28 type x rotation
+# combos, legal input only, read-only RAM): the game renders the
+# 3-wide pieces (types 3..7) ONE COLUMN LEFT of the model at
+# rotations 1 and 2; the I (1) and O (2) pieces never shift.  The
+# delta is uniform across every measured x (n=4..5 per rotation-0
+# combo, zero variance) and the realized SHAPE always matched the
+# model (rotation semantics correct; only the column anchor drifts).
+# Planning must use the TRUE columns or pieces bury holes (measured
+# with the uncorrected model: 39 holes at death, 8/22 placements one
+# column off — data/r65/r65_tetrade_lockprobe.json).
+ANCHOR_DELTA = {(t, r): 0 for t in range(1, 8) for r in range(4)}
+for _t in (3, 4, 5, 6, 7):
+    ANCHOR_DELTA[(_t, 1)] = -1
+    ANCHOR_DELTA[(_t, 2)] = -1
 
 PHASES = ("ROTATE", "MOVE", "DROP", "SETTLE", "DONE")
 
@@ -148,18 +165,23 @@ def evaluate(board: np.ndarray, shape: np.ndarray, x: int):
 
 
 def plan_placement(board: np.ndarray, ptype: int, next_type: int):
-    """The R63 2-ply plan: best (rot, x) for the current piece,
-    refined over the top-8 1-ply placements against the NEXT piece.
+    """The R63 2-ply plan, R65 anchor-corrected: best (rot, x) for the
+    current piece, refined over the top-8 1-ply placements against the
+    NEXT piece.  `x` candidates are STRUCT x values (what the
+    controller steers to); all board physics run at the TRUE columns
+    x + ANCHOR_DELTA[(type, rot)] (the measured column-anchor shift).
     Returns (r_t, x_t, info, v1) or None when no placement exists."""
     if not (1 <= ptype <= 7):
         return None
     shorts = []
     for r in range(4):
         shape = rot_shape(ptype, r)
+        d = ANCHOR_DELTA[(ptype, r)]
         for x in range(-1, W):
-            if any(x + dc < 0 or x + dc >= W for _, dc in cells(shape)):
+            xe = x + d               # the TRUE game columns
+            if any(xe + dc < 0 or xe + dc >= W for _, dc in cells(shape)):
                 continue
-            v, info = evaluate(board, shape, x)
+            v, info = evaluate(board, shape, xe)
             if v is None:
                 continue
             shorts.append((v, r, x, info))
@@ -168,12 +190,15 @@ def plan_placement(board: np.ndarray, ptype: int, next_type: int):
     shorts.sort(key=lambda t: t[0], reverse=True)
     refined = None
     for v, r, x, info in shorts[:8]:
-        y = drop_y(board, rot_shape(ptype, r), x)
+        shape = rot_shape(ptype, r)
+        d = ANCHOR_DELTA[(ptype, r)]
+        xe = x + d
+        y = drop_y(board, shape, xe)
         if y < 0:
             continue
         b2 = board.copy()
-        for dr, dc in cells(rot_shape(ptype, r)):
-            b2[y + dr, x + dc] = 1
+        for dr, dc in cells(shape):
+            b2[y + dr, xe + dc] = 1
         full = np.flatnonzero((b2 == 1).all(axis=1))
         for rr in full:
             b2[rr, :] = 0

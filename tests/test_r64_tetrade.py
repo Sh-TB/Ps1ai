@@ -640,8 +640,12 @@ class TestStructScan:
 # ---------------------------------------------------------------- --
 class TestWiring:
     def test_games_registered(self):
+        """R65: the registry GREW (buzzybee is the third runtime
+        game); the R64 contract is that tetrade and flappybird stay
+        registered — the full-list pin moved to the R65 tests."""
         from ps1play.runtime.registry import registered_games
-        assert registered_games() == ["flappybird", "tetrade"]
+        games = registered_games()
+        assert "flappybird" in games and "tetrade" in games
 
     def test_progress_labels(self):
         from ps1play.runtime.registry import progress_label_for

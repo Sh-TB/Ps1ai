@@ -1,0 +1,50 @@
+{
+ "tag": "r65_tetrade_improvement",
+ "challenger": {
+  "policy": "tetrade_dellacherie_2ply (R65 anchor-corrected, hand-written; R63-ported)",
+  "policy_sha256": "2d56d4f96af4d52baa75d17331e301520e17958cfecf5082af10779966366ca1",
+  "n": 6,
+  "lines": [
+   18,
+   36,
+   30,
+   29,
+   15,
+   15
+  ],
+  "pieces": [
+   null,
+   null,
+   null,
+   null,
+   null,
+   null
+  ],
+  "mean_lines": 23.83,
+  "alive_at_budget": 2,
+  "seeds": [
+   100,
+   106,
+   112,
+   118,
+   124,
+   130
+  ]
+ },
+ "incumbent_baseline": {
+  "n": 4,
+  "lines": [
+   0,
+   1,
+   2,
+   1
+  ],
+  "mean_lines": 1
+ },
+ "evidence_chain": [
+  "data/r65/r65_tetrade_diag_ep1.json + ep2: 39 holes at death, 26 pieces (uncorrected model)",
+  "data/r65/r65_tetrade_lockprobe.json: 22 placements decoded, 8 land one column left (64 cells at -1, 28 at -2, 22 exact); realized rotation always correct",
+  "data/r65/r65_tetrade_anchor.json: 28/28 (type,rot) combos measured on the real game via legal input + read-only RAM; delta = 0 for I/O all rotations and r=0/r=3 of 3-wide types; delta = -1 for types 3..7 at rotations 1 and 2"
+ ],
+ "verdict": "ANCHOR_DELTA table fixes the placement model; lines/life 1.0 -> 23.83 (mean), max 36; no memory writes; policy remains hand-written (no training)"
+}

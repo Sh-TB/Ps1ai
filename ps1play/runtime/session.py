@@ -43,15 +43,21 @@ GAME_DEFAULT_ISO = {
                                "flappybird.cue"),
     "tetrade": os.path.join("/home/z/my-project/emu/games_homebrew",
                             "patched", "tetrade_lic.cue"),
+    "buzzybee": os.path.join("/home/z/my-project/emu/games_homebrew",
+                             "patched", "buzzybee_ntsc_lic.cue"),
 }
 
 # The exact disc bytes every record was made with (R64: the
-# license-patched Tetrade image, sha256 over TETRADE_lic.bin).
+# license-patched Tetrade image, sha256 over TETRADE_lic.bin; R65: the
+# wrapped BuzzyBee NTSC disc, sha256 over buzzybee_ntsc_lic.bin —
+# rebuilt byte-identical by scripts/r30t0_buzzybee_asset.py).
 EXPECTED_ISO_SHA = {
     "flappybird": "b45871d32c7910784b26128c3f4ed48d181e31dfd693f4e5efa"
                   "187cf2296f0ed",
     "tetrade": "7eb38eda1274b6c2dba81dc490598d5b8a9e683025a0afd604ec"
                "130d063c3cc1",
+    "buzzybee": "042b94bb29907e75b4eadd0699619eb770089bf8880adf31f26bc"
+                "c591a1bb093",
 }
 
 

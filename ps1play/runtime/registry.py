@@ -126,6 +126,18 @@ def _tetrade_env_factory(config):
     return BaseEnv(ws, cue)
 
 
+def _buzzybee_env_factory(config):
+    """BuzzyBee: BaseEnv over the wrapped NTSC disc (the exact R23/R30
+    boot: upstream EXE + the disclosed NTSC patch + the user's own
+    license sectors; disc sha pinned in session.GAME_DEFAULT_ISO)."""
+    from ps1play.learn.games import BaseEnv  # noqa: PLC0415
+    from .session import GAME_DEFAULT_ISO  # noqa: PLC0415
+    ws = config.workspace or os.path.join(
+        "/home/z/my-project/emu/games_homebrew", "ws_r65_buzzybee")
+    cue = config.iso_path or GAME_DEFAULT_ISO["buzzybee"]
+    return BaseEnv(ws, cue)
+
+
 def _register_defaults() -> None:
     from ps1play.adapters.flappybird.adapter import (
         FlappyBirdAdapter,  # noqa: PLC0415
@@ -147,6 +159,20 @@ def _register_defaults() -> None:
                   adapter=TetradeAdapter,
                   policy_factory=_tetrade_policy_factory,
                   progress_label="lines")
+
+    def _buzzybee_policy_factory(config, telemetry=None):
+        from ps1play.adapters.buzzybee import (  # noqa: PLC0415
+            BuzzyPolicy,
+        )
+        return BuzzyPolicy(config, telemetry=telemetry)
+
+    from ps1play.adapters.buzzybee.adapter import (  # noqa: PLC0415
+        BuzzyBeeAdapter,
+    )
+    register_game("buzzybee", env_factory=_buzzybee_env_factory,
+                  adapter=BuzzyBeeAdapter,
+                  policy_factory=_buzzybee_policy_factory,
+                  progress_label="score")
 
 
 _register_defaults()

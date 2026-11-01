@@ -1,0 +1,1949 @@
+{
+ "tag": "r65_tetrade_lockprobe",
+ "result": "death",
+ "drops_recorded": 22,
+ "clean_comparisons": 22,
+ "perfect_placements": 14,
+ "cell_match_rate": 0.659,
+ "delta_col_histogram": {
+  "-1": 64,
+  "0": 22,
+  "-2": 28
+ },
+ "events": [
+  {
+   "predrop": {
+    "ptype": 1,
+    "px": -1,
+    "prot": 3,
+    "py": 2,
+    "plan": {
+     "r_t": 3,
+     "x_t": -1,
+     "forced": false,
+     "frames": 72
+    },
+    "pred_y": 16,
+    "pred_cells": [
+     [
+      16,
+      0
+     ],
+     [
+      17,
+      0
+     ],
+     [
+      18,
+      0
+     ],
+     [
+      19,
+      0
+     ]
+    ]
+   },
+   "added_cells": [
+    [
+     16,
+     0
+    ],
+    [
+     17,
+     0
+    ],
+    [
+     18,
+     0
+    ],
+    [
+     19,
+     0
+    ]
+   ],
+   "full_rows_at_lock": 0,
+   "pre_max_height": 0,
+   "pred_cells": [
+    [
+     16,
+     0
+    ],
+    [
+     17,
+     0
+    ],
+    [
+     18,
+     0
+    ],
+    [
+     19,
+     0
+    ]
+   ],
+   "matched": 4,
+   "pred_n": 4,
+   "got_n": 4,
+   "missing": [],
+   "extra": []
+  },
+  {
+   "predrop": {
+    "ptype": 3,
+    "px": 1,
+    "prot": 0,
+    "py": 2,
+    "plan": {
+     "r_t": 0,
+     "x_t": 1,
+     "forced": false,
+     "frames": 67
+    },
+    "pred_y": 18,
+    "pred_cells": [
+     [
+      18,
+      1
+     ],
+     [
+      19,
+      1
+     ],
+     [
+      19,
+      2
+     ],
+     [
+      19,
+      3
+     ]
+    ]
+   },
+   "added_cells": [
+    [
+     18,
+     1
+    ],
+    [
+     19,
+     1
+    ],
+    [
+     19,
+     2
+    ],
+    [
+     19,
+     3
+    ]
+   ],
+   "full_rows_at_lock": 0,
+   "pre_max_height": 20,
+   "pred_cells": [
+    [
+     18,
+     1
+    ],
+    [
+     19,
+     1
+    ],
+    [
+     19,
+     2
+    ],
+    [
+     19,
+     3
+    ]
+   ],
+   "matched": 4,
+   "pred_n": 4,
+   "got_n": 4,
+   "missing": [],
+   "extra": []
+  },
+  {
+   "predrop": {
+    "ptype": 2,
+    "px": 3,
+    "prot": 0,
+    "py": 2,
+    "plan": {
+     "r_t": 0,
+     "x_t": 3,
+     "forced": false,
+     "frames": 43
+    },
+    "pred_y": 17,
+    "pred_cells": [
+     [
+      18,
+      4
+     ],
+     [
+      18,
+      5
+     ],
+     [
+      19,
+      4
+     ],
+     [
+      19,
+      5
+     ]
+    ]
+   },
+   "added_cells": [
+    [
+     18,
+     4
+    ],
+    [
+     18,
+     5
+    ],
+    [
+     19,
+     4
+    ],
+    [
+     19,
+     5
+    ]
+   ],
+   "full_rows_at_lock": 0,
+   "pre_max_height": 20,
+   "pred_cells": [
+    [
+     18,
+     4
+    ],
+    [
+     18,
+     5
+    ],
+    [
+     19,
+     4
+    ],
+    [
+     19,
+     5
+    ]
+   ],
+   "matched": 4,
+   "pred_n": 4,
+   "got_n": 4,
+   "missing": [],
+   "extra": []
+  },
+  {
+   "predrop": {
+    "ptype": 6,
+    "px": -1,
+    "prot": 1,
+    "py": 3,
+    "plan": {
+     "r_t": 1,
+     "x_t": -1,
+     "forced": false,
+     "frames": 98
+    },
+    "pred_y": 16,
+    "pred_cells": [
+     [
+      16,
+      1
+     ],
+     [
+      17,
+      1
+     ],
+     [
+      17,
+      2
+     ],
+     [
+      18,
+      2
+     ]
+    ]
+   },
+   "added_cells": [
+    [
+     14,
+     0
+    ],
+    [
+     15,
+     0
+    ],
+    [
+     15,
+     1
+    ],
+    [
+     16,
+     1
+    ]
+   ],
+   "full_rows_at_lock": 0,
+   "pre_max_height": 20,
+   "pred_cells": [
+    [
+     16,
+     1
+    ],
+    [
+     17,
+     1
+    ],
+    [
+     17,
+     2
+    ],
+    [
+     18,
+     2
+    ]
+   ],
+   "matched": 1,
+   "pred_n": 4,
+   "got_n": 4,
+   "missing": [
+    [
+     17,
+     1
+    ],
+    [
+     17,
+     2
+    ],
+    [
+     18,
+     2
+    ]
+   ],
+   "extra": [
+    [
+     14,
+     0
+    ],
+    [
+     15,
+     0
+    ],
+    [
+     15,
+     1
+    ]
+   ]
+  },
+  {
+   "predrop": {
+    "ptype": 4,
+    "px": 0,
+    "prot": 1,
+    "py": 3,
+    "plan": {
+     "r_t": 1,
+     "x_t": 0,
+     "forced": false,
+     "frames": 86
+    },
+    "pred_y": 16,
+    "pred_cells": [
+     [
+      16,
+      2
+     ],
+     [
+      17,
+      2
+     ],
+     [
+      18,
+      2
+     ],
+     [
+      18,
+      3
+     ]
+    ]
+   },
+   "added_cells": [
+    [
+     12,
+     1
+    ],
+    [
+     13,
+     1
+    ],
+    [
+     14,
+     1
+    ],
+    [
+     14,
+     2
+    ]
+   ],
+   "full_rows_at_lock": 0,
+   "pre_max_height": 20,
+   "pred_cells": [
+    [
+     16,
+     2
+    ],
+    [
+     17,
+     2
+    ],
+    [
+     18,
+     2
+    ],
+    [
+     18,
+     3
+    ]
+   ],
+   "matched": 0,
+   "pred_n": 4,
+   "got_n": 4,
+   "missing": [
+    [
+     16,
+     2
+    ],
+    [
+     17,
+     2
+    ],
+    [
+     18,
+     2
+    ],
+    [
+     18,
+     3
+    ]
+   ],
+   "extra": [
+    [
+     12,
+     1
+    ],
+    [
+     13,
+     1
+    ],
+    [
+     14,
+     1
+    ],
+    [
+     14,
+     2
+    ]
+   ]
+  },
+  {
+   "predrop": {
+    "ptype": 7,
+    "px": 7,
+    "prot": 0,
+    "py": 3,
+    "plan": {
+     "r_t": 0,
+     "x_t": 7,
+     "forced": false,
+     "frames": 91
+    },
+    "pred_y": 18,
+    "pred_cells": [
+     [
+      18,
+      8
+     ],
+     [
+      19,
+      7
+     ],
+     [
+      19,
+      8
+     ],
+     [
+      19,
+      9
+     ]
+    ]
+   },
+   "added_cells": [
+    [
+     18,
+     8
+    ],
+    [
+     19,
+     7
+    ],
+    [
+     19,
+     8
+    ],
+    [
+     19,
+     9
+    ]
+   ],
+   "full_rows_at_lock": 0,
+   "pre_max_height": 20,
+   "pred_cells": [
+    [
+     18,
+     8
+    ],
+    [
+     19,
+     7
+    ],
+    [
+     19,
+     8
+    ],
+    [
+     19,
+     9
+    ]
+   ],
+   "matched": 4,
+   "pred_n": 4,
+   "got_n": 4,
+   "missing": [],
+   "extra": []
+  },
+  {
+   "predrop": {
+    "ptype": 5,
+    "px": 4,
+    "prot": 1,
+    "py": 2,
+    "plan": {
+     "r_t": 1,
+     "x_t": 4,
+     "forced": false,
+     "frames": 62
+    },
+    "pred_y": 17,
+    "pred_cells": [
+     [
+      17,
+      7
+     ],
+     [
+      18,
+      6
+     ],
+     [
+      18,
+      7
+     ],
+     [
+      19,
+      6
+     ]
+    ]
+   },
+   "added_cells": [
+    [
+     15,
+     6
+    ],
+    [
+     16,
+     5
+    ],
+    [
+     16,
+     6
+    ],
+    [
+     17,
+     5
+    ]
+   ],
+   "full_rows_at_lock": 0,
+   "pre_max_height": 20,
+   "pred_cells": [
+    [
+     17,
+     7
+    ],
+    [
+     18,
+     6
+    ],
+    [
+     18,
+     7
+    ],
+    [
+     19,
+     6
+    ]
+   ],
+   "matched": 0,
+   "pred_n": 4,
+   "got_n": 4,
+   "missing": [
+    [
+     17,
+     7
+    ],
+    [
+     18,
+     6
+    ],
+    [
+     18,
+     7
+    ],
+    [
+     19,
+     6
+    ]
+   ],
+   "extra": [
+    [
+     15,
+     6
+    ],
+    [
+     16,
+     5
+    ],
+    [
+     16,
+     6
+    ],
+    [
+     17,
+     5
+    ]
+   ]
+  },
+  {
+   "predrop": {
+    "ptype": 7,
+    "px": 8,
+    "prot": 3,
+    "py": 4,
+    "plan": {
+     "r_t": 3,
+     "x_t": 8,
+     "forced": false,
+     "frames": 124
+    },
+    "pred_y": 15,
+    "pred_cells": [
+     [
+      16,
+      9
+     ],
+     [
+      17,
+      8
+     ],
+     [
+      17,
+      9
+     ],
+     [
+      18,
+      9
+     ]
+    ]
+   },
+   "added_cells": [
+    [
+     16,
+     9
+    ],
+    [
+     17,
+     8
+    ],
+    [
+     17,
+     9
+    ],
+    [
+     18,
+     9
+    ]
+   ],
+   "full_rows_at_lock": 0,
+   "pre_max_height": 20,
+   "pred_cells": [
+    [
+     16,
+     9
+    ],
+    [
+     17,
+     8
+    ],
+    [
+     17,
+     9
+    ],
+    [
+     18,
+     9
+    ]
+   ],
+   "matched": 4,
+   "pred_n": 4,
+   "got_n": 4,
+   "missing": [],
+   "extra": []
+  },
+  {
+   "predrop": {
+    "ptype": 1,
+    "px": -1,
+    "prot": 3,
+    "py": 3,
+    "plan": {
+     "r_t": 3,
+     "x_t": -1,
+     "forced": false,
+     "frames": 124
+    },
+    "pred_y": 10,
+    "pred_cells": [
+     [
+      10,
+      0
+     ],
+     [
+      11,
+      0
+     ],
+     [
+      12,
+      0
+     ],
+     [
+      13,
+      0
+     ]
+    ]
+   },
+   "added_cells": [
+    [
+     10,
+     0
+    ],
+    [
+     11,
+     0
+    ],
+    [
+     12,
+     0
+    ],
+    [
+     13,
+     0
+    ]
+   ],
+   "full_rows_at_lock": 0,
+   "pre_max_height": 20,
+   "pred_cells": [
+    [
+     10,
+     0
+    ],
+    [
+     11,
+     0
+    ],
+    [
+     12,
+     0
+    ],
+    [
+     13,
+     0
+    ]
+   ],
+   "matched": 4,
+   "pred_n": 4,
+   "got_n": 4,
+   "missing": [],
+   "extra": []
+  },
+  {
+   "predrop": {
+    "ptype": 2,
+    "px": 2,
+    "prot": 0,
+    "py": 2,
+    "plan": {
+     "r_t": 0,
+     "x_t": 2,
+     "forced": false,
+     "frames": 55
+    },
+    "pred_y": 15,
+    "pred_cells": [
+     [
+      16,
+      3
+     ],
+     [
+      16,
+      4
+     ],
+     [
+      17,
+      3
+     ],
+     [
+      17,
+      4
+     ]
+    ]
+   },
+   "added_cells": [
+    [
+     16,
+     3
+    ],
+    [
+     16,
+     4
+    ],
+    [
+     17,
+     3
+    ],
+    [
+     17,
+     4
+    ]
+   ],
+   "full_rows_at_lock": 0,
+   "pre_max_height": 20,
+   "pred_cells": [
+    [
+     16,
+     3
+    ],
+    [
+     16,
+     4
+    ],
+    [
+     17,
+     3
+    ],
+    [
+     17,
+     4
+    ]
+   ],
+   "matched": 4,
+   "pred_n": 4,
+   "got_n": 4,
+   "missing": [],
+   "extra": []
+  },
+  {
+   "predrop": {
+    "ptype": 4,
+    "px": 1,
+    "prot": 3,
+    "py": 3,
+    "plan": {
+     "r_t": 3,
+     "x_t": 1,
+     "forced": false,
+     "frames": 88
+    },
+    "pred_y": 10,
+    "pred_cells": [
+     [
+      11,
+      1
+     ],
+     [
+      11,
+      2
+     ],
+     [
+      12,
+      2
+     ],
+     [
+      13,
+      2
+     ]
+    ]
+   },
+   "added_cells": [
+    [
+     11,
+     1
+    ],
+    [
+     11,
+     2
+    ],
+    [
+     12,
+     2
+    ],
+    [
+     13,
+     2
+    ]
+   ],
+   "full_rows_at_lock": 0,
+   "pre_max_height": 20,
+   "pred_cells": [
+    [
+     11,
+     1
+    ],
+    [
+     11,
+     2
+    ],
+    [
+     12,
+     2
+    ],
+    [
+     13,
+     2
+    ]
+   ],
+   "matched": 4,
+   "pred_n": 4,
+   "got_n": 4,
+   "missing": [],
+   "extra": []
+  },
+  {
+   "predrop": {
+    "ptype": 6,
+    "px": 4,
+    "prot": 0,
+    "py": 2,
+    "plan": {
+     "r_t": 0,
+     "x_t": 4,
+     "forced": false,
+     "frames": 55
+    },
+    "pred_y": 14,
+    "pred_cells": [
+     [
+      14,
+      5
+     ],
+     [
+      14,
+      6
+     ],
+     [
+      15,
+      4
+     ],
+     [
+      15,
+      5
+     ]
+    ]
+   },
+   "added_cells": [
+    [
+     14,
+     5
+    ],
+    [
+     14,
+     6
+    ],
+    [
+     15,
+     4
+    ],
+    [
+     15,
+     5
+    ]
+   ],
+   "full_rows_at_lock": 0,
+   "pre_max_height": 20,
+   "pred_cells": [
+    [
+     14,
+     5
+    ],
+    [
+     14,
+     6
+    ],
+    [
+     15,
+     4
+    ],
+    [
+     15,
+     5
+    ]
+   ],
+   "matched": 4,
+   "pred_n": 4,
+   "got_n": 4,
+   "missing": [],
+   "extra": []
+  },
+  {
+   "predrop": {
+    "ptype": 5,
+    "px": 1,
+    "prot": 1,
+    "py": 3,
+    "plan": {
+     "r_t": 1,
+     "x_t": 1,
+     "forced": false,
+     "frames": 86
+    },
+    "pred_y": 13,
+    "pred_cells": [
+     [
+      13,
+      4
+     ],
+     [
+      14,
+      3
+     ],
+     [
+      14,
+      4
+     ],
+     [
+      15,
+      3
+     ]
+    ]
+   },
+   "added_cells": [
+    [
+     8,
+     3
+    ],
+    [
+     9,
+     2
+    ],
+    [
+     9,
+     3
+    ],
+    [
+     10,
+     2
+    ]
+   ],
+   "full_rows_at_lock": 0,
+   "pre_max_height": 20,
+   "pred_cells": [
+    [
+     13,
+     4
+    ],
+    [
+     14,
+     3
+    ],
+    [
+     14,
+     4
+    ],
+    [
+     15,
+     3
+    ]
+   ],
+   "matched": 0,
+   "pred_n": 4,
+   "got_n": 4,
+   "missing": [
+    [
+     13,
+     4
+    ],
+    [
+     14,
+     3
+    ],
+    [
+     14,
+     4
+    ],
+    [
+     15,
+     3
+    ]
+   ],
+   "extra": [
+    [
+     8,
+     3
+    ],
+    [
+     9,
+     2
+    ],
+    [
+     9,
+     3
+    ],
+    [
+     10,
+     2
+    ]
+   ]
+  },
+  {
+   "predrop": {
+    "ptype": 3,
+    "px": 5,
+    "prot": 1,
+    "py": 2,
+    "plan": {
+     "r_t": 1,
+     "x_t": 5,
+     "forced": false,
+     "frames": 74
+    },
+    "pred_y": 16,
+    "pred_cells": [
+     [
+      16,
+      7
+     ],
+     [
+      16,
+      8
+     ],
+     [
+      17,
+      7
+     ],
+     [
+      18,
+      7
+     ]
+    ]
+   },
+   "added_cells": [
+    [
+     11,
+     6
+    ],
+    [
+     11,
+     7
+    ],
+    [
+     12,
+     6
+    ],
+    [
+     13,
+     6
+    ]
+   ],
+   "full_rows_at_lock": 0,
+   "pre_max_height": 20,
+   "pred_cells": [
+    [
+     16,
+     7
+    ],
+    [
+     16,
+     8
+    ],
+    [
+     17,
+     7
+    ],
+    [
+     18,
+     7
+    ]
+   ],
+   "matched": 0,
+   "pred_n": 4,
+   "got_n": 4,
+   "missing": [
+    [
+     16,
+     7
+    ],
+    [
+     16,
+     8
+    ],
+    [
+     17,
+     7
+    ],
+    [
+     18,
+     7
+    ]
+   ],
+   "extra": [
+    [
+     11,
+     6
+    ],
+    [
+     11,
+     7
+    ],
+    [
+     12,
+     6
+    ],
+    [
+     13,
+     6
+    ]
+   ]
+  },
+  {
+   "predrop": {
+    "ptype": 6,
+    "px": 0,
+    "prot": 3,
+    "py": 3,
+    "plan": {
+     "r_t": 3,
+     "x_t": 0,
+     "forced": false,
+     "frames": 100
+    },
+    "pred_y": 7,
+    "pred_cells": [
+     [
+      8,
+      0
+     ],
+     [
+      9,
+      0
+     ],
+     [
+      9,
+      1
+     ],
+     [
+      10,
+      1
+     ]
+    ]
+   },
+   "added_cells": [
+    [
+     8,
+     0
+    ],
+    [
+     9,
+     0
+    ],
+    [
+     9,
+     1
+    ],
+    [
+     10,
+     1
+    ]
+   ],
+   "full_rows_at_lock": 0,
+   "pre_max_height": 20,
+   "pred_cells": [
+    [
+     8,
+     0
+    ],
+    [
+     9,
+     0
+    ],
+    [
+     9,
+     1
+    ],
+    [
+     10,
+     1
+    ]
+   ],
+   "matched": 4,
+   "pred_n": 4,
+   "got_n": 4,
+   "missing": [],
+   "extra": []
+  },
+  {
+   "predrop": {
+    "ptype": 4,
+    "px": 4,
+    "prot": 1,
+    "py": 2,
+    "plan": {
+     "r_t": 1,
+     "x_t": 4,
+     "forced": false,
+     "frames": 62
+    },
+    "pred_y": 8,
+    "pred_cells": [
+     [
+      8,
+      6
+     ],
+     [
+      9,
+      6
+     ],
+     [
+      10,
+      6
+     ],
+     [
+      10,
+      7
+     ]
+    ]
+   },
+   "added_cells": [
+    [
+     8,
+     5
+    ],
+    [
+     9,
+     5
+    ],
+    [
+     10,
+     5
+    ],
+    [
+     10,
+     6
+    ]
+   ],
+   "full_rows_at_lock": 0,
+   "pre_max_height": 20,
+   "pred_cells": [
+    [
+     8,
+     6
+    ],
+    [
+     9,
+     6
+    ],
+    [
+     10,
+     6
+    ],
+    [
+     10,
+     7
+    ]
+   ],
+   "matched": 1,
+   "pred_n": 4,
+   "got_n": 4,
+   "missing": [
+    [
+     8,
+     6
+    ],
+    [
+     9,
+     6
+    ],
+    [
+     10,
+     7
+    ]
+   ],
+   "extra": [
+    [
+     8,
+     5
+    ],
+    [
+     9,
+     5
+    ],
+    [
+     10,
+     5
+    ]
+   ]
+  },
+  {
+   "predrop": {
+    "ptype": 3,
+    "px": 1,
+    "prot": 3,
+    "py": 3,
+    "plan": {
+     "r_t": 3,
+     "x_t": 1,
+     "forced": false,
+     "frames": 88
+    },
+    "pred_y": 5,
+    "pred_cells": [
+     [
+      6,
+      2
+     ],
+     [
+      7,
+      2
+     ],
+     [
+      8,
+      1
+     ],
+     [
+      8,
+      2
+     ]
+    ]
+   },
+   "added_cells": [
+    [
+     6,
+     2
+    ],
+    [
+     7,
+     2
+    ],
+    [
+     8,
+     1
+    ],
+    [
+     8,
+     2
+    ]
+   ],
+   "full_rows_at_lock": 0,
+   "pre_max_height": 20,
+   "pred_cells": [
+    [
+     6,
+     2
+    ],
+    [
+     7,
+     2
+    ],
+    [
+     8,
+     1
+    ],
+    [
+     8,
+     2
+    ]
+   ],
+   "matched": 4,
+   "pred_n": 4,
+   "got_n": 4,
+   "missing": [],
+   "extra": []
+  },
+  {
+   "predrop": {
+    "ptype": 1,
+    "px": 7,
+    "prot": 1,
+    "py": 3,
+    "plan": {
+     "r_t": 1,
+     "x_t": 7,
+     "forced": false,
+     "frames": 98
+    },
+    "pred_y": 12,
+    "pred_cells": [
+     [
+      12,
+      9
+     ],
+     [
+      13,
+      9
+     ],
+     [
+      14,
+      9
+     ],
+     [
+      15,
+      9
+     ]
+    ]
+   },
+   "added_cells": [
+    [
+     12,
+     9
+    ],
+    [
+     13,
+     9
+    ],
+    [
+     14,
+     9
+    ],
+    [
+     15,
+     9
+    ]
+   ],
+   "full_rows_at_lock": 0,
+   "pre_max_height": 20,
+   "pred_cells": [
+    [
+     12,
+     9
+    ],
+    [
+     13,
+     9
+    ],
+    [
+     14,
+     9
+    ],
+    [
+     15,
+     9
+    ]
+   ],
+   "matched": 4,
+   "pred_n": 4,
+   "got_n": 4,
+   "missing": [],
+   "extra": []
+  },
+  {
+   "predrop": {
+    "ptype": 2,
+    "px": -1,
+    "prot": 0,
+    "py": 3,
+    "plan": {
+     "r_t": 0,
+     "x_t": -1,
+     "forced": false,
+     "frames": 91
+    },
+    "pred_y": 5,
+    "pred_cells": [
+     [
+      6,
+      0
+     ],
+     [
+      6,
+      1
+     ],
+     [
+      7,
+      0
+     ],
+     [
+      7,
+      1
+     ]
+    ],
+    "at_lock": {
+     "type": 1310740,
+     "x": -521547543,
+     "y": 269696513,
+     "rot": 213843988
+    }
+   },
+   "added_cells": [
+    [
+     6,
+     0
+    ],
+    [
+     6,
+     1
+    ],
+    [
+     7,
+     0
+    ],
+    [
+     7,
+     1
+    ]
+   ],
+   "full_rows_at_lock": 0,
+   "pre_max_height": 20,
+   "pred_cells": [
+    [
+     6,
+     0
+    ],
+    [
+     6,
+     1
+    ],
+    [
+     7,
+     0
+    ],
+    [
+     7,
+     1
+    ]
+   ],
+   "matched": 4,
+   "pred_n": 4,
+   "got_n": 4,
+   "missing": [],
+   "extra": []
+  },
+  {
+   "predrop": {
+    "ptype": 5,
+    "px": 6,
+    "prot": 1,
+    "py": 4,
+    "plan": {
+     "r_t": 1,
+     "x_t": 6,
+     "forced": false,
+     "frames": 112
+    },
+    "pred_y": 10,
+    "pred_cells": [
+     [
+      10,
+      9
+     ],
+     [
+      11,
+      8
+     ],
+     [
+      11,
+      9
+     ],
+     [
+      12,
+      8
+     ]
+    ]
+   },
+   "added_cells": [
+    [
+     8,
+     8
+    ],
+    [
+     9,
+     7
+    ],
+    [
+     9,
+     8
+    ],
+    [
+     10,
+     7
+    ]
+   ],
+   "full_rows_at_lock": 0,
+   "pre_max_height": 20,
+   "pred_cells": [
+    [
+     10,
+     9
+    ],
+    [
+     11,
+     8
+    ],
+    [
+     11,
+     9
+    ],
+    [
+     12,
+     8
+    ]
+   ],
+   "matched": 0,
+   "pred_n": 4,
+   "got_n": 4,
+   "missing": [
+    [
+     10,
+     9
+    ],
+    [
+     11,
+     8
+    ],
+    [
+     11,
+     9
+    ],
+    [
+     12,
+     8
+    ]
+   ],
+   "extra": [
+    [
+     8,
+     8
+    ],
+    [
+     9,
+     7
+    ],
+    [
+     9,
+     8
+    ],
+    [
+     10,
+     7
+    ]
+   ]
+  },
+  {
+   "predrop": {
+    "ptype": 7,
+    "px": 4,
+    "prot": 1,
+    "py": 2,
+    "plan": {
+     "r_t": 1,
+     "x_t": 4,
+     "forced": false,
+     "frames": 62
+    },
+    "pred_y": 7,
+    "pred_cells": [
+     [
+      7,
+      6
+     ],
+     [
+      8,
+      6
+     ],
+     [
+      8,
+      7
+     ],
+     [
+      9,
+      6
+     ]
+    ]
+   },
+   "added_cells": [
+    [
+     5,
+     5
+    ],
+    [
+     6,
+     5
+    ],
+    [
+     6,
+     6
+    ],
+    [
+     7,
+     5
+    ]
+   ],
+   "full_rows_at_lock": 0,
+   "pre_max_height": 20,
+   "pred_cells": [
+    [
+     7,
+     6
+    ],
+    [
+     8,
+     6
+    ],
+    [
+     8,
+     7
+    ],
+    [
+     9,
+     6
+    ]
+   ],
+   "matched": 0,
+   "pred_n": 4,
+   "got_n": 4,
+   "missing": [
+    [
+     7,
+     6
+    ],
+    [
+     8,
+     6
+    ],
+    [
+     8,
+     7
+    ],
+    [
+     9,
+     6
+    ]
+   ],
+   "extra": [
+    [
+     5,
+     5
+    ],
+    [
+     6,
+     5
+    ],
+    [
+     6,
+     6
+    ],
+    [
+     7,
+     5
+    ]
+   ]
+  },
+  {
+   "predrop": {
+    "ptype": 5,
+    "px": 0,
+    "prot": 0,
+    "py": 3,
+    "plan": {
+     "r_t": 0,
+     "x_t": 0,
+     "forced": false,
+     "frames": 79
+    },
+    "pred_y": 4,
+    "pred_cells": [
+     [
+      4,
+      0
+     ],
+     [
+      4,
+      1
+     ],
+     [
+      5,
+      1
+     ],
+     [
+      5,
+      2
+     ]
+    ]
+   },
+   "added_cells": [
+    [
+     4,
+     0
+    ],
+    [
+     4,
+     1
+    ],
+    [
+     5,
+     1
+    ],
+    [
+     5,
+     2
+    ]
+   ],
+   "full_rows_at_lock": 0,
+   "pre_max_height": 20,
+   "pred_cells": [
+    [
+     4,
+     0
+    ],
+    [
+     4,
+     1
+    ],
+    [
+     5,
+     1
+    ],
+    [
+     5,
+     2
+    ]
+   ],
+   "matched": 4,
+   "pred_n": 4,
+   "got_n": 4,
+   "missing": [],
+   "extra": []
+  }
+ ]
+}

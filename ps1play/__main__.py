@@ -21,6 +21,7 @@ import argparse
 import json
 import os
 import signal
+import subprocess
 import sys
 import time
 from typing import Any, Dict, List
@@ -97,6 +98,62 @@ def _build_parser() -> argparse.ArgumentParser:
     v.add_argument("--output", default=os.path.join(
         REPO, "reports"), help="where gate JSON/log are written")
     v.set_defaults(func=_cmd_verify)
+
+    k = sub.add_parser(
+        "knowledge", help="per-game knowledge packages (R65): list / "
+                          "export / validate / install / show")
+    ksub = k.add_subparsers(dest="kcmd", required=True)
+
+    kl = ksub.add_parser(
+        "list", help="list exportable + installed game packages")
+    kl.add_argument("--root", default=None,
+                    help="package install root (default "
+                         "<repo>/packages_installed)")
+    kl.set_defaults(func=_cmd_knowledge_list)
+
+    ke = ksub.add_parser(
+        "export", help="export one game's knowledge package "
+                       "(<game_id>.ps1game)")
+    ke.add_argument("game", help="a game with a package spec "
+                                 "(flappybird | tetrade | buzzybee | "
+                                 "metal_slug_x)")
+    ke.add_argument("--out", default=None,
+                    help="output directory (default <repo>/download)")
+    ke.set_defaults(func=_cmd_knowledge_export)
+
+    kv = ksub.add_parser(
+        "validate", help="validate a .ps1game archive "
+                         "(structure, schema, hashes, compatibility)")
+    kv.add_argument("package", help="path to a .ps1game file")
+    kv.set_defaults(func=_cmd_knowledge_validate)
+
+    ki = ksub.add_parser(
+        "install", help="validate + install a .ps1game into an "
+                        "isolated per-game directory")
+    ki.add_argument("package", help="path to a .ps1game file")
+    ki.add_argument("--root", default=None,
+                    help="install root (default "
+                         "<repo>/packages_installed)")
+    ki.add_argument("--force", action="store_true",
+                    help="re-install the SAME game_id+version")
+    ki.set_defaults(func=_cmd_knowledge_install)
+
+    ks = ksub.add_parser(
+        "show", help="show a package's manifest summary (file or "
+                     "installed game id)")
+    ks.add_argument("what", help="a .ps1game path or a game id")
+    ks.add_argument("--root", default=None, help="install root")
+    ks.set_defaults(func=_cmd_knowledge_show)
+
+    t = sub.add_parser(
+        "test", help="run a game's knowledge-package contract tests")
+    t.add_argument("game", help="registered game id")
+    t.add_argument("--root", default=None, help="install root")
+    t.add_argument("-k", dest="kt", default=None,
+                   help="extra pytest -k expression")
+    t.add_argument("--list", action="store_true",
+                   help="only list the test files")
+    t.set_defaults(func=_cmd_test)
     return ap
 
 
@@ -270,6 +327,193 @@ def _print_summary(cfg: RuntimeConfig,
     print(f"events : {cfg.output_dir}{os.sep}events.jsonl")
     failed = sum(1 for r in results if r["result"] == "error")
     return 1 if failed == len(results) else EXIT_OK
+
+
+# ---------------------------------------------------------------- --
+# knowledge packages (R65)
+# ---------------------------------------------------------------- --
+
+def _install_root(a: argparse.Namespace) -> str:
+    return a.root or os.path.join(REPO, "packages_installed")
+
+
+def _export_dir(a: argparse.Namespace) -> str:
+    return a.out or os.path.join(REPO, "download")
+
+
+def _cmd_knowledge_list(a: argparse.Namespace) -> int:
+    from ps1play.knowledge.package import (exportable_games,
+                                           read_installed_manifest)
+    root = _install_root(a)
+    ex = exportable_games()
+    print("EXPORTABLE packages (build with: knowledge export GAME):")
+    for g in ex:
+        inst = read_installed_manifest(root, g)
+        if inst:
+            p = inst["package"]
+            print(f"  {g:<14} v{p['version']:<8} "
+                  f"{p['maturity']:<28} (installed)")
+        else:
+            print(f"  {g:<14} (not installed)")
+    insts = []
+    if os.path.isdir(root):
+        for g in sorted(os.listdir(root)):
+            gp = os.path.join(root, g)
+            if os.path.isdir(gp) and g not in ex:
+                insts.append(g)
+    if insts:
+        print(f"installed (no local spec — imported packages): "
+              f"{', '.join(insts)}")
+    print(f"install root: {root}")
+    return EXIT_OK
+
+
+def _cmd_knowledge_export(a: argparse.Namespace) -> int:
+    from ps1play.knowledge.package import (PackageError, export_game)
+    try:
+        r = export_game(a.game, _export_dir(a))
+    except PackageError as e:
+        print(f"EXPORT FAILED: {e}", file=sys.stderr)
+        return 2
+    p = r["manifest"]["package"]
+    print(f"exported: {r['path']}")
+    print(f"  game: {p['game_id']} v{p['version']}  "
+          f"maturity: {p['maturity']}")
+    print(f"  files: {len(r['manifest']['contents'])}  "
+          f"bytes: {r['bytes']}")
+    print(f"  sha256: {r['sha256']}")
+    print(f"  sidecar: {r['path']}.sha256")
+    print("  (the archive re-validated against its own manifest)")
+    return EXIT_OK
+
+
+def _cmd_knowledge_validate(a: argparse.Namespace) -> int:
+    from ps1play.knowledge.package import (PackageError,
+                                           validate_package)
+    try:
+        man = validate_package(a.package)
+    except PackageError as e:
+        print(f"INVALID: {e}", file=sys.stderr)
+        return 2
+    p = man["package"]
+    print(f"VALID: {a.package}")
+    print(f"  game: {p['game_id']} v{p['version']}  "
+          f"maturity: {p['maturity']}")
+    print(f"  game identity: serial={man['game_identity']['serial']} "
+          f"region={man['game_identity']['region']} "
+          f"revision={man['game_identity']['revision']}")
+    print(f"  runtime compat: {man['runtime'].get(
+        'runtime_version_compat')}")
+    caps = man["capabilities"]
+    print(f"  autonomous play: {caps.get('autonomous_play')}")
+    print(f"  files: {len(man['contents'])} (every sha256 verified)")
+    return EXIT_OK
+
+
+def _cmd_knowledge_install(a: argparse.Namespace) -> int:
+    from ps1play.knowledge.package import (PackageError,
+                                           install_package)
+    try:
+        r = install_package(a.package, _install_root(a),
+                            force=a.force)
+    except PackageError as e:
+        print(f"INSTALL FAILED: {e}", file=sys.stderr)
+        return 2
+    print(f"installed: {r['game_id']} v{r['version']} "
+          f"({r['maturity']}) -> {r['installed_to']}")
+    print(f"  files: {r['files']} (no package code was executed)")
+    print("next: python3 -m ps1play knowledge list | "
+          "test <game> | play <game>")
+    return EXIT_OK
+
+
+def _cmd_knowledge_show(a: argparse.Namespace) -> int:
+    import json as _json
+    from ps1play.knowledge.package import (PackageError,
+                                           read_installed_manifest,
+                                           validate_package)
+    try:
+        if a.what.endswith(".ps1game") and os.path.exists(a.what):
+            man = validate_package(a.what)
+            src = a.what
+        else:
+            man = read_installed_manifest(_install_root(a), a.what)
+            if man is None:
+                print(f"not installed and not a .ps1game file: "
+                      f"{a.what}", file=sys.stderr)
+                return 2
+            src = "installed"
+    except PackageError as e:
+        print(f"ERROR: {e}", file=sys.stderr)
+        return 2
+    print(_json.dumps({
+        "source": src,
+        "package": man["package"],
+        "game_identity": man["game_identity"],
+        "runtime": man["runtime"],
+        "capabilities": man["capabilities"],
+        "legal": man["legal"],
+        "contents": [{"path": c["path"], "role": c["role"],
+                      "bytes": c["bytes"]} for c in man["contents"]],
+    }, indent=1))
+    return EXIT_OK
+
+
+def _cmd_test(a: argparse.Namespace) -> int:
+    """Run a game's knowledge-package tests (the same files the
+    package ships).  Game-specific test data and semantics stay in
+    the game's own package; the generic runner never mixes them."""
+    from ps1play.knowledge.package import (PackageError,
+                                           read_installed_manifest,
+                                           spec_for_game)
+    test_files = []
+    try:
+        spec = spec_for_game(a.game)
+        for entry in spec["files"]:
+            src = entry[0]
+            arc = entry[1]
+            role = entry[2]
+            if role != "test":
+                continue
+            if arc.startswith("tests/") and os.path.exists(src):
+                test_files.append(src)
+    except PackageError:
+        spec = None
+    if not test_files:
+        root = _install_root(a)
+        man = read_installed_manifest(root, a.game)
+        if man:
+            for c in man["contents"]:
+                if c.get("role") == "test":
+                    p = os.path.join(root, a.game,
+                                     man["package"]["version"],
+                                     *c["path"].split("/"))
+                    if os.path.exists(p):
+                        test_files.append(p)
+    if a.list:
+        for p in test_files:
+            print(p)
+        if not test_files:
+            print(f"(no test files — check what this package "
+                  f"documents instead)")
+        return EXIT_OK
+    if not test_files:
+        caps = (spec or {}).get("capabilities", {})
+        print(f"{a.game}: this package ships no automated test "
+              f"files (maturity "
+              f"{(spec or {}).get('maturity', '?')}).")
+        for d in caps.get("diagnostics", []) or []:
+            print(f"  diagnostic: {d}")
+        return EXIT_OK
+    env = dict(os.environ)
+    env["PYTHONPATH"] = REPO + os.pathsep + env.get("PYTHONPATH", "")
+    cmd = [sys.executable, "-m", "pytest", *sorted(test_files),
+           "-q", "-p", "no:cacheprovider"]
+    if a.kt:
+        cmd += ["-k", a.kt]
+    print("running:", " ".join(cmd[2:]))
+    rc = subprocess.call(cmd, env=env, cwd=REPO)
+    return rc if rc in (0, 1) else 1
 
 
 # ---------------------------------------------------------------- --

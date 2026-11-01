@@ -1,12 +1,12 @@
 {
  "round": "R62",
  "profile": "final",
- "when": "2026-11-01T13:34:00+0000",
- "wall_s": 342.3,
+ "when": "2026-11-01T16:47:25+0000",
+ "wall_s": 359.6,
  "gates": {
   "repo_state": {
    "status": "PASS",
-   "detail": "HEAD decca9618894; artifacts present"
+   "detail": "HEAD c449819e9d0c; artifacts present"
   },
   "model_manifest": {
    "status": "PASS",
@@ -50,7 +50,7 @@
   },
   "regression_suite": {
    "status": "PASS",
-   "detail": "782 passed, 2 skipped, 1 xfailed in 154.84s (0:02:34)"
+   "detail": "821 passed, 2 skipped, 1 xfailed in 159.48s (0:02:39)"
   },
   "docs_commands": {
    "status": "PASS",

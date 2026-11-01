@@ -1,0 +1,89 @@
+{
+  "round": "R65",
+  "date_utc": "2026-11-01",
+  "base_commit": "c449819e9d0c",
+  "mission": "Universal PS1 game platform: per-game knowledge packages, downloadable game intelligence, autonomous testing, small-game completion, Metal Slug X priority",
+  "runtime_games": ["flappybird", "tetrade", "buzzybee"],
+  "highlights": {
+    "tetrade_anchor_discovery": {
+      "finding": "the game renders 3-wide pieces (types 3..7) ONE COLUMN LEFT of the policy's rot90 model at rotations 1 and 2; I/O never shift; measured 28/28 (type, rotation) combos on the real game via legal input + read-only RAM",
+      "evidence": ["data/r65/r65_tetrade_anchor.json", "data/r65/r65_tetrade_lockprobe.json", "data/r65/r65_tetrade_diag_ep1.json"],
+      "effect": "policy v1.1.0 (ANCHOR_DELTA table): mean lines/life 1.0 -> 23.83 (max 36), ~24x, verified through the product path on 6 fresh episodes",
+      "no_training": true,
+      "zero_writes": true
+    },
+    "buzzybee_third_runtime_game": {
+      "integration": "ps1play/adapters/buzzybee (adapter + bot_policy8 verbatim port + package spec); registered with progress_label=score",
+      "acceptance": "data/r65/r65_buzzybee_acceptance.json",
+      "discoveries": [
+        "flap press needs the 2-frame hold + 1 idle frame (1-frame presses never lift the bee — 389 presses at the floor measured)",
+        "gs=5 is the hp-depletion game over (auto-returns to title ~380f) — resolves the capsule score-cap-1000 UNKNOWN; no score cap exists",
+        "score = play_frames - 96 EXACT through the product path (3 checks exact)"],
+      "tests": "21 offline + 2 real-emulator, all green"
+    },
+    "flappybird_fresh_verification": {
+      "seeds": "the 10 R61 reserve seeds [343..406 step 7] — never used before R65",
+      "mean": 45.7, "median": 40.0, "min": 13, "max": 87,
+      "alive_at_budget": "3/10",
+      "record_reproduced": "87 pipes on k=350/357/371 (all ALIVE at 10000f, 636-640 flaps)",
+      "determinism": "k=343 ran three independent times — byte-identical each time",
+      "champion_unchanged": "sha 4dd592a7118a5c4d…",
+      "evidence": "data/r65/r65_flappy_fresh_summary.json"
+    },
+    "knowledge_package_system": {
+      "format": "ps1play.game-package/1 (ZIP + hash-pinned manifest + honest maturity ladder)",
+      "cli": "knowledge list|export|validate|install|show + test <game>",
+      "security": "path traversal/absolute/backslash rejection, per-entry and whole-archive size caps, no code execution at install, per-game isolation (never overwrites another game), manifest+content sha256 verification, tamper detection tested",
+      "tests": "16 package-system tests green"
+    }
+  },
+  "downloadable_packages": {
+    "flappybird.ps1game": {
+      "version": "1.0.0", "maturity": "PARTIAL_AUTONOMOUS_PLAYER",
+      "sha256": "7221641dc04c84a5823c3a247b45226d6ed13a1f5f2c1e57befad05aee84653b",
+      "bytes": 11328, "files": 30,
+      "release": "https://github.com/Sh-TB/Ps1ai/releases/tag/r65"
+    },
+    "tetrade.ps1game": {
+      "version": "1.1.0", "maturity": "PARTIAL_AUTONOMOUS_PLAYER",
+      "sha256": "5d6de98ab8c6fcdaabd4179b924f75e839bca7818a740d68e76bfd2d4f6db3f1",
+      "bytes": 6548, "files": 12,
+      "release": "https://github.com/Sh-TB/Ps1ai/releases/tag/r65"
+    },
+    "buzzybee.ps1game": {
+      "version": "1.0.0", "maturity": "PARTIAL_AUTONOMOUS_PLAYER",
+      "sha256": "7ad89f0ad6a3c7439900f7c1a07f80a119de30a4bdac9905910be46b171bad73",
+      "bytes": 7008, "files": 13,
+      "release": "https://github.com/Sh-TB/Ps1ai/releases/tag/r65"
+    },
+    "metal_slug_x.ps1game": {
+      "version": "0.1.0", "maturity": "INPUT_VERIFIED",
+      "sha256": "e36d60ca401fc2ea740d7385e107747edb0de24d3f6aa57c8d06534614a49405",
+      "bytes": 5041, "files": 8,
+      "release": "https://github.com/Sh-TB/Ps1ai/releases/tag/r65"
+    }
+  },
+  "quality": {
+    "full_suite": "821 passed, 2 skipped, 1 xfailed (baseline 782+2+1 preserved; +39 R65 tests)",
+    "release_gate": "15/15 PASS (reports/r62_release_gate.json) — flappy R61 family records byte-exact (k30=37@4401, 3xk45=40@4753), fresh-venv clean install PASS",
+    "champion_integrity": "flappybird champion sha unchanged; no retraining; zero game-RAM writes in any run this round"
+  },
+  "msx_honest_status": {
+    "progress_this_round": "NO new boot experiments; nothing marked resolved; the knowledge became distributable (metal_slug_x.ps1game, INPUT_VERIFIED)",
+    "outstanding_preserved": ["corridor-gate starvation diagnostics", "+500 payment capture", "same pay-frame telemetry (armed)", "freshness-spread hypothesis", "accumulator discriminator (slot12 +0xa0 candidate)", "deep clean deaths=0 source"],
+    "mission1": "OPEN — not completed; no claim",
+    "smallest_next_experiment": "docs/r65_metal_slug_x_report.md §3 (de-starve the corridor gate, capture +500 at the pay frame; 1 boot + restore-only arms)"
+  },
+  "issues": {
+    "closed_this_round": [],
+    "open_unchanged": [4, 5, 6, 9, 10],
+    "note": "no duplicate issues created; no issue closed; R65 increment comments posted"
+  },
+  "deliverables": {
+    "docs": ["r65_baseline_audit.md", "r65_flappybird_report.md", "r65_universal_plugin_contract.md", "r65_small_game_pipeline.md", "r65_metal_slug_x_report.md", "r65_downloadable_knowledge_packages.md", "r65_final_report.md"],
+    "data": ["data/r65/ (flappy fresh summary, tetrade anchor/lockprobe/diag/improvement, buzzybee acceptance + gs5 probe)"],
+    "code": ["ps1play/knowledge/package.py", "ps1play/adapters/buzzybee/*", "ps1play/adapters/*/package_spec.py", "ps1play/adapters/tetrade/policy.py v1.1.0", "ps1play/__main__.py knowledge+test commands", "registry/session pins"],
+    "scripts": ["scripts/r65_tetrade_diag.py", "scripts/r65_tetrade_planprobe.py", "scripts/r65_tetrade_lockprobe.py", "scripts/r65_tetrade_anchor.py", "scripts/r65_buzzybee_gs5.py"],
+    "tests": ["tests/test_r65_packages.py", "tests/test_r65_buzzybee.py", "tests/test_r65_integration.py"]
+  }
+}

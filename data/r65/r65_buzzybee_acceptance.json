@@ -1,0 +1,72 @@
+{
+ "tag": "r65_buzzybee_acceptance",
+ "game": "buzzybee (THIRD runtime game, R65)",
+ "disc": {
+  "cue": "patched/buzzybee_ntsc_lic.cue",
+  "sha256": "042b94bb29907e75b4eadd0699619eb770089bf8880adf31f26bcc591a1bb093",
+  "rebuilt_by": "scripts/r30t0_buzzybee_asset.py (upstream EXE 9b0bfc08 + disclosed 2-instruction NTSC patch + user license sectors)"
+ },
+ "policy": {
+  "name": "buzzybee_bot_policy8 (R52-B port, hand-written; tiered-margin guarantee planner)",
+  "sha256": "eadde0fb8401d470f277641e9064793f443b32159259f5cafbe6910cf440f955",
+  "kind": "built-in heuristic, R52-B bot_policy8 verbatim port"
+ },
+ "episodes": [
+  {
+   "ep": 1,
+   "k": 6,
+   "result": "alive",
+   "death": "budget",
+   "score": 5904,
+   "frames": 6000,
+   "flaps": 358,
+   "wall_s": 40.14
+  },
+  {
+   "ep": 2,
+   "k": 12,
+   "result": "death",
+   "death": "game_over",
+   "score": 7537,
+   "frames": 1633,
+   "flaps": 90,
+   "wall_s": 10.81
+  },
+  {
+   "ep": 3,
+   "k": 18,
+   "result": "death",
+   "death": "game_over",
+   "score": 2808,
+   "frames": 2906,
+   "flaps": 247,
+   "wall_s": 20.03
+  }
+ ],
+ "score_law": {
+  "formula": "score = play_frames - 96 (the R52-B law f-99 with the runtime start offset)",
+  "checks": [
+   [
+    "ep1",
+    5904,
+    5904
+   ],
+   [
+    "ep1+2 continuity",
+    7537,
+    7537
+   ],
+   [
+    "ep3 fresh",
+    2808,
+    2808
+   ]
+  ]
+ },
+ "findings": [
+  "gs=5 characterized: hp-depletion game over (score frozen, wasp frozen, auto-return to title ~380f) \u2014 resolves the capsule score-cap-1000 UNKNOWN as the game-over score of hit-taking runs; NO score cap exists",
+  "the flap press needs the r45-B 2-frame hold + 1 idle frame (1-frame presses never lift the bee \u2014 measured: by pinned at 172 through 389 presses)",
+  "episodes alive at budget carry over the continuous run; natural game overs exercise the gs=5 -> title -> START restart through the product engine"
+ ],
+ "verdict": "BuzzyBee is the third registered runtime game: boot, verified ready state, autonomous play, natural game over, restart flow \u2014 all through python3 -m ps1play play buzzybee"
+}

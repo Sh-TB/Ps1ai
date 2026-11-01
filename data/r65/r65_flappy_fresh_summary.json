@@ -1,0 +1,82 @@
+{
+ "tag": "r65_fresh_reserve_eval",
+ "round": "R65",
+ "n": 10,
+ "seeds": [
+  343,
+  350,
+  357,
+  364,
+  371,
+  378,
+  385,
+  392,
+  399,
+  406
+ ],
+ "result": [
+  "death",
+  "alive",
+  "alive",
+  "death",
+  "alive",
+  "death",
+  "death",
+  "death",
+  "death",
+  "death"
+ ],
+ "pipes": [
+  13,
+  87,
+  87,
+  43,
+  87,
+  16,
+  30,
+  14,
+  42,
+  38
+ ],
+ "frames": [
+  1691,
+  10000,
+  10000,
+  5076,
+  10000,
+  2031,
+  3616,
+  1803,
+  4965,
+  4507
+ ],
+ "flaps": [
+  110,
+  636,
+  638,
+  322,
+  640,
+  128,
+  232,
+  116,
+  316,
+  288
+ ],
+ "mean": 45.7,
+ "median": 40.0,
+ "min": 13,
+ "max": 87,
+ "alive_at_budget": 3,
+ "policy_sha256": "4dd592a7118a5c4de7b44166b42b8d09d53fbb59330d36d0ba2746393dc11044",
+ "policy_name": "flappybird_policy (R61 frozen champion)",
+ "protocol": "python3 -m ps1play play flappybird (product path), budget 10000 frames/episode, n=1 per seed",
+ "seeds_provenance": "the 10 R61 reserve seeds [343,350,357,364,371,378,385,392,399,406] from data/learn/r61_validation_split.json \u2014 never used before R65; the 30 R61 validation seeds are retired by the split file; one killed background attempt produced a byte-identical duplicate k=343 record (deduplicated here; itself a cross-process determinism proof)",
+ "determinism_note": "k=343 ran three independent times (smoke run, killed attempt, protocol run) \u2014 all three byte-identical (13 pipes, 1691 frames, 110 flaps)",
+ "r61_baseline_comparison": {
+  "r61_validation_mean": 52.3,
+  "r61_validation_median": 48.0,
+  "r61_alive": "6/30",
+  "r61_max": 87,
+  "note": "different seed sets (R61 used its 30 validation seeds; R65 used the 10 pristine reserve seeds) \u2014 no significance claim across sets"
+ }
+}
