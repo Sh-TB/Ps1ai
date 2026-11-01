@@ -45,6 +45,11 @@ GAME_DEFAULT_ISO = {
                             "patched", "tetrade_lic.cue"),
     "buzzybee": os.path.join("/home/z/my-project/emu/games_homebrew",
                              "patched", "buzzybee_ntsc_lic.cue"),
+    # R66: the owner's lawful local retail copy (NEVER committed to
+    # the repository); the pin is the exact bytes every MSX record
+    # was made with.
+    "metal_slug_x": os.path.join("/home/z/my-project/emu", "game",
+                                 "Metal Slug X (USA).cue"),
 }
 
 # The exact disc bytes every record was made with (R64: the
@@ -58,6 +63,8 @@ EXPECTED_ISO_SHA = {
                "130d063c3cc1",
     "buzzybee": "042b94bb29907e75b4eadd0699619eb770089bf8880adf31f26bc"
                 "c591a1bb093",
+    "metal_slug_x": "45cde149878fe945d0219fd0f61ca09856aee66bdcc9119d"
+                    "e21c0583f1d0667d",
 }
 
 

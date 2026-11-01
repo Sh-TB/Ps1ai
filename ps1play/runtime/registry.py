@@ -175,4 +175,33 @@ def _register_defaults() -> None:
                   progress_label="score")
 
 
+def _metal_slug_x_env_factory(config):
+    """Metal Slug X (R66): BaseEnv over the owner's lawful local
+    retail copy (the exact R38-R66 boot: openbios firmware, headless
+    beetle core, SLUS-01212)."""
+    from ps1play.learn.games import BaseEnv  # noqa: PLC0415
+    from .session import GAME_DEFAULT_ISO  # noqa: PLC0415
+    ws = config.workspace or os.path.join(
+        "/home/z/my-project/emu", "ws_r66_msx")
+    cue = config.iso_path or GAME_DEFAULT_ISO["metal_slug_x"]
+    return BaseEnv(ws, cue)
+
+
+def _register_msx() -> None:
+    def _msx_policy_factory(config, telemetry=None):
+        from ps1play.adapters.metal_slug_x import (  # noqa: PLC0415
+            Mission1Policy,
+        )
+        return Mission1Policy(config, telemetry=telemetry)
+
+    from ps1play.adapters.metal_slug_x.adapter import (  # noqa: PLC0415
+        MetalSlugXAdapter,
+    )
+    register_game("metal_slug_x", env_factory=_metal_slug_x_env_factory,
+                  adapter=MetalSlugXAdapter,
+                  policy_factory=_msx_policy_factory,
+                  progress_label="score")
+
+
 _register_defaults()
+_register_msx()
