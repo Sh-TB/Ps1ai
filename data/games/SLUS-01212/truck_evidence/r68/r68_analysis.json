@@ -1,0 +1,446 @@
+{
+ "schema": "ps1play.r68-analysis/1",
+ "commit": "939b1791b669f7f563832cd4f0b14598a07d129f",
+ "inputs": [
+  "r68/r68_boot3_s2b.jsonl",
+  "r67/r67_boot2_s2a.jsonl",
+  "r67/r67_boot3_s2b.jsonl",
+  "r66/r66_boot3_s2a.jsonl",
+  "r66/r66_boot4_s2b.jsonl",
+  "r52/r52_wound_table.json"
+ ],
+ "pay500_ledger": {
+  "r68_captures": [
+   {
+    "pass": "r68 passB",
+    "tap": 6,
+    "amount": 500,
+    "target_slot": 16,
+    "target_st_pre": 7736,
+    "target_dx": 20.3,
+    "state_path": [
+     7736,
+     23308
+    ],
+    "pay_frame": "tail1"
+   }
+  ],
+  "n_plus500_total": 2,
+  "n_plus500_vectors_in_test": 2
+ },
+ "pay1000_bank_n": 7,
+ "zero_overlap_test": {
+  "per_capture": [
+   {
+    "src": "r66 passB t6",
+    "slot": 16,
+    "n_zero_overlap": 19,
+    "offsets": [
+     {
+      "idx": 0,
+      "off": "0x60",
+      "plus500": 6
+     },
+     {
+      "idx": 1,
+      "off": "0x62",
+      "plus500": 5
+     },
+     {
+      "idx": 6,
+      "off": "0x6c",
+      "plus500": 47219
+     },
+     {
+      "idx": 8,
+      "off": "0x70",
+      "plus500": 47210
+     },
+     {
+      "idx": 10,
+      "off": "0x74",
+      "plus500": 47188
+     },
+     {
+      "idx": 12,
+      "off": "0x78",
+      "plus500": 8670
+     },
+     {
+      "idx": 13,
+      "off": "0x7a",
+      "plus500": 1353
+     },
+     {
+      "idx": 22,
+      "off": "0x8c",
+      "plus500": 61146
+     },
+     {
+      "idx": 23,
+      "off": "0x8e",
+      "plus500": 152
+     },
+     {
+      "idx": 26,
+      "off": "0x94",
+      "plus500": 55262
+     },
+     {
+      "idx": 27,
+      "off": "0x96",
+      "plus500": 155
+     },
+     {
+      "idx": 51,
+      "off": "0xc6",
+      "plus500": 1
+     },
+     {
+      "idx": 55,
+      "off": "0xce",
+      "plus500": 47
+     },
+     {
+      "idx": 56,
+      "off": "0xd0",
+      "plus500": 64
+     },
+     {
+      "idx": 57,
+      "off": "0xd2",
+      "plus500": 401
+     },
+     {
+      "idx": 58,
+      "off": "0xd4",
+      "plus500": 2
+     },
+     {
+      "idx": 61,
+      "off": "0xda",
+      "plus500": 11
+     },
+     {
+      "idx": 62,
+      "off": "0xdc",
+      "plus500": 1
+     },
+     {
+      "idx": 64,
+      "off": "0xe0",
+      "plus500": 65535
+     }
+    ]
+   },
+   {
+    "src": "r68 passB t6",
+    "slot": 16,
+    "n_zero_overlap": 19,
+    "offsets": [
+     {
+      "idx": 0,
+      "off": "0x60",
+      "plus500": 6
+     },
+     {
+      "idx": 1,
+      "off": "0x62",
+      "plus500": 5
+     },
+     {
+      "idx": 6,
+      "off": "0x6c",
+      "plus500": 47219
+     },
+     {
+      "idx": 8,
+      "off": "0x70",
+      "plus500": 47210
+     },
+     {
+      "idx": 10,
+      "off": "0x74",
+      "plus500": 47188
+     },
+     {
+      "idx": 12,
+      "off": "0x78",
+      "plus500": 8670
+     },
+     {
+      "idx": 13,
+      "off": "0x7a",
+      "plus500": 1353
+     },
+     {
+      "idx": 22,
+      "off": "0x8c",
+      "plus500": 61146
+     },
+     {
+      "idx": 23,
+      "off": "0x8e",
+      "plus500": 152
+     },
+     {
+      "idx": 26,
+      "off": "0x94",
+      "plus500": 55262
+     },
+     {
+      "idx": 27,
+      "off": "0x96",
+      "plus500": 155
+     },
+     {
+      "idx": 51,
+      "off": "0xc6",
+      "plus500": 1
+     },
+     {
+      "idx": 55,
+      "off": "0xce",
+      "plus500": 47
+     },
+     {
+      "idx": 56,
+      "off": "0xd0",
+      "plus500": 64
+     },
+     {
+      "idx": 57,
+      "off": "0xd2",
+      "plus500": 401
+     },
+     {
+      "idx": 58,
+      "off": "0xd4",
+      "plus500": 2
+     },
+     {
+      "idx": 61,
+      "off": "0xda",
+      "plus500": 11
+     },
+     {
+      "idx": 62,
+      "off": "0xdc",
+      "plus500": 1
+     },
+     {
+      "idx": 64,
+      "off": "0xe0",
+      "plus500": 65535
+     }
+    ]
+   }
+  ],
+  "intersection": [
+   {
+    "idx": 0,
+    "off": "0x60",
+    "plus500": 6
+   },
+   {
+    "idx": 1,
+    "off": "0x62",
+    "plus500": 5
+   },
+   {
+    "idx": 6,
+    "off": "0x6c",
+    "plus500": 47219
+   },
+   {
+    "idx": 8,
+    "off": "0x70",
+    "plus500": 47210
+   },
+   {
+    "idx": 10,
+    "off": "0x74",
+    "plus500": 47188
+   },
+   {
+    "idx": 12,
+    "off": "0x78",
+    "plus500": 8670
+   },
+   {
+    "idx": 13,
+    "off": "0x7a",
+    "plus500": 1353
+   },
+   {
+    "idx": 22,
+    "off": "0x8c",
+    "plus500": 61146
+   },
+   {
+    "idx": 23,
+    "off": "0x8e",
+    "plus500": 152
+   },
+   {
+    "idx": 26,
+    "off": "0x94",
+    "plus500": 55262
+   },
+   {
+    "idx": 27,
+    "off": "0x96",
+    "plus500": 155
+   },
+   {
+    "idx": 51,
+    "off": "0xc6",
+    "plus500": 1
+   },
+   {
+    "idx": 55,
+    "off": "0xce",
+    "plus500": 47
+   },
+   {
+    "idx": 56,
+    "off": "0xd0",
+    "plus500": 64
+   },
+   {
+    "idx": 57,
+    "off": "0xd2",
+    "plus500": 401
+   },
+   {
+    "idx": 58,
+    "off": "0xd4",
+    "plus500": 2
+   },
+   {
+    "idx": 61,
+    "off": "0xda",
+    "plus500": 11
+   },
+   {
+    "idx": 62,
+    "off": "0xdc",
+    "plus500": 1
+   },
+   {
+    "idx": 64,
+    "off": "0xe0",
+    "plus500": 65535
+   }
+  ],
+  "n_intersection": 19,
+  "n_plus500_vectors": 2,
+  "n_plus1000_vectors": 7,
+  "verdict": "RESOLVED on the widened set: the intersection of the per-capture zero-overlap offset sets is NON-EMPTY (n=19); these offsets separate EVERY banked +500 pay-frame vector from EVERY banked +1000 pay-frame vector."
+ },
+ "trajectory_check": {
+  "r68_passb_taps": [
+   {
+    "tap": 0,
+    "kind": "CONTROL_ZERO_INPUT",
+    "score_delta": 0
+   },
+   {
+    "tap": 1,
+    "kind": "CONTROL_MOVE_ONLY",
+    "score_delta": 0
+   },
+   {
+    "tap": 2,
+    "kind": "AIMED_Y_CONNECT",
+    "score_delta": 1000
+   },
+   {
+    "tap": 6,
+    "kind": "AIMED_Y_CONNECT",
+    "score_delta": 500
+   },
+   {
+    "tap": 15,
+    "kind": "AIMED_Y_CONNECT",
+    "score_delta": 0
+   },
+   {
+    "tap": 17,
+    "kind": "CONTROL_MOVE_ONLY",
+    "score_delta": 0
+   }
+  ],
+  "r66_passb_taps": [
+   {
+    "tap": 0,
+    "kind": "CONTROL_ZERO_INPUT",
+    "score_delta": 0
+   },
+   {
+    "tap": 1,
+    "kind": "CONTROL_MOVE_ONLY",
+    "score_delta": 0
+   },
+   {
+    "tap": 2,
+    "kind": "AIMED_Y_CONNECT",
+    "score_delta": 1000
+   },
+   {
+    "tap": 6,
+    "kind": "AIMED_Y_CONNECT",
+    "score_delta": 500
+   },
+   {
+    "tap": 15,
+    "kind": "AIMED_Y_CONNECT",
+    "score_delta": 0
+   },
+   {
+    "tap": 17,
+    "kind": "CONTROL_MOVE_ONLY",
+    "score_delta": 0
+   }
+  ],
+  "tap_kinds_identical": true
+ },
+ "magnitude_table": {
+  "plus500": [
+   {
+    "round": "R48",
+    "n": 1,
+    "evidence": "slot20 connect, st 0x42bc, survives; pay frame f_rel 2"
+   },
+   {
+    "round": "R49",
+    "n": 1,
+    "evidence": "the +500 replicated frame-exact; the strong class-keyed form falsified"
+   },
+   {
+    "round": "R50",
+    "n": 1,
+    "evidence": "+500 x3 cumulative"
+   },
+   "r68 passB t6"
+  ],
+  "plus1000": [
+   {
+    "round": "R50",
+    "n": 1,
+    "evidence": "the +1000 class opened (3 vs 3 after R50)"
+   },
+   {
+    "round": "R51",
+    "n": 2,
+    "evidence": "st_pre 0x42bc AND 0x3f48 both paid +1000 (deterministic across both frontiers)"
+   },
+   {
+    "round": "R52",
+    "n": 2,
+    "evidence": "st_pre 0x42bc (frontier_a tap2, pay f_rel 3) AND 0x3f48 (frontier_b tap2, pay f_rel 4) both paid +1000 \u2014 the R51 pattern REPLICATED under pay-frame telemetry"
+   }
+  ]
+ },
+ "m2_gate_note": "unchanged \u2014 interactive M2 entry stays gated on a clean (deaths=0, no-restart) deep resolve posture"
+}

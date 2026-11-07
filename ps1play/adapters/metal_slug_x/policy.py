@@ -68,6 +68,43 @@ product-path truck campaign; every rule is committed-evidence-backed):
       point-blank beside the truck with no rule able to engage).
       In the band: lob on schedule, standing chip-fire during the
       cooldown (the R38 posture), IDLE otherwise.
+
+  W8 (v1.5.0, amended v1.6.0). THE KILL TRANSITION: when the
+      engaged truck leaves the observation AFTER AT LEAST ONE lob
+      was thrown at it, the truck state resets (moot under the
+      unlimited budget) and the W9 hazard arms.  Adapter 0.4.0
+      filters the truck dead family {0xA304, 0xA44C, 0xA45C}, so
+      the kill lands as a truck-gone transition.
+
+  W9 (v1.5.0, R68). THE POST-KILL HAZARD RETREAT: the truck-gone
+      kill transition arms a bounded hazard at the truck's
+      last-known world px — the player retreats OUT of the blast
+      band (|dx| > TRUCK_LOB_MAX + 80, the T7 margin) before
+      advancing again.  Bounded (TRUCK_KILL_HAZARD_F frames),
+      self-clears on distance; the cooldowns tick through it.
+
+  THE R68 PROBE CORRECTION (scripts/r68_postkill_probe.py, the
+  product stack v1.5.0, 1462f): the R67 "truck KILLED, score 2300"
+  reading is HEREBY CORRECTED — the truck NEVER died.  The three
+  lobs (f875/f972/f1063) landed ONE connect (-100) + sustained
+  chips (-40): the truck row sat at a4=160 (0x9E88, x 937.5, h 64,
+  slot 14) from f1160 to the death at f1462.  The player died
+  PINNED at px 1164 (the section pin) with the PARKED truck behind
+  at dx -226.5 — outside the lob band (135) and outside the T7
+  blast margin (215): the v1.4.2 truck_spent_watch posture stood
+  in the truck's gun line for ~300 frames with NO weapon that
+  reaches.  The score 2300 came from the wave kills + chip events,
+  not a truck kill.  CONSEQUENCES (v1.6.0):
+    T2'. the lob budget is UNLIMITED — the live grenade counter is
+         the only budget (the 3-lobs cap assumed every lob lands;
+         the R38 kill evidence needed 3 CONNECTS at a ~1/10 rate);
+    T6'. the STAND-GROUND CHIP-FIRE (v1.6.1): out of the lob band
+         the BULLETS still reach — turn toward the truck and
+         chip-fire on the cooldown while |dx| <= 220 (the R38
+         sustained-fire model; the R68 probe: the a4 froze at 80
+         the moment the fire stopped); beyond 220, walk toward.
+         The v1.6.0 chase walk LOST ground (the px drifted +35
+         while pressing BACK) and stood in the gun line.
 """
 from __future__ import annotations
 
@@ -81,7 +118,7 @@ from ps1play.runtime.interfaces import (ActionDecision, GameObservation,
                                         Policy)
 
 POLICY_NAME = "msx_mission1_rules"
-POLICY_VERSION = "1.4.2"
+POLICY_VERSION = "1.6.2"
 
 # the hold band's inner edge (the R67 loop-probe lesson: holding at
 # dx 52 — point-blank in the truck gun's line — LOST the duel; the
@@ -105,6 +142,13 @@ TRUCK_SPOT = 400.0               # the adapter's scan window (the
                                  #   at dx -226.5 — OUTSIDE the old
                                  #   220 engage window; T6 approach
                                  #   must reach it from there)
+TRUCK_KILL_HAZARD_F = 180        # W9: the post-kill hazard window
+                                 #   (the death explosion + margin;
+                                 #   self-clears on distance first)
+TRUCK_GONE_CONFIRM_F = 12        # W8: the truck-gone confirmation
+                                 #   window (a scan flicker must
+                                 #   NOT fire the kill chain; the
+                                 #   dead row stays gone)
 SOLDIER_CODES = (1, 2, 3)        # soft / wound / recovery
 
 ENGAGE_SHORT = 220.0
@@ -113,6 +157,13 @@ HOP_PERIOD = 120
 HOP_LEN = 3
 STALL_DECISIONS = 120
 GRENADE_CD = 90
+TRUCK_GRENADE_CD = 40           # the R38 encounter2 gre40 evidence:
+                                #   "grenade every 40f = max DPS on
+                                #   the truck" — the kill must land
+                                #   INSIDE the ~280f band window
+                                #   (the v1.6.0 probe: 3 lobs at the
+                                #   90f cadence reached a4=80 and the
+                                #   window closed)
 PROGRESS_PX = 1.0
 
 # state codes that can absorb a bullet or register a payment
@@ -143,6 +194,11 @@ class Mission1Policy(Policy):
         self._grenades_used = 0
         self._truck_grenades_used = 0
         self._facing = "R"            # v1.4.0: the player's facing
+        self._truck_present = False   # v1.5.0: the truck-gone tracking
+        self._truck_gone_f = 0        # v1.6.0: the confirmation window
+        self._last_truck_dx = None    # v1.5.0: the last-known truck dx
+        self._hazard = 0              # v1.5.0: W9 hazard frames left
+        self._hazard_px = None        # v1.5.0: W9 the truck's world px
         self._last_diag: Dict[str, Any] = {}
 
     # ---- Policy contract ----
@@ -177,6 +233,11 @@ class Mission1Policy(Policy):
         self._last_px = None
         self._truck_grenades_used = 0
         self._facing = "R"
+        self._truck_present = False
+        self._truck_gone_f = 0
+        self._last_truck_dx = None
+        self._hazard = 0
+        self._hazard_px = None
 
     def identity(self) -> Dict[str, Any]:
         # the engine's record seam reads identity()["name"] and
@@ -191,7 +252,7 @@ class Mission1Policy(Policy):
                 "trained": False,
                 "kind": "built-in rules (no model, no training)",
                 "corridor_predicate": "r66_corrected",
-                "truck_rules": "r67_grenade_sequencing"}
+                "truck_rules": "r68_chase_gre40"}
 
     def close(self) -> None:
         self._tel = None
@@ -239,6 +300,30 @@ class Mission1Policy(Policy):
             return not any(dx_t < b[0] < 0.0 for b in ents
                            if b[1] in MORTAL_CODES)
 
+        # ---- W9: the post-kill hazard retreat (v1.5.0) -------------
+        # armed by the truck-gone kill transition below; the player
+        # leaves the blast band before anything else (the R67 ep1
+        # death: standing in the band while the death explosion
+        # resolved).  The cooldowns tick through (the one-tick-per-
+        # decision invariant); the hazard self-clears on distance.
+        if self._hazard > 0:
+            self._hazard -= 1
+            if self._hazard_px is None or \
+                    abs(self._hazard_px - px) > TRUCK_LOB_MAX + 80.0:
+                self._hazard = 0          # out of the blast band
+            else:
+                if self._fire_cd > 0:
+                    self._fire_cd -= 1
+                if self._gren_cd > 0:
+                    self._gren_cd -= 1
+                mv = "BACK" if self._hazard_px > px else "WALK"
+                self._facing = "L" if mv == "BACK" else "R"
+                self._last_diag = {"rule": "truck_kill_retreat",
+                                   "hazard_px":
+                                       round(self._hazard_px, 1),
+                                   "t_left": self._hazard}
+                return mv
+
         # ---- the truck encounter (front OR rear) --------------------
         truck_any = next((e for e in ents
                           if e[1] == TRUCK_CODE and e[2] >= 64.0
@@ -246,6 +331,9 @@ class Mission1Policy(Policy):
         if truck_any is not None:
             dx_t = truck_any[0]
             side_t = "R" if dx_t > 0 else "L"
+            self._truck_present = True        # v1.5.0: seen this frame
+            self._truck_gone_f = 0            # v1.6.0: reset the window
+            self._last_truck_dx = dx_t
             # T3: soldiers before the truck gun (the D7 recipe) —
             # the escort may stand on EITHER side; a clear-line
             # escort outranks the lob.
@@ -267,34 +355,32 @@ class Mission1Policy(Policy):
                                        "target_dx": round(soldier[0], 1),
                                        "target_sc": soldier[1]}
                     return "FIRE"
-            # T7: THE BLAST RETREAT (the R67 v1.4.0 product-run
-            # lesson: the 3-lobs kill took the truck to 0 hp_a4 and
-            # its death explosion killed the player standing in the
-            # band — score 2300, the truck AIRBORNE in the death
-            # shot).  Once the lob budget is spent, LEAVE the blast
-            # radius until the truck leaves the observation (dead ->
-            # the wreck row is not code 7).
-            if self._truck_grenades_used >= TRUCK_GRENADES \
-                    and abs(dx_t) <= TRUCK_LOB_MAX + 80.0:
-                mv = "WALK" if side_t == "L" else "BACK"
-                self._facing = "R" if mv == "WALK" else "L"
-                self._last_diag = {"rule": "truck_blast_retreat",
-                                   "truck_dx": round(dx_t, 1)}
-                return mv
-            # T2: the grenade sequencing (the R38 A/B evidence + the
-            # Oct-25 lob recipe; a lob arcs — no corridor check).
+            # T7 REMOVED in v1.6.0 (the R68 probe correction): the
+            # budget-spent blast retreat stood DOWN the fight while
+            # the truck was still alive (the R68 probe: the truck
+            # survived at a4=160 and the retreat posture left the
+            # pinned player in the gun line with no reaching
+            # weapon).  The post-kill blast safety is W9's job (the
+            # kill transition retreats); the alive-truck fight is
+            # T2'/T5/T6' below.
+            # T2': the grenade sequencing (the R38 A/B evidence +
+            # the Oct-25 lob recipe; a lob arcs — no corridor
+            # check).  v1.6.0: the budget is UNLIMITED — the live
+            # grenade counter is the only budget (the R68 probe:
+            # the 3-lobs cap landed ONE connect; the truck
+            # survived at a4=160; the R38 kill needed 3 CONNECTS at
+            # a ~1/10 connect rate).
             in_band = TRUCK_LOB_MIN <= abs(dx_t) <= TRUCK_LOB_MAX
             if in_band and abs(dx_t) >= TRUCK_HOLD_MIN \
                     and soldier is None and gren > 0 \
-                    and self._gren_cd == 0 \
-                    and self._truck_grenades_used < TRUCK_GRENADES:
+                    and self._gren_cd == 0:
                 if self._facing != side_t:
                     mv = turn_toward(side_t)
                     self._facing = side_t
                     self._last_diag = {"rule": "truck_turn",
                                        "truck_dx": round(dx_t, 1)}
                     return mv
-                self._gren_cd = GRENADE_CD
+                self._gren_cd = TRUCK_GRENADE_CD
                 self._truck_grenades_used += 1
                 self._last_diag = {"rule": "truck_grenade",
                                    "truck_dx": round(dx_t, 1),
@@ -335,25 +421,96 @@ class Mission1Policy(Policy):
                 self._last_diag = {"rule": "truck_hold",
                                    "truck_dx": round(dx_t, 1)}
                 return "IDLE"
-            # T6: approach a truck out of the band (walk to it) —
-            # NEVER re-approach once the lob budget is spent (the
-            # blast retreat owns that case; the dying truck leaves
-            # the observation on its own).
-            if self._truck_grenades_used < TRUCK_GRENADES:
+            # T6' (v1.6.2; the R68 probe evidence): OUT OF THE LOB
+            # BAND = walk TOWARD the truck (re-enter the band).
+            # THE TWO R68 FAILURE MODES, both probe-pinned:
+            #   * v1.6.1's stand-ground chip-fire: the bullets DO
+            #     NOT reach a truck behind the pin — the a4 sat at
+            #     300 FROZEN through five 12f chip windows (the
+            #     wave soldiers + the pin scenery eat the shot);
+            #     the player died standing in the gun line.
+            #   * the v1.4.2 spent_watch standoff: the same death,
+            #     slower.
+            # The v1.6.0 chase reached the band and held px 1071
+            # (dx -133.5) where the lobs LANDED (the arc clears the
+            # ground blockers — the disclosed lob property) and
+            # drove a4 300 -> 80.  The band window closed only
+            # because the 90f cadence spent it on 3 lobs; T2'
+            # below restores the R38 gre40 max-DPS cadence so the
+            # kill lands INSIDE the window.
+            if gren > 0:
+                if self._fire_cd > 0:
+                    self._fire_cd -= 1
+                if self._gren_cd > 0:
+                    self._gren_cd -= 1
                 mv = "WALK" if side_t == "R" else "BACK"
                 self._facing = side_t
                 self._last_diag = {"rule": "truck_approach",
                                    "truck_dx": round(dx_t, 1)}
                 return mv
-            # the budget is spent and the truck is outside the blast
-            # margin: fall through to the generic rules — the dying
-            # truck leaves the observation on its own (the wreck row
-            # is not code 7), and a still-alive truck (a higher
-            # hp_a4 variant, the capsule's [100,600] range) re-enters
-            # the T7 retreat as the player drifts near it: a stable
-            # edge patrol, never a frozen hold.
+            # no grenades: nothing reaches a banded truck — fall
+            # through to the generic rules (disclosed edge).
             self._last_diag = {"rule": "truck_spent_watch",
                                "truck_dx": round(dx_t, 1)}
+        elif self._truck_present:
+            # ---- W8 (v1.6.0): the truck-gone CONFIRMATION window --
+            # a scan flicker must NOT fire the kill chain: the truck
+            # must stay absent TRUCK_GONE_CONFIRM_F consecutive
+            # decisions.  During the window an ENGAGED truck's
+            # absence holds position (never walk INTO a possible
+            # blast); a never-engaged truck's absence lets the
+            # generic rules continue.
+            self._truck_gone_f += 1
+            if self._truck_gone_f < TRUCK_GONE_CONFIRM_F:
+                if self._truck_grenades_used >= 1:
+                    self._last_diag = {"rule": "truck_gone_hold",
+                                       "gone_f": self._truck_gone_f}
+                    return "IDLE"
+                # never engaged: fall through to the generic rules
+            else:
+                # the disappearance is CONFIRMED.  THE KILL
+                # SIGNATURE: the adapter saw a dead-family row
+                # (0xA304/0xA44C/0xA45C — the capsule-verified
+                # kill states) THIS FRAME -> the truck died (the
+                # wreck decays in place, the R38 evidence).  A
+                # vanishing WITHOUT the dead row = the truck drove
+                # off: reset, NO hazard, move on.
+                self._truck_present = False
+                self._truck_gone_f = 0
+                dead_x = obs.diagnostics.get("dead_truck_x") \
+                    if obs.diagnostics else None
+                if self._truck_grenades_used >= 1:
+                    self._truck_grenades_used = 0
+                    self._gren_cd = 0
+                    if dead_x is not None:
+                        # W9: the kill confirmed — leave the blast
+                        # band before advancing (the hazard sits at
+                        # the WRECK's own position, the blast
+                        # center).
+                        self._hazard = TRUCK_KILL_HAZARD_F
+                        self._hazard_px = float(dead_x)
+                        if abs(self._hazard_px - px) <= \
+                                TRUCK_LOB_MAX + 80.0:
+                            mv = "BACK" if self._hazard_px > px \
+                                else "WALK"
+                            self._facing = "L" if mv == "BACK" \
+                                else "R"
+                            self._last_diag = {
+                                "rule": "truck_kill_retreat",
+                                "hazard_px":
+                                    round(self._hazard_px, 1),
+                                "t_left": self._hazard}
+                            return mv
+                        self._last_diag = {
+                            "rule": "truck_kill_transition",
+                            "hazard_px":
+                                round(self._hazard_px, 1)}
+                    else:
+                        self._last_diag = {
+                            "rule": "truck_drove_off",
+                            "last_dx": (round(self._last_truck_dx, 1)
+                                        if self._last_truck_dx
+                                        is not None else None)}
 
         # ---- engagement (the R66 corridor predicate; FRONT) ---------
         target = None

@@ -1,0 +1,121 @@
+{
+ "schema": "ps1play.r68-product-run/1",
+ "generated": "2026-11-07T21:24:40Z",
+ "commit": "939b1791b669f7f563832cd4f0b14598a07d129f",
+ "command": "python3 -m ps1play play metal_slug_x --episodes 2 --max-frames 12000 --verbose --screenshot --output data/r68",
+ "repeat_command": "python3 -m ps1play play metal_slug_x --episodes 2 --max-frames 12000 --output /tmp/r68_rep",
+ "disc": {
+  "cue": "ps1play/runtime/session.py:GAME_DEFAULT_ISO['metal_slug_x']",
+  "sha256": "45cde149878fe945d0219fd0f61ca09856aee66bdcc9119de21c0583f1d0667d",
+  "serial": "SLUS-01212"
+ },
+ "policy": {
+  "name_version": "msx_mission1_rules:1.6.2",
+  "sha256": "2e6194751672ac2756f1637da1030bd0b7484ac6e70868db19d209073aa3bbd7",
+  "identity": "deterministic rules; the R68 truck rules T2'/T6' + W8/W9 (unlimited lobs at the R38 gre40 cadence, the chase, the dead-row kill signature, the hazard retreat); no model, no training, zero RAM writes"
+ },
+ "adapter_version": null,
+ "episodes": [
+  {
+   "episode": 1,
+   "seed_k": 6,
+   "result": "death",
+   "death_reason": "game_over",
+   "frames": 1318,
+   "actions": 86,
+   "score": 2800,
+   "px_max": null,
+   "policy": "msx_mission1_rules:1.6.2"
+  },
+  {
+   "episode": 2,
+   "seed_k": 12,
+   "result": "death",
+   "death_reason": "game_over",
+   "frames": 414,
+   "actions": 12,
+   "score": 2800,
+   "px_max": null,
+   "policy": "msx_mission1_rules:1.6.2"
+  }
+ ],
+ "iteration_lineage_full": [
+  {
+   "policy": "msx_mission1_rules:1.5.0",
+   "episode": 1,
+   "frames": 1462,
+   "actions": 91,
+   "score": 2300,
+   "result": "death"
+  },
+  {
+   "policy": "msx_mission1_rules:1.5.0",
+   "episode": 2,
+   "frames": 366,
+   "actions": 18,
+   "score": 2300,
+   "result": "death"
+  },
+  {
+   "policy": "msx_mission1_rules:1.6.0",
+   "episode": 1,
+   "frames": 1318,
+   "actions": 84,
+   "score": 2800,
+   "result": "death"
+  },
+  {
+   "policy": "msx_mission1_rules:1.6.0",
+   "episode": 2,
+   "frames": 386,
+   "actions": 36,
+   "score": 2800,
+   "result": "death"
+  },
+  {
+   "policy": "msx_mission1_rules:1.6.1",
+   "episode": 1,
+   "frames": 1218,
+   "actions": 82,
+   "score": 1400,
+   "result": "death"
+  },
+  {
+   "policy": "msx_mission1_rules:1.6.1",
+   "episode": 2,
+   "frames": 224,
+   "actions": 20,
+   "score": 1400,
+   "result": "death"
+  },
+  {
+   "policy": "msx_mission1_rules:1.6.2",
+   "episode": 1,
+   "frames": 1318,
+   "actions": 86,
+   "score": 2800,
+   "result": "death"
+  },
+  {
+   "policy": "msx_mission1_rules:1.6.2",
+   "episode": 2,
+   "frames": 414,
+   "actions": 12,
+   "score": 2800,
+   "result": "death"
+  }
+ ],
+ "results": {
+  "ep1": "death (game_over) at 1318f, score 2800 \u2014 TIED with the v1.6.0 run as the product-path RECORD (the previous committed best 2300, R67); the truck NOT killed (the probe: a4 floor 80 inside the band window; the connect rate ~1/10 is the named R69 blocker)",
+  "ep2": "death 414f, score 2800 \u2014 the continue respawn at the section start",
+  "mission_1_clear": "NOT ACHIEVED (not claimed)"
+ },
+ "r67_correction": "the R67 'truck KILLED, score 2300' reading is REFUTED (the R68 probe: a4=160 at the v1.4.2 death; the score came from the wave kills + chip events); the truck has NEVER been killed on the product path",
+ "legality": {
+  "legal_inputs_only": true,
+  "ram_writes": 0,
+  "runtime_llm_calls": 0,
+  "training": 0,
+  "save_state_rewinds_in_claimed_play": 0
+ }
+}

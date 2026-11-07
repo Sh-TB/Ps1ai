@@ -447,7 +447,7 @@
    }
   },
   {
-   "what": "R52 the PAY-FRAME UNION-NET WOUND HUNT under the THIRD sandbox rollback (the contingency verbatim): scratch/ reset lost the r47 frontiers + r47b gs1 (never committed); issue5_m1_start SURVIVED (verified pre-run).  Stage 1 rebuilt the frontiers DETERMINISTICALLY for the 5th time (px 1224.9 census 13 / 1254.8 census 14 - the SAME postures, 6 deaths / 6 continue-rescues, TAINTED).  Boot ledger 4/4, three disclosed amendments, all ZERO-TAP runner defects: boot 2 crashed at the first CONNECT pick (the hunt rows dropped the R48 direct key) -> cap 3; boot 3 crashed in the CONTROL walk (a missing import) -> cap 4 with the OFFLINE CONTRACT DRY-RUN (r52_dryrun.py, 11 checks) BEFORE boot 4; two phantom ledger entries REFUNDED and the cap gate moved BEFORE the increment (the phantom class eliminated).  THE R52 LEVER PROVEN: frame_walk_hunt records the union-net u16 states (0x60..0xE0, 65 offsets) for every live slot EVERY frame of the tap+flight window.  CAPTURES: two MORE +1000 connects (0x42bc path [0x42bc,0x17f8,0x4008,0x3f48,0x5b0c] pay f_rel 3; 0x3f48 path [0x3f48,0x5b0c] pay f_rel 4 - the R51 family REPLICATED under pay-frame telemetry; the table +500 x3 vs +1000 x7 across R48-R52); PIERCE replicated (total n=4, the 0xab94 target never reacted, +100 paid); controls 6 windows dscore 0 (5th round).  ANALYSIS: the two +1000 pay-frame vectors DIFFER in 123 slot/offsets (the discriminator candidate pool); the wound-shape batch holds 546 raw candidates incl. slot12 +0xa0 257->2 with 4f recovery (the closest accumulator signature).  HONEST SHORTFALL: the +500 class NOT captured (the corridor gate starved - 11 skips per frontier - the wall guard ended both passes); the +500-vs-+1000 pay-frame discriminator stays PENDING.",
+   "what": "R52 the PAY-FRAME UNION-NET WOUND HUNT under the THIRD sandbox rollback (the full narrative in reports/r52 + r52_wound_table.json): the +1000 wound-payment class banked with pay-frame vectors; the pay-frame law (the accumulator pays ~2 frames before the visible registration); slot12@0xa0 = the registration witness.",
    "status": "OBSERVED",
    "provenance": {
     "source": "r52t1_payframe_wound.py (boots 1-4) + scratch/r52/boots_used.json (cap 4: three disclosed zero-tap defect amendments + two refunded phantom entries) + r52_dryrun.py (11 contract checks pre-boot-4)",
@@ -495,7 +495,7 @@
    }
   },
   {
-   "what": "R67 the +500 HUNT (the lever verbatim; restore-only, ledger cap 3 disclosed, all spent: env probe + frontier_a + frontier_b): 0 NEW +500 captures - the n>=2 goal NOT met, the class stands n=1 (R66).  AMENDMENT-G LESSON: the disclosed 0x5b0c gate alignment (the product contract; the dry-run finding) changed the tap order on the byte-exact frontier_b - the divergence lands EXACTLY at tap 6 (R66: slot16 0x1e38 +500; R67: slot18 0x540c +100): the +500 is a TRAJECTORY-SENSITIVE posture, not a frontier property.  Landscape: both frontiers target-starved past the spawner-cluster edge (the advance walked px 1246->1540 / 1254->1546, NO targetable enemy rows); fresh 0x4054 soldiers exist only AT the restore census (frontier_a: slot20) and churn out of the fresh class before the tap.  +1000 REPLICATED x2 (0x42bc pay tail f3; 0x3f48 pay tail f4 - the exact R66 st_pre->tail signature).",
+   "what": "R67 the +500 HUNT (cap 3, 3/3): 0 NEW +500 - the class stands n=1.  AMENDMENT-G LESSON: the disclosed 0x5b0c gate alignment changed the tap ORDER on the byte-exact frontier_b - the divergence EXACTLY at tap 6 (R66 slot16 0x1e38 +500; R67 slot18 0x540c +100): the +500 is a TRAJECTORY-SENSITIVE posture.  Both frontiers target-starved past the spawner edge; fresh 0x4054 only AT restore.  +1000 replicated x2 (0x42bc->tail f3; 0x3f48->tail f4).",
    "status": "OBSERVED",
    "provenance": {
     "source": "scripts/r67_env_probe.py (boot 1) + scripts/r67t1_payframe_500hunt.py (boots 2-3) + scripts/r67_analysis_correct.py (offline)",
@@ -503,7 +503,7 @@
    }
   },
   {
-   "what": "R67 the WIDENED-SET zero-overlap test: +500 n=1 vector vs +1000 n=6 (2 R52 + 2 R66 + 2 R67) - 19 union-net offsets separate the single +500 vector from ALL six +1000 vectors, but at n=1 the intersection IS that capture's own set (identity words dominate) - the CLASS discriminator stays PENDING until n>=2 +500.  Established: the +1000 delay signature reproduces ACROSS ROUNDS (0x42bc->tail f3 in R66 AND R67; 0x3f48->tail f4 in both) - the st_pre->delay law is the strongest live lead.  Magnitude table: +500 x4 vs +1000 x9.",
+   "what": "R67 the WIDENED-SET zero-overlap test: +500 n=1 vs +1000 n=6 - 19 offsets separate the single +500 from all six but the intersection IS its own set: the CLASS discriminator PENDING until n>=2.  The +1000 delay law reproduces across rounds (0x42bc->f3, 0x3f48->f4).  Magnitude +500 x4 / +1000 x9.",
    "status": "OBSERVED",
    "provenance": {
     "source": "scripts/r67_analysis_correct.py (offline, zero boots)",
@@ -511,11 +511,27 @@
    }
   },
   {
-   "what": "R67 the PRODUCT-PATH TRUCK CAMPAIGN (policy 1.1.0->1.4.2 + adapter 0.3.0, 40 offline tests): THE ARMORED TRUCK KILLED ON THE PRODUCT PATH - T2 grenade sequencing (3 lobs x -100 vs hp_a4 300 verbatim) took it to zero, the death shot shows it AIRBORNE; ep1 score 2300 = the RECORD (prior best 1300).  Rule chain: T1 identity = the 0x9E88 state word (code 7; the v1.1.0 (6,h=64) identity froze the hold at px 493 on a soldier walk-state false positive - the probe read the REAL truck at 937.5/h64/a4=300); T3 soldiers-before-the-truck-gun (a clear-line escort holds the lob; a corridor-blocked one does not); the REAR FIGHT (BACK = the legal LEFT button; at the section pin the wave AND the truck are BEHIND the player - three identical v1.0.0-v1.3.0 forward-only deaths); T5 the outer-edge hold (90..135; the dx-52 hold lost the gun duel); T7 the blast retreat (the 3-lobs kill exploded the player in the band).  CADENCE LAW (v1.2.0's regression, restored v1.3.0): the fire cadence is part of the deterministic wave trajectory - the top-tick 12f cadence starved the wave (0 kills, the truck never entered, zero a4>=100 rows); the v1.0.0 13f rhythm reproduced the R66 record byte-exact.  Mission 1 NOT cleared: the post-kill death (the second truck / the death animation) is the next blocker; ep2 continues at the section start (2300 at 366f).",
+   "what": "R67 the PRODUCT-PATH TRUCK CAMPAIGN (policy 1.1.0->1.4.2 + adapter 0.3.0, 40 offline tests): ep1 2300 = the RECORD (prior 1300).  The rule chain: T1 identity = the 0x9E88 word (the (6,h=64) identity was a FALSE-POSITIVE TRAP at px 493; the probe read the real truck at 937.5/h64/a4=300); T3 clear-line escorts hold the lob; the REAR FIGHT (BACK = the legal LEFT; the wave AND the truck are BEHIND at the pin - three identical forward-only deaths); T5 the outer-edge hold 90..135; T7 the blast retreat.  CADENCE LAW: the 12f top-tick starved the wave; the v1.0.0 13f rhythm reproduced the R66 record byte-exact.  Mission 1 NOT cleared.  (NOTE: the 'truck KILLED' claim in this event is REFUTED by R68 - see the R68 correction.)",
    "status": "OBSERVED",
    "provenance": {
     "source": "ps1play/adapters/metal_slug_x/policy.py v1.4.2 + adapter.py 0.3.0 + scripts/r67_product_loop_probe.py + scripts/r67_truckzone_probe.py (read-only product-stack diagnostics)",
     "evidence": "data/games/SLUS-01212/truck_evidence/r67/r67_product_run.json + product_run/ (episodes.jsonl iteration lineage + shots) + r67_truckzone_probe.jsonl + r67_product_loop_probe.jsonl"
+   }
+  },
+  {
+   "what": "R68 EXPERIMENT TRACK - the +500 n>=2 GOAL MET + the zero-overlap DISCRIMINATOR RESOLVED (ledger cap 3, 3/3: env probe + the byte-exact frontier rebuild (frontier_px 1254.8 = R66; determinism 7-for-7) + the pass-B hunt): the R66 pass-B taps replayed VERBATIM (the r66t1 gate, CORPSE_ST {0x4BE4,0x5CC8}, amendment-G NOT applied) -> THE +500 AT TAP 6: slot16 0x1e38 pay tail f1, BYTE-IDENTICAL to the R66 capture; the tap kinds identical end to end (AMENDMENT-G CONFIRMED BY REPRODUCTION).  Class n=2.  Honest: CONNECT/KILL 0/0 (no 0x42bc in-window) while the score PAID t2 (+1000) t6 (+500) - the pay-before-registration law from the missing-registration side.  WIDENED SET: +500 n=2 vs +1000 n=7 - 19 offsets separate the classes (0x60..0xc6); DELAY LAW TWO-CLASS: +500 tail f1 (2/2), +1000 tail f3/f4; magnitude +500 x5 / +1000 x9.  The 19 = the R69 xref candidates.",
+   "status": "OBSERVED",
+   "provenance": {
+    "source": "scripts/r68_env_probe.py + r68_rebuild.py + r68_passb_hunt.py + r68_analysis_correct.py",
+    "evidence": "data/games/SLUS-01212/truck_evidence/r68/ (r68_env_probe.json, r68_boot2_s1_report.json, r68_boot3_s2b.jsonl, r68_analysis.json)"
+   }
+  },
+  {
+   "what": "R68 PRODUCT TRACK - the failure-mode map + THE R67 CORRECTION: 'TRUCK KILLED, score 2300' REFUTED (the probe: a4=160 at 0x9E88 x937.5 slot14 from f1160 to the death f1462; the score was the wave+chips; 3 lobs = 1 connect -100 + chips -40; 'AIRBORNE' = the follower, not the truck).  Four probe-pinned variants (adapter 0.4.0 = the dead family {0xA304,0xA44C,0xA45C} in the corpse filter + the dead_truck_x kill signature; policy 1.5.0->1.6.2; suite 864 green): (a) v1.5.0 W8/W9 = the R67 trace BYTE-IDENTICAL (the truck never dies, the chain never fires); (b) v1.6.0 chase = 1318f/2800 THE RECORD (the lobs LAND in the band dx -133.5 px 1071: a4 300->80, then FROZE at the band edge); (c) v1.6.1 chip-stand = 1218f/1400 REGRESSION (a4 FROZEN at 300 - THE BULLETS DO NOT REACH a truck behind the pin; the R38 chip model needs a CLEAR LINE); (d) v1.6.2 chase+gre40 = 1318f/2800 tied (the CONNECT RATE ~1/10 is the R69 blocker, not the cadence).  Mission 1 NOT cleared (not claimed).",
+   "status": "OBSERVED",
+   "provenance": {
+    "source": "ps1play/adapters/metal_slug_x/ (policy 1.6.2 + adapter 0.4.0) + scripts/r68_postkill_probe.py + r68_gameplay_record.py",
+    "evidence": "data/games/SLUS-01212/truck_evidence/r68/ (r68_product_run.json + product_run/, r68_postkill_probe_v161_chipstand.jsonl)"
    }
   }
  ],
@@ -657,15 +673,15 @@
  ],
  "meta": {
   "built_at": "2026-10-28T19:32:27Z",
-  "last_updated": "2026-11-07T19:09:44Z",
-  "last_commit_note": "R67: the +500 hunt (0 new; the trajectory lesson), the widened-set test (PENDING n=1 vs n=6), the truck KILLED on the product path (record 2300); Mission 1 OPEN.",
+  "last_updated": "2026-11-07T21:25:50Z",
+  "last_commit_note": "R68: the +500 n>=2 GOAL MET (the verbatim R66 tap replay on the byte-exact rebuilt frontier; the tap-6 capture slot16 0x1e38 tail-f1, byte-identical to R66), the zero-overlap DISCRIMINATOR RESOLVED (19 offsets; n=2 +500 vs n=7 +1000; the delay law two-class), the R67 truck-kill claim REFUTED (a4=160 at death), the product failure-mode map (the record 2800; the connect rate = the R69 blocker).  Mission 1 OPEN.",
   "updated": "2026-10-29T19:41:38Z"
  },
  "next_experiment": {
-  "id": "R68",
-  "budget": "restore-only arms from the r66 frontiers while they survive on disk; product-path boots are the separate gameplay track (the R67 precedent)",
-  "hypothesis": "the post-kill death is the second truck / the death animation: a wreck-aware policy (the wreck 0xA44C and the death state 0xA304 are already capsule knowledge) that retreats THROUGH the truck-kill and re-engages the SECOND truck with the same T2 sequencing clears the roadblock section; in parallel, n>=2 +500 captures need the R66 tap order replayed VERBATIM (the amendment-G gate reverted for the hunt only) - the trajectory sensitivity makes the tap order part of the experiment",
-  "method": "product-path: play metal_slug_x with the R68 policy (wreck-aware T7 extension + the second-truck sequencing) until the roadblock section clears; experiment-track: ONE restore-only boot replaying the R66 pass-B tap sequence verbatim (the corridor gate as committed in r66t1, not the r67 amendment-G variant) for the third +500 attempt; the zero-overlap test re-runs on any new capture",
+  "id": "R69",
+  "budget": "restore-only arms from the r66 frontiers while they survive on disk (the R68 rebuild is byte-exact and reproducible if lost again); product-path boots are the separate gameplay track (the R67/R68 precedent)",
+  "hypothesis": "two evidence-armed leads: (1) SOURCE-FIRST - the 19 zero-overlap offsets (+500 fingerprint) xref'd in the ENEMY.BIN overlay @0x8009C0E8 + the EXE to find the payment writer (the pay-before-registration law pins the write order); (2) PRODUCT - the truck kill needs the CONNECT RATE: the lob lands at dx -133.5 from the stationary throw posture (px 1071); hold that posture and lob on the gre40 cadence ONLY while |dx| in [125, 140], walk otherwise; the band window ~280f => up to 7 throws => the kill inside the window at the measured rate",
+  "method": "product-path: play metal_slug_x with the R69 connect-window policy; experiment-track: the +500 fingerprint xref (offline, zero boots) THEN one restore-only hunt pass if the writer is found (the R66 gate verbatim, the R68 disclosure pattern); the zero-overlap test re-runs on any new capture",
   "m2_gate_note": "unchanged - interactive M2 entry stays gated on a clean (deaths=0, no-restart) deep resolve posture"
  },
  "prior_art": [

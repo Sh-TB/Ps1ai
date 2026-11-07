@@ -54,6 +54,10 @@ Episode semantics: one episode = one life.  Death (the alive word
 fails) is terminal; the NEXT episode's start_episode performs the
 continue-screen recovery (START taps, bounded) before re-arming the
 gate.  Save states are NOT used by the adapter at all.
+
+v0.4.0 (R68): the truck dead family {0xA304, 0xA44C, 0xA45C} joins
+CORPSE_ST (the capsule-verified death/wreck states never absorb a
+bullet or pay; see the constant block for the evidence chain).
 """
 from __future__ import annotations
 
@@ -66,7 +70,7 @@ from ps1play.runtime.errors import AdapterError, EmulatorError
 from ps1play.runtime.interfaces import (ActionDecision, Frame,
                                         GameAdapter, GameObservation)
 
-ADAPTER_VERSION = "0.3.0"
+ADAPTER_VERSION = "0.4.0"
 
 # ---- the verified anchor map (THIS game only) -------------------------
 PLAYER_X = 0x0CA2E0
@@ -88,6 +92,25 @@ ST_AE7C = 0xAE7C                 # absorbs bullets, registered kills
 # dead/dying states (the committed evidence: combat.CORPSE_ST + the
 # R50/R51/R66 death-registration terminal 0x5B0C)
 CORPSE_ST = frozenset({0x4BE4, 0x5CC8, 0x5B0C})
+
+# v0.4.0 (R68): the ARMORED TRUCK dead family.  The capsule evidence
+# (all VERIFIED/GAMEPLAY_VERIFIED): the truck's death state word0 =
+# 0xA304 (the Oct-25 campaign: hp_a4 -> 0 flips the state word), the
+# wreck 0xA44C (R38: the wreck residual decays 30 -> 10 -> row gone)
+# and the wreck fire/smoke 0xA45C (R40: the wreck complex held the
+# engage mode 75/81 chunks on a DEAD row).  None of the three ever
+# absorbed a player bullet or registered a payment across R38-R52 —
+# a dead truck is exactly the "cannot absorb / cannot pay" case the
+# R66 corridor predicate excludes.  In the product observation they
+# were SC_OTHER (6) rows BEFORE v0.4.0: the R67 ep1 post-kill death
+# is pinned on that (the policy stood in the blast band engaging the
+# wreck row while the death explosion resolved).  From v0.4.0 the
+# dead truck leaves the observation at the kill moment (the row is
+# filtered) — the policy's kill transition sees truck-gone instead.
+# The experiment-track census path (scripts r48t1/r66t1) keeps its
+# own corpse sets — this change is adapter-scope only (disclosed).
+ST_TRUCK_DEAD = (0xA304, 0xA44C, 0xA45C)
+CORPSE_ST = frozenset(CORPSE_ST | set(ST_TRUCK_DEAD))
 GROUND_HEIGHT = 64               # +0x7E ground contact (session-2)
 SX_MAX = 600                     # sane screen-x band (scan_entities)
 
@@ -181,6 +204,33 @@ class MetalSlugXAdapter(GameAdapter):
 
     def _u8(self, a: int) -> int:
         return int(self._m().u8(a))
+
+    # ------------------------------------------------------------ --
+    # the KILL SIGNATURE (v0.4.0): the truck dead family seen LIVE
+    # ------------------------------------------------------------ --
+    def dead_truck_x(self, px: float) -> Optional[float]:
+        """The nearest ARMORED-TRUCK DEAD-FAMILY row this frame
+        (st in {0xA304, 0xA44C, 0xA45C} — the capsule-verified
+        death/wreck states), as world px; None when no dead truck
+        is on the table.  This is the policy's kill confirmation:
+        a truck row that vanishes WITHOUT a dead-family sighting
+        drove off (no blast hazard); a vanishing WITH one is the
+        kill (the R38 wreck decays in place, the row gone later).
+        Read-only; diagnostics-only (the 21-float obs contract is
+        unchanged)."""
+        best = None
+        for s in range(1, SLOTS):
+            base = TABLE + s * STRIDE
+            st = self._u16(base)
+            if st not in ST_TRUCK_DEAD:
+                continue
+            xw = self._u32(base + 0x78)
+            if not xw:
+                continue
+            x = xw / 65536.0
+            if best is None or abs(x - px) < abs(best - px):
+                best = x
+        return best
 
     def px_of(self) -> float:
         return self._u32(PLAYER_X) / 65536.0
@@ -364,6 +414,7 @@ class MetalSlugXAdapter(GameAdapter):
             gren = self._u8(GRENADES)
             al = self.alive()
             mortals = self.scan_mortals(px) if al else []
+            dead_x = self.dead_truck_x(px) if al else None
             x = np.zeros(OBS_LEN, dtype=np.float32)
             x[0] = px
             x[1] = float(score)
@@ -382,7 +433,10 @@ class MetalSlugXAdapter(GameAdapter):
             self._last_diag = {"px": round(px, 1), "score": score,
                                "php": int(php), "gren": int(gren),
                                "alive": bool(al),
-                               "n_mortals": len(mortals)}
+                               "n_mortals": len(mortals),
+                               "dead_truck_x": (round(dead_x, 1)
+                                                if dead_x is not None
+                                                else None)}
             return GameObservation(
                 values=x, frame_seq=frame.seq,
                 frame_id=frame.frame_id, timestamp=frame.timestamp,

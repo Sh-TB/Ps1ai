@@ -1,0 +1,59 @@
+{
+ "schema": "ps1play.r68-env-probe/1",
+ "generated_utc": "2026-11-07T21:20:07Z",
+ "commit": "939b1791b669f7f563832cd4f0b14598a07d129f",
+ "boot_ledger": {
+  "n": 1,
+  "purpose": "env_probe"
+ },
+ "rollback_disclosure": "SIXTH sandbox rollback: scratch/ and the savestate workspace were reset \u2014 r66_frontier_a/b LOST (never committed \u2014 no-game-bytes); issue5_m1_start (Oct 20) SURVIVED.  The capsule contingency (a rebuild boot, disclosed) applies verbatim at boot 2.",
+ "frontiers_on_disk": {
+  "r66_frontier_a": false,
+  "r66_frontier_b": false
+ },
+ "boot": {
+  "fw_mode": "openbios+start_taps",
+  "wall_s": 28.9,
+  "world": {
+   "px": 258.6,
+   "score": 0,
+   "gren": 10,
+   "php": 144,
+   "sec": [
+    6,
+    1
+   ],
+   "prog": 4294967295,
+   "alive": true
+  }
+ },
+ "checkpoints": [
+  {
+   "name": "issue5_m1_start",
+   "on_disk": true,
+   "restored_world": {
+    "px": 258.6,
+    "score": 0,
+    "gren": 10,
+    "php": 128,
+    "sec": [
+     6,
+     1
+    ],
+    "prog": 4294967295,
+    "alive": true
+   },
+   "valid": true
+  },
+  {
+   "name": "r66_frontier_a",
+   "on_disk": false
+  },
+  {
+   "name": "r66_frontier_b",
+   "on_disk": false
+  }
+ ],
+ "anchor_valid": true,
+ "wall_s": 29.0
+}

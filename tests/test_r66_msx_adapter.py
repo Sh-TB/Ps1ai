@@ -80,6 +80,9 @@ class TestStateCodes:
         assert state_code(0x1234) == 6
         assert state_code(0x9E88) == 7      # THE TRUCK (R67 probe)
         assert 0x5B0C in CORPSE_ST
+        # v0.4.0 (R68): the truck dead family joins the corpse set
+        assert CORPSE_ST == frozenset({0x4BE4, 0x5CC8, 0x5B0C,
+                                       0xA304, 0xA44C, 0xA45C})
 
 
 class TestCorridorPredicate:
@@ -353,11 +356,13 @@ class TestTruckRulesR67:
         return acts, rules
 
     def test_truck_in_band_grenades(self):
-        # truck in the lob band -> exactly 3 GRENADEs (the budget),
-        # all from the truck_grenade rule, cooldown-spaced
+        # truck in the lob band -> lobs CONTINUE while the live
+        # grenade counter is positive (v1.6.0: the budget is
+        # unlimited; v1.6.2: the R38 gre40 cadence — 8 lobs in
+        # 300 decisions), cooldown-spaced
         acts, rules = self._run([(90.0, 7, 64.0)])
-        assert acts.count("GRENADE") == 3
-        assert rules.count("truck_grenade") == 3
+        assert acts.count("GRENADE") == 8
+        assert rules.count("truck_grenade") == 8
 
     def test_soldier_before_truck_gun(self):
         # a CLEAR escort (70, between player and truck at 90) holds
@@ -375,21 +380,24 @@ class TestTruckRulesR67:
     def test_escort_behind_truck_does_not_hold_lob(self):
         # soldier BEHIND the truck (150 vs 100): corridor-blocked
         # (the R49 bullet-steal model) — T3 never fires, the lob is
-        # the correct weapon and the full budget lands (from the
-        # outer band — the v1.4.2 hold geometry).
+        # the correct weapon and the lobs CONTINUE (from the outer
+        # band — the hold geometry).
         acts, rules = self._run([(100.0, 7, 64.0),
                                  (150.0, 1, 44.0)], n=320)
         assert rules.count("truck_escort_first") == 0
-        assert rules.count("truck_grenade") == 3
-        assert acts.count("GRENADE") == 3
+        assert rules.count("truck_grenade") == 8
+        assert acts.count("GRENADE") == 8
 
     def test_truck_out_of_band_no_grenade(self):
-        # truck at 200 (out of the lob band): T6 approach (walk to
-        # it — the hold/chip take over inside the band), NO grenade.
+        # truck at 200 (out of the lob band): the v1.6.2 CHASE
+        # walks toward it (the lobs only land in the band), NO
+        # grenade, NO chip-fire (the v1.6.1 refutation: the
+        # bullets never reach a truck behind the pin).
         acts, rules = self._run([(200.0, 7, 64.0)], n=60)
         assert "truck_grenade" not in rules
         assert "GRENADE" not in acts
         assert "truck_approach" in rules
+        assert "truck_chip_fire" not in rules
 
     def test_sc6_never_truck(self):
         # THE R67 PROBE FIX (pinned): ground soldiers in walk/throw
@@ -408,22 +416,24 @@ class TestTruckRulesR67:
         assert "GRENADE" not in acts
 
     def test_truck_budget_separate_from_stall(self):
-        # the truck grenades come out of the TRUCK budget; the stall
-        # ladder budget stays untouched during the truck fight.
+        # the truck grenades come out of the TRUCK counter; the
+        # stall-ladder budget stays untouched during the truck
+        # fight.  (v1.6.0: the counter is diagnostic-only — the
+        # live grenade counter is the real budget.)
         pol = Mission1Policy()
         pol.reset()
         for k in range(300):
             o = self._obs([(90.0, 7, 64.0)],
                           px=1000.0 + 2 * k)
             pol.predict(o)
-        assert pol._truck_grenades_used == 3
+        assert pol._truck_grenades_used == 8
         assert pol._grenades_used == 0
 
-    def test_identity_v142(self):
+    def test_identity_v150(self):
         pol = Mission1Policy()
         ident = pol.identity()
-        assert ident["policy_version"] == "1.4.2"
-        assert ident["truck_rules"] == "r67_grenade_sequencing"
+        assert ident["policy_version"] == "1.6.2"
+        assert ident["truck_rules"] == "r68_chase_gre40"
 
     def test_hold_backs_off_point_blank(self):
         # THE v1.4.2 PROBE LESSON (pinned): the dx-52 hold stood in
@@ -436,11 +446,13 @@ class TestTruckRulesR67:
         assert "WALK" not in acts
         assert "GRENADE" not in acts
 
-    def test_blast_retreat_after_budget(self):
-        # THE v1.4.0 PRODUCT-RUN LESSON (pinned): the 3-lobs kill
-        # took the truck to 0 hp_a4 and the death explosion killed
-        # the player standing in the band.  Once the budget is
-        # spent the player WALKS AWAY from the truck.
+    def test_no_standalone_blast_retreat_alive_truck(self):
+        # SUPERSEDED SEMANTICS (pinned v1.6.0): the v1.4.2
+        # budget-spent blast retreat is REMOVED — the R68 probe
+        # showed the truck SURVIVED (a4=160) while the retreat
+        # posture left the pinned player in the gun line.  An
+        # alive truck in band with the counter spent: the
+        # engagement CONTINUES (the lob schedule).
         pol = Mission1Policy()
         pol.reset()
         x = np.zeros(OBS_LEN, dtype=np.float32)
@@ -454,14 +466,15 @@ class TestTruckRulesR67:
         o = GameObservation(values=x, frame_seq=1, frame_id="t",
                             timestamp=0.0, valid=True,
                             diagnostics={})
-        pol._truck_grenades_used = 3      # the budget spent
+        pol._truck_grenades_used = 3      # the counter spent
         d = pol.predict(o)
-        assert d.action == "WALK"         # away from a REAR truck
-        assert d.diagnostics["rule"] == "truck_blast_retreat"
+        assert d.diagnostics["rule"] == "truck_turn"
+        assert d.action == "BACK"         # faces the truck to lob
 
-    def test_no_reapproach_after_budget(self):
-        # the truck behind at -226 (out of the blast margin) with
-        # the budget spent: NO truck_approach (never re-approach).
+    def test_chase_parked_rear_truck(self):
+        # the truck PARKED behind at -226.5 (the R68 probe's exact
+        # posture — 6.5px beyond the 220 chip window): walk toward
+        # it (the only reachable-weapon closure).
         pol = Mission1Policy()
         pol.reset()
         x = np.zeros(OBS_LEN, dtype=np.float32)
@@ -477,7 +490,33 @@ class TestTruckRulesR67:
                             diagnostics={})
         pol._truck_grenades_used = 3
         d = pol.predict(o)
-        assert d.diagnostics.get("rule") != "truck_approach"
+        assert d.diagnostics.get("rule") == "truck_approach"
+        assert d.action == "BACK"    # toward a REAR truck
+
+    def test_out_of_band_chase(self):
+        # v1.6.2 (the probe-pinned semantics): the truck behind at
+        # -168 (out of the lob band) is APPROACHED — the chase
+        # re-enters the band where the lobs land.  The v1.6.1
+        # stand-ground chip-fire is REFUTED: the bullets do NOT
+        # reach a truck behind the pin (the a4 sat FROZEN at 300
+        # through five chip windows — the wave + the pin scenery
+        # eat the shot).
+        pol = Mission1Policy()
+        pol.reset()
+        x = np.zeros(OBS_LEN, dtype=np.float32)
+        x[0] = 1000.0
+        x[3] = 10.0
+        x[4] = 1.0
+        x[5] = 1.0
+        x[6] = -168.0
+        x[7] = 7.0
+        x[8] = 64.0
+        o = GameObservation(values=x, frame_seq=1, frame_id="t",
+                            timestamp=0.0, valid=True,
+                            diagnostics={})
+        d = pol.predict(o)
+        assert d.diagnostics.get("rule") == "truck_approach"
+        assert d.action == "BACK"          # walks toward it
 
     def test_fire_cadence_v100_rhythm(self):
         # THE WAVE-FIGHT RHYTHM PIN (the v1.2.0 lesson): the generic
@@ -613,13 +652,14 @@ class TestRearFightR67V140:
 
     def test_rear_truck_in_band_turn_and_lob(self):
         # the parked truck BEHIND at dx -90 (the pin evidence):
-        # turn (truck_turn) then 3 lobs (truck_grenade); the hold
-        # fills between lobs (its own cooldown ticks).
+        # turn (truck_turn) then the lobs CONTINUE (v1.6.0: the
+        # unlimited budget — 4 in 320 decisions); the hold fills
+        # between lobs (its own cooldown ticks).
         acts, rules = self._run([(-90.0, 7, 64.0)], n=320)
         assert rules[0] == "truck_turn"
         assert acts[0] == "BACK"
-        assert rules.count("truck_grenade") == 3
-        assert acts.count("GRENADE") == 3
+        assert rules.count("truck_grenade") == 8
+        assert acts.count("GRENADE") == 8
         assert "truck_chip_fire" in rules
 
     def test_rear_truck_out_of_band_approach(self):
@@ -637,3 +677,228 @@ class TestRearFightR67V140:
         assert rules[0] == "truck_escort_turn"
         assert acts[0] == "BACK"
         assert rules.count("truck_grenade") == 0
+
+
+
+class TestR68WreckAware:
+    """THE R68 wreck-aware extension (policy v1.6.0 + adapter
+    0.4.0), offline on synthetic observations.
+
+    W8: the kill = the truck gone for TRUCK_GONE_CONFIRM_F
+    consecutive decisions WHILE the adapter saw a dead-family row
+    (0xA304/0xA44C/0xA45C) — a vanishing WITHOUT the dead row is a
+    drive-off (no hazard).  A scan flicker never fires the chain.
+    W9: the kill arms the post-kill hazard at the WRECK's own x —
+    the player retreats OUT of the blast band before advancing.
+    T2'/T6': the unlimited lob budget + the chase (the R68 probe:
+    the 3-lobs cap landed ONE connect; the parked rear truck at
+    -226.5 was unreachable and the gun duel was lost)."""
+
+    def _obs(self, ents=(), gren=10, px=1000.0, diag=None):
+        x = np.zeros(OBS_LEN, dtype=np.float32)
+        x[0] = px
+        x[3] = float(gren)
+        x[4] = 1.0
+        x[5] = 1.0
+        for i, (dx, sc, h) in enumerate(ents[:5]):
+            x[6 + 3 * i] = dx
+            x[7 + 3 * i] = float(sc)
+            x[8 + 3 * i] = float(h)
+        return GameObservation(values=x, frame_seq=1,
+                               frame_id="t", timestamp=0.0,
+                               valid=True, diagnostics=diag or {})
+
+    def test_scan_filters_truck_dead_family(self):
+        # adapter 0.4.0: the dead truck never reaches the
+        # observation (the mocked entity table drives scan_mortals)
+        # AND dead_truck_x() reports the wreck's world px.
+        class FakeMem:
+            def __init__(self, rows):
+                self.rows = rows
+
+            def u16(self, a):
+                return self.rows.get(a, 0)
+
+            def u32(self, a):
+                return self.rows.get(a, 0)
+
+            def u8(self, a):
+                return self.rows.get(a, 0)
+
+        class FakePlayer:
+            def __init__(self, mem):
+                self.mem = mem
+
+        class FakeEnv:
+            def __init__(self, mem):
+                self.p = FakePlayer(mem)
+
+        px = 1000.0
+        rows = {0x0CA2E0: int(px * 65536), 0x0CA2F6: 144,
+                0x0EE318: 0, 0x0EDCF4: 10, 0x0EE518: 0xFF}
+        # slot 1: a live truck (0x9E88) at dx +90; slot 2: the dead
+        # family row at dx +150 (0xA304); slot 3: wreck 0xA44C;
+        # slot 4: wreck fire 0xA45C
+        for slot, st in ((1, 0x9E88), (2, 0xA304), (3, 0xA44C),
+                         (4, 0xA45C)):
+            base = 0x0CA268 + slot * 0x14C
+            rows[base] = st
+            rows[base + 0x78] = int((px + slot * 90.0) * 65536)
+            rows[base + 0x7E] = 64
+            rows[base + 0x8E] = 300
+        ad = MetalSlugXAdapter(FakeEnv(FakeMem(rows)))
+        out = ad.scan_mortals(px)
+        slots = [e["slot"] for e in out]
+        assert 1 in slots                      # the LIVE truck passes
+        assert all(s not in slots for s in (2, 3, 4))
+        assert out[0]["st"] == 0x9E88
+        # the kill signature: the nearest dead-family row's world px
+        assert ad.dead_truck_x(px) == pytest.approx(px + 2 * 90.0)
+        # no dead rows -> None
+        rows2 = dict(rows)
+        for slot in (2, 3, 4):
+            rows2[0x0CA268 + slot * 0x14C] = 0
+        ad2 = MetalSlugXAdapter(FakeEnv(FakeMem(rows2)))
+        assert ad2.dead_truck_x(px) is None
+
+    def _fight_to_lob(self, pol, truck_dx=90.0, n=240):
+        """Phase 1: the truck in band until lobs have landed."""
+        for k in range(n):
+            pol.predict(self._obs([(truck_dx, 7, 64.0)],
+                                  px=1000.0 + 2 * k))
+        assert pol._truck_grenades_used >= 1
+
+    def test_kill_transition_confirmed_by_dead_row(self):
+        # the full W8+W9 chain: lobs land, the truck row vanishes,
+        # the adapter reports the DEAD row (the kill) -> 11 frames
+        # of the confirmation hold, then the hazard retreat AWAY
+        # from the wreck's own x.
+        pol = Mission1Policy()
+        pol.reset()
+        self._fight_to_lob(pol)
+        wreck_x = 1000.0 + 2 * 240 + 90.0
+        diag = {"dead_truck_x": wreck_x}
+        # frames 0..10 of the window: the confirmation hold (IDLE)
+        for k in range(240, 251):
+            d = pol.predict(self._obs([], px=1000.0 + 2 * k,
+                                      diag=diag))
+            assert d.diagnostics["rule"] == "truck_gone_hold"
+            assert d.action == "IDLE"
+        # frame 11: the window expires -> the kill transition fires
+        # and the decision IS the first retreat step
+        d = pol.predict(self._obs([], px=1000.0 + 2 * 251,
+                                  diag=diag))
+        assert d.diagnostics["rule"] == "truck_kill_retreat"
+        assert d.action == "BACK"              # away (front wreck)
+        assert pol._truck_grenades_used == 0   # W8 reset
+        assert pol._hazard_px == pytest.approx(wreck_x)
+        # the retreat continues while inside the band; past the
+        # hazard px the away-move flips to WALK (both the same rule)
+        for k in range(252, 300):
+            d = pol.predict(self._obs([], px=1000.0 + 2 * k,
+                                      diag=diag))
+            assert d.diagnostics["rule"] == "truck_kill_retreat"
+            assert d.action in ("BACK", "WALK")
+        # out of the blast band -> the hazard self-clears
+        d = pol.predict(self._obs([], px=1000.0 + 2 * 400,
+                                  diag=diag))
+        assert d.diagnostics["rule"] != "truck_kill_retreat"
+        assert pol._hazard == 0
+
+    def test_kill_transition_rear_truck_retreats_forward(self):
+        # the REAR-truck kill (the R67 death geometry): the retreat
+        # walks FORWARD (WALK) away from the wreck.
+        pol = Mission1Policy()
+        pol.reset()
+        self._fight_to_lob(pol, truck_dx=-90.0)
+        wreck_x = 1000.0 + 2 * 240 - 90.0
+        diag = {"dead_truck_x": wreck_x}
+        for k in range(240, 251):
+            pol.predict(self._obs([], px=1000.0 + 2 * k, diag=diag))
+        d = pol.predict(self._obs([], px=1000.0 + 2 * 251,
+                                  diag=diag))
+        assert d.diagnostics["rule"] == "truck_kill_retreat"
+        assert d.action == "WALK"              # away (rear wreck)
+
+    def test_vanish_without_dead_row_is_drive_off(self):
+        # THE FALSE-POSITIVE GUARD: the truck exits the scan window
+        # ALIVE (no dead-family row in the diag) -> the counter
+        # resets but NO hazard arms and the generic rules resume.
+        pol = Mission1Policy()
+        pol.reset()
+        self._fight_to_lob(pol, n=30)          # one lob thrown
+        used = pol._truck_grenades_used
+        for k in range(30, 60):                # gone 30 frames
+            d = pol.predict(self._obs([(500.0, 1, 44.0)],
+                                      px=1000.0 + 2 * k))
+            if k == 41:                        # the 12th gone frame
+                # the confirm fired: the counter reset, no hazard
+                # (the drove-off path falls through to the generic
+                # rules — its diag is transient by design)
+                assert pol._truck_grenades_used == 0
+                assert pol._hazard == 0
+        assert pol._truck_grenades_used == 0
+        assert d.diagnostics["rule"] == "walk"  # the rules resumed
+
+    def test_second_truck_gets_full_budget(self):
+        # W8 END-TO-END: kill the first truck, the hazard retreat
+        # clears, a SECOND fresh truck enters -> the lobs land
+        # again (the v1.4.2 defect: the second truck got zero).
+        pol = Mission1Policy()
+        pol.reset()
+        self._fight_to_lob(pol)
+        diag = {"dead_truck_x": 1000.0 + 2 * 240 + 90.0}
+        for k in range(240, 252):              # confirm + retreat
+            pol.predict(self._obs([], px=1000.0 + 2 * k, diag=diag))
+        for k in range(252, 420):              # the retreat clears
+            pol.predict(self._obs([], px=1000.0 + 2 * k, diag=diag))
+        assert pol._hazard == 0
+        acts = []
+        for k in range(420, 660):              # the second truck
+            d = pol.predict(self._obs([(90.0, 7, 64.0)],
+                                      px=1000.0 + 2 * k))
+            acts.append(d.action)
+        assert acts.count("GRENADE") >= 3
+
+    def test_no_budget_reset_on_flicker(self):
+        # a 1-frame scan flicker with the budget UNspent must NOT
+        # reset anything (the confirmation window recovers).
+        pol = Mission1Policy()
+        pol.reset()
+        for k in range(60):                    # the truck visible
+            pol.predict(self._obs([(90.0, 7, 64.0)],
+                                  px=1000.0 + 2 * k))
+        assert pol._truck_grenades_used >= 1
+        used = pol._truck_grenades_used
+        pol.predict(self._obs([], px=1000.0 + 2 * 60))    # flicker
+        assert pol._truck_present is True      # still counting
+        assert pol._hazard == 0                # no hazard armed
+        assert pol._truck_grenades_used == used  # no reset
+        # the truck returns: the window resets, the fight continues
+        pol.predict(self._obs([(90.0, 7, 64.0)],
+                              px=1000.0 + 2 * 61))
+        assert pol._truck_gone_f == 0
+
+    def test_hazard_is_bounded(self):
+        # the hazard timer expires even if the player cannot move
+        # (px frozen): after TRUCK_KILL_HAZARD_F decisions the
+        # generic rules resume.
+        from ps1play.adapters.metal_slug_x.policy import \
+            TRUCK_KILL_HAZARD_F
+        pol = Mission1Policy()
+        pol.reset()
+        self._fight_to_lob(pol)
+        diag = {"dead_truck_x": 1000.0 + 2 * 240 + 90.0}
+        for k in range(240, 252):
+            pol.predict(self._obs([], px=1000.0 + 2 * 240,
+                                  diag=diag))
+        for _ in range(TRUCK_KILL_HAZARD_F + 1):
+            d = pol.predict(self._obs([], px=1000.0 + 2 * 240,
+                                      diag=diag))
+        assert pol._hazard == 0
+        assert d.diagnostics["rule"] != "truck_kill_retreat"
+
+    def test_adapter_version_v040(self):
+        from ps1play.adapters.metal_slug_x.adapter import \
+            ADAPTER_VERSION
+        assert ADAPTER_VERSION == "0.4.0"
