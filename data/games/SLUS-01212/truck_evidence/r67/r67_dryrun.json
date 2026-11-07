@@ -1,0 +1,43 @@
+{
+ "schema": "ps1play.r67-dryrun/1",
+ "generated": "2026-11-07T18:07:15Z",
+ "commit": "a14777d62d54f4904272670a0b044f46e2826430",
+ "ok": true,
+ "n_checks": 24,
+ "failed": [],
+ "checks": {
+  "01_frontier_on_disk_r66_frontier_a": true,
+  "02_frontier_on_disk_r66_frontier_b": true,
+  "03_anchor_on_disk_issue5_m1_start": true,
+  "04_disc_core_bios_resolve": true,
+  "05_ledger_gate_cap3_shared_file": true,
+  "06_pay500_counter_honest_rule": true,
+  "07_union_net_65_even_60_e0": true,
+  "08_pay_frame_words_synth": true,
+  "09_extract_pay500s_honest": true,
+  "10_pick_target_r67_prefers_fresh_soft": true,
+  "11_gate_excludes_transparent_proj_corpse": true,
+  "11b_disclosed_delta_pinned_5b0c": true,
+  "12_zero_overlap_resolves_synth": true,
+  "13_zero_overlap_fails_honestly": true,
+  "14_verdict_strings_honest": true,
+  "15_goal_pay500_2": true,
+  "16_destarve_both_passes": true,
+  "17a_no_ram_write_calls": true,
+  "17b_legal_pad_buttons_only": true,
+  "17c_wall_guard_present": true,
+  "18_m2_gate_note_unchanged": true,
+  "19_r66_plus500_reproducible": true,
+  "19b_plus1000_bank_vectors": [
+   4,
+   "expected 4 (2 R66 + 2 R52)"
+  ],
+  "20_preboot_inputs_exist": {
+   "r66_a": true,
+   "r66_b": true,
+   "r52_bank": true,
+   "hunt_a_jsonl": "(produced by boot 2)",
+   "hunt_b_jsonl": "(produced by boot 3)"
+  }
+ }
+}

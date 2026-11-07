@@ -1,0 +1,113 @@
+{
+ "schema": "ps1play.r67-env-probe/1",
+ "generated_utc": "2026-11-07T18:07:31Z",
+ "commit": "a14777d62d54f4904272670a0b044f46e2826430",
+ "boot_ledger": {
+  "n": 1,
+  "purpose": "env_probe"
+ },
+ "restore_only_budget": {
+  "frontiers_on_disk": {
+   "r66_frontier_a": true,
+   "r66_frontier_b": true
+  }
+ },
+ "boot": {
+  "fw_mode": "openbios+start_taps",
+  "wall_s": 28.9,
+  "world": {
+   "px": 258.6,
+   "score": 0,
+   "gren": 10,
+   "php": 144,
+   "sec": [
+    6,
+    1
+   ],
+   "prog": 4294967295,
+   "alive": true
+  },
+  "png": "/home/z/my-project/ps1ai/scratch/r67/pngs/r67_env_boot.png"
+ },
+ "checkpoints": [
+  {
+   "name": "issue5_m1_start",
+   "on_disk": true,
+   "restored_world": {
+    "px": 258.6,
+    "score": 0,
+    "gren": 10,
+    "php": 128,
+    "sec": [
+     6,
+     1
+    ],
+    "prog": 4294967295,
+    "alive": true
+   },
+   "valid": true
+  },
+  {
+   "name": "r66_frontier_a",
+   "on_disk": true,
+   "restored_world": {
+    "px": 1246.2,
+    "score": 6702,
+    "gren": 8,
+    "php": 127,
+    "sec": [
+     11,
+     1
+    ],
+    "prog": 4294967295,
+    "alive": true
+   },
+   "valid": true,
+   "after_60f_idle": {
+    "px": 1246.2,
+    "score": 6702,
+    "gren": 8,
+    "php": 127,
+    "sec": [
+     11,
+     1
+    ],
+    "prog": 4294967295,
+    "alive": true
+   },
+   "survives_60f": true
+  },
+  {
+   "name": "r66_frontier_b",
+   "on_disk": true,
+   "restored_world": {
+    "px": 1254.8,
+    "score": 6702,
+    "gren": 8,
+    "php": 127,
+    "sec": [
+     11,
+     1
+    ],
+    "prog": 4294967295,
+    "alive": true
+   },
+   "valid": true,
+   "after_60f_idle": {
+    "px": 1254.8,
+    "score": 6702,
+    "gren": 8,
+    "php": 127,
+    "sec": [
+     11,
+     1
+    ],
+    "prog": 4294967295,
+    "alive": true
+   },
+   "survives_60f": true
+  }
+ ],
+ "restore_only_budget_ok": true,
+ "wall_s": 29.5
+}

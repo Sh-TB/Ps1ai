@@ -43,7 +43,11 @@ policy.py decodes it and the tests cross-check):
                  sc  state code (0 none, 1 fresh-soft 0x4054,
                      2 wound 0x42bc, 3 recovery family 0x3f48/0x2b74/
                      0x17f8/0x4008, 4 transparent 0xab94, 5 0xae7c,
-                     6 other-live)
+                     6 other-live, 7 the armored truck 0x9E88 — the
+                     R67 probe correction: ground soldiers in their
+                     walk/throw animation states also present
+                     (sc=6, h=64), so the truck MUST be keyed on
+                     its state word, not on (6, 64))
                  h   height word
 
 Episode semantics: one episode = one life.  Death (the alive word
@@ -62,7 +66,7 @@ from ps1play.runtime.errors import AdapterError, EmulatorError
 from ps1play.runtime.interfaces import (ActionDecision, Frame,
                                         GameAdapter, GameObservation)
 
-ADAPTER_VERSION = "0.2.0"
+ADAPTER_VERSION = "0.3.0"
 
 # ---- the verified anchor map (THIS game only) -------------------------
 PLAYER_X = 0x0CA2E0
@@ -89,7 +93,7 @@ SX_MAX = 600                     # sane screen-x band (scan_entities)
 
 # state codes packed into the observation
 SC_NONE, SC_SOFT, SC_WOUND, SC_RECOVERY, SC_TRANSPARENT, SC_AE7C, \
-    SC_OTHER = 0, 1, 2, 3, 4, 5, 6
+    SC_OTHER, SC_TRUCK = 0, 1, 2, 3, 4, 5, 6, 7
 
 OBS_LEN = 21
 N_PACKED = 5                     # nearest mortals packed into the obs
@@ -110,6 +114,11 @@ HOP_LEN = 3                      # hop press length (frames)
 STALL_DECISIONS = 120            # px-flat streak before the ladder
 
 
+ST_TRUCK = 0x9E88                # the armored truck (the capsule
+                                 #   identity; the R67 probe read it
+                                 #   LIVE at x 937.5 h 64 a4 300)
+
+
 def state_code(st: int) -> int:
     if st == ST_SOFT:
         return SC_SOFT
@@ -121,6 +130,8 @@ def state_code(st: int) -> int:
         return SC_TRANSPARENT
     if st == ST_AE7C:
         return SC_AE7C
+    if st == ST_TRUCK:
+        return SC_TRUCK
     return SC_OTHER
 
 
@@ -399,7 +410,14 @@ class MetalSlugXAdapter(GameAdapter):
     # actions
     # ------------------------------------------------------------ --
     def legal_actions(self) -> Sequence[str]:
-        return ("IDLE", "WALK", "FIRE", "HOP", "GRENADE")
+        # v0.3.0 (R67): BACK = the LEFT walk — the legal pad button
+        # that turns/faces the player LEFT.  The R67 loop-probe
+        # evidence: at the section pin (px 1164) the soldier wave
+        # AND the parked truck are BEHIND the player (dx<0) — a
+        # forward-only policy stands pinned facing right while the
+        # wave kills it from the rear (the v1.0.0-v1.3.0 death
+        # shape, 3 product runs identical).
+        return ("IDLE", "WALK", "BACK", "FIRE", "HOP", "GRENADE")
 
     def action_to_buttons(self, action: str) -> frozenset:
         """Legal pad mappings only: RIGHT walk, Y fire (the SQUARE-
@@ -409,6 +427,7 @@ class MetalSlugXAdapter(GameAdapter):
         m = {
             "IDLE": frozenset(),
             "WALK": frozenset({"RIGHT"}),
+            "BACK": frozenset({"LEFT"}),
             "FIRE": frozenset({"Y"}),
             "HOP": frozenset({"RIGHT", "B"}),
             "GRENADE": frozenset({"A"}),

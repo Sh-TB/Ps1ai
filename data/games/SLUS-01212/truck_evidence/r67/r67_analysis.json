@@ -1,0 +1,375 @@
+{
+ "schema": "ps1play.r67-analysis/1",
+ "commit": "a14777d62d54f4904272670a0b044f46e2826430",
+ "inputs": [
+  "r67_boot2_s2a.jsonl",
+  "r67_boot3_s2b.jsonl",
+  "r66_boot3_s2a.jsonl",
+  "r66_boot4_s2b.jsonl",
+  "r52/r52_wound_table.json"
+ ],
+ "pay500_ledger": {
+  "r66_captures": [
+   {
+    "pass": "r66 passB",
+    "tap": 6,
+    "amount": 500,
+    "target_slot": 16,
+    "target_st_pre": 7736,
+    "target_dx": 20.3,
+    "state_path": [
+     7736,
+     23308
+    ],
+    "pay_frame": "tail1"
+   }
+  ],
+  "r67_captures": [],
+  "n_plus500_total": 1
+ },
+ "magnitude_table": {
+  "plus500_n": 4,
+  "plus1000_n": 9,
+  "detail": {
+   "plus500": [
+    {
+     "round": "R48",
+     "n": 1,
+     "evidence": "slot20 connect, st 0x42bc, survives; pay frame f_rel 2"
+    },
+    {
+     "round": "R49",
+     "n": 1,
+     "evidence": "the +500 replicated frame-exact; the strong class-keyed form falsified"
+    },
+    {
+     "round": "R50",
+     "n": 1,
+     "evidence": "+500 x3 cumulative"
+    },
+    {
+     "round": "R66",
+     "n": 1,
+     "evidence": "r66 passB tap6 slot16 st_pre 0x1e38 pay tail1"
+    }
+   ],
+   "plus1000": [
+    {
+     "round": "R50",
+     "n": 1,
+     "evidence": "the +1000 class opened (3 vs 3 after R50)"
+    },
+    {
+     "round": "R51",
+     "n": 2,
+     "evidence": "st_pre 0x42bc AND 0x3f48 both paid +1000 (deterministic across both frontiers)"
+    },
+    {
+     "round": "R52",
+     "n": 2,
+     "evidence": "st_pre 0x42bc (frontier_a tap2, pay f_rel 3) AND 0x3f48 (frontier_b tap2, pay f_rel 4) both paid +1000 \u2014 the R51 pattern REPLICATED under pay-frame telemetry"
+    },
+    {
+     "round": "R66",
+     "n": 1,
+     "evidence": "r66 passA tap2 slot20 st_pre 0x42bc pay tail3"
+    },
+    {
+     "round": "R66",
+     "n": 1,
+     "evidence": "r66 passB tap2 slot20 st_pre 0x3f48 pay tail4"
+    },
+    {
+     "round": "R67",
+     "n": 1,
+     "evidence": "r67 passA tap2 slot20 st_pre 0x42bc pay tail3"
+    },
+    {
+     "round": "R67",
+     "n": 1,
+     "evidence": "r67 passB tap2 slot20 st_pre 0x3f48 pay tail4"
+    }
+   ]
+  }
+ },
+ "widened_zero_overlap": {
+  "per_capture": [
+   {
+    "src": "r66 passB t6",
+    "slot": 16,
+    "n_zero_overlap": 19,
+    "offsets": [
+     {
+      "idx": 0,
+      "off": "0x60",
+      "plus500": 6
+     },
+     {
+      "idx": 1,
+      "off": "0x62",
+      "plus500": 5
+     },
+     {
+      "idx": 6,
+      "off": "0x6c",
+      "plus500": 47219
+     },
+     {
+      "idx": 8,
+      "off": "0x70",
+      "plus500": 47210
+     },
+     {
+      "idx": 10,
+      "off": "0x74",
+      "plus500": 47188
+     },
+     {
+      "idx": 12,
+      "off": "0x78",
+      "plus500": 8670
+     },
+     {
+      "idx": 13,
+      "off": "0x7a",
+      "plus500": 1353
+     },
+     {
+      "idx": 22,
+      "off": "0x8c",
+      "plus500": 61146
+     },
+     {
+      "idx": 23,
+      "off": "0x8e",
+      "plus500": 152
+     },
+     {
+      "idx": 26,
+      "off": "0x94",
+      "plus500": 55262
+     },
+     {
+      "idx": 27,
+      "off": "0x96",
+      "plus500": 155
+     },
+     {
+      "idx": 51,
+      "off": "0xc6",
+      "plus500": 1
+     },
+     {
+      "idx": 55,
+      "off": "0xce",
+      "plus500": 47
+     },
+     {
+      "idx": 56,
+      "off": "0xd0",
+      "plus500": 64
+     },
+     {
+      "idx": 57,
+      "off": "0xd2",
+      "plus500": 401
+     },
+     {
+      "idx": 58,
+      "off": "0xd4",
+      "plus500": 2
+     },
+     {
+      "idx": 61,
+      "off": "0xda",
+      "plus500": 11
+     },
+     {
+      "idx": 62,
+      "off": "0xdc",
+      "plus500": 1
+     },
+     {
+      "idx": 64,
+      "off": "0xe0",
+      "plus500": 65535
+     }
+    ]
+   }
+  ],
+  "intersection": [
+   {
+    "idx": 0,
+    "off": "0x60",
+    "plus500": 6
+   },
+   {
+    "idx": 1,
+    "off": "0x62",
+    "plus500": 5
+   },
+   {
+    "idx": 6,
+    "off": "0x6c",
+    "plus500": 47219
+   },
+   {
+    "idx": 8,
+    "off": "0x70",
+    "plus500": 47210
+   },
+   {
+    "idx": 10,
+    "off": "0x74",
+    "plus500": 47188
+   },
+   {
+    "idx": 12,
+    "off": "0x78",
+    "plus500": 8670
+   },
+   {
+    "idx": 13,
+    "off": "0x7a",
+    "plus500": 1353
+   },
+   {
+    "idx": 22,
+    "off": "0x8c",
+    "plus500": 61146
+   },
+   {
+    "idx": 23,
+    "off": "0x8e",
+    "plus500": 152
+   },
+   {
+    "idx": 26,
+    "off": "0x94",
+    "plus500": 55262
+   },
+   {
+    "idx": 27,
+    "off": "0x96",
+    "plus500": 155
+   },
+   {
+    "idx": 51,
+    "off": "0xc6",
+    "plus500": 1
+   },
+   {
+    "idx": 55,
+    "off": "0xce",
+    "plus500": 47
+   },
+   {
+    "idx": 56,
+    "off": "0xd0",
+    "plus500": 64
+   },
+   {
+    "idx": 57,
+    "off": "0xd2",
+    "plus500": 401
+   },
+   {
+    "idx": 58,
+    "off": "0xd4",
+    "plus500": 2
+   },
+   {
+    "idx": 61,
+    "off": "0xda",
+    "plus500": 11
+   },
+   {
+    "idx": 62,
+    "off": "0xdc",
+    "plus500": 1
+   },
+   {
+    "idx": 64,
+    "off": "0xe0",
+    "plus500": 65535
+   }
+  ],
+  "n_intersection": 19,
+  "n_plus500_vectors": 1,
+  "n_plus1000_vectors": 6,
+  "verdict": "SINGLE-CAPTURE SEPARATION (n=1 +500 vector): the intersection is non-empty (n=19 offsets) but it is just the one capture's zero-overlap set \u2014 the CLASS discriminator stays PENDING until n>=2 +500 captures exist (the R66/R67 bar; with one capture the separation is dominated by identity words, not by magnitude)."
+ },
+ "delay_signature": {
+  "observations": [
+   {
+    "amount": 500,
+    "pay_frame": "tail1",
+    "src": "r66 passB t6",
+    "st_pre": "0x1e38"
+   },
+   {
+    "amount": 1000,
+    "src": "r66 passA t2",
+    "pay_frame": "tail3",
+    "st_pre": "0x42bc"
+   },
+   {
+    "amount": 1000,
+    "src": "r66 passB t2",
+    "pay_frame": "tail4",
+    "st_pre": "0x3f48"
+   },
+   {
+    "amount": 1000,
+    "src": "r67 passA t2",
+    "pay_frame": "tail3",
+    "st_pre": "0x42bc"
+   },
+   {
+    "amount": 1000,
+    "src": "r67 passB t2",
+    "pay_frame": "tail4",
+    "st_pre": "0x3f48"
+   },
+   {
+    "amount": 1000,
+    "src": "R52 r52_frontier_a t2",
+    "pay_frame": "banked (R52 wound table)"
+   },
+   {
+    "amount": 1000,
+    "src": "R52 r52_frontier_b t2",
+    "pay_frame": "banked (R52 wound table)"
+   }
+  ],
+  "note": "the +500 class paid at tail f1 (bullet-impact frame, victim pre-hit) in the R66 capture; each R67 capture's pay frame is listed \u2014 the signature test is the +500-vs-+1000 tail-frame separation on the widened set"
+ },
+ "replay_divergence": {
+  "checked": "R67 pass B (frontier_b, restore-only, byte-exact frontier) vs R66 pass B (the +500 capture run)",
+  "first_target_divergence": {
+   "tap": 6,
+   "r66": [
+    6,
+    16,
+    "0x1e38",
+    500
+   ],
+   "r67": [
+    6,
+    18,
+    "0x540c",
+    100
+   ]
+  },
+  "cause": "amendment G (the disclosed 0x5B0C gate alignment) changed the target order: the R66 gate counted just-registered corpses as blockers; the R67 gate does not \u2014 a DIFFERENT tap sequence followed, and the R66 +500 pay posture (tap 6 slot16 0x1e38) was never reached. The frontiers are byte-exact (the env probe restores them alive); the divergence is the amendment's, not the emulator's.",
+  "lesson": "the +500 capture is a TRAJECTORY-SENSITIVE posture, not a standing property of the frontier: restoring the same state and tapping with a different (even evidence-corrected) gate order lands different states under the bullet"
+ },
+ "status": {
+  "pay500_goal_2": "NOT MET this round: 0 NEW +500 captures (the R66 capture stands as the class's only pay-frame vector, n=1); the ledger cap 3/3 is spent; the capsule lever stays OPEN for the next round",
+  "plus500_captures": "OBSERVED (n=1 total under the pay-frame telemetry)",
+  "plus1000_class": "REPLICATED x2 this round (n=6 pay-frame vectors banked: 2 R52 + 2 R66 + 2 R67) \u2014 the wound-recovery st_pre class pays +1000 every time it is captured",
+  "pay_discriminator": "SINGLE-CAPTURE SEPARATION (n=1 +500 vector): the intersection is non-empty (n=19 offsets) but it is just the one capture's zero-overlap set \u2014 the CLASS discriminator stays PENDING until n>=2 +500 captures exist (the R66/R67 bar; with one capture the separation is dominated by identity words, not by magnitude).",
+  "freshness_spread": "supported per-capture: the +500 st_pre classes are 0x1e38 \u2014 read against the +1000 wound-recovery classes (0x42bc/0x3f48 this round again)",
+  "frontier_target_landscape": "both frontiers are target-starved past the spawner-cluster edge: the de-starve advance (180f per pass) walked px 1246->1540 (A) and 1254->1546 (B) and found NO targetable enemy rows \u2014 the live rows past px ~1500 are projectile_air / non-enemy kinds; fresh 0x4054 soldiers exist only AT the frontier at restore time (frontier_a census: slot20 0x4054) and churn out of the fresh class before the tap lands"
+ }
+}

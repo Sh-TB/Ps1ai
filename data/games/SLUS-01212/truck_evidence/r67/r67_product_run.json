@@ -1,0 +1,168 @@
+{
+ "schema": "ps1play.r67-product-run/1",
+ "generated": "2026-11-07T19:08:44Z",
+ "commit": "a14777d62d54f4904272670a0b044f46e2826430",
+ "command": "python3 -m ps1play play metal_slug_x --episodes 2 --max-frames 10000 --verbose --screenshot --output data/r67",
+ "repeat_command": "python3 -m ps1play play metal_slug_x --episodes 2 --max-frames 10000 --output /tmp/r67_rep",
+ "disc": {
+  "cue": "ps1play/runtime/session.py:GAME_DEFAULT_ISO['metal_slug_x']",
+  "sha256": "45cde149878fe945d0219fd0f61ca09856aee66bdcc9119de21c0583f1d0667d",
+  "serial": "SLUS-01212"
+ },
+ "policy": {
+  "name_version": "msx_mission1_rules:1.4.2",
+  "sha256": "f9003d372cb3e3370345fed22d5586b27ef2a6f45691d7679290b1a2b3cc9485",
+  "identity": "deterministic rules; the R67 truck encounter rules T1-T7; no model, no training, zero RAM writes"
+ },
+ "adapter_version": null,
+ "episodes": [
+  {
+   "episode": 1,
+   "seed_k": 6,
+   "result": "death",
+   "death_reason": "game_over",
+   "frames": 1462,
+   "actions": 91,
+   "score": 2300,
+   "policy": "msx_mission1_rules:1.4.2",
+   "px_max": null
+  },
+  {
+   "episode": 2,
+   "seed_k": 12,
+   "result": "death",
+   "death_reason": "game_over",
+   "frames": 366,
+   "actions": 18,
+   "score": 2300,
+   "policy": "msx_mission1_rules:1.4.2",
+   "px_max": null
+  }
+ ],
+ "iteration_lineage_full": [
+  {
+   "policy": "msx_mission1_rules:1.1.0",
+   "episode": 1,
+   "frames": 756,
+   "actions": 66,
+   "score": 1200,
+   "result": "death"
+  },
+  {
+   "policy": "msx_mission1_rules:1.1.0",
+   "episode": 2,
+   "frames": 364,
+   "actions": 16,
+   "score": 1300,
+   "result": "death"
+  },
+  {
+   "policy": "msx_mission1_rules:1.1.0",
+   "episode": 1,
+   "frames": 378,
+   "actions": 26,
+   "score": 0,
+   "result": "death"
+  },
+  {
+   "policy": "msx_mission1_rules:1.1.0",
+   "episode": 2,
+   "frames": 10000,
+   "actions": 837,
+   "score": 0,
+   "result": "alive"
+  },
+  {
+   "policy": "msx_mission1_rules:1.2.0",
+   "episode": 1,
+   "frames": 888,
+   "actions": 50,
+   "score": 0,
+   "result": "death"
+  },
+  {
+   "policy": "msx_mission1_rules:1.2.0",
+   "episode": 2,
+   "frames": 218,
+   "actions": 21,
+   "score": 0,
+   "result": "death"
+  },
+  {
+   "policy": "msx_mission1_rules:1.3.0",
+   "episode": 1,
+   "frames": 1666,
+   "actions": 87,
+   "score": 1100,
+   "result": "death"
+  },
+  {
+   "policy": "msx_mission1_rules:1.3.0",
+   "episode": 2,
+   "frames": 388,
+   "actions": 13,
+   "score": 1300,
+   "result": "death"
+  },
+  {
+   "policy": "msx_mission1_rules:1.4.0",
+   "episode": 1,
+   "frames": 1318,
+   "actions": 85,
+   "score": 2300,
+   "result": "death"
+  },
+  {
+   "policy": "msx_mission1_rules:1.4.0",
+   "episode": 2,
+   "frames": 386,
+   "actions": 35,
+   "score": 2300,
+   "result": "death"
+  },
+  {
+   "policy": "msx_mission1_rules:1.4.1",
+   "episode": 1,
+   "frames": 1462,
+   "actions": 91,
+   "score": 2300,
+   "result": "death"
+  },
+  {
+   "policy": "msx_mission1_rules:1.4.1",
+   "episode": 2,
+   "frames": 736,
+   "actions": 37,
+   "score": 2300,
+   "result": "death"
+  },
+  {
+   "policy": "msx_mission1_rules:1.4.2",
+   "episode": 1,
+   "frames": 1462,
+   "actions": 91,
+   "score": 2300,
+   "result": "death"
+  },
+  {
+   "policy": "msx_mission1_rules:1.4.2",
+   "episode": 2,
+   "frames": 366,
+   "actions": 18,
+   "score": 2300,
+   "result": "death"
+  }
+ ],
+ "results": {
+  "ep1": "death (game_over) at 1462f, score 2300 \u2014 the RECORD product-path score (the previous best 1300, R66); the armored truck KILLED by the T2 grenade sequencing (3 lobs x -100 vs hp_a4 300 \u2014 the death screenshot shows the truck airborne); the player died in the post-kill phase (the second truck / the death animation) \u2014 the named next blocker",
+  "ep2": "death 366f, score 2300 \u2014 the continue respawn at the section start",
+  "mission_1_clear": "NOT ACHIEVED (not claimed)"
+ },
+ "legality": {
+  "legal_inputs_only": true,
+  "ram_writes": 0,
+  "runtime_llm_calls": 0,
+  "training": 0,
+  "save_state_rewinds_in_claimed_play": 0
+ }
+}
