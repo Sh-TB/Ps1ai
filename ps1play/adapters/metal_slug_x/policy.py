@@ -83,6 +83,42 @@ product-path truck campaign; every rule is committed-evidence-backed):
       advancing again.  Bounded (TRUCK_KILL_HAZARD_F frames),
       self-clears on distance; the cooldowns tick through it.
 
+  C1 (v1.7.0, R69). THE CONNECT WINDOW (the R69 capsule lever, the
+      product track): the R68 record run proved the lobs LAND at
+      dx -133.5 from the STATIONARY THROW POSTURE (px 1071, the
+      truck parked at 937.5): a4 300 -> 80 and FROZE at the band
+      edge — the 90f cadence spent the ~280f window on 3 lobs.
+      v1.7.0 narrows the fight to the MEASURED landing window:
+        * the lob fires ONLY while |dx| in [TRUCK_CONNECT_MIN,
+          TRUCK_CONNECT_MAX] = [125, 140], on the gre40 cadence
+          (the R38 max-DPS evidence), facing correct, no
+          clear-line escort, live grenade counter the only budget;
+        * |dx| > 140: walk TOWARD the truck (the T6' chase,
+          verbatim);
+        * |dx| < 125 INSIDE the hold regime: RETREAT away (the
+          sub-90 back-off generalized — standing inside 125
+          stands in the gun line AND wastes the window; the R67
+          dx-52 duel loss + the R68 connect posture at 133.5);
+        * during the grenade cooldown the posture HOLDS (IDLE).
+          The T5 standing chip-fire is WITHDRAWN for this test:
+          the v1.6.1 evidence showed the bullets may not reach a
+          truck behind the pin, and the window test isolates ONE
+          variable — the lob cadence at the measured posture.
+      The capsule hypothesis: the band window ~280f => up to 7
+      throws => the kill inside the window at the measured rate.
+
+      v1.7.1 (the R69 probe correction): the probe FALSIFIED the
+      capsule's outer half — 3 in-window throws at dx -139.5/
+      -136.5/-136.5 ALL missed (the truck a4 FROZEN at 300, 0
+      connects) while the only observed connect remains the R68
+      record's -133.5.  The window is TIGHTENED to [130, 135]:
+      bracketing the measurement, the outer edge back at the R68
+      band edge (135.4) where the window closed.  The scroll drift
+      is measured too: each throw's animation costs ~+12px (the
+      R68 record run drifted 1071 -> 1105.8 on 3 throws; the R69
+      probe 1074 -> 1108.8 the same +35px) — the approach rule
+      re-enters the tightened window after every throw.
+
   THE R68 PROBE CORRECTION (scripts/r68_postkill_probe.py, the
   product stack v1.5.0, 1462f): the R67 "truck KILLED, score 2300"
   reading is HEREBY CORRECTED — the truck NEVER died.  The three
@@ -118,13 +154,29 @@ from ps1play.runtime.interfaces import (ActionDecision, GameObservation,
                                         Policy)
 
 POLICY_NAME = "msx_mission1_rules"
-POLICY_VERSION = "1.6.2"
+POLICY_VERSION = "1.7.1"
 
 # the hold band's inner edge (the R67 loop-probe lesson: holding at
 # dx 52 — point-blank in the truck gun's line — LOST the duel; the
 # R38 winning posture stood off and chipped.  The player holds the
 # lob band's OUTER region 90..135 and backs off below 90.)
+# v1.7.0 (R69): TRUCK_HOLD_MIN is SUPERSEDED by the connect window
+# (TRUCK_CONNECT_MIN) — the constant stays only for the W9
+# blast-margin arithmetic lineage.
 TRUCK_HOLD_MIN = 90.0
+
+# C1 (v1.7.0, R69): THE CONNECT WINDOW — the measured landing band.
+# The R68 record run: the lobs LANDED at dx -133.5 (px 1071, the
+# truck parked at 937.5); the window brackets the measurement.
+TRUCK_CONNECT_MIN = 130.0
+TRUCK_CONNECT_MAX = 135.0
+# v1.7.0 ran the capsule's [125, 140]; the probe FALSIFIED the outer
+# half: 3 in-window throws at dx -139.5/-136.5/-136.5 ALL missed
+# (the truck a4 FROZEN at 300 through the whole fight — 0 connects),
+# while the ONLY observed connect on the product path remains the
+# R68 record's dx -133.5.  v1.7.1 tightens the window to [130, 135]
+# (bracketing the measurement; the outer edge back at the R68 band
+# edge 135.4 where the window closed).
 
 # the truck encounter (the R67 evidence-backed constants)
 TRUCK_CODE = 7                   # SC_TRUCK (0x9E88; the R67 probe:
@@ -252,7 +304,7 @@ class Mission1Policy(Policy):
                 "trained": False,
                 "kind": "built-in rules (no model, no training)",
                 "corridor_predicate": "r66_corrected",
-                "truck_rules": "r68_chase_gre40"}
+                "truck_rules": "r69_connect_window"}
 
     def close(self) -> None:
         self._tel = None
@@ -363,17 +415,29 @@ class Mission1Policy(Policy):
             # weapon).  The post-kill blast safety is W9's job (the
             # kill transition retreats); the alive-truck fight is
             # T2'/T5/T6' below.
-            # T2': the grenade sequencing (the R38 A/B evidence +
-            # the Oct-25 lob recipe; a lob arcs — no corridor
-            # check).  v1.6.0: the budget is UNLIMITED — the live
-            # grenade counter is the only budget (the R68 probe:
-            # the 3-lobs cap landed ONE connect; the truck
-            # survived at a4=160; the R38 kill needed 3 CONNECTS at
-            # a ~1/10 connect rate).
-            in_band = TRUCK_LOB_MIN <= abs(dx_t) <= TRUCK_LOB_MAX
-            if in_band and abs(dx_t) >= TRUCK_HOLD_MIN \
-                    and soldier is None and gren > 0 \
-                    and self._gren_cd == 0:
+            # C1 (v1.7.0, R69): THE CONNECT WINDOW — the grenade
+            # sequencing narrowed to the MEASURED landing band (the
+            # R38 A/B evidence + the Oct-25 lob recipe: a lob arcs —
+            # no corridor check; v1.6.0 stands: the budget is
+            # UNLIMITED — the live grenade counter is the only
+            # budget).  The R68 record run proved the lobs LAND at
+            # dx -133.5 from the stationary throw posture (px 1071);
+            # the window [125, 140] brackets that measurement.
+            # During the cooldown the posture HOLDS (IDLE); the T5
+            # chip-fire is WITHDRAWN for this test (the v1.6.1
+            # evidence: the bullets may not reach; the window test
+            # isolates ONE variable — the lob cadence at the
+            # measured posture).
+            in_win = TRUCK_CONNECT_MIN <= abs(dx_t) \
+                <= TRUCK_CONNECT_MAX
+            if in_win and soldier is None and gren > 0:
+                if self._fire_cd > 0:
+                    self._fire_cd -= 1
+                if self._gren_cd > 0:
+                    self._gren_cd -= 1
+                    self._last_diag = {"rule": "truck_connect_hold",
+                                       "truck_dx": round(dx_t, 1)}
+                    return "IDLE"
                 if self._facing != side_t:
                     mv = turn_toward(side_t)
                     self._facing = side_t
@@ -382,47 +446,37 @@ class Mission1Policy(Policy):
                     return mv
                 self._gren_cd = TRUCK_GRENADE_CD
                 self._truck_grenades_used += 1
-                self._last_diag = {"rule": "truck_grenade",
+                self._last_diag = {"rule": "truck_connect_grenade",
                                    "truck_dx": round(dx_t, 1),
                                    "truck_h": truck_any[2],
                                    "grenades_used":
                                        self._truck_grenades_used}
                 return "GRENADE"
-            # T5: THE HOLD (at or inside the band: never advance
-            # PAST the truck; stand and fight — the R38 posture).
-            # v1.4.2: the hold lives in the band's OUTER region
-            # (90..135) — below 90 the player BACKS OFF (the probe:
-            # the dx-52 hold lost the gun duel, php 202 -> death).
-            if abs(dx_t) <= TRUCK_LOB_MAX:
+            # C1 (cont.): INSIDE the hold regime (|dx| <= 140) but
+            # not lobbing (no grenades / escort uncleared / below
+            # the window): the cooldowns tick; below TRUCK_CONNECT_
+            # MIN the player RETREATS away (the sub-90 back-off
+            # generalized: standing inside 125 stands in the gun
+            # line AND wastes the window; the R67 dx-52 duel loss).
+            # The facing turns AWAY — no lob turn here, or the
+            # policy would flip-flop WALK/BACK.
+            if abs(dx_t) <= TRUCK_CONNECT_MAX:
                 if self._fire_cd > 0:
                     self._fire_cd -= 1
                 if self._gren_cd > 0:
                     self._gren_cd -= 1
-                if abs(dx_t) < TRUCK_HOLD_MIN:
-                    # the back-off owns the sub-90 regime entirely
-                    # (the facing turns AWAY — no lob turn here, or
-                    # the policy would flip-flop WALK/BACK)
+                if abs(dx_t) < TRUCK_CONNECT_MIN:
                     mv = "BACK" if side_t == "R" else "WALK"
                     self._facing = "L" if mv == "BACK" else "R"
-                    self._last_diag = {"rule": "truck_hold_back_off",
+                    self._last_diag = {"rule": "truck_connect_retreat",
                                        "truck_dx": round(dx_t, 1)}
                     return mv
-                if self._facing != side_t:
-                    mv = turn_toward(side_t)
-                    self._facing = side_t
-                    self._last_diag = {"rule": "truck_hold_turn",
-                                       "truck_dx": round(dx_t, 1)}
-                    return mv
-                if in_band and self._fire_cd == 0:
-                    self._fire_cd = FIRE_COOLDOWN
-                    self._last_diag = {"rule": "truck_chip_fire",
-                                       "truck_dx": round(dx_t, 1)}
-                    return "FIRE"
                 self._last_diag = {"rule": "truck_hold",
                                    "truck_dx": round(dx_t, 1)}
                 return "IDLE"
-            # T6' (v1.6.2; the R68 probe evidence): OUT OF THE LOB
-            # BAND = walk TOWARD the truck (re-enter the band).
+            # T6' (v1.7.0 threshold = TRUCK_CONNECT_MAX; the R68
+            # probe evidence): OUT OF THE CONNECT WINDOW (|dx| > 140)
+            # = walk TOWARD the truck (re-enter the window).
             # THE TWO R68 FAILURE MODES, both probe-pinned:
             #   * v1.6.1's stand-ground chip-fire: the bullets DO
             #     NOT reach a truck behind the pin — the a4 sat at
@@ -435,9 +489,9 @@ class Mission1Policy(Policy):
             # (dx -133.5) where the lobs LANDED (the arc clears the
             # ground blockers — the disclosed lob property) and
             # drove a4 300 -> 80.  The band window closed only
-            # because the 90f cadence spent it on 3 lobs; T2'
-            # below restores the R38 gre40 max-DPS cadence so the
-            # kill lands INSIDE the window.
+            # because the 90f cadence spent it on 3 lobs; C1 above
+            # fires the R38 gre40 max-DPS cadence so the kill lands
+            # INSIDE the window.
             if gren > 0:
                 if self._fire_cd > 0:
                     self._fire_cd -= 1

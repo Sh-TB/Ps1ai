@@ -1,0 +1,2118 @@
+{
+ "schema": "ps1play.r69-fingerprint-xref/1",
+ "round": "R69",
+ "track": "experiment \u2014 the +500 fingerprint xref (offline, zero boots; the R69 capsule hypothesis lead 1)",
+ "inputs": {
+  "fingerprint": "r68/r68_analysis.json zero_overlap_test.intersection (n=19)",
+  "exe": {
+   "path": "ps1play/re/SLUS_012.12 (local, lawful, uncommitted)",
+   "sha256": "1508b53216cc20dad8c1354e7702dae2940c34e7b2adeffb00337ab6659e0f35",
+   "sha_match": true
+  },
+  "overlay": {
+   "path": "ps1play/re/ENEMY.BIN (local, lawful, uncommitted)",
+   "sha256": "cab640092ecb1200268a5ed9f786e6baa641bada677f7240336ef31cdcb04fd7",
+   "sha_match": true,
+   "load_va": "0x8009c0e8"
+  },
+  "function_tables": [
+   "ghidra/ghidra_functions.json (3957)",
+   "ghidra/ghidra_overlay_functions.json (468)"
+  ]
+ },
+ "fingerprint_offsets": [
+  "0x60",
+  "0x62",
+  "0x6c",
+  "0x70",
+  "0x74",
+  "0x78",
+  "0x7a",
+  "0x8c",
+  "0x8e",
+  "0x94",
+  "0x96",
+  "0xc6",
+  "0xce",
+  "0xd0",
+  "0xd2",
+  "0xd4",
+  "0xda",
+  "0xdc",
+  "0xe0"
+ ],
+ "scan": {
+  "exe_insns": 155136,
+  "exe_fns_touching": 750,
+  "ovl_insns": 28850,
+  "ovl_fns_touching": 132
+ },
+ "score_sites": [
+  {
+   "key": "score_p1",
+   "site": "0x8004732c",
+   "func": "800472c4",
+   "func_name": "FUN_800472c4"
+  },
+  {
+   "key": "score_p1",
+   "site": "0x80047be8",
+   "func": "80047b5c",
+   "func_name": "FUN_80047b5c"
+  },
+  {
+   "key": "score_p1",
+   "site": "0x80047d98",
+   "func": "80047d94",
+   "func_name": "FUN_80047d94"
+  },
+  {
+   "key": "score_p1",
+   "site": "0x80047f84",
+   "func": "80047e94",
+   "func_name": "FUN_80047e94"
+  },
+  {
+   "key": "score_p1",
+   "site": "0x80049024",
+   "func": "80048f88",
+   "func_name": "FUN_80048f88"
+  },
+  {
+   "key": "score_p1",
+   "site": "0x80052648",
+   "func": "80052630",
+   "func_name": "FUN_80052630"
+  },
+  {
+   "key": "score_p2",
+   "site": "0x80052654",
+   "func": "8005264c",
+   "func_name": "FUN_8005264c"
+  },
+  {
+   "key": "score_p2",
+   "site": "0x80052820",
+   "func": "80052808",
+   "func_name": "FUN_80052808"
+  }
+ ],
+ "score_site_profiles": {
+  "800472c4": {
+   "offsets": {},
+   "n_offsets": 0
+  },
+  "80047b5c": {
+   "offsets": {},
+   "n_offsets": 0
+  },
+  "80047d94": {
+   "offsets": {},
+   "n_offsets": 0
+  },
+  "80047e94": {
+   "offsets": {
+    "0xd4": {
+     "loads": 0,
+     "stores": 1,
+     "sites": [
+      "0x80047f7c sb $a0, 0xd4($v1)"
+     ]
+    }
+   },
+   "n_offsets": 1
+  },
+  "80048f88": {
+   "offsets": {
+    "0xce": {
+     "loads": 2,
+     "stores": 0,
+     "sites": [
+      "0x80048fa4 lh $a0, 0xce($v0)",
+      "0x80048fe4 lh $a0, 0xce($v0)"
+     ]
+    }
+   },
+   "n_offsets": 1
+  },
+  "80052630": {
+   "offsets": {},
+   "n_offsets": 0
+  },
+  "8005264c": {
+   "offsets": {},
+   "n_offsets": 0
+  },
+  "80052808": {
+   "offsets": {},
+   "n_offsets": 0
+  }
+ },
+ "amount_hunt": {
+  "immediates": {},
+  "data_table_pairs": [],
+  "immediate_falsifications": [
+   {
+    "site": "0x800b03cc",
+    "insn": "addiu $v1, $v1, 0x3e8",
+    "resolved": "lui $v1, 0x800b two insns earlier -> $v1 = 0x800B03E8 = the next state-handler ADDRESS (the state-machine dispatch sw $v1, ($v0) \u2014 a function pointer, NOT the constant 1000)",
+    "verdict": "FALSIFIED as a payment"
+   },
+   {
+    "site": "0x80088e8c",
+    "insn": "addiu $a1, $zero, 0x1f4",
+    "resolved": "FUN_80088df4 = a value-clamp ladder (slti/addiu chains bounding 0x21c/0xc94/0xcbc/0x12f ranges); 0x1f4 is a RANGE BOUND",
+    "verdict": "FALSIFIED as a payment"
+   }
+  ]
+ },
+ "overlay_tail_census": {
+  "region": "0x800ab230..",
+  "note": "the committed Ghidra pass decompiled 468 functions ending 0x800ab1fc; the damage dispatch (enemy_800A41D8 -> func_0x800ae794/0x800ae7cc) and the payment writer live in the UNDECOMPILIED tail",
+  "n_accesses": 207,
+  "n_stores": 72,
+  "offsets_seen": [
+   "0x60",
+   "0x6c",
+   "0x70",
+   "0x74",
+   "0x78",
+   "0x7a",
+   "0x8e",
+   "0xce",
+   "0xd0",
+   "0xd2",
+   "0xd4",
+   "0xda",
+   "0xdc",
+   "0xe0"
+  ],
+  "per_offset": {
+   "0xda": 29,
+   "0x8e": 37,
+   "0xdc": 16,
+   "0x60": 9,
+   "0xd4": 16,
+   "0xe0": 16,
+   "0xce": 9,
+   "0xd0": 16,
+   "0xd2": 16,
+   "0x6c": 23,
+   "0x70": 1,
+   "0x74": 1,
+   "0x7a": 17,
+   "0x78": 1
+  },
+  "store_sites": [
+   {
+    "va": "0x800ab450",
+    "kind": "store",
+    "off": "0xda",
+    "insn": "sh $v0, 0xda($v1)"
+   },
+   {
+    "va": "0x800ab6b8",
+    "kind": "store",
+    "off": "0xda",
+    "insn": "sh $v0, 0xda($a0)"
+   },
+   {
+    "va": "0x800ab84c",
+    "kind": "store",
+    "off": "0xda",
+    "insn": "sh $v0, 0xda($v1)"
+   },
+   {
+    "va": "0x800aba0c",
+    "kind": "store",
+    "off": "0x60",
+    "insn": "sh $v0, 0x60($v1)"
+   },
+   {
+    "va": "0x800abc68",
+    "kind": "store",
+    "off": "0x60",
+    "insn": "sh $v0, 0x60($v1)"
+   },
+   {
+    "va": "0x800abd90",
+    "kind": "store",
+    "off": "0xda",
+    "insn": "sh $v0, 0xda($v1)"
+   },
+   {
+    "va": "0x800abe3c",
+    "kind": "store",
+    "off": "0xda",
+    "insn": "sh $v0, 0xda($v1)"
+   },
+   {
+    "va": "0x800ac15c",
+    "kind": "store",
+    "off": "0x60",
+    "insn": "sh $v0, 0x60($v1)"
+   },
+   {
+    "va": "0x800ac200",
+    "kind": "store",
+    "off": "0xda",
+    "insn": "sh $v0, 0xda($v1)"
+   },
+   {
+    "va": "0x800ac4d0",
+    "kind": "store",
+    "off": "0xda",
+    "insn": "sh $v0, 0xda($v1)"
+   },
+   {
+    "va": "0x800ac588",
+    "kind": "store",
+    "off": "0xda",
+    "insn": "sh $v0, 0xda($v1)"
+   },
+   {
+    "va": "0x800ac6ec",
+    "kind": "store",
+    "off": "0xda",
+    "insn": "sh $v0, 0xda($v1)"
+   },
+   {
+    "va": "0x800ac6fc",
+    "kind": "store",
+    "off": "0xda",
+    "insn": "sh $zero, 0xda($v1)"
+   },
+   {
+    "va": "0x800ac830",
+    "kind": "store",
+    "off": "0xd4",
+    "insn": "sw $v0, 0xd4($a0)"
+   },
+   {
+    "va": "0x800ac868",
+    "kind": "store",
+    "off": "0x60",
+    "insn": "sh $v0, 0x60($v1)"
+   },
+   {
+    "va": "0x800acb9c",
+    "kind": "store",
+    "off": "0xe0",
+    "insn": "sh $v0, 0xe0($v1)"
+   },
+   {
+    "va": "0x800accb0",
+    "kind": "store",
+    "off": "0xda",
+    "insn": "sh $v0, 0xda($v1)"
+   },
+   {
+    "va": "0x800acd24",
+    "kind": "store",
+    "off": "0xda",
+    "insn": "sh $v0, 0xda($v1)"
+   },
+   {
+    "va": "0x800acd34",
+    "kind": "store",
+    "off": "0xda",
+    "insn": "sh $zero, 0xda($v1)"
+   },
+   {
+    "va": "0x800adb34",
+    "kind": "store",
+    "off": "0xda",
+    "insn": "sh $v0, 0xda($v1)"
+   },
+   {
+    "va": "0x800addc8",
+    "kind": "store",
+    "off": "0x60",
+    "insn": "sh $v0, 0x60($a0)"
+   },
+   {
+    "va": "0x800ae240",
+    "kind": "store",
+    "off": "0xdc",
+    "insn": "sh $v0, 0xdc($a0)"
+   },
+   {
+    "va": "0x800ae27c",
+    "kind": "store",
+    "off": "0xe0",
+    "insn": "sh $v1, 0xe0($a1)"
+   },
+   {
+    "va": "0x800ae2a4",
+    "kind": "store",
+    "off": "0xce",
+    "insn": "sh $zero, 0xce($v0)"
+   },
+   {
+    "va": "0x800ae2a8",
+    "kind": "store",
+    "off": "0xd0",
+    "insn": "sh $zero, 0xd0($v0)"
+   },
+   {
+    "va": "0x800ae2ac",
+    "kind": "store",
+    "off": "0xd2",
+    "insn": "sh $zero, 0xd2($v0)"
+   },
+   {
+    "va": "0x800ae2e0",
+    "kind": "store",
+    "off": "0x6c",
+    "insn": "sw $a2, 0x6c($v0)"
+   },
+   {
+    "va": "0x800ae2e4",
+    "kind": "store",
+    "off": "0x70",
+    "insn": "sw $a1, 0x70($v0)"
+   },
+   {
+    "va": "0x800ae2e8",
+    "kind": "store",
+    "off": "0x74",
+    "insn": "sw $v1, 0x74($v0)"
+   },
+   {
+    "va": "0x800ae2fc",
+    "kind": "store",
+    "off": "0xd0",
+    "insn": "sh $a0, 0xd0($v0)"
+   },
+   {
+    "va": "0x800ae45c",
+    "kind": "store",
+    "off": "0xd0",
+    "insn": "sw $v0, 0xd0($v1)"
+   },
+   {
+    "va": "0x800aeba0",
+    "kind": "store",
+    "off": "0xd4",
+    "insn": "sw $s0, 0xd4($v0)"
+   },
+   {
+    "va": "0x800af594",
+    "kind": "store",
+    "off": "0xda",
+    "insn": "sh $v0, 0xda($v1)"
+   },
+   {
+    "va": "0x800b0cf8",
+    "kind": "store",
+    "off": "0x60",
+    "insn": "sh $v0, 0x60($v1)"
+   },
+   {
+    "va": "0x800b13c8",
+    "kind": "store",
+    "off": "0x60",
+    "insn": "sh $v0, 0x60($v1)"
+   },
+   {
+    "va": "0x800b1740",
+    "kind": "store",
+    "off": "0x7a",
+    "insn": "sh $v0, 0x7a($a3)"
+   },
+   {
+    "va": "0x800b2078",
+    "kind": "store",
+    "off": "0x7a",
+    "insn": "sh $v1, 0x7a($a1)"
+   },
+   {
+    "va": "0x800b20a4",
+    "kind": "store",
+    "off": "0x7a",
+    "insn": "sh $v1, 0x7a($a0)"
+   },
+   {
+    "va": "0x800b2150",
+    "kind": "store",
+    "off": "0x7a",
+    "insn": "sh $v1, 0x7a($a0)"
+   },
+   {
+    "va": "0x800b24d8",
+    "kind": "store",
+    "off": "0xd0",
+    "insn": "sh $v0, 0xd0($a0)"
+   },
+   {
+    "va": "0x800b2514",
+    "kind": "store",
+    "off": "0xdc",
+    "insn": "sh $v0, 0xdc($v1)"
+   },
+   {
+    "va": "0x800b292c",
+    "kind": "store",
+    "off": "0xdc",
+    "insn": "sh $v0, 0xdc($a0)"
+   },
+   {
+    "va": "0x800b29fc",
+    "kind": "store",
+    "off": "0xd0",
+    "insn": "sh $v1, 0xd0($v0)"
+   },
+   {
+    "va": "0x800b2a0c",
+    "kind": "store",
+    "off": "0xd2",
+    "insn": "sh $v1, 0xd2($v0)"
+   },
+   {
+    "va": "0x800b2e68",
+    "kind": "store",
+    "off": "0xd4",
+    "insn": "sw $zero, 0xd4($v1)"
+   },
+   {
+    "va": "0x800b2f28",
+    "kind": "store",
+    "off": "0xe0",
+    "insn": "sb $v1, 0xe0($s0)"
+   },
+   {
+    "va": "0x800b32a0",
+    "kind": "store",
+    "off": "0x7a",
+    "insn": "sh $v0, 0x7a($v1)"
+   },
+   {
+    "va": "0x800b34f0",
+    "kind": "store",
+    "off": "0xd2",
+    "insn": "sh $v0, 0xd2($v1)"
+   },
+   {
+    "va": "0x800b3530",
+    "kind": "store",
+    "off": "0xdc",
+    "insn": "sw $v0, 0xdc($v1)"
+   },
+   {
+    "va": "0x800b359c",
+    "kind": "store",
+    "off": "0xe0",
+    "insn": "sw $v0, 0xe0($v1)"
+   },
+   {
+    "va": "0x800b35cc",
+    "kind": "store",
+    "off": "0xe0",
+    "insn": "sw $a0, 0xe0($a1)"
+   },
+   {
+    "va": "0x800b35fc",
+    "kind": "store",
+    "off": "0xe0",
+    "insn": "sw $v0, 0xe0($a1)"
+   },
+   {
+    "va": "0x800b3600",
+    "kind": "store",
+    "off": "0xe0",
+    "insn": "sw $a0, 0xe0($a1)"
+   },
+   {
+    "va": "0x800b3b24",
+    "kind": "store",
+    "off": "0x7a",
+    "insn": "sh $v1, 0x7a($a0)"
+   },
+   {
+    "va": "0x800b3b30",
+    "kind": "store",
+    "off": "0x7a",
+    "insn": "sh $v0, 0x7a($a0)"
+   },
+   {
+    "va": "0x800b3b3c",
+    "kind": "store",
+    "off": "0x7a",
+    "insn": "sh $v0, 0x7a($a0)"
+   },
+   {
+    "va": "0x800b65d4",
+    "kind": "store",
+    "off": "0xd4",
+    "insn": "sw $v0, 0xd4($v1)"
+   },
+   {
+    "va": "0x800b6604",
+    "kind": "store",
+    "off": "0xd2",
+    "insn": "sh $v1, 0xd2($v0)"
+   },
+   {
+    "va": "0x800b66a8",
+    "kind": "store",
+    "off": "0xd2",
+    "insn": "sh $a1, 0xd2($v0)"
+   },
+   {
+    "va": "0x800b7120",
+    "kind": "store",
+    "off": "0xce",
+    "insn": "sh $zero, 0xce($v1)"
+   }
+  ]
+ },
+ "overlay_credit_tables": [
+  {
+   "va_start": "0x8009c134",
+   "n_entries": 43,
+   "values": [
+    420,
+    450,
+    200,
+    400,
+    400,
+    400,
+    800,
+    880,
+    300,
+    600,
+    600,
+    600,
+    500,
+    600,
+    300,
+    500,
+    500,
+    500,
+    1000,
+    1100,
+    400,
+    700,
+    700,
+    700,
+    560,
+    640,
+    400,
+    600,
+    600,
+    600,
+    1060,
+    1100,
+    500,
+    800,
+    800,
+    800,
+    600,
+    680,
+    500,
+    700,
+    700,
+    700,
+    1100
+   ],
+   "has_500": true,
+   "has_1000": true
+  },
+  {
+   "va_start": "0x8009c198",
+   "n_entries": 32,
+   "values": [
+    1024,
+    1024,
+    896,
+    640,
+    640,
+    640,
+    1024,
+    1024,
+    1024,
+    768,
+    768,
+    768,
+    1088,
+    1088,
+    1024,
+    768,
+    768,
+    768,
+    1088,
+    1088,
+    1152,
+    896,
+    896,
+    896,
+    1152,
+    1152,
+    1152,
+    896,
+    896,
+    896,
+    1152,
+    1152
+   ],
+   "has_500": false,
+   "has_1000": false
+  },
+  {
+   "va_start": "0x8009c48c",
+   "n_entries": 44,
+   "values": [
+    350,
+    350,
+    600,
+    700,
+    450,
+    200,
+    700,
+    700,
+    400,
+    450,
+    450,
+    200,
+    450,
+    450,
+    800,
+    900,
+    600,
+    300,
+    900,
+    900,
+    450,
+    500,
+    600,
+    300,
+    500,
+    500,
+    900,
+    1000,
+    750,
+    400,
+    1000,
+    1000,
+    470,
+    510,
+    750,
+    400,
+    550,
+    550,
+    920,
+    1020,
+    900,
+    500,
+    1100,
+    1100
+   ],
+   "has_500": true,
+   "has_1000": true
+  },
+  {
+   "va_start": "0x8009c690",
+   "n_entries": 45,
+   "values": [
+    512,
+    512,
+    512,
+    640,
+    512,
+    512,
+    512,
+    512,
+    640,
+    768,
+    512,
+    512,
+    512,
+    768,
+    768,
+    896,
+    768,
+    768,
+    512,
+    768,
+    896,
+    1024,
+    768,
+    768,
+    512,
+    768,
+    1024,
+    1024,
+    768,
+    768,
+    512,
+    768,
+    1024,
+    1152,
+    768,
+    768,
+    768,
+    768,
+    1152,
+    1152,
+    768,
+    768,
+    768,
+    768,
+    1152
+   ],
+   "has_500": false,
+   "has_1000": false
+  },
+  {
+   "va_start": "0x8009c91c",
+   "n_entries": 23,
+   "values": [
+    350,
+    620,
+    320,
+    580,
+    250,
+    500,
+    400,
+    700,
+    500,
+    700,
+    300,
+    1000,
+    400,
+    650,
+    360,
+    600,
+    300,
+    1000,
+    500,
+    800,
+    600,
+    800,
+    400
+   ],
+   "has_500": true,
+   "has_1000": true
+  },
+  {
+   "va_start": "0x8009cdd6",
+   "n_entries": 39,
+   "values": [
+    600,
+    500,
+    500,
+    400,
+    600,
+    250,
+    600,
+    500,
+    500,
+    400,
+    750,
+    400,
+    800,
+    650,
+    650,
+    400,
+    700,
+    350,
+    600,
+    600,
+    600,
+    400,
+    850,
+    500,
+    800,
+    750,
+    750,
+    400,
+    800,
+    450,
+    600,
+    700,
+    700,
+    400,
+    950,
+    600,
+    800,
+    850,
+    850
+   ],
+   "has_500": true,
+   "has_1000": false
+  },
+  {
+   "va_start": "0x8009cf54",
+   "n_entries": 24,
+   "values": [
+    640,
+    640,
+    640,
+    640,
+    640,
+    640,
+    640,
+    640,
+    640,
+    640,
+    640,
+    640,
+    640,
+    640,
+    640,
+    640,
+    640,
+    640,
+    640,
+    640,
+    640,
+    640,
+    640,
+    640
+   ],
+   "has_500": false,
+   "has_1000": false
+  },
+  {
+   "va_start": "0x8009cf88",
+   "n_entries": 24,
+   "values": [
+    384,
+    384,
+    384,
+    384,
+    384,
+    384,
+    384,
+    384,
+    384,
+    384,
+    384,
+    384,
+    384,
+    384,
+    384,
+    384,
+    384,
+    384,
+    384,
+    384,
+    384,
+    384,
+    384,
+    384
+   ],
+   "has_500": false,
+   "has_1000": false
+  },
+  {
+   "va_start": "0x8009cfbc",
+   "n_entries": 24,
+   "values": [
+    416,
+    416,
+    416,
+    416,
+    416,
+    416,
+    416,
+    416,
+    416,
+    416,
+    416,
+    416,
+    416,
+    416,
+    416,
+    416,
+    416,
+    416,
+    416,
+    416,
+    416,
+    416,
+    416,
+    416
+   ],
+   "has_500": false,
+   "has_1000": false
+  },
+  {
+   "va_start": "0x8009cff6",
+   "n_entries": 43,
+   "values": [
+    400,
+    300,
+    300,
+    400,
+    400,
+    200,
+    400,
+    500,
+    500,
+    400,
+    500,
+    250,
+    500,
+    500,
+    500,
+    500,
+    500,
+    350,
+    500,
+    800,
+    800,
+    500,
+    600,
+    350,
+    600,
+    800,
+    800,
+    600,
+    600,
+    450,
+    600,
+    1100,
+    1100,
+    600,
+    800,
+    450,
+    800,
+    1100,
+    1100,
+    700,
+    800,
+    550,
+    800
+   ],
+   "has_500": true,
+   "has_1000": false
+  },
+  {
+   "va_start": "0x8009d054",
+   "n_entries": 24,
+   "values": [
+    512,
+    512,
+    512,
+    512,
+    512,
+    512,
+    512,
+    512,
+    512,
+    512,
+    512,
+    512,
+    512,
+    512,
+    512,
+    512,
+    512,
+    512,
+    512,
+    512,
+    512,
+    512,
+    512,
+    512
+   ],
+   "has_500": false,
+   "has_1000": false
+  }
+ ],
+ "payment_writer_candidates": [
+  {
+   "key": "score_p1",
+   "site": "0x80047f84",
+   "func": "80047e94",
+   "func_name": "FUN_80047e94"
+  },
+  {
+   "key": "score_p1",
+   "site": "0x80049024",
+   "func": "80048f88",
+   "func_name": "FUN_80048f88"
+  }
+ ],
+ "verdict": {
+  "payment_writer": "NARROWED \u2014 not pinpointed (static)",
+  "evidence_chain": [
+   "the score word 0x800EE318 has exactly 9 direct code xrefs (source_map), ALL in the EXE HUD/score cluster 0x800472c0..0x80052820; the cluster reads the entity record +0xCC/+0xD0/+0xD4 (0xD0 IS a fingerprint offset) and calls 0x8001c028 with the score value \u2014 the presentation/credit path",
+   "the amounts 500/1000 appear NOWHERE as code immediates (both candidates falsified) and in NO EXE u32/u16 table \u2014 the credit amounts live in the OVERLAY u16 tables (the kill-credit tables found at 0x8009C134.., values 200..1100 incl. 500 and 1000)",
+   "the 19 fingerprint offsets are accessed by 750 EXE functions + 132 decompiled overlay functions, and the overlay TAIL (207 accesses, 72 stores, 14/19 offsets) \u2014 the tail also contains the concrete record writes (e.g. 0x800ac154 lw 0xdc($a0) -> sh 0x60($v1): the +0xDC field is a sub-record pointer, +0x60 of the sub-record is written)",
+   "the damage dispatch chain enemy_800A41D8 -> func_0x800ae794/0x800ae7cc runs inside that tail; the R68 runtime law (pay at the impact frame, the 0x5b0c registration 2 frames later) pins the write order"
+  ],
+  "next": "the R69 restore-only hunt pass (the disclosed contingency: the r66 frontiers were lost again \u2014 the SEVENTH rollback; the R68 rebuild is byte-exact and reproducible) with the watch primitive on 0x800EE318 to log the writer PC \u2014 the capsule lever verbatim"
+ },
+ "top_consumers": {
+  "overlay": [
+   {
+    "fn": "800ab1fc",
+    "name": "FUN_800ab1fc",
+    "space": "overlay",
+    "n_offsets": 6,
+    "n_stores": 19,
+    "n_loads": 18,
+    "offsets": {
+     "0xda": {
+      "loads": 6,
+      "stores": 13,
+      "sites": [
+       "0x800ab450 sh $v0, 0xda($v1)",
+       "0x800ab4b8 lh $v0, 0xda($a0)",
+       "0x800ab6b8 sh $v0, 0xda($a0)",
+       "0x800ab84c sh $v0, 0xda($v1)"
+      ]
+     },
+     "0x8e": {
+      "loads": 4,
+      "stores": 0,
+      "sites": [
+       "0x800ab934 lh $v1, 0x8e($a1)",
+       "0x800ab954 lh $v1, 0x8e($a1)",
+       "0x800acfe0 lh $v0, 0x8e($v1)",
+       "0x800ad004 lh $v0, 0x8e($v1)"
+      ]
+     },
+     "0xdc": {
+      "loads": 4,
+      "stores": 0,
+      "sites": [
+       "0x800aba04 lw $v1, 0xdc($a0)",
+       "0x800abc60 lw $v1, 0xdc($a0)",
+       "0x800ac154 lw $v1, 0xdc($a0)",
+       "0x800ac860 lw $v1, 0xdc($a0)"
+      ]
+     },
+     "0x60": {
+      "loads": 0,
+      "stores": 4,
+      "sites": [
+       "0x800aba0c sh $v0, 0x60($v1)",
+       "0x800abc68 sh $v0, 0x60($v1)",
+       "0x800ac15c sh $v0, 0x60($v1)",
+       "0x800ac868 sh $v0, 0x60($v1)"
+      ]
+     },
+     "0xd4": {
+      "loads": 4,
+      "stores": 1,
+      "sites": [
+       "0x800abbc4 lw $v1, 0xd4($a0)",
+       "0x800ac830 sw $v0, 0xd4($a0)",
+       "0x800ac8b0 lw $a0, 0xd4($v1)",
+       "0x800acb88 lhu $v0, 0xd4($v1)"
+      ]
+     },
+     "0xe0": {
+      "loads": 0,
+      "stores": 1,
+      "sites": [
+       "0x800acb9c sh $v0, 0xe0($v1)"
+      ]
+     }
+    }
+   },
+   {
+    "fn": "800a871c",
+    "name": "FUN_800a871c",
+    "space": "overlay",
+    "n_offsets": 6,
+    "n_stores": 6,
+    "n_loads": 0,
+    "offsets": {
+     "0xdc": {
+      "loads": 0,
+      "stores": 1,
+      "sites": [
+       "0x800a8750 sw $v0, 0xdc($v1)"
+      ]
+     },
+     "0x6c": {
+      "loads": 0,
+      "stores": 1,
+      "sites": [
+       "0x800a8754 sw $a3, 0x6c($v0)"
+      ]
+     },
+     "0x70": {
+      "loads": 0,
+      "stores": 1,
+      "sites": [
+       "0x800a8758 sw $a2, 0x70($v0)"
+      ]
+     },
+     "0x74": {
+      "loads": 0,
+      "stores": 1,
+      "sites": [
+       "0x800a875c sw $a1, 0x74($v0)"
+      ]
+     },
+     "0xd0": {
+      "loads": 0,
+      "stores": 1,
+      "sites": [
+       "0x800a8770 sh $a0, 0xd0($v0)"
+      ]
+     },
+     "0xce": {
+      "loads": 0,
+      "stores": 1,
+      "sites": [
+       "0x800a8778 sh $zero, 0xce($v0)"
+      ]
+     }
+    }
+   },
+   {
+    "fn": "8009ee4c",
+    "name": "FUN_8009ee4c",
+    "space": "overlay",
+    "n_offsets": 6,
+    "n_stores": 2,
+    "n_loads": 6,
+    "offsets": {
+     "0xd0": {
+      "loads": 0,
+      "stores": 1,
+      "sites": [
+       "0x8009ee4c sh $v1, 0xd0($a0)"
+      ]
+     },
+     "0xd4": {
+      "loads": 2,
+      "stores": 0,
+      "sites": [
+       "0x8009ee80 lh $v0, 0xd4($v1)",
+       "0x8009eecc lh $v1, 0xd4($a0)"
+      ]
+     },
+     "0x6c": {
+      "loads": 1,
+      "stores": 0,
+      "sites": [
+       "0x8009eedc lw $v1, 0x6c($a0)"
+      ]
+     },
+     "0x8c": {
+      "loads": 1,
+      "stores": 0,
+      "sites": [
+       "0x8009ef7c lw $a0, 0x8c($a1)"
+      ]
+     },
+     "0x94": {
+      "loads": 1,
+      "stores": 0,
+      "sites": [
+       "0x8009ef88 lw $v1, 0x94($a1)"
+      ]
+     },
+     "0xdc": {
+      "loads": 1,
+      "stores": 1,
+      "sites": [
+       "0x8009efa8 lhu $v1, 0xdc($a1)",
+       "0x8009efd4 sh $s0, 0xdc($v0)"
+      ]
+     }
+    }
+   },
+   {
+    "fn": "8009f1dc",
+    "name": "FUN_8009f1dc",
+    "space": "overlay",
+    "n_offsets": 5,
+    "n_stores": 2,
+    "n_loads": 6,
+    "offsets": {
+     "0xce": {
+      "loads": 1,
+      "stores": 1,
+      "sites": [
+       "0x8009f1e0 lh $v0, 0xce($a0)",
+       "0x8009f24c sh $v0, 0xce($v1)"
+      ]
+     },
+     "0x8e": {
+      "loads": 1,
+      "stores": 0,
+      "sites": [
+       "0x8009f1f0 lhu $v0, 0x8e($a0)"
+      ]
+     },
+     "0xd2": {
+      "loads": 2,
+      "stores": 1,
+      "sites": [
+       "0x8009f214 lh $v0, 0xd2($a0)",
+       "0x8009f218 lhu $v1, 0xd2($a0)",
+       "0x8009f234 sh $v0, 0xd2($a0)"
+      ]
+     },
+     "0xd0": {
+      "loads": 1,
+      "stores": 0,
+      "sites": [
+       "0x8009f244 lhu $v0, 0xd0($v1)"
+      ]
+     },
+     "0x6c": {
+      "loads": 1,
+      "stores": 0,
+      "sites": [
+       "0x8009f2a8 lw $v0, 0x6c($a0)"
+      ]
+     }
+    }
+   },
+   {
+    "fn": "800a85a4",
+    "name": "FUN_800a85a4",
+    "space": "overlay",
+    "n_offsets": 4,
+    "n_stores": 4,
+    "n_loads": 2,
+    "offsets": {
+     "0xce": {
+      "loads": 1,
+      "stores": 1,
+      "sites": [
+       "0x800a85a4 lbu $v0, 0xce($v1)",
+       "0x800a85d0 sh $zero, 0xce($v0)"
+      ]
+     },
+     "0xd0": {
+      "loads": 1,
+      "stores": 1,
+      "sites": [
+       "0x800a85b8 lbu $v0, 0xd0($v1)",
+       "0x800a85d4 sh $zero, 0xd0($v0)"
+      ]
+     },
+     "0xd2": {
+      "loads": 0,
+      "stores": 1,
+      "sites": [
+       "0x800a85d8 sh $zero, 0xd2($v0)"
+      ]
+     },
+     "0xd4": {
+      "loads": 0,
+      "stores": 1,
+      "sites": [
+       "0x800a85dc sh $zero, 0xd4($v0)"
+      ]
+     }
+    }
+   },
+   {
+    "fn": "800a56e8",
+    "name": "FUN_800a56e8",
+    "space": "overlay",
+    "n_offsets": 5,
+    "n_stores": 3,
+    "n_loads": 3,
+    "offsets": {
+     "0x8e": {
+      "loads": 1,
+      "stores": 0,
+      "sites": [
+       "0x800a56fc lhu $v0, 0x8e($v1)"
+      ]
+     },
+     "0x6c": {
+      "loads": 2,
+      "stores": 0,
+      "sites": [
+       "0x800a5780 lw $v0, 0x6c($v0)",
+       "0x800a5810 lw $v0, 0x6c($a0)"
+      ]
+     },
+     "0xce": {
+      "loads": 0,
+      "stores": 1,
+      "sites": [
+       "0x800a57d8 sb $a0, 0xce($v1)"
+      ]
+     },
+     "0xd4": {
+      "loads": 0,
+      "stores": 1,
+      "sites": [
+       "0x800a583c sw $zero, 0xd4($v0)"
+      ]
+     },
+     "0xd0": {
+      "loads": 0,
+      "stores": 1,
+      "sites": [
+       "0x800a584c sb $zero, 0xd0($v0)"
+      ]
+     }
+    }
+   },
+   {
+    "fn": "800a0ab0",
+    "name": "FUN_800a0ab0",
+    "space": "overlay",
+    "n_offsets": 4,
+    "n_stores": 4,
+    "n_loads": 0,
+    "offsets": {
+     "0xd0": {
+      "loads": 0,
+      "stores": 1,
+      "sites": [
+       "0x800a0b68 sh $v0, 0xd0($v1)"
+      ]
+     },
+     "0xce": {
+      "loads": 0,
+      "stores": 1,
+      "sites": [
+       "0x800a0b6c sh $v0, 0xce($v1)"
+      ]
+     },
+     "0xd2": {
+      "loads": 0,
+      "stores": 1,
+      "sites": [
+       "0x800a0b74 sh $v0, 0xd2($v1)"
+      ]
+     },
+     "0xd4": {
+      "loads": 0,
+      "stores": 1,
+      "sites": [
+       "0x800a0b7c sh $zero, 0xd4($v1)"
+      ]
+     }
+    }
+   },
+   {
+    "fn": "800a9118",
+    "name": "FUN_800a9118",
+    "space": "overlay",
+    "n_offsets": 4,
+    "n_stores": 4,
+    "n_loads": 0,
+    "offsets": {
+     "0xe0": {
+      "loads": 0,
+      "stores": 1,
+      "sites": [
+       "0x800a9124 sw $ra, 0xe0($sp)"
+      ]
+     },
+     "0xdc": {
+      "loads": 0,
+      "stores": 1,
+      "sites": [
+       "0x800a9128 sw $s3, 0xdc($sp)"
+      ]
+     },
+     "0xd4": {
+      "loads": 0,
+      "stores": 1,
+      "sites": [
+       "0x800a912c sw $s1, 0xd4($sp)"
+      ]
+     },
+     "0xd0": {
+      "loads": 0,
+      "stores": 1,
+      "sites": [
+       "0x800a9134 sw $s0, 0xd0($sp)"
+      ]
+     }
+    }
+   },
+   {
+    "fn": "800a5970",
+    "name": "FUN_800a5970",
+    "space": "overlay",
+    "n_offsets": 4,
+    "n_stores": 1,
+    "n_loads": 4,
+    "offsets": {
+     "0xd4": {
+      "loads": 1,
+      "stores": 0,
+      "sites": [
+       "0x800a5988 lw $a0, 0xd4($a1)"
+      ]
+     },
+     "0xd0": {
+      "loads": 1,
+      "stores": 0,
+      "sites": [
+       "0x800a59a8 lbu $v1, 0xd0($a1)"
+      ]
+     },
+     "0xce": {
+      "loads": 1,
+      "stores": 1,
+      "sites": [
+       "0x800a59d0 lbu $v0, 0xce($a1)",
+       "0x800a5a54 sb $a0, 0xce($a1)"
+      ]
+     },
+     "0x78": {
+      "loads": 1,
+      "stores": 0,
+      "sites": [
+       "0x800a5a58 lw $v0, 0x78($a1)"
+      ]
+     }
+    }
+   },
+   {
+    "fn": "8009f384",
+    "name": "FUN_8009f384",
+    "space": "overlay",
+    "n_offsets": 4,
+    "n_stores": 1,
+    "n_loads": 3,
+    "offsets": {
+     "0xd2": {
+      "loads": 1,
+      "stores": 0,
+      "sites": [
+       "0x8009f400 lh $v0, 0xd2($a0)"
+      ]
+     },
+     "0xd0": {
+      "loads": 1,
+      "stores": 0,
+      "sites": [
+       "0x8009f420 lhu $v0, 0xd0($a0)"
+      ]
+     },
+     "0x6c": {
+      "loads": 1,
+      "stores": 0,
+      "sites": [
+       "0x8009f424 lw $v1, 0x6c($a0)"
+      ]
+     },
+     "0xce": {
+      "loads": 0,
+      "stores": 1,
+      "sites": [
+       "0x8009f428 sh $v0, 0xce($a0)"
+      ]
+     }
+    }
+   },
+   {
+    "fn": "800a9294",
+    "name": "FUN_800a9294",
+    "space": "overlay",
+    "n_offsets": 4,
+    "n_stores": 0,
+    "n_loads": 4,
+    "offsets": {
+     "0xe0": {
+      "loads": 1,
+      "stores": 0,
+      "sites": [
+       "0x800a92e0 lw $ra, 0xe0($sp)"
+      ]
+     },
+     "0xdc": {
+      "loads": 1,
+      "stores": 0,
+      "sites": [
+       "0x800a92e4 lw $s3, 0xdc($sp)"
+      ]
+     },
+     "0xd4": {
+      "loads": 1,
+      "stores": 0,
+      "sites": [
+       "0x800a92ec lw $s1, 0xd4($sp)"
+      ]
+     },
+     "0xd0": {
+      "loads": 1,
+      "stores": 0,
+      "sites": [
+       "0x800a92f0 lw $s0, 0xd0($sp)"
+      ]
+     }
+    }
+   }
+  ],
+  "exe": [
+   {
+    "fn": "80018668",
+    "name": "FUN_80018668",
+    "space": "exe",
+    "n_offsets": 6,
+    "n_stores": 11,
+    "n_loads": 15,
+    "offsets": {
+     "0x60": {
+      "loads": 5,
+      "stores": 1,
+      "sites": [
+       "0x80018b60 sw $v0, 0x60($sp)",
+       "0x80018b6c lw $t9, 0x60($sp)",
+       "0x80018b9c lw $t9, 0x60($sp)",
+       "0x80018bcc lw $a0, 0x60($sp)"
+      ]
+     },
+     "0x78": {
+      "loads": 2,
+      "stores": 2,
+      "sites": [
+       "0x80018b98 sh $t9, 0x78($sp)",
+       "0x80018dac lhu $t9, 0x78($sp)",
+       "0x80018e58 lhu $t9, 0x78($sp)",
+       "0x80018e64 sh $t9, 0x78($sp)"
+      ]
+     },
+     "0x6c": {
+      "loads": 0,
+      "stores": 1,
+      "sites": [
+       "0x80018c2c sw $v1, 0x6c($sp)"
+      ]
+     },
+     "0x74": {
+      "loads": 6,
+      "stores": 4,
+      "sites": [
+       "0x80018c44 sw $v1, 0x74($sp)",
+       "0x80018cbc lw $a1, 0x74($sp)",
+       "0x80018cd0 lw $a1, 0x74($sp)",
+       "0x80018ce4 sw $t9, 0x74($sp)"
+      ]
+     },
+     "0x70": {
+      "loads": 0,
+      "stores": 1,
+      "sites": [
+       "0x80018c54 sw $s0, 0x70($sp)"
+      ]
+     },
+     "0x94": {
+      "loads": 2,
+      "stores": 2,
+      "sites": [
+       "0x80018d04 sw $t9, 0x94($sp)",
+       "0x80018e14 lw $t9, 0x94($sp)",
+       "0x80018e20 sw $t9, 0x94($sp)",
+       "0x80018e8c lw $t9, 0x94($sp)"
+      ]
+     }
+    }
+   },
+   {
+    "fn": "8008cf0c",
+    "name": "FUN_8008cf0c",
+    "space": "exe",
+    "n_offsets": 6,
+    "n_stores": 6,
+    "n_loads": 6,
+    "offsets": {
+     "0x6c": {
+      "loads": 1,
+      "stores": 1,
+      "sites": [
+       "0x8008d168 sw $s1, 0x6c($sp)",
+       "0x8008d4d8 lw $s1, 0x6c($sp)"
+      ]
+     },
+     "0x8c": {
+      "loads": 1,
+      "stores": 1,
+      "sites": [
+       "0x8008d184 sw $ra, 0x8c($sp)",
+       "0x8008d4b8 lw $ra, 0x8c($sp)"
+      ]
+     },
+     "0x78": {
+      "loads": 1,
+      "stores": 1,
+      "sites": [
+       "0x8008d190 sw $s4, 0x78($sp)",
+       "0x8008d4cc lw $s4, 0x78($sp)"
+      ]
+     },
+     "0x74": {
+      "loads": 1,
+      "stores": 1,
+      "sites": [
+       "0x8008d194 sw $s3, 0x74($sp)",
+       "0x8008d4d0 lw $s3, 0x74($sp)"
+      ]
+     },
+     "0x70": {
+      "loads": 1,
+      "stores": 1,
+      "sites": [
+       "0x8008d198 sw $s2, 0x70($sp)",
+       "0x8008d4d4 lw $s2, 0x70($sp)"
+      ]
+     },
+     "0x60": {
+      "loads": 1,
+      "stores": 1,
+      "sites": [
+       "0x8008d214 sw $t0, 0x60($sp)",
+       "0x8008d464 lw $t0, 0x60($sp)"
+      ]
+     }
+    }
+   },
+   {
+    "fn": "8004a2c8",
+    "name": "FUN_8004a2c8",
+    "space": "exe",
+    "n_offsets": 4,
+    "n_stores": 5,
+    "n_loads": 3,
+    "offsets": {
+     "0xdc": {
+      "loads": 0,
+      "stores": 1,
+      "sites": [
+       "0x8004a2c8 sh $v0, 0xdc($v1)"
+      ]
+     },
+     "0xda": {
+      "loads": 3,
+      "stores": 2,
+      "sites": [
+       "0x8004a3d0 sh $zero, 0xda($a2)",
+       "0x8004a418 lh $v0, 0xda($a0)",
+       "0x8004a49c lh $v1, 0xda($a0)",
+       "0x8004a4e0 lhu $v0, 0xda($v1)"
+      ]
+     },
+     "0xd0": {
+      "loads": 0,
+      "stores": 1,
+      "sites": [
+       "0x8004a45c sw $v1, 0xd0($v0)"
+      ]
+     },
+     "0xd4": {
+      "loads": 0,
+      "stores": 1,
+      "sites": [
+       "0x8004a464 sw $a1, 0xd4($v0)"
+      ]
+     }
+    }
+   },
+   {
+    "fn": "8006ef2c",
+    "name": "FUN_8006ef2c",
+    "space": "exe",
+    "n_offsets": 6,
+    "n_stores": 6,
+    "n_loads": 0,
+    "offsets": {
+     "0x60": {
+      "loads": 0,
+      "stores": 1,
+      "sites": [
+       "0x8006ef98 sw $v1, 0x60($v0)"
+      ]
+     },
+     "0x6c": {
+      "loads": 0,
+      "stores": 1,
+      "sites": [
+       "0x8006efbc sw $v1, 0x6c($v0)"
+      ]
+     },
+     "0x70": {
+      "loads": 0,
+      "stores": 1,
+      "sites": [
+       "0x8006efc8 sw $v1, 0x70($v0)"
+      ]
+     },
+     "0x74": {
+      "loads": 0,
+      "stores": 1,
+      "sites": [
+       "0x8006efd4 sw $v1, 0x74($v0)"
+      ]
+     },
+     "0x78": {
+      "loads": 0,
+      "stores": 1,
+      "sites": [
+       "0x8006efe0 sw $v1, 0x78($v0)"
+      ]
+     },
+     "0x8c": {
+      "loads": 0,
+      "stores": 1,
+      "sites": [
+       "0x8006f01c sw $v1, 0x8c($v0)"
+      ]
+     }
+    }
+   },
+   {
+    "fn": "8002f63c",
+    "name": "FUN_8002f63c",
+    "space": "exe",
+    "n_offsets": 4,
+    "n_stores": 5,
+    "n_loads": 2,
+    "offsets": {
+     "0xce": {
+      "loads": 1,
+      "stores": 2,
+      "sites": [
+       "0x8002f698 sh $zero, 0xce($v1)",
+       "0x8002f6d4 lhu $v0, 0xce($a0)",
+       "0x8002f6e0 sh $v0, 0xce($a0)"
+      ]
+     },
+     "0xd0": {
+      "loads": 1,
+      "stores": 1,
+      "sites": [
+       "0x8002f69c sh $zero, 0xd0($v1)",
+       "0x8002f6d8 lh $v1, 0xd0($a0)"
+      ]
+     },
+     "0xd2": {
+      "loads": 0,
+      "stores": 1,
+      "sites": [
+       "0x8002f6a0 sh $zero, 0xd2($v1)"
+      ]
+     },
+     "0xd4": {
+      "loads": 0,
+      "stores": 1,
+      "sites": [
+       "0x8002f6a4 sh $zero, 0xd4($v1)"
+      ]
+     }
+    }
+   },
+   {
+    "fn": "80044750",
+    "name": "FUN_80044750",
+    "space": "exe",
+    "n_offsets": 4,
+    "n_stores": 4,
+    "n_loads": 4,
+    "offsets": {
+     "0xe0": {
+      "loads": 1,
+      "stores": 1,
+      "sites": [
+       "0x80044760 lhu $v0, 0xe0($v0)",
+       "0x8004476c sh $v0, 0xe0($a0)"
+      ]
+     },
+     "0xd4": {
+      "loads": 1,
+      "stores": 1,
+      "sites": [
+       "0x80044788 sw $v1, 0xd4($v0)",
+       "0x800447f0 lw $v1, 0xd4($v0)"
+      ]
+     },
+     "0xd0": {
+      "loads": 1,
+      "stores": 1,
+      "sites": [
+       "0x800447a4 sh $v0, 0xd0($v1)",
+       "0x800447f8 lhu $v0, 0xd0($v0)"
+      ]
+     },
+     "0xce": {
+      "loads": 1,
+      "stores": 1,
+      "sites": [
+       "0x8004486c lhu $v0, 0xce($v1)",
+       "0x80044878 sh $v0, 0xce($v1)"
+      ]
+     }
+    }
+   },
+   {
+    "fn": "8001a518",
+    "name": "FUN_8001a518",
+    "space": "exe",
+    "n_offsets": 6,
+    "n_stores": 0,
+    "n_loads": 10,
+    "offsets": {
+     "0xd0": {
+      "loads": 1,
+      "stores": 0,
+      "sites": [
+       "0x8001a838 lw $t9, 0xd0($sp)"
+      ]
+     },
+     "0x74": {
+      "loads": 3,
+      "stores": 0,
+      "sites": [
+       "0x8001a880 lw $a0, 0x74($sp)",
+       "0x8001a898 lw $a1, 0x74($sp)",
+       "0x8001aa70 lhu $s7, 0x74($sp)"
+      ]
+     },
+     "0x60": {
+      "loads": 3,
+      "stores": 0,
+      "sites": [
+       "0x8001a894 lw $t9, 0x60($sp)",
+       "0x8001a904 lw $t9, 0x60($sp)",
+       "0x8001aa4c lhu $s3, 0x60($sp)"
+      ]
+     },
+     "0x6c": {
+      "loads": 1,
+      "stores": 0,
+      "sites": [
+       "0x8001aa60 lhu $t0, 0x6c($sp)"
+      ]
+     },
+     "0x70": {
+      "loads": 1,
+      "stores": 0,
+      "sites": [
+       "0x8001aa68 lhu $s6, 0x70($sp)"
+      ]
+     },
+     "0x78": {
+      "loads": 1,
+      "stores": 0,
+      "sites": [
+       "0x8001aaa8 lw $a0, 0x78($sp)"
+      ]
+     }
+    }
+   },
+   {
+    "fn": "8006cc04",
+    "name": "FUN_8006cc04",
+    "space": "exe",
+    "n_offsets": 5,
+    "n_stores": 5,
+    "n_loads": 0,
+    "offsets": {
+     "0x78": {
+      "loads": 0,
+      "stores": 1,
+      "sites": [
+       "0x8006cc44 sw $fp, 0x78($sp)"
+      ]
+     },
+     "0x74": {
+      "loads": 0,
+      "stores": 1,
+      "sites": [
+       "0x8006cc54 sw $s7, 0x74($sp)"
+      ]
+     },
+     "0x70": {
+      "loads": 0,
+      "stores": 1,
+      "sites": [
+       "0x8006cc58 sw $s6, 0x70($sp)"
+      ]
+     },
+     "0x6c": {
+      "loads": 0,
+      "stores": 1,
+      "sites": [
+       "0x8006cc5c sw $s5, 0x6c($sp)"
+      ]
+     },
+     "0x60": {
+      "loads": 0,
+      "stores": 1,
+      "sites": [
+       "0x8006cc68 sw $s2, 0x60($sp)"
+      ]
+     }
+    }
+   },
+   {
+    "fn": "800761b4",
+    "name": "FUN_800761b4",
+    "space": "exe",
+    "n_offsets": 5,
+    "n_stores": 5,
+    "n_loads": 0,
+    "offsets": {
+     "0x70": {
+      "loads": 0,
+      "stores": 1,
+      "sites": [
+       "0x80076208 sw $s4, 0x70($sp)"
+      ]
+     },
+     "0x78": {
+      "loads": 0,
+      "stores": 1,
+      "sites": [
+       "0x80076210 sw $s6, 0x78($sp)"
+      ]
+     },
+     "0x74": {
+      "loads": 0,
+      "stores": 1,
+      "sites": [
+       "0x80076220 sw $s5, 0x74($sp)"
+      ]
+     },
+     "0x6c": {
+      "loads": 0,
+      "stores": 1,
+      "sites": [
+       "0x80076224 sw $s3, 0x6c($sp)"
+      ]
+     },
+     "0x60": {
+      "loads": 0,
+      "stores": 1,
+      "sites": [
+       "0x8007622c sw $s0, 0x60($sp)"
+      ]
+     }
+    }
+   },
+   {
+    "fn": "80081e10",
+    "name": "FUN_80081e10",
+    "space": "exe",
+    "n_offsets": 5,
+    "n_stores": 5,
+    "n_loads": 0,
+    "offsets": {
+     "0x6c": {
+      "loads": 0,
+      "stores": 1,
+      "sites": [
+       "0x80081e80 sw $s3, 0x6c($sp)"
+      ]
+     },
+     "0x74": {
+      "loads": 0,
+      "stores": 1,
+      "sites": [
+       "0x80081e88 sw $s5, 0x74($sp)"
+      ]
+     },
+     "0x60": {
+      "loads": 0,
+      "stores": 1,
+      "sites": [
+       "0x80081e9c sw $s0, 0x60($sp)"
+      ]
+     },
+     "0x78": {
+      "loads": 0,
+      "stores": 1,
+      "sites": [
+       "0x80081eb8 sw $s6, 0x78($sp)"
+      ]
+     },
+     "0x70": {
+      "loads": 0,
+      "stores": 1,
+      "sites": [
+       "0x80081ebc sw $s4, 0x70($sp)"
+      ]
+     }
+    }
+   },
+   {
+    "fn": "80015a9c",
+    "name": "FUN_80015a9c",
+    "space": "exe",
+    "n_offsets": 4,
+    "n_stores": 4,
+    "n_loads": 1,
+    "offsets": {
+     "0x6c": {
+      "loads": 0,
+      "stores": 1,
+      "sites": [
+       "0x80015abc sw $v0, 0x6c($a0)"
+      ]
+     },
+     "0x70": {
+      "loads": 0,
+      "stores": 1,
+      "sites": [
+       "0x80015ac4 sw $v0, 0x70($a0)"
+      ]
+     },
+     "0x74": {
+      "loads": 0,
+      "stores": 1,
+      "sites": [
+       "0x80015b00 sw $v0, 0x74($a0)"
+      ]
+     },
+     "0xc6": {
+      "loads": 1,
+      "stores": 1,
+      "sites": [
+       "0x80015bd0 lbu $v0, 0xc6($a1)",
+       "0x80015bdc sb $v0, 0xc6($s0)"
+      ]
+     }
+    }
+   },
+   {
+    "fn": "80021c78",
+    "name": "FUN_80021c78",
+    "space": "exe",
+    "n_offsets": 4,
+    "n_stores": 4,
+    "n_loads": 0,
+    "offsets": {
+     "0x70": {
+      "loads": 0,
+      "stores": 1,
+      "sites": [
+       "0x80021e50 sw $s2, 0x70($sp)"
+      ]
+     },
+     "0x78": {
+      "loads": 0,
+      "stores": 1,
+      "sites": [
+       "0x80021e54 sw $s4, 0x78($sp)"
+      ]
+     },
+     "0x74": {
+      "loads": 0,
+      "stores": 1,
+      "sites": [
+       "0x80021e60 sw $s3, 0x74($sp)"
+      ]
+     },
+     "0x6c": {
+      "loads": 0,
+      "stores": 1,
+      "sites": [
+       "0x80021e64 sw $s1, 0x6c($sp)"
+      ]
+     }
+    }
+   }
+  ]
+ }
+}

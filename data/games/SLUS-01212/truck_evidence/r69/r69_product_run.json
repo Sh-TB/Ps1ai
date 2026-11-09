@@ -1,0 +1,78 @@
+{
+ "schema": "ps1play.r69-product-run/1",
+ "generated": "2026-11-09T16:14:35Z",
+ "commit": "eb186be8fd7bca3bf83b608284653ced06a1d411",
+ "command": "python3 -m ps1play play metal_slug_x --episodes 2 --max-frames 10000 --verbose --screenshot --output data/r69b",
+ "disc": {
+  "cue": "ps1play/runtime/session.py:GAME_DEFAULT_ISO['metal_slug_x']",
+  "sha256": "45cde149878fe945d0219fd0f61ca09856aee66bdcc9119de21c0583f1d0667d",
+  "serial": "SLUS-01212"
+ },
+ "policy": {
+  "name_version": "msx_mission1_rules:1.7.1",
+  "identity": "deterministic rules; the R69 connect-window rule C1 (the lob ONLY while |dx| in [130, 135], gre40, the hold/retreat discipline; the T5 chip-fire withdrawn for the window test) + the R68 T2'/T6'/W8/W9 lineage; no model, no training, zero RAM writes"
+ },
+ "results": {
+  "ep1": "death (game_over) at 1318f, score 1700 \u2014 the RECORD FRAME tied (1318f); the truck a4 300 -> 100 = TWO CONFIRMED LOB CONNECTS at the exact posture (2/7); ONE connect short \u2014 the section scroll shoved the player out of the window (the truck NOT killed, honestly recorded)",
+  "ep2": "death (game_over) at 386f, score 1700 \u2014 the R68 v1.6.0 ep2 frame-exact (the pre-truck wave section dominates)"
+ },
+ "episodes": [
+  {
+   "episode": 1,
+   "seed_k": 6,
+   "result": "death",
+   "death_reason": "game_over",
+   "frames": 1318,
+   "actions": 67,
+   "score": 1700,
+   "policy": "msx_mission1_rules:1.7.1",
+   "trace_sha256": "da1e897721183db28e10833185cbdc4c066e29af5925964a8023ae49327df45d"
+  },
+  {
+   "episode": 2,
+   "seed_k": 12,
+   "result": "death",
+   "death_reason": "game_over",
+   "frames": 386,
+   "actions": 6,
+   "score": 1700,
+   "policy": "msx_mission1_rules:1.7.1",
+   "trace_sha256": "f3fa2897c0978df17bd84930b183db1f177272e0c60f4471b56296d449d6c81e"
+  }
+ ],
+ "probes": {
+  "v1.7.0": "truck_evidence/r69/r69_connect_probe.jsonl (the [125,140] falsification: 0/3 connects, a4 frozen at 300)",
+  "v1.7.1": "truck_evidence/r69/r69b_connect_probe.jsonl (the [130,135] verification: 7 throws ALL at dx -133.5, a4 300->200->100)"
+ },
+ "iteration_lineage_full": [
+  {
+   "policy": "msx_mission1_rules:1.7.0",
+   "episode": 1,
+   "frames": 1154,
+   "actions": 77,
+   "score": 2200,
+   "result": "death",
+   "probe": "0/3 connects (dx -139.5/-136.5/-136.5), a4 frozen at 300 \u2014 the outer window falsified"
+  },
+  {
+   "policy": "msx_mission1_rules:1.7.1",
+   "episode": 1,
+   "frames": 1318,
+   "actions": 67,
+   "score": 1700,
+   "result": "death",
+   "probe": "7/7 throws at dx -133.5, 2 connects (a4 300->100), one short \u2014 the scroll closed the window"
+  },
+  {
+   "policy": "msx_mission1_rules:1.7.1",
+   "episode": 2,
+   "frames": 386,
+   "actions": 6,
+   "score": 1700,
+   "result": "death"
+  }
+ ],
+ "r68_lineage_note": "the R68 record 1318f/2800 (v1.6.0/v1.6.2) stands as the best SCORE; the R69 v1.7.1 ties the death FRAME with the first confirmed truck-connect evidence on the product path (a4 300->100, pure lob connects)",
+ "zero_overlap": "NOT re-run \u2014 no new +500 capture (the wave paid +300/+100 only; the truck never died)",
+ "legality": "legal inputs only, zero RAM writes, no training, no runtime LLM; the disc pin enforced by preflight"
+}
