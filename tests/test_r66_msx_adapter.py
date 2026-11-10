@@ -446,10 +446,12 @@ class TestTruckRulesR67:
         assert pol._grenades_used == 0
 
     def test_identity_v181(self):
+        # re-anchored on v1.9.0 (R71): the phase law stays, the
+        # chip-connect kill schedule (K1) ships on top
         pol = Mission1Policy()
         ident = pol.identity()
-        assert ident["policy_version"] == "1.8.5"
-        assert ident["truck_rules"] == "r70_phase_law"
+        assert ident["policy_version"] == "1.9.0"
+        assert ident["truck_rules"] == "r71_chip_connect"
 
     def test_hold_backs_off_point_blank(self):
         # THE v1.4.2 PROBE LESSON (pinned) + v1.7.0 C1: below the
@@ -700,7 +702,10 @@ class TestRearFightR67V140:
         assert acts[0] == "BACK"
         assert rules.count("truck_connect_grenade") == 8
         assert acts.count("GRENADE") == 8
-        assert "truck_connect_hold" in rules
+        # v1.9.0 (R71 K1): the cooldown holds are now the aimed
+        # chip-fire (the second damage path — the kill schedule)
+        assert "truck_chip_fire" in rules
+        assert "truck_connect_hold" not in rules
 
     def test_rear_truck_out_of_band_approach(self):
         # the truck behind at -226.5 (the probe's exact posture —
@@ -950,4 +955,6 @@ class TestR68WreckAware:
     def test_adapter_version_v050(self):
         from ps1play.adapters.metal_slug_x.adapter import \
             ADAPTER_VERSION
-        assert ADAPTER_VERSION == "0.5.1"
+        # v0.5.2 (R71): the a4-aware liveness filter (the r71 boot-1
+        # perception defect: the ghost blocker + the invisible thief)
+        assert ADAPTER_VERSION == "0.5.2"

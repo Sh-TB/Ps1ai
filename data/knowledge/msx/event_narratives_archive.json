@@ -1,0 +1,346 @@
+{
+ "schema": "ps1play.msx-event-narratives/1",
+ "note": "the R71 final-mile archive: the full event narratives moved OUT of the size-bounded capsule (the shipped validation bound < 64 KiB, the r66 precedent 'the dropped prose lives in git history / reports / the worklog' — this archive keeps them IN the repo); every fact line in the capsule references its narrative here by index",
+ "events": {
+  "0": {
+   "round": null,
+   "status": "VERIFIED",
+   "what_full": "heli-kill recipe VERIFIED (hop + UP-lob at apex, |dx| 7-29, 3 connects: hp_a4 300->0, +1100)"
+  },
+  "1": {
+   "round": null,
+   "status": "VERIFIED",
+   "what_full": "D7 pin: 4 attack policies all stopped at px 1164; past_clamp 1163.0 was a FALSE-POSITIVE (corrected to >1164.5); score 0->0 = zero real kills (honest correction of SlotTracker)"
+  },
+  "2": {
+   "round": null,
+   "status": "VERIFIED",
+   "what_full": "truck lives in slot 33 — outside the historical 24-slot scan window"
+  },
+  "3": {
+   "round": null,
+   "status": "OBSERVED",
+   "what_full": "mosque cannon is the rain source (session-2 +800 volley -> fallers 459->0-7); D7 pin-lift never reproduced"
+  },
+  "4": {
+   "round": null,
+   "status": "OBSERVED",
+   "what_full": "r37t1: pure-input menu ladder (r17 ground truth) NOT reproduced within a 2-boot cap after rollback #8 — states 9->6 regression under repeated CROSS; checkpoints wiped"
+  },
+  "5": {
+   "round": null,
+   "status": "CONTRADICTED",
+   "what_full": "The '+0x8E = entity HP' label is CONTRADICTED for world entities, UNRESOLVED for slot 0.  Evidence: (a) the parked truck +0x8E stayed 254->254 under standing fire while +0xA4 fell 300->0 under grenades (the '254->207 grenade damage' was the truck MOVING — screen-x shrink); (b) the chopper +0x8E decayed 148->2 with NO player fire (the camera advance, Gate B no-fire control, 3/3); (c) static: writer 0x80064674 adds camera-scroll deltas to +0x8C/+0x90 per entity (+0x8E = the screen-x integer half); (d) the Issue #5 freeze A/B held the PAIR 0x800CA2F6+0x800CA2FE (word causality never isolated); pincorr1 slot-0 (291->81, damage-correlated, regen-like, px-scroll ~0) does not distinguish player-HP.  RULE: +0x8E EXCLUDED from success oracles; armored HP evidence = +0xA4; role entity_field_+0x8E."
+  },
+  "6": {
+   "round": null,
+   "status": "VERIFIED",
+   "what_full": "Truck campaign semantics (Oct 25, GAMEPLAY_VERIFIED): armored truck HP = u16 at entity_base+0xA4 (300 fresh; grenade = 100 dmg; death state word0 = 0xA304); truck identity = ground contact (h=64) + state 0x9E88 + hp_a4 in [100,600]; truck seen in slot 14 (Oct 24 phase) and slot 33 (Oct 25 phase) — scans must cover >=36 slots"
+  },
+  "7": {
+   "round": null,
+   "status": "VERIFIED",
+   "what_full": "D7 release condition: the section VM's pending-entity queue CLEARING releases the pin — walker state 0xB -> 0xC, flags 0x1 -> 0x8, the progress word leaves 0xFFFFFFFF (PROVEN 3/3 + the policy banner 3/3 from the Oct-25 pin_ckpt phase, MISSION 1 banner 6/6 total); not yet reproduced from a post-rollback rebuilt checkpoint (R35's 4 custom policies died at the pin with zero kills — checkpoint-phase variance).  Release REQUIRES the section entities dead (the chopper hop-lob |dx| 7-29; the frozen 0x4054 soldiers = 2 AIMED bullets from px ~992 side; the truck via grenade lob |dx| 53-135)."
+  },
+  "8": {
+   "round": null,
+   "status": "VERIFIED",
+   "what_full": "R38 TRUCK KILLED BY THE SHIPPED POLICY (matched live trial from the rebuilt r38_ckpt, deterministic x2): hp_a4 240 at engage -> -10 steps under sustained standing fire -> 150, one grenade -100 (the counter 8->7) -> 50 -> wreck residual 30 -> 10 -> row gone by c95; wreck state 0xA44C at slot 9; the pure-RIGHT control arm held hp_a4 = 300 FROZEN for 45 chunks (no self-decay — the damage is input-caused).  Score 0 -> 4600 (25+ kill events), 0 combat deaths vs the control score 0.  The Oct-23 'forward fire does not kill armor (254->254)' reading corrected: that field was +0x8E screen-x; the REAL hp_a4 DOES chip under sustained fire."
+  },
+  "9": {
+   "round": null,
+   "status": "OBSERVED",
+   "what_full": "R38 D7 PIN STILL HOLDS FROM THE REBUILT PHASE — blocker ISOLATED to the chopper: at every pin the census keeps slot 4 = chopper (st 0xAA94/0xABDC cycle, hp_a4 300, h 207-210) ALIVE while the truck is a wreck (0xA44C) and the wave dead; the walker cycles (0xA,0x43) <-> (0,0), no 0xC.  The aa_kill rule (J1 hop + UP-lob) CONNECTED once live per run (hp_a4 300 -> 200, the -100 grenade signature, deterministic x2) but the kill needs 3 connects and the connect rate ~1/10 throws (the chopper patrols dx -9..-51 vs the proven 7-29 band).  A |dx|<=40 pre-throw gate FALSIFIED (0/6; the earlier one-shot bomb death php 291->0 = the first build dropped the rain-hop); ungated + rain-hop restored = stable.  Runs end at the death->restart wall; F6 respawn refills grenades (8->10).  Cheats stayed OUT of all success claims."
+  },
+  "10": {
+   "round": null,
+   "status": "OBSERVED",
+   "what_full": "R39 boot-1 matched-anchor delivery A/B (one boot, anchor r39_anchor = the first aa_kill chunk with the chopper inside 160px, BASE reproduced R38 trialAA1 exactly first): the 15f-chunked in-policy J1 delivery connected 0/8 while the Session-3 ATOMIC script delivery (same anchor, same 2400f budget) connected 2/12 (verified hp_a4 300->200 and 200->100). The delivery mechanism, not geometry alone, is the first-order connect-rate factor."
+  },
+  "11": {
+   "round": null,
+   "status": "OBSERVED",
+   "what_full": "R39 connect-band revision from release-frame evidence: EVERY verified chopper connect sits at cycle-start |dx| 13.7-29 (Session-3 4x, boot-1 atomic 2x, boot-4 in-policy 1x) while the close hovers at |dx| 3-8.6 missed 4/4 (the UP-lob arcs over a too-close target) and throws beyond 30 never connected (0/5+ across arms). The R39 aa rule throws only inside [AA_THROW_DX_MIN=10, AA_THROW_DX=35]."
+  },
+  "12": {
+   "round": null,
+   "status": "OBSERVED",
+   "what_full": "R39 hover/anchor fact: the chopper's patrol includes multi-second HOVERS at x 1132-1155 near the D7 clamp wall (frame capture: frozen at 1132.3 for 18+ frames with st flipping 0xAA94->0xABDC; census: x=1155.1 held across 75f), so a player anchored at the clamp (px ~1164) sees |dx| inside the connect band every patrol period. Walking TOWARD the chopper (boot-3 v2.1) dragged the player into the 992+ wave zone and was reverted."
+  },
+  "13": {
+   "round": null,
+   "status": "CONTRADICTED",
+   "what_full": "R39 harness correction (supersedes the R38 trial outcome reading): EVERY banner_expired_restart recorded by the r38t2/r39 trial harnesses (R38 trialA1/A2 c268, trialAA1/AA2 c227, R39 BASE c227) was actually a mid-chunk DEATH (px == 0.0, sec [0,0] in RESTART_SEEN; the chunk-end restart check fired before the next-iteration death handler).  NO evidence of a mission-timer restart wall at c227/c268 — those trials measured time-to-first-death.  R39's fixed harness waits out the respawn and passes the continue screen with the issue-4 recover_v2 START tap (counted, disclosed separately from deaths)."
+  },
+  "14": {
+   "round": null,
+   "status": "OBSERVED",
+   "what_full": "R39 in-policy atomic delivery connects live: the v2.2 aa_kill rule (aim locked at cycle start, the 19f J1 window finished atomically, band-gated throws, anchor positioning, the R38 cooldown rain-hop) landed verified hp_a4 drops in two independent boots (boot-4 c143: 300->200 with score +200; boot-6 c271: 300->200). 13 throws per 300-chunk campaign window at the current engagement share; the chopper was NOT killed in-policy yet (2 of 3 connects needed)."
+  },
+  "15": {
+   "round": null,
+   "status": "OBSERVED",
+   "what_full": "R40 boot-1 census (the legacy v2.2 behavior via queue_priority=False, the reproduction gate PASS: engage 118 / aa_kill 76 / throws 13 / connects 1 / score 5701 = the R39 boot-6 pair exactly): WHO steals the mode at the pin is the TRUCK WRECK complex, not soldiers — the 0xA44C-family states (0xA45C the wreck fire/smoke + 0x9E88 + 0xA44C) took 75/81 engage-at-pin chunks (0xA45C alone 67) and armor_hold held 37 more on the wreck's stale row.  The soldier family was ABSENT in all 81 chunks (fam=0); the chopper was visible in 79/81."
+  },
+  "16": {
+   "round": null,
+   "status": "CONTRADICTED",
+   "what_full": "R40 boot-2 CONTRADICTED the current-position throw geometry: the queue-priority-only treatment (v3: the chopper outranks engage/armor_hold in the pin context, 48 takeovers, aa_kill 76->84) scattered the throws (12, release dx 5.6-54.7 both signs) and connected 0/12 (vs the legacy 1/13) - throwing at the chopper's CURRENT position while it patrols at ~1.5 px/f is the wrong gate; the deterministic trajectory shifted (score 3900 vs 5701, the c71 +300 kill pack skipped)."
+  },
+  "17": {
+   "round": null,
+   "status": "OBSERVED",
+   "what_full": "R40 arrival-band model + lead gate (v3.1): the ONLY moving-chopper connect (boot-1 c270: release dx -51.7, chopper CLOSING) plus the R39 frame capture (patrol ~1.5 px/f, parked at 1132.3) give dx_arr = dx + v*T with the lob time-to-altitude T in [11.1, 27.8]f; AA_LEAD_T=20 shipped. Parked hovers reduce to the v2.2 release band exactly (the five verified parked connects are unaffected). Boot-3: 15 throws (legacy 13), the FIRST early connect (c99->c100 300->200; the legacy never connected before c270), 11/15 throws in-arrival-band, ch_v estimator tracking -1.52..1.56."
+  },
+  "18": {
+   "round": null,
+   "status": "VERIFIED",
+   "what_full": "R40 MILESTONE — the chopper KILLED IN-POLICY, deterministic across 4 boots: the patient 1200-chunk campaign (each run CKPT-independent so 3 connects must land in ONE run; 300 chunks = ~15 throws = ~1 connect) landed 3 verified hp_a4 connects (c100 300->200, c387 200->100, the vanish kill-connect at c421, the verified -100 pattern) = hp_a4 300->0, kill score +1200 to 6901, 0 deaths in the kill window.  Boots 4/5/6/7 all resolved at c421 with identical score — the kill is a deterministic property of the v3.1 policy (queue priority + the arrival lead gate)."
+  },
+  "19": {
+   "round": null,
+   "status": "CONTRADICTED",
+   "what_full": "R40 CONTRADICTED the chopper-last-queue-entity release hypothesis: with the chopper dead the D7 section did NOT release — 745-780 post-kill chunks of hold with NOTHING in the engage window (near=None 741/779), no 0xC.  The boot-5 full-table watch: NO killable entity remains (the chopper row persists as an a4=0 wreck shell; 0xA45C = the truck-wreck fire state a4=0; the persistent rows are scenery/signed-transient markers; one a4=30 faller at the resolve).  The release blocker is in the section-VM queue state, not a visible entity: walker [0xB, 0x1] (F1: the release flips flags 0x1->0x8), the progress word accumulating pending bits 0x80000000 -> 0xFFF... -> 0xFFFFFFFF (F1: flips it to 0xFFF38B4A), the node list POINTER at 0x800EB5F8 = 0x80084dcc (the list body unread — the R41 lever)."
+  },
+  "20": {
+   "round": null,
+   "status": "OBSERVED",
+   "what_full": "R40 the wave-zone stand falsified as the post-kill release path: walking LEFT from the aa anchor hit a HARD MAP BARRIER at px 1021.8 (no entity — a geometry/state wall) 5.8 px short of the verified 992-1016 stand zone; the walker re-latched [0xB,0x1] within ~2 chunks.  The session-3/4 release ran standing at 992-1016 from the LEFT-side wave clear (the player was already there before the walker state engaged) — the post-kill approach from the RIGHT cannot reach it.  The boot-7 queue sweep resolved the 0xA45C identity (the wreck fire state, a4=0, not killable) and found RIGHT-side soldier-family rows (slots 13/16 at 1285-1310, one flipping to 0x41FC) past the barrier."
+  },
+  "21": {
+   "round": null,
+   "status": "OBSERVED",
+   "what_full": "R41 static decode (zero boots): the section-VM walker reads node fields from CODE - 'lw $v0, 0x5c($a0)' @0x800205d4, jals 0x80021830 (handler) / 0x80024584 / 0x800216bc (done-path, $a1=1 -> jal 0x800216bc(0)); the node-list BODY at 0x80084dcc decodes as opcode-like u16 script entries (0x8,0x1,0xC,0x9,... inside the 13-opcode vocabulary) with NO internal pointers and NO ASCII descriptors - the node list is a flat script array, not a linked chain."
+  },
+  "22": {
+   "round": null,
+   "status": "CONTRADICTED",
+   "what_full": "R41 boot-2 CONTRADICTED the R40 pending-node release hypothesis: after the in-policy chopper kill (resolved c421, 2 verified hp_a4 drops, 20 throws, 2 deaths + 1 continue, score 5601) the walker cursor @0x800EB5F8 = 0x80084dcc with handle_at_cursor = 0x0 (the END-OF-LIST marker), pending INVALID, exactly 2 PROCESSED handles behind (0x800ec9a0, 0x800eb928; node->0x5C subs 0x8012d890/0x8012d86c, sub->0x8 0x0/0x800fa6b0) — NOTHING is pending; the walker stands on the done-path and the section STILL holds [state 0xB, flags 0x1, prog 0xFFFFFFFF] for ~778 post-kill chunks.  The pending-node blocker is dead."
+  },
+  "23": {
+   "round": null,
+   "status": "OBSERVED",
+   "what_full": "R41 boot-3-final (r41t4, ledger BOOT3-FINAL; post-kill savestate, hardened per-burst death/restart sensors): RELEASE_SIGNATURE at c1 (the savestate carries it), the mission_end chain by c74, RESTART_LEAK at c78 — the post-banner leak reproduced; final flags=9 (bit 0x8 PRESENT) with prog UNMOVED at 0xFFFFFFFF — a PARTIAL F1 signature (the flags bit set, the progress word never flipped to 0xFFF38B4A).  The gap is POST-BANNER handling (the known-good trajectory holds NO-INPUT through the banner at c28), not the release."
+  },
+  "24": {
+   "round": null,
+   "status": "OBSERVED",
+   "what_full": "R41 boot-3-final (r41t4, ledger BOOT3-FINAL; post-kill savestate, hardened per-burst death/restart sensors): RELEASE_SIGNATURE at c1 (the savestate carries it), the mission_end chain by c74, RESTART_LEAK at c78 — the post-banner leak reproduced; final flags=9 (bit 0x8 PRESENT) with prog UNMOVED at 0xFFFFFFFF — a PARTIAL F1 signature (the flags bit set, the progress word never flipped to 0xFFF38B4A).  The gap is POST-BANNER handling (the known-good trajectory holds NO-INPUT through the banner at c28), not the release."
+  },
+  "25": {
+   "round": null,
+   "status": "OBSERVED",
+   "what_full": "R42 boot-1 NEGATIVE + gate lesson: the aa_resolved resolve gate was PREMATURE - from that posture (r42_postkill saved c441, px 1357, score 6101) 24000f of HARD zero input produced NO banner and NO restart: the end sequence is NOT an idle timer, and the attract/demo control took the world over (px moved 1357->540->993, score climbed 6101->13610 with ZERO inputs). The resolved posture the R42 method means is the mission_end LATCH posture, not the aa-resolve posture."
+  },
+  "26": {
+   "round": null,
+   "status": "VERIFIED",
+   "what_full": "R42 boot-2 CORE RESULT (the capsule hypothesis CONFIRMED on its core claim): from r42_postkill the shipped policy latched mission_end at latch-c24 (px 1562, score 7701), then the HARD zero-input hold ran 1600 chunks (24000f): prebanner (0,8) at hold-c11 -> tally teardown 349 chunks -> the world FLOWED through M2-load-shaped signatures (score-0 world at px 120 -> teardown at score 7800 = the session-6/7 M1->M2 loading score -> M2-spawn-shaped world px 74.0/php 74/sec (11,1) vs the recorded spawn 74.6/76.4 php 74/76 -> teardown at score 10930 = the session-7 train-ride fade score -> further demo scenes) and the 2-chunk-persistent restart classifier NEVER fired.  The R41 restart leak was a HARNESS INPUT LEAK, not a game-state blocker; the D7 blocker is CLOSED as bypassed-by-mission-end."
+  },
+  "27": {
+   "round": null,
+   "status": "OBSERVED",
+   "what_full": "R42 honest labels: (a) the banner predicate (0xC x4 persist) NEVER fired under the zero-input hold - the (0,8) prebanner flows straight into the tally teardown; the session-5/6 banner (0xC at px 26.4) is the input-alive variant of the same end sequence. (b) The post-tally chain is the ATTRACT/DEMO pipeline (milestone scores 7800/10930 match the recorded transitions; world windows ~112 chunks) - the M2-load signature is ATTRACT-LABELED, NOT a verified INTERACTIVE M2 entry; the interactive entry remains the session-6 ONE START-tap accept path."
+  },
+  "28": {
+   "round": null,
+   "status": "OBSERVED",
+   "what_full": "R43 premise staleness (disclosed): r38_ckpt AND r42_postkill are ABSENT from emu/ws/states/ (a filesystem rollback — only Oct-20 states survived; the same class as the documented mspsx_lic rollback).  The round rebuilt from the surviving session-5 anchor issue5_m1_start (M1 start px~26).  Ledger cap 7/7 with corrected filings: entries 1+2 = real boots aborted at rebuild c3 by the r42t1 deep-posture guard (px<700) copied verbatim onto a px~26 start anchor; entry 3 = filed-but-died (external kill pre-boot); entry 4 = real boot killed mid-campaign."
+  },
+  "29": {
+   "round": null,
+   "status": "VERIFIED",
+   "what_full": "R43 boot-5 ROOT CAUSE + capability revision: (a) the r42t1 resolve gate (aa_resolved>=1) is STALE-STAT-UNSAFE across mission restarts — after 2 deaths the mission restarted (px back to ~24) and the gate fired on the policy's surviving stat, saving a RESTART posture (RESOLVED at c167, px=24.5, flags=75, score 4501) as the postkill; r42t1 was safe only because its rebuild never died (deaths=0).  (b) The boot-4 'village stall' hypothesis REVISED: the current (queue_priority) policy PASSED the village from-start TWICE (the boot-5 rebuild c0-167 + the boot-5 latch replay 4501->9403) — boot 4 was in the silent aa campaign, not stalled."
+  },
+  "30": {
+   "round": null,
+   "status": "OBSERVED",
+   "what_full": "R43 boots 6+7 (two-stage split, the cross-process savestate restore = the R42-proven pattern): the depth-conditional gate (aa_resolved>=1 AND px>700) saved r43_postkill at c172 with px=992.0, flags=0x4B (the R41 RELEASE_SIGNATURE), score 4501 — but that posture is POST-RESTART + CHECKPOINT-RESPAWN (the c164 chopper resolve was followed by a silent timer-expiry-style mission restart px 1150->25 the shallow-anchor guard could not see, then the checkpoint reload back to 992).  Stage 2 from it: 900 latch chunks, 8 deaths (all continue-rescued, disclosed), score 4501->13704, px pushed to 1378 (PAST the 1285-1310 soldier wave) but held at the 1272 clamp; mission_end NEVER latched; the R41 partial-F1 gap + the re-armed section-VM nodes persist across restarts.  THE PRIMARY NEGATIVE: the INTERACTIVE M2 entry is NOT claimable from a post-restart posture; the clean (deaths=0) R42-style resolve posture remains the requirement."
+  },
+  "31": {
+   "round": null,
+   "status": "OBSERVED",
+   "what_full": "R43 harness lessons (reusable guards, rooted in measured failures): (1) policy stats (aa_resolved) survive deaths/restarts — ANY stat-gated save needs a world-depth condition; (2) the rebuild restart-leak guard must be DYNAMIC (max_px>700 then px<700 = leak), not phase-open-state — the shallow-anchor rebuild ran the deep phase with the guard off and the c164->c165 restart (px 1150->25, no death event — the timer-expiry path reads as alive-at-25) went undetected; (3) frontier postures must be SAVED (the px-1378 posture of boot 7 was lost to exit without a save)."
+  },
+  "32": {
+   "round": null,
+   "status": "VERIFIED",
+   "what_full": "R44 stage-1 FALSIFICATION: the clean deaths=0 resolve posture is UNREACHABLE by rebuild from the shallow anchor issue5_m1_start — the armor-zone death at c86/87 (px 951.1, php 79 at c80, score 2700) is DETERMINISTIC: bit-identical world traces through the divergence point across THREE boots in two rounds (R43 c87, R44 c86 x2; px/score identical at c0/20/40/60/80).  The only deaths=0 rebuild on record (r42t1) rebuilt from the LOST deep anchor r38_ckpt.  Until a deep deaths=0 posture source exists, the INTERACTIVE M2 entry stays unclaimable."
+  },
+  "33": {
+   "round": null,
+   "status": "OBSERVED",
+   "what_full": "R44 harness lessons (measured failures, fixed in-round): (1) SENSOR ORDER at BOTH chunk ends — the alive/death check precedes the restart-leak check (boot 1 c86 = boot 3 c21 mirrored); (2) the WRAP SIGNATURE: px 65494-65535 = the scene-transition world (ALIVE at R43 c160 php 242, R44 c20) — the sane-world clamp 0<=px<5000 gates max_px, the leak guard, the frontier saves; the boot-3 save on wrapped px 65494.4 INVALIDATED (r44_wrap_junk_boot3); (3) corrected-filings extended to same-entry outcome corrections (disclosed)."
+  },
+  "34": {
+   "round": null,
+   "status": "OBSERVED",
+   "what_full": "R44 fallback (b) executed (boots 3-4 reallocated, disclosed; cap 4/4): the px-1272 clamp push from the on-disk TAINTED r43_postkill.  Boot 4 = the 900-chunk latch attempt: 8 continue-rescued deaths (counted), score 4501->13704 (the R43 boot-7 reproduction), the clamp held, mission_end NEVER latched — the R43 negative re-confirmed.  FRONTIER LOSS REPAIRED: r44_frontier_b (px 1275.2) + r44_frontier_a (px 1341.2, past the 1285-1310 wave), sane-clamped."
+  },
+  "35": {
+   "round": null,
+   "status": "VERIFIED",
+   "what_full": "R45 SANDBOX ROLLBACK + the disclosed rebuild: the R43/R44 states LOST; the session-5 anchor issue5_m1_start (Oct 20) SURVIVED; the capsule contingency verbatim (a rebuild boot only if a frontier is lost, disclosed).  Two silent background-launch deaths inside boot_to_demo refunded; the two-stage FOREGROUND protocol ran clean in cap 2/2 (48s + 29s wall)."
+  },
+  "36": {
+   "round": null,
+   "status": "OBSERVED",
+   "what_full": "R45 tainted frontier rebuild (stage 1): the eager rolling saves captured COMBAT-LIVE postures - r45_frontier_b (px 1254.8, census 13 live in the x 1150-1450 window) + r45_frontier_a; 6 deaths / 6 continue-rescues counted and disclosed; the rebuilt frontier lineage is TAINTED (never a clean claim) - the INTERACTIVE M2 gate is untouched by this round."
+  },
+  "37": {
+   "round": null,
+   "status": "VERIFIED",
+   "what_full": "R45 the 0x4054 soft-soldier HP-word readout (restore-only from r45_frontier_a px 1224.9 score 6702): 1 zero-input control + 14 aimed taps on the candidates (+0x8E/+0xA4/+0x9E) + the wide net (u16 0x88..0xA8 step 2).  BOUNDED NEGATIVE + constructive: +0xA4 = 0 throughout (armored-only), +0x9E silent, +0x8E = screen-x again (the 0x8C/0x94 shadows move in sync); the slot-20 soldier (st 0x4054, dx +60.8) died on the 2nd aimed tap, flat +100 at the death tap = the ONE-HIT kill class; no damage counter in 0x88..0xA8 (n=1; cap 2/2).  Score: +500 (tap 1, unresolved — OBSERVED), +100 x3.  R46 note: the tap fallback hit AIRBORNE projectiles (dscore 0) — filter kind=='enemy'."
+  },
+  "38": {
+   "round": null,
+   "status": "VERIFIED",
+   "what_full": "R46 the ONE-HIT replication round executed (cap 1/1 DISCLOSED PRE-RUN, restore-only; the SAVED r45 frontiers verified on disk BEFORE the boot): restore r45_frontier_b (px 1254.8; ground census 2 — the 13-entity R45 census was mostly airborne shells) -> the zero-input control tap -> ground-only aimed taps (kind=='enemy' only) -> restore r45_frontier_a in the same boot -> 34 taps total, 31s wall.  The in-runner kill-table verdict REFUTED — WITHDRAWN the same round by the offline corrected analysis: it counted position churn (0x8c/0x94/0x8e/0x96 move in the ZERO-INPUT control tap) as HP chip and ignored the attribution evidence."
+  },
+  "39": {
+   "round": null,
+   "status": "VERIFIED",
+   "what_full": "R46 CORRECTED VERDICT — the slot-20 soft-soldier one-hit SIGNATURE (r46_analysis_correct.py, offline): the R45 'one-bullet kill' was a TWO-EVENT chain — the Y tap CONNECTED (0x42bc hit-reaction at lag 0, the victim SURVIVED) and a wandering ZONE bullet killed it ~1.2s later (the 0x515c registration + the corpse transition); the +500 co-landed with the CONNECT, NOT the kill; the +100 co-landed with the registration.  The kill-class key refines to REGISTRATION-locked (+100 on the 0x515c/0x5b0c registration, n=3 across R45/R46); the connect-class key stands (+500 on the 0x42bc connect, n=2).  The R45 kill-without-payment rows were CORPSE-BLIND scan artifacts (the corpses leave the scan window ~+138f; the direct-table fix dates every death).  The recorded per-tap payments unchanged; the R45 A/B verdicts stand."
+  },
+  "40": {
+   "round": null,
+   "status": "VERIFIED",
+   "what_full": "R47 the SINGLE-BULLET TAP PROTOCOL executed (the R45 two-stage FOREGROUND protocol, cap disclosed pre-run).  SANDBOX ROLLBACK: the R45 frontiers LOST; the contingency verbatim (a rebuild boot, disclosed); issue5_m1_start survived.  Stage 1: the rebuild DETERMINISTIC ACROSS ROUNDS — r47_frontier_a px 1224.9 census 13 + b px 1254.8 = the SAME postures as R45 (restore score 6702) = the 4th rebuild reproduction.  Stage 2: boot 2 crashed AFTER the control tap (the post-tap scan can DROP a slot that died inside the 3f tap) — REFUNDED + cap 2->3 DISCLOSED; boot 3 clean: 12 FULL-kind taps (1 control + 11 single-bullet 3f Y) from r47_frontier_a, 28s wall."
+  },
+  "41": {
+   "round": null,
+   "status": "VERIFIED",
+   "what_full": "R47 CORRECTED VERDICT — PER-KILL (kill-locked) scoring: the cumulative ledger +600 (6702->7302) while ALL 12 per-tap window deltas read 0 — the 3f window ends before the bullet ARRIVES (flight ~8-15f at dx ~+50).  The +600 = EXACTLY 6 dated corpse transitions x +100 (uniform=True; deaths in read-windows 2/2/4/5/7/10 = slots 19,13,23,27,33,34; three at x ~1275; st 0x515c respawned at the SAME x 1274.5, h 91->90).  ZERO surviving-hit payment: 11 single bullets, 6 deaths, no +100 that is not a corpse; slot20 NEVER died AND never paid.  The R45 '+100-no-death' confound EXPLAINED.  Lessons: (1) the tap window must contain the bullet FLIGHT; (2) per-tap deltas INVALID for delayed-pay weapons — the cumulative ledger + corpse dating is the readout; (3) the entity scan can drop a slot inside the tap (fixed in-round)."
+  },
+  "42": {
+   "round": null,
+   "status": "VERIFIED",
+   "what_full": "R48 the FRAME-EXACT TAP PROTOCOL executed (per-frame score telemetry COMPOSED with the single-bullet taps).  NO rollback: the R47 frontiers SURVIVED (verified pre-boot); cap 1 disclosed.  Boot 1 ran clean and DETERMINISTICALLY (11 taps, the same tap/dscore/corpse tables twice) but its RECORDING was corpse-blind: mini_census skips corpse-st and hp==0 slots.  Cap 1->2 DISCLOSED: boot 2 = the same protocol + DIRECT per-frame table reads (slots 1..39, five words, unconditional), 29s wall.  Two silent background launches refunded (the R45 precedent)."
+  },
+  "43": {
+   "round": null,
+   "status": "VERIFIED",
+   "what_full": "R48 CORRECTED VERDICT — TWO PAY CLASSES, FRAME-EXACT (r48_analysis_correct.py, offline, authoritative): (1) DEATH-INITIATION-LOCKED n=3 — the flat +100 lands EXACTLY on the 0x515c entry frame, corpse 0x4BE4 follows 1-4f later (taps 2/3/5; x 1284.2/1351.2/1293.2); (2) a SURVIVING-CONNECT payment n=1 — the +500 lands at tap-1 f_rel 2 where the ONLY event is slot-20's 0x42bc hit-reaction while slot 20 SURVIVES (its death initiation 23f later) — the R47 'ZERO surviving-hit payment' FALSIFIED; the R45 '+500 unresolved' RESOLVED (deterministic across R45/R48).  BOTH pure models falsified: payments land at the connect/kill-registration frame, the corpse lags 1-14f; R47's '+600 = 6 x +100 uniform' was the tap-granularity conflation; this ledger +800 (+500 + 100x3), 16 dated deaths, the ZERO-INPUT control walk shows 4 NATURAL deaths paying 0.  The 1-2px/frame +0x8E drift is camera churn (chips need >= 3px)."
+  },
+  "44": {
+   "round": null,
+   "status": "VERIFIED",
+   "what_full": "R49 the CLASS-KEYED tap protocol executed (taps GROUPED by target class — CONNECT = ONE bullet on a fresh soft target, never fired at again; KILL on fresh soldiers).  NO rollback; cap 1, boot 1 clean 29s wall.  GROUP SHORTFALL honest: CONNECT 2/4 (both on the frontier-frozen slot20 mid-0x42bc; 6 missed — no 0x42bc entry), KILL 0/3 (the spawner zone x~1277-1351 churns 0xaec8 -> walk -> 0x515c -> 0x4be4; the aimed fresh soldiers ONE-HIT-registered: slots 22/18).  The no-follow-up connect targets did NOT survive to walk end (slot20 died of the wound 1-3 taps later, frame-exact) — the connect payment landed while the target was ALIVE in 0x42bc."
+  },
+  "45": {
+   "round": null,
+   "status": "VERIFIED",
+   "what_full": "R49 CORRECTED VERDICT (r49_analysis_correct.py v2, the GLOBAL-frame per-slot matcher): (1) surviving-connect +500 REPLICATED (a-tap1: slot20 in 0x42bc at the pay frame, ZERO registrations in the lag window [-2,+6]; recovers 0x5b0c and walks on — n=2 across R48/R49); (2) +100 kill payments n=4, all co-land lag-0 on 0x515c registrations but NONE is the aimed target — all CYCLING ZONE ENTITIES in the bullet corridor (slot33-re@1284.2, slot23@1351.2, slot10-re@1293.2, slot9@1343.8) = payment REFINED to PLAYER-BULLET-VICTIM-LOCKED; the 11 zone/wound registrations paid 0; controls 0 jumps; (3) UNRESOLVED residual n=1: the same connect context paid +1000 once (b-tap1, 2-4 rows AFTER slot33's registration).  Strong class-keyed form FALSIFIED; weak form stands n=1+n=4.  Ledger +1900/11 taps (a +800, b +1100)."
+  },
+  "46": {
+   "round": null,
+   "status": "VERIFIED",
+   "what_full": "R50 the CONTROLLED-CORRIDOR tap protocol executed (fire ONLY when the aimed target is the ONLY mortal in the bullet corridor; 2 movement-only controls; CONNECT no-follow-up; KILL prefers the 0xae7c class — disclosed pre-run).  NO rollback; boot 1 CRASHED post-restore (NameError post_sc — a runner defect, ZERO taps, the world untouched) — cap 1->2 DISCLOSED PRE-BOOT-2; boot 2 clean 32s wall, 2/2 spent.  The corridor gate STRICT (11 skips per pass); re-derivation found 1 marginal violation (an approach-shift entry, disclosed).  GROUP RESULTS: connects 1+0, kills 0/3 — but the fired windows produced the cleanest payment data of the campaign (6 paid windows, every one corridor-cleared pre-fire)."
+  },
+  "47": {
+   "round": null,
+   "status": "VERIFIED",
+   "what_full": "R50 CORRECTED VERDICT (r50_analysis_correct.py, offline): (1) THE CONTROLS NEVER PAY (4 windows incl. movement-only, 6+ natural corpses, 0 payments); (2) KILL LANE CLEAN: both +100 co-land lag-0 on the registrations at x 1389.2/1349.8 — n=6 across R48/R49/R50 for the +100 registration-locked class; (3) THE PIERCING DISCOVERY: the CONNECT tap at the 0xab94 target killed the mortal BEHIND it (slot18 @1389.2, +100) — the gate needs the bullet-transparent predicate; (4) THE 0xae7c CLASS EXONERATED (slot33 cycled 2 more times, 32/27f, ZERO co-landing payments); (5) CONNECT MAGNITUDE UNSETTLED — +500 x3 vs +1000 x3 across R48/R49/R50 (+1000 on a 0x42bc recovery, +500 on a LEFT-side 0x2b74, +1000 on a 0x3f48), all mid-wound-recovery of SURVIVING targets; candidates: an internal wound accumulator or hit-geometry damage.  Ledger +2700 (a +1600, b +1100)."
+  },
+  "48": {
+   "round": null,
+   "status": "VERIFIED",
+   "what_full": "R51 the WOUND-ACCUMULATOR HUNT (restore-only, ledger cap 3 disclosed, 3/3 spent): stage 1 rebuilt the frontiers DETERMINISTICALLY (px 1224.9 census 13 / 1254.8 census 14 — the SAME postures as R45/R47; 4 deaths / 4 rescues, TAINTED).  Stage 2 under pay-frame telemetry: two +1000 connects (st_pre 0x42bc AND 0x3f48, both slot20 recoveries — the R50 family replicated), the +100 kill class n=2 more (n=6 total), PIERCE replicated n=2 (total n=3), zero-input AND movement-only controls 0 payments (n=4 windows).  NO word separated +1000 from +500 under the tap-window delta join — the hunt needs the FRAME-EXACT union-net read (the R52 lever).  Ledger +2200 across both frontiers, deterministic."
+  },
+  "49": {
+   "round": null,
+   "status": "VERIFIED",
+   "what_full": "R51 CORRECTED VERDICT (r51_analysis_correct.py, offline — the v2 matcher + the wound-word hunt + the R50 cross-join): (1) PIERCING REPLICATED n=2: both PIERCE taps (aimed at the 0xab94 slot30) paid +100, the transparent target NEVER reacted; pass-a's +100 co-lands lag-0 on slot18's 0x515c registration at x 1357.2 BEHIND it (holder_invul=30) — the predicate MEASURED: the bullet passes 0xab94 and kills the first vulnerable mortal behind; (2) THE CONTROLS NEVER PAY (4 windows, 0 payments); (3) two MORE +1000 connects (st_pre 0x42bc AND 0x3f48, both slot20 recoveries) — the table +500 x3 vs +1000 x5 across R48-R51; the 0x42bc entry alone is NOT the discriminator (+500 in R48/R49, +1000 in R50/R51); (4) THE WOUND-WORD HUNT NEGATIVE at tap-window granularity (100+ churn candidates) — needs the FRAME-EXACT read = the R52 lever; (5) 0xae7c exonerated twice more.  Ledger +2200 (a +1100, b +1100), deterministic."
+  },
+  "50": {
+   "round": null,
+   "status": "OBSERVED",
+   "what_full": "R52 the PAY-FRAME UNION-NET WOUND HUNT under the THIRD sandbox rollback (the full narrative in reports/r52 + r52_wound_table.json): the +1000 wound-payment class banked with pay-frame vectors; the pay-frame law (the accumulator pays ~2 frames before the visible registration); slot12@0xa0 = the registration witness."
+  },
+  "51": {
+   "round": null,
+   "status": "OBSERVED",
+   "what_full": "R52 offline verdict recorded: the pay-frame telemetry path is the R53 discriminator lever - the +500 capture under the SAME telemetry is the single missing piece; the 123-word candidate pool and the 546-shape batch are committed in r52_wound_table.json for the cross-round intersection test."
+  },
+  "52": {
+   "round": null,
+   "status": "OBSERVED",
+   "what_full": "R66 gate diagnostics (the R53 lever): the per-skip GATE_DIAG dump (13 skips, r66_boot3_s2a.jsonl) ROOT-CAUSED the R52 starvation - the R50/R51 corridor predicate counted non-absorbing, non-paying entities as blockers: the bullet-TRANSPARENT 0xab94 wasp (8 rejections) and in-flight projectile_air rows (0xbdf8/0x1be0/0x2950/0x9558/0xac64); the player never advanced (px 1255.2 across all skips).  A protocol-predicate defect in the MSX workstream, not an observer/runtime defect."
+  },
+  "53": {
+   "round": null,
+   "status": "OBSERVED",
+   "what_full": "R66 the +500 CAPTURED AT THE PAY FRAME (R48-R52 never reached it): pass B (the corrected predicate: blockers must absorb the bullet or register the payment) tap 6: score 7702->8202 (+500) at tail f1 = the bullet-impact frame, victim pre-hit; 0x5b0c registration at tail f3; the slot12@0xa0 pulse (257->2, rec 4) co-timed.  Two more +1000s (0x42bc tail f3; 0x3f48 tail f4): magnitude +500 x4 vs +1000 x7.  PAY-FRAME LAW: the accumulator pays on the internal damage event ~2 frames BEFORE the visible registration (3/3 captures).  +500 is not confined to 0x42bc connects; kills do not always pay (0xa718->0x515c, dscore=0)."
+  },
+  "54": {
+   "round": null,
+   "status": "OBSERVED",
+   "what_full": "R66 the accumulator candidate RESOLVED as a witness, not a discriminator: slot12@0xa0 dips to 2 co-timed with EVERY kill registration (n=2) but its instant value is churn phase - a banked +1000 pay frame also shows 257.  The 19-offset target-slot pay-frame vectors separate this round but identity words dominate; the discriminator stays PENDING until n>=2 +500 captures exist (the delay signature tail-f1 vs tail-f3/f4 is the lead)."
+  },
+  "55": {
+   "round": null,
+   "status": "OBSERVED",
+   "what_full": "R66 the FOURTH RUNTIME GAME: metal_slug_x registered (adapter 0.2.0 + the deterministic Mission-1 rules policy with the corrected corridor predicate; 19 offline tests incl. the isolation suite).  play metal_slug_x: two byte-identical runs (ep1 death 1666f score 1100 at the armored truck, px ~1164; ep2 388f score 1300); legal inputs only, zero RAM writes, no training.  Mission 1 NOT cleared - the truck is the next blocker.  The frontier rebuild re-proven 6-for-6 (px 1224.9/1254.8)."
+  },
+  "56": {
+   "round": null,
+   "status": "OBSERVED",
+   "what_full": "R67 the +500 HUNT (cap 3, 3/3): 0 NEW +500 — the class stands n=1, honestly recorded; the +1000 class replicated x2 (0x42bc -> pay tail f3, 0x3f48 -> pay tail f4 — the R66 signature).  THE AMENDMENT-G LESSON: on the byte-exact frontier_b the trajectory diverged EXACTLY at tap 6 (R66: slot16 0x1e38 +500; R67: slot18 0x540c +100) — the +500 capture is a TRAJECTORY-SENSITIVE posture, not a standing property of the frontier; the tap order IS part of the experiment.  The frontiers are target-starved past the spawner-cluster edge; fresh 0x4054 soldiers exist only at restore time."
+  },
+  "57": {
+   "round": null,
+   "status": "OBSERVED",
+   "what_full": "R67 the WIDENED-SET zero-overlap test: +500 n=1 vs +1000 n=6 - 19 offsets separate the single +500 from all six but the intersection IS its own set: the CLASS discriminator PENDING until n>=2.  The +1000 delay law reproduces across rounds (0x42bc->f3, 0x3f48->f4).  Magnitude +500 x4 / +1000 x9."
+  },
+  "58": {
+   "round": null,
+   "status": "OBSERVED",
+   "what_full": "R67 the PRODUCT-PATH TRUCK CAMPAIGN (policy 1.1.0->1.4.2, adapter 0.2.0->0.3.0, 40 offline tests): the rule chain T1/T3/T5/T7 measured in-game (the truck identity = the 0x9E88 state word — the (6, h=64) identity was a FALSE-POSITIVE TRAP; the rear fight: at the section pin the wave AND the truck are BEHIND the player — three identical forward-only deaths; the cadence law: the fire cadence is part of the deterministic wave trajectory — the v1.2.0 12f cadence starved the wave (0 kills), the v1.0.0 13f rhythm reproduced the R66 record BYTE-EXACT).  ep1 score 2300 = the record then (the R68 correction REFUTED the truck-kill reading).  Mission 1 NOT cleared."
+  },
+  "59": {
+   "round": null,
+   "status": "OBSERVED",
+   "what_full": "R68 EXPERIMENT TRACK — the +500 n>=2 GOAL MET (cap 3, 3/3): boot 1 the env probe (the anchor restores alive, px 258.6 — the SIXTH rollback disclosure: the r66 frontiers LOST, never committed); boot 2 the disclosed rebuild contingency (the R47/R66 stage-1 recipe verbatim -> frontier_px 1254.8 = the R66 record EXACTLY — 7-for-7); boot 3 the hunt: r66t1.do_stage2(only='b') — THE R66 CODE PATH ITSELF: THE +500 CAPTURED AT TAP 6 (slot16, st_pre 0x1e38, pay tail f1 — the causal chain BYTE-IDENTICAL to the R66 capture).  The amendment-G lesson CONFIRMED BY REPRODUCTION.  The +500 class stands n=2.  Honest note: the CONNECT/KILL counters read 0/0 while the score PAID at taps 2 (+1000) and 6 (+500) — the pay-before-registration law seen from the missing-registration side."
+  },
+  "60": {
+   "round": null,
+   "status": "OBSERVED",
+   "what_full": "R68 PRODUCT TRACK — the failure-mode map + THE R67 CORRECTION: the R67 'THE ARMORED TRUCK KILLED (score 2300)' is REFUTED by the read-only product-stack probe (the every-frame entity table): the truck row sat at a4=160 (0x9E88, x 937.5, slot 14) from f1160 to the death at f1462 — the truck was NEVER killed; the three lobs landed ONE connect (-100) + chips (-40); the score 2300 was the wave kills + chip events; the 'truck AIRBORNE' death-shot reading likewise corrected (the airborne object is the encounter's follower).  The player died PINNED at px 1164 with the parked truck BEHIND at dx -226.5.  THE FAILURE-MODE MAP (four probe-pinned policy variants; adapter 0.3.0->0.4.0, policy 1.5.0->1.6.2): (a) v1.5.0 W8/W9 — reproduced the R67 trace BYTE-IDENTICAL (1462f/2300/91): the chain never fires because the truck never dies; (b) v1.6.0 unlimited lobs + the chase — 1318f/2800 = THE RECORD (the lobs LAND in the band at dx -133.5 from px 1071 driving a4 300->80, then FROZE); (c) v1.6.1 stand-ground chip-fire — 1218f/1400 REGRESSION: the a4 FROZEN at 300 through five chip windows — the bullets DO NOT reach a truck behind the pin (the R38 chip model needs a CLEAR LINE); (d) v1.6.2 the chase restored + the R38 gre40 cadence — 1318f/2800 tied: the CONNECT RATE (~1/10) is the named R69 blocker."
+  },
+  "61": {
+   "round": "R69",
+   "status": "VERIFIED",
+   "what_full": "R69 the +500 FINGERPRINT XREF (lead 1, OFFLINE, ZERO boots — r69_fingerprint_xref.py): the capstone decode of the EXE text (155,136 insns) + the ENEMY.BIN overlay (28,850 insns @0x8009C0E8; sha 1508b532.../cab64009... verified).  Findings: (1) the 19 zero-overlap offsets are touched by 750 EXE + 132 decompiled overlay functions; (2) the score word 0x800EE318 has EXACTLY 9 direct code xrefs, all in the EXE HUD/credit cluster 0x800472c0..0x80052820 — the cluster's score_add reads the entity record +0xCC/+0xD0/+0xD4 (+0xD0 IS a fingerprint offset); (3) the amounts 500/1000 appear in NO code immediate — both candidates FALSIFIED by their own bytes (0x800b03cc addiu $v1,$v1,0x3e8 = the state-handler ADDRESS arithmetic; 0x80088e8c addiu $a1,$zero,0x1f4 = a clamp bound) and in NO EXE table; (4) THE KILL-CREDIT u16 TABLES FOUND in the overlay data head: 0x8009C134 (n=43), 0x8009C48C (n=44), 0x8009C91C (n=23) — values 200..1100 including 500 and 1000; the +500 class = the 0x1f4 entries; (5) the overlay TAIL (0x800AB230..0x800B83B0, UNDECOMPILED by the committed 468-function pass) carries 207 fingerprint accesses (72 stores, 14/19 offsets) and the damage dispatch (enemy_800A41D8 -> func_0x800ae794/func_0x800ae7cc) runs there.  VERDICT: the payment writer NARROWED (the overlay damage tail + the credit tables; the exact store is a RUNTIME fact for the watchpoint hunt).  The SEVENTH rollback disclosed (the r66 frontiers lost again; the R68 rebuild stays byte-exact reproducible)."
+  },
+  "62": {
+   "round": "R69",
+   "status": "VERIFIED",
+   "what_full": "R69 the CONNECT-WINDOW PRODUCT VERDICT (lead 2; policy 1.6.2->1.7.0->1.7.1): v1.7.0 the [125,140] window + the gre40 cadence FALSIFIED (0/3 connects, a4 FROZEN at 300 — the outer throws at dx -139.5/-136.5/-136.5 ALL missed); v1.7.1 the [130,135] verification run: 7 throws ALL at dx -133.5 EXACT (the R68 record posture verbatim), a4 300->200->100 = TWO CONFIRMED CONNECTS (the r69b pair, f989/f1153, 164f apart) — the window IS REAL, one connect short of the kill.  The scroll drift measured (~+12px per throw animation).  Evidence: r69_connect_probe.jsonl + r69b_connect_probe.jsonl."
+  },
+  "63": {
+   "round": "R70",
+   "status": "VERIFIED",
+   "what_full": "R70 THE PHASE LAW + the boot corrections (policy 1.7.1->1.8.5, adapter 0.4.0->0.5.1; 5 product boots, the ledger disclosed).  THE LAWS: (1) the vulnerability cycle is 164f, PHASE-LOCKED TO THE FREEZE frame (the first 0x9E88 sighting, f811) — the connects land at freeze+178+164k (f989/f1153) and the scroll/knockback events sit on the SAME clock (the boot-1 push at f985 = the r69 push at f1149 minus exactly 164f); (2) THE SPATIAL LAW: every observed connect sits at dx -133.5 EXACTLY while the phase-PERFECT dx -130.5 throw (the boot-4 k=1 at fight_f 312, corridor clean) MISSED and the v1.7.0 -136.5/-139.5 missed — the connect geometry ~+-3px TIGHT (the quantized postures -130.5/-133.5/-135.4; the throw band [131.5, 135.0] admits only the proven center); (3) THE CORRIDOR LAW: 'the arc clears the ground blockers' REFUTED — the boot-1 f989 lob STOLEN mid-descent by an interloper at dx ~-119; the C2 guard shipped (the lob requires clear_line); (4) THE PACKING LAW: five chasers nearer than the parked truck DROPPED the truck row from the nearest-5 (the boot-3 f909..f958) — the adapter 0.5.1 truck-packing priority; (5) C5 the escort classes (1,2,3,5,6): the sc=6 walk-state chasers were INVISIBLE to the SOLDIER_CODES escort rules; (6) C4 the one-shot width probe FIRED (f823->f855: a4 300->290 = the CHIP payment -10 a4/+100 score — the wrong-phase partial hit measured).  THE OUTCOME: NO kill — the best boot a4 300->230 (the escort-fire stray chips -10/+100 at ~26f cadence = a SECOND damage path), death f1324 (+6 past the record), score 2100 (+400 over the record).  THE KILL MATH for R71: the chips + TWO centered connects reach a4 0 in-window — the kill does NOT need three phase-connects.  Zero-overlap re-run NOT triggered (no new +500)."
+  },
+  "64": {
+   "round": "R70",
+   "status": "OBSERVED",
+   "what_full": "R70 the driver semantics + the suite: (1) the FREEZE anchor: the truck runs st 0x9C14 (f733..f808, x 842.5 -> 937.5 at +1.25 px/f, the armor a4 ALREADY 300) then 0x9E08 (2f) then 0x9E88 — the adapter 0.5.0 maps the drive-in family to SC_TRUCK_IN = 8; (2) the FLIGHT EXACTLY 30f (2/2, re-confirmed); (3) the k=0 lead window (land freeze+14) UNREACHABLE from the drive-in walk (the posture arrives ~f815-840, 20-45f late): the lead arm stands down honestly; (4) the knockback hazard: the truck-gun hits shove the player up to -33px and the scroll cancels the recovery walk — the v1.8.5 HOLDS below the throw band.  THE SUITE: 903 passed + 10 skipped + 1 xfailed (the MSX set 111 green, the R66-R69 truck tests re-anchored on the committed rules — zero weakened); the 8 failed + 11 errors in test_r61/r62/r64 = the PRE-EXISTING flappybird ONNX environment regressions of THIS sandbox (verified on the clean tree before the R70 changes) — not the R70 footprint.  m2_gate unchanged."
+  },
+  "65": {
+   "round": "R71",
+   "status": "OBSERVED",
+   "what_full": "R71 THE CHIP-CONNECT KILL SCHEDULE (the capsule lever, the product track; policy 1.8.5->1.9.0 K1, adapter 0.5.1->0.5.2; 3 product boots, the ledger cap 3 disclosed pre-run, 3/3 spent).  K1 SHIPPED: the aimed cooldown chip-fire at the record posture — ONLY inside the corridor-cleared throw branch (the C2 bullet-line guard), no escort precedence, the grenade keeps grid priority, the 12f cadence.  BOOT 1 (v1.9.0/0.5.1): 8 chips a4 300->220 (3 under the aimed chip-fire rules — THE AIMED CHIP PATH CONFIRMED: the player's own bullets reach the parked truck); the k=0 grid window WITHHELD by the GHOST BLOCKER (slot23 st 0x6730, x 995.0, h 64, a4 0 — an unknown dead-walk state NOT in CORPSE_ST, blocking while dead); the phase-exact k=1 lob (f1123, dx -133.5) STOLEN by the INVISIBLE THIEF STACK at x 1062.3 (0xb4e4 a4 30 h 102 / 0xabdc a4 300 h 205 / 0xb4e4 a4 30 h 142 — the h>64 drop hid the LIVE rows); the push pinned the player at px 1105.8; death f1298, score 2400 = THE NEW RECORD.  BOOT 2 (adapter 0.5.2): the ghost gone — the k=0 corridor CLEAN, the throw FIRED (fight_f 148, dx -133.5) and MISSED; 13 chips a4 300->170; the k=1 correctly WITHHELD (the thief now visible); death f1714, score 1800.  BOOT 3 (the ONE-VARIABLE FALSIFICATION ARM, disclosed pre-run: TRUCK_CHIP_FIRE=False = the exact v1.8.5 idle-hold semantics on the 0.5.2 adapter): ALL THREE grid throws fired clean and THE CONNECT LANDED — a4 280->180 at f1659, the land = freeze + 506 +- 2f ON THE PHASE GRID (178 + 164x2 = 506, tol 2f) — the phase law's LOCAL validity at k=2; but the k=0/k=1 throws (freeze+178/342, ON the grid) MISSED — THE PHASE LAW IS STREAM-DEPENDENT: verified on the v1.7.1 volley stream (2/7 connects), it does NOT transfer verbatim to the v1.9.0 chip-fire stream or the 0.5.2-visibility stream (the R67 cadence law generalized).  THE ROUND OUTCOME (honest): NO truck kill — the best boot ran 1 connect + 5 chips (a4 300->160 at the death); the chips flow reliably (8-13 per boot); the connect is the bottleneck (1/3 on-grid idle-hold, 0/2 chip-fire, 2/7 r69b volley).  Evidence: truck_evidence/r71/r71_chip_probe.jsonl (boot 3) + r71_chip_probe_boot2.jsonl (boot 2; the boot-1 JSONL was overwritten by the boot-3 run — the same output path, disclosed; the boot-1 verdicts live in the A4 PNG series + the round report)."
+  },
+  "66": {
+   "round": "R71",
+   "status": "OBSERVED",
+   "what_full": "R71 THE CORRIDOR-FEED MAP (offline over the preserved product JSONLs — no boots): the walker spawn zone is POSITION-KEYED, not frame-keyed — the sanitized spawn x concentrates in the world band ~969-1180 (the corridor + the rear zone; the posture 1071) across boots 2-3; the pre-window hygiene stays position-keyed (the escort rule).  The corridor occupancy at the grid lands is STREAM-DEPENDENT: the chip-fire stream left the k=1/k=2 lands OCCUPIED (the guard correctly withheld, boot 2); the idle-hold stream kept ALL FOUR lands clean (boot 3, all throws fired).  Evidence: truck_evidence/r71/r71_corridor_feed_map.json."
+  },
+  "67": {
+   "round": "R71",
+   "status": "OBSERVED",
+   "what_full": "R71 THE WATCHPOINT PASS (the capsule lever, the experiment track, restore-only; the ledger cap 2->4 by two DISCLOSED amendments — boot 3 was a no-op env-var tool bug, honestly labeled).  Stage 1: the frontier rebuild BYTE-EXACT AGAIN (frontier_px 1254.8 = the record, the determinism dividend 8-for-8).  Stage 2: the verbatim R66 pass B tap replay with the WATCHPOINT telemetry patched at the DISCLOSED R52 seam (R50T.frame_walk): THE +500 CAPTURED AT THE WATCHPOINT — tap 6 verbatim (slot16, st_pre 0x1e38, dx +20.3, score 7702->8202) at flight TAIL f1 — the pay-frame law 3/3.  THE PAYMENT CLUSTERS (the co-changing RAM regions at the pay frames): the +1000 cluster COMPLETE (1034 B, 200 regions) INCLUDING the score-word region 0xEE318-0xEE31A (2 B); the +500 cluster (2695 B churn, 200 regions) had its 2-B score-word region cut by the top-N cap (the tool limit, disclosed — the delta itself is arithmetic: 2 bytes).  THE WRITER FOOTPRINT: both payments churn the STACK band 0x1FFD00-0x1FFF00 (the call frames), the ENTITY TABLE rows 0xCA6xx-0xCBDxx and the score/HUD neighborhood 0xEE3xx-0xEF4xx — consistent with the R69 narrowed writer set (the overlay damage tail through the credit tables).  THE PC QUESTION ANSWERED HONESTLY: a literal payment-writer PC is NOT readable on the beetle/libretro stack (no CPU state export — the tool limit); the store site STAYS NARROWED (the R69 verdict), the pass pins the payment timeline + the clusters, the follow-up = the CPU-instrumented oracle (the PCSX-Redux debugger, the R64 tools matrix).  The tap-6 replay reproduced BYTE-IDENTICAL across three boots (the same frontier state + the verbatim protocol).  Evidence: truck_evidence/r71/r71wp_stage2.jsonl (boot 2, top-24) + r71wpc_stage2.jsonl (boot 4, top-200)."
+  }
+ }
+}

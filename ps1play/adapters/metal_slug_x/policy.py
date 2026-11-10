@@ -213,6 +213,35 @@ product-path truck campaign; every rule is committed-evidence-backed):
          the moment the fire stopped); beyond 220, walk toward.
          The v1.6.0 chase walk LOST ground (the px drifted +35
          while pressing BACK) and stood in the gun line.
+
+  K1 (v1.9.0, R71). THE COOLDOWN CHIP-FIRE (the chip-connect kill
+      schedule — the R71 capsule lever): the R70 evidence measured
+      the chip payments (-10 a4 / +100 score) as a SECOND damage
+      path: the C4 width probe landed a wrong-phase chip (300 ->
+      290), the best boot ran a4 300 -> 230 on the escort strays
+      at ~26f cadence under the walker feed, and the R68 record
+      fight netted 1 connect + chips (-40).  THE KILL MATH (the
+      R70 report): chips (-10 each) + TWO centered connects (-100
+      each) reach a4 0 INSIDE the scroll-capped window — the kill
+      does NOT need three phase-connects.  v1.9.0 therefore fires
+      the aimed chip-fire DURING the grenade cooldown / the
+      phase-hold at the record posture:
+        * the chip-fire requires the corridor to the truck CLEAR
+          (the C2 predicate on the bullet line — the v1.6.1
+          failure mode, the bullets eaten by the corridor feed,
+          is exactly what the guard removes);
+        * the chip-fire requires NO escort (the T3 rule keeps
+          precedence — bullets go to clear-line escorts first);
+        * the chip-fire NEVER delays a grid throw: the grenade
+          keeps priority when the phase opens with a ready
+          grenade (the code order below); the fire cadence stays
+          the escort FIRE_COOLDOWN (the wave-trajectory cadence
+          law — the 12f rhythm is the verified section rhythm);
+        * the corridor-feed law (the R70 boot-4 evidence): when
+          the corridor is OCCUPIED the chip-fire is WITHHELD and
+          the posture HOLDS — the walkers get cleaned by the
+          escort rule first, so the corridor is clean AT each
+          grid window and no bullet is wasted into the feed.
 """
 from __future__ import annotations
 
@@ -226,7 +255,7 @@ from ps1play.runtime.interfaces import (ActionDecision, GameObservation,
                                         Policy)
 
 POLICY_NAME = "msx_mission1_rules"
-POLICY_VERSION = "1.8.5"
+POLICY_VERSION = "1.9.0"
 
 # the hold band's inner edge (the R67 loop-probe lesson: holding at
 # dx 52 — point-blank in the truck gun's line — LOST the duel; the
@@ -344,6 +373,18 @@ TRUCK_IN_DX_RATE = 1.25         # the drive-in closing rate (r69b:
                                 #   f733 x 842.5 -> f808 x 937.5)
 SC_TRUCK_IN = 8                 # the adapter v0.5.0 drive-in code
 TRUCK_WIDTH_PROBE = 1           # C4: the one-shot width-probe cap
+# K1 (v1.9.0, R71): the aimed cooldown chip-fire MASTER ARM.  The
+# R71 boot-3 one-variable falsification arm patches this module
+# attribute to False (disclosed pre-run in the probe's BOOT event):
+# the boots 1-2 evidence — the phase-exact throws MISSED 0/2 on the
+# v1.9.0 stream (the boot-1 k=1 theft stack + the boot-2 k=0
+# corpse-field flyover) while the r69b gre40 volley connected 2/7
+# from the SAME postures — so the question boot 3 answers: does the
+# K1 chip-fire input stream itself perturb the vulnerability phase
+# (the R67 cadence-law precedent: the fire cadence is part of the
+# deterministic wave trajectory)?  False restores the exact v1.8.5
+# hold semantics on the v0.5.2 adapter.
+TRUCK_CHIP_FIRE = True
 PROGRESS_PX = 1.0
 
 # state codes that can absorb a bullet or register a payment
@@ -447,7 +488,7 @@ class Mission1Policy(Policy):
                 "trained": False,
                 "kind": "built-in rules (no model, no training)",
                 "corridor_predicate": "r70_corridor_guard",
-                "truck_rules": "r70_phase_law"}
+                "truck_rules": "r71_chip_connect"}
 
     def close(self) -> None:
         self._tel = None
@@ -618,15 +659,64 @@ class Mission1Policy(Policy):
             corridor_ok = clear_line(dx_t)
             throw_win = TRUCK_THROW_MIN <= abs(dx_t) \
                 <= TRUCK_THROW_MAX
+
+            def chip_fire():
+                # K1 (v1.9.0, R71): THE COOLDOWN CHIP-FIRE — runs only
+                # inside the corridor-cleared throw branch (the branch
+                # guard IS the C2 bullet-line guard; the v1.6.1
+                # bullets-eaten failure mode is what the guard
+                # removes).  The grenade keeps priority: the
+                # phase-open throw below never waits for the fire
+                # cadence.  The cadence stays the escort FIRE_COOLDOWN
+                # (the verified 12f wave rhythm — the cadence law).
+                # The boot-3 falsification arm: TRUCK_CHIP_FIRE=False
+                # restores the exact v1.8.5 idle-hold semantics (the
+                # disclosed patch — the one-variable test).
+                if not TRUCK_CHIP_FIRE:
+                    if self._gren_cd > 0:
+                        self._last_diag = {
+                            "rule": "truck_connect_hold",
+                            "truck_dx": round(dx_t, 1)}
+                    else:
+                        self._last_diag = {
+                            "rule": "truck_phase_hold",
+                            "truck_dx": round(dx_t, 1),
+                            "fight_f": self._truck_fight_f,
+                            "phase_off": round(phase_off, 1)}
+                    return "IDLE"
+                if self._fire_cd == 0:
+                    if self._facing != side_t:
+                        mv = turn_toward(side_t)
+                        self._facing = side_t
+                        self._last_diag = {
+                            "rule": "truck_chip_turn",
+                            "truck_dx": round(dx_t, 1)}
+                        return mv
+                    self._fire_cd = FIRE_COOLDOWN
+                    self._last_diag = {
+                        "rule": "truck_chip_fire",
+                        "truck_dx": round(dx_t, 1),
+                        "fight_f": self._truck_fight_f,
+                        "phase_off": round(phase_off, 1)}
+                    return "FIRE"
+                self._last_diag = {"rule": "truck_chip_wait",
+                                   "truck_dx": round(dx_t, 1),
+                                   "fire_cd": self._fire_cd,
+                                   "gren_cd": self._gren_cd}
+                return "IDLE"
+
             if throw_win and soldier is None and corridor_ok \
                     and gren > 0:
                 if self._fire_cd > 0:
                     self._fire_cd -= 1
                 if self._gren_cd > 0:
                     self._gren_cd -= 1
-                    self._last_diag = {"rule": "truck_connect_hold",
-                                       "truck_dx": round(dx_t, 1)}
-                    return "IDLE"
+                    # K1: the cooldown chip-fire (the corridor is
+                    # clear here by the branch guard; the aimed
+                    # bullets are the SECOND damage path — the R70
+                    # chip evidence + the kill math: the chips + TWO
+                    # centered connects reach a4 0 in-window).
+                    return chip_fire()
                 if not phase_open:
                     # C4 (v1.8.1, R70b): THE WIDTH PROBE — the
                     # post-freeze arm: the first clean in-window
@@ -656,12 +746,11 @@ class Mission1Policy(Policy):
                             "grenades_used":
                                 self._truck_grenades_used}
                         return "GRENADE"
-                    self._last_diag = {"rule": "truck_phase_hold",
-                                       "truck_dx": round(dx_t, 1),
-                                       "fight_f": self._truck_fight_f,
-                                       "phase_off":
-                                           round(phase_off, 1)}
-                    return "IDLE"
+                    # K1: the phase-hold chip-fire (the probe spent;
+                    # the corridor is clear; the aimed bullets are the
+                    # second damage path while the grid window is
+                    # closed).
+                    return chip_fire()
                 if self._facing != side_t:
                     mv = turn_toward(side_t)
                     self._facing = side_t

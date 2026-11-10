@@ -1,0 +1,519 @@
+{
+ "schema": "ps1play.r71-corridor-feed/1",
+ "generated": "2026-11-10T09:00:24Z",
+ "note": "offline over the preserved r71 product JSONLs; boot 1's JSONL was overwritten by the boot-3 run (the same output path \u2014 the disclosure: the boot-1 feed table is NOT in this map; the boot-1 verdicts live in the issue report and the PNG/A4 evidence)",
+ "boots": {
+  "2": {
+   "boot": 2,
+   "freeze": 1151,
+   "lands": [
+    [
+     0,
+     1329
+    ],
+    [
+     1,
+     1493
+    ],
+    [
+     2,
+     1657
+    ]
+   ],
+   "n_spawns": 14,
+   "spawns": [
+    {
+     "ev": "SPAWN",
+     "f": 650,
+     "slot": 7,
+     "x": 264.0,
+     "st": "0xb570",
+     "px": 1164.0,
+     "boot": 2
+    },
+    {
+     "ev": "SPAWN",
+     "f": 650,
+     "slot": 18,
+     "x": 24.0,
+     "st": "0x727c",
+     "px": 1164.0,
+     "boot": 2
+    },
+    {
+     "ev": "SPAWN",
+     "f": 650,
+     "slot": 21,
+     "x": 776.0,
+     "st": "0x74c8",
+     "px": 1164.0,
+     "boot": 2
+    },
+    {
+     "ev": "SPAWN",
+     "f": 650,
+     "slot": 23,
+     "x": 1016.0,
+     "st": "0x1e38",
+     "px": 1164.0,
+     "boot": 2
+    },
+    {
+     "ev": "SPAWN",
+     "f": 659,
+     "slot": 26,
+     "x": 1020.8,
+     "st": "0x6d04",
+     "px": 1164.0,
+     "boot": 2
+    },
+    {
+     "ev": "SPAWN",
+     "f": 677,
+     "slot": 27,
+     "x": 1180.0,
+     "st": "0xaec8",
+     "px": 1164.0,
+     "boot": 2
+    },
+    {
+     "ev": "SPAWN",
+     "f": 1165,
+     "slot": 11,
+     "x": 1055.0,
+     "st": "0xaec8",
+     "px": 1071.0,
+     "boot": 2
+    },
+    {
+     "ev": "SPAWN",
+     "f": 1173,
+     "slot": 24,
+     "x": 993.0,
+     "st": "0xb378",
+     "px": 1071.0,
+     "boot": 2
+    },
+    {
+     "ev": "SPAWN",
+     "f": 1185,
+     "slot": 8,
+     "x": 993.0,
+     "st": "0xb378",
+     "px": 1071.0,
+     "boot": 2
+    },
+    {
+     "ev": "SPAWN",
+     "f": 1257,
+     "slot": 13,
+     "x": 1031.0,
+     "st": "0xb378",
+     "px": 1071.0,
+     "boot": 2
+    },
+    {
+     "ev": "SPAWN",
+     "f": 1303,
+     "slot": 10,
+     "x": 1055.0,
+     "st": "0xaec8",
+     "px": 1071.0,
+     "boot": 2
+    },
+    {
+     "ev": "SPAWN",
+     "f": 1309,
+     "slot": 4,
+     "x": 1000.0,
+     "st": "0xb378",
+     "px": 1071.0,
+     "boot": 2
+    },
+    {
+     "ev": "SPAWN",
+     "f": 1359,
+     "slot": 25,
+     "x": 969.1,
+     "st": "0xb708",
+     "px": 1071.0,
+     "boot": 2
+    },
+    {
+     "ev": "SPAWN",
+     "f": 1501,
+     "slot": 29,
+     "x": 1062.3,
+     "st": "0xb708",
+     "px": 1071.0,
+     "boot": 2
+    }
+   ],
+   "corridor_at_lands": {
+    "k0_land1329": {
+     "occupied": false,
+     "rows": []
+    },
+    "k1_land1493": {
+     "occupied": true,
+     "rows": [
+      {
+       "f": 1491,
+       "slot": 13,
+       "st": "0xabdc",
+       "x": 1062.3,
+       "a4": 300
+      },
+      {
+       "f": 1491,
+       "slot": 27,
+       "st": "0xb4e4",
+       "x": 1062.3,
+       "a4": 30
+      },
+      {
+       "f": 1492,
+       "slot": 13,
+       "st": "0xabdc",
+       "x": 1062.3,
+       "a4": 300
+      },
+      {
+       "f": 1492,
+       "slot": 27,
+       "st": "0xb4e4",
+       "x": 1062.3,
+       "a4": 30
+      },
+      {
+       "f": 1493,
+       "slot": 13,
+       "st": "0xabdc",
+       "x": 1062.3,
+       "a4": 300
+      },
+      {
+       "f": 1493,
+       "slot": 27,
+       "st": "0xb4e4",
+       "x": 1062.3,
+       "a4": 30
+      }
+     ]
+    },
+    "k2_land1657": {
+     "occupied": true,
+     "rows": [
+      {
+       "f": 1655,
+       "slot": 4,
+       "st": "0xb4e4",
+       "x": 1044.6,
+       "a4": 30
+      },
+      {
+       "f": 1655,
+       "slot": 6,
+       "st": "0xb4e4",
+       "x": 1040.7,
+       "a4": 30
+      },
+      {
+       "f": 1655,
+       "slot": 13,
+       "st": "0xabdc",
+       "x": 1040.7,
+       "a4": 300
+      },
+      {
+       "f": 1656,
+       "slot": 4,
+       "st": "0xb4e4",
+       "x": 1044.6,
+       "a4": 30
+      },
+      {
+       "f": 1656,
+       "slot": 6,
+       "st": "0xb4e4",
+       "x": 1040.7,
+       "a4": 30
+      },
+      {
+       "f": 1656,
+       "slot": 13,
+       "st": "0xabdc",
+       "x": 1040.7,
+       "a4": 300
+      }
+     ]
+    }
+   },
+   "a4_ledger": [
+    [
+     1173,
+     300,
+     290,
+     "CHIP"
+    ],
+    [
+     1185,
+     290,
+     280,
+     "CHIP"
+    ],
+    [
+     1199,
+     280,
+     270,
+     "CHIP"
+    ],
+    [
+     1273,
+     270,
+     260,
+     "CHIP"
+    ],
+    [
+     1299,
+     260,
+     250,
+     "CHIP"
+    ],
+    [
+     1323,
+     250,
+     240,
+     "CHIP"
+    ],
+    [
+     1335,
+     240,
+     230,
+     "CHIP"
+    ],
+    [
+     1347,
+     230,
+     220,
+     "CHIP"
+    ],
+    [
+     1373,
+     220,
+     210,
+     "CHIP"
+    ],
+    [
+     1423,
+     210,
+     200,
+     "CHIP"
+    ],
+    [
+     1477,
+     200,
+     190,
+     "CHIP"
+    ],
+    [
+     1503,
+     190,
+     180,
+     "CHIP"
+    ],
+    [
+     1529,
+     180,
+     170,
+     "CHIP"
+    ]
+   ]
+  },
+  "3": {
+   "boot": 3,
+   "freeze": 1151,
+   "lands": [
+    [
+     0,
+     1329
+    ],
+    [
+     1,
+     1493
+    ],
+    [
+     2,
+     1657
+    ],
+    [
+     3,
+     1821
+    ]
+   ],
+   "n_spawns": 11,
+   "spawns": [
+    {
+     "ev": "SPAWN",
+     "f": 650,
+     "slot": 7,
+     "x": 264.0,
+     "st": "0xb570",
+     "px": 1164.0,
+     "boot": 3
+    },
+    {
+     "ev": "SPAWN",
+     "f": 650,
+     "slot": 18,
+     "x": 24.0,
+     "st": "0x727c",
+     "px": 1164.0,
+     "boot": 3
+    },
+    {
+     "ev": "SPAWN",
+     "f": 650,
+     "slot": 21,
+     "x": 776.0,
+     "st": "0x74c8",
+     "px": 1164.0,
+     "boot": 3
+    },
+    {
+     "ev": "SPAWN",
+     "f": 650,
+     "slot": 23,
+     "x": 1016.0,
+     "st": "0x1e38",
+     "px": 1164.0,
+     "boot": 3
+    },
+    {
+     "ev": "SPAWN",
+     "f": 659,
+     "slot": 26,
+     "x": 1020.8,
+     "st": "0x6d04",
+     "px": 1164.0,
+     "boot": 3
+    },
+    {
+     "ev": "SPAWN",
+     "f": 677,
+     "slot": 27,
+     "x": 1180.0,
+     "st": "0xaec8",
+     "px": 1164.0,
+     "boot": 3
+    },
+    {
+     "ev": "SPAWN",
+     "f": 1231,
+     "slot": 11,
+     "x": 1055.0,
+     "st": "0xaec8",
+     "px": 1071.0,
+     "boot": 3
+    },
+    {
+     "ev": "SPAWN",
+     "f": 1235,
+     "slot": 24,
+     "x": 1023.0,
+     "st": "0xb378",
+     "px": 1071.0,
+     "boot": 3
+    },
+    {
+     "ev": "SPAWN",
+     "f": 1237,
+     "slot": 8,
+     "x": 1005.7,
+     "st": "0x540c",
+     "px": 1071.0,
+     "boot": 3
+    },
+    {
+     "ev": "SPAWN",
+     "f": 1237,
+     "slot": 13,
+     "x": 1015.0,
+     "st": "0x540c",
+     "px": 1071.0,
+     "boot": 3
+    },
+    {
+     "ev": "SPAWN",
+     "f": 1647,
+     "slot": 25,
+     "x": 986.0,
+     "st": "0xb378",
+     "px": 1071.0,
+     "boot": 3
+    }
+   ],
+   "corridor_at_lands": {
+    "k0_land1329": {
+     "occupied": false,
+     "rows": []
+    },
+    "k1_land1493": {
+     "occupied": false,
+     "rows": []
+    },
+    "k2_land1657": {
+     "occupied": false,
+     "rows": []
+    },
+    "k3_land1821": {
+     "occupied": false,
+     "rows": []
+    }
+   },
+   "a4_ledger": [
+    [
+     1581,
+     300,
+     290,
+     "CHIP"
+    ],
+    [
+     1647,
+     290,
+     280,
+     "CHIP"
+    ],
+    [
+     1659,
+     280,
+     180,
+     "CONNECT"
+    ],
+    [
+     1689,
+     180,
+     170,
+     "CHIP"
+    ],
+    [
+     1717,
+     170,
+     160,
+     "CHIP"
+    ]
+   ]
+  }
+ },
+ "spawn_x_spread": [
+  24.0,
+  1180.0
+ ],
+ "verdict": {
+  "spawn_zone": [
+   24.0,
+   1180.0
+  ],
+  "time_vs_position": "POSITION-CONSISTENT: the live spawns concentrate in the world-x band ~960-1160 across boots 2-3 (the spawn x spread below), i.e. the feed fills the corridor+rear zone by POSITION, not on a fixed frame grid \u2014 the pre-window hygiene must be position-keyed (the escort rule), not frame-keyed"
+ }
+}

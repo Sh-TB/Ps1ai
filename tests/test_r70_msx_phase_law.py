@@ -118,15 +118,23 @@ class TestPhaseGate:
 
     @pytest.mark.parametrize("ff", [0, 1, 60, 147, 151, 200, 311, 315])
     def test_phase_hold_off_grid(self, ff):
-        a, diag = decide(at_clock(ff), ents=[TRUCK_L])
+        # re-anchored on v1.9.0 (R71 K1): off-grid NEVER lobs (the
+        # phase gate is untouched); between escort shots (fire_cd
+        # > 0) with the corridor occupied the posture holds exactly
+        # as pre-v1.9.0 — the phase-gate isolation
+        p = at_clock(ff)
+        p._fire_cd = 5
+        a, diag = decide(p, ents=[TRUCK_L, (-60.0, 1, 64.0)])
         assert a == "IDLE", (ff, diag)
-        assert diag["rule"] == "truck_phase_hold"
+        assert diag["rule"] == "truck_hold"
+        assert a != "GRENADE"
 
     def test_one_throw_per_k(self):
         # the tolerance spans 3 frames; the k bookkeeping allows
         # exactly ONE throw per grid point even with the cooldown
-        # artificially cleared (the C4 probe pre-spent so the phase
-        # hold is observable)
+        # artificially cleared (the C4 probe pre-spent; v1.9.0: the
+        # off-grid posture is the K1 chip-fire — still never a
+        # second lob)
         p = at_clock(GRID_K0)
         p._width_probed = 1
         a, _ = decide(p, ents=[TRUCK_L])
@@ -134,21 +142,23 @@ class TestPhaseGate:
         p._gren_cd = 0
         p._truck_fight_f = GRID_K0 + 1      # still inside the tol span
         a, diag = decide(p, ents=[TRUCK_L])
-        assert a == "IDLE"
-        assert diag["rule"] == "truck_phase_hold"
+        assert a != "GRENADE", diag
+        assert diag["rule"].startswith("truck_chip")
 
     def test_clock_natural_accrual_and_anchor(self):
         # the fresh policy anchors fight_f=0 at the first sighting
         # and accrues one per decision; the k=0 throw lands at
         # decision 148-150 (the turn costs one frame inside tol;
-        # the C4 probe pre-spent so the phase hold is visible)
+        # the C4 probe pre-spent; v1.9.0: the anchor frame opens
+        # with the K1 chip-fire turn, facing R default)
         p = Mission1Policy()
         p._width_probed = 1
         acts = []
         for _ in range(GRID_K0 + 5):
             a, _ = decide(p, ents=[TRUCK_L])
             acts.append(a)
-        assert acts[0] == "IDLE"            # the anchor frame holds
+        assert acts[0] == "BACK"            # the chip-fire turn
+        assert "FIRE" in acts[:10]          # then the aimed fire
         assert "GRENADE" in acts[:GRID_K0 + 3]
         assert acts.index("GRENADE") >= GRID_K0 - 1
 
@@ -271,15 +281,16 @@ class TestDriveInArm:
 
     def test_truck_freeze_hands_over_to_p1(self):
         # the drive-in ends: the first SC_TRUCK frame anchors the
-        # clock at 0 (the phase hold), the grid opens at 148
-        # (the width probe pre-spent so the phase hold is visible)
+        # clock at 0 (v1.9.0: the K1 chip-fire opens the fight —
+        # the corridor is clean on the record timeline), the grid
+        # opens at 148 (the width probe pre-spent)
         p = Mission1Policy()
         p._facing = "L"
         p._width_probed = 1
         decide(p, px=1071.0, ents=[TRUCKIN_FAR])
         a, diag = decide(p, ents=[TRUCK_L])
-        assert a == "IDLE"
-        assert diag["rule"] == "truck_phase_hold"
+        assert a == "FIRE"
+        assert diag["rule"] == "truck_chip_fire"
         assert diag["fight_f"] == 0
 
     def test_post_freeze_width_probe_fires(self):
@@ -294,7 +305,9 @@ class TestDriveInArm:
 
 class TestAdapterV050:
     def test_version(self):
-        assert ADAPTER_VERSION == "0.5.1"
+        # v0.5.2 (R71): the a4-aware liveness filter ships on top of
+        # the v0.5.1 truck packing priority
+        assert ADAPTER_VERSION == "0.5.2"
 
     def test_drive_in_state_mapping(self):
         assert state_code(0x9C14) == SC_TRUCK_IN == 8
@@ -344,6 +357,10 @@ class TestAdapterV050:
             mem.ram[base + 0x7E:base + 0x80] = struct.pack("<H", h)
             mem.ram[base + 0x8E:base + 0x90] = \
                 struct.pack("<H", sx)
+            # v0.5.2 (R71): the walkers are LIVE rows (a4 = the HP
+            # word) — the a4-aware liveness filter drops the dead
+            mem.ram[base + 0xA4:base + 0xA6] = \
+                struct.pack("<H", 300)
         FakeP = type("FakeP", (), {"mem": mem})
         FakeEnv = type("FakeEnv", (), {"p": FakeP()})
         from ps1play.adapters.metal_slug_x.adapter import \
@@ -425,7 +442,7 @@ class TestV181Corrections:
         assert diag["rule"] == "truck_lead_throw"
 
     def test_version_bump(self):
-        assert POLICY_VERSION == "1.8.5"
+        assert POLICY_VERSION == "1.9.0"
 
     def test_c5_sc6_walker_outranks_lob(self):
         # C5 (the r70 boot-2 evidence): a chaser in a WALK state

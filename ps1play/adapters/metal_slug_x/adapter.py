@@ -74,6 +74,34 @@ is READ-ONLY perception: it changes no behavior by itself; the
 policy (v1.8.0) consumes it for the early-posture walk + the
 lead-throw schedule.  No soldier state collides with 0x9C14/0x9E08
 (the soldier walk/throw family is 0x1594/0x1be0/0x1e38/0x340c/...).
+
+v0.5.2 (R71): THE A4-AWARE LIVENESS FILTER (the r71 boot-1
+perception defect, both directions):
+
+  * THE GHOST BLOCKER: the k=0 grid window (f959-961) was withheld
+    by a row the R66 predicate itself excludes — slot23 st 0x6730,
+    x 995.0, h 64, a4 0, FROZEN through the window: an unknown
+    dead-walk state NOT in CORPSE_ST.  a4 == 0 rows can neither
+    absorb a bullet nor register a payment (the committed R66
+    pass-B law) — unknown a4 == 0 rows leave the observation (the
+    KNOWN states keep the committed semantics whatever their a4).
+  * THE INVISIBLE THIEF: the phase-exact k=1 lob (f1123, dx
+    -133.5, the record posture verbatim) did NOT connect — the
+    probe table shows the LIVE stack at x 1062.3 the observation
+    never saw: 0xb4e4 (a4 30, h 102), 0xabdc (a4 300, h 205),
+    0xb4e4 (a4 30, h 142) — the h > GROUND_HEIGHT drop ("airborne:
+    never blocks", the v0.4.0 semantics) hid the chaser-throw
+    band.  The r70 f989 mid-descent theft is the same shape.  The
+    refinement: the h > GROUND_HEIGHT rows with LIVE a4 (> 0) are
+    PACKED (they absorb/steal — the corridor feed), while the
+    a4 <= 0 airborne rows stay dropped (projectiles).
+  * THE PROJECTILE GUARD: the R66 GATE_DIAG dump's in-flight
+    projectile_air states (0xbdf8/0x2950/0x9558/0xac64) stay
+    EXCLUDED from the kept band regardless of a4 — the committed
+    gate-starvation fix must not regress (these rows cannot
+    interact with player bullets, n=13+13 skips).  0x1be0 is
+    resolved to the R70 walker semantics (the evidence conflict
+    disclosed in the constant block).
 """
 from __future__ import annotations
 
@@ -86,7 +114,7 @@ from ps1play.runtime.errors import AdapterError, EmulatorError
 from ps1play.runtime.interfaces import (ActionDecision, Frame,
                                         GameAdapter, GameObservation)
 
-ADAPTER_VERSION = "0.5.1"
+ADAPTER_VERSION = "0.5.2"
 
 # ---- the verified anchor map (THIS game only) -------------------------
 PLAYER_X = 0x0CA2E0
@@ -161,6 +189,24 @@ ST_TRUCK_IN = (0x9C14, 0x9E08)   # v0.5.0 (R70): the DRIVE-IN states
                                  #   x 842.5 -> 937.5 at +1.25 px/f,
                                  #   a4 300 already set; 0x9E08 = the
                                  #   2-frame pre-freeze state f809/f810)
+
+# v0.5.2 (R71): the R66 GATE_DIAG dump's in-flight projectile_air
+# states (n=13+13 skips: they cannot absorb a player bullet nor
+# register a payment) — excluded from the kept h>GROUND_HEIGHT band
+# regardless of a4 (the committed gate-starvation fix).
+# 0x1BE0 is NOT in this set: the committed R70 packing evidence
+# treats it as a SOLDIER walk/throw state (the policy docstring
+# family 0x1594/0x1be0/0x1e38/0x340c) while the R66 dump listed it
+# among the projectile rows — the evidence conflict is resolved
+# toward the later R70 walker semantics, and the a4 == 0 rule
+# handles the dead 0x1be0 rows either way (disclosed).
+ST_PROJECTILE_AIR = (0xBDF8, 0x2950, 0x9558, 0xAC64)
+
+# the KNOWN live states keep the committed semantics whatever their
+# a4 word (the R48-R52 + R66-R70 evidence set)
+_KNOWN_LIVE_ST = frozenset((ST_SOFT, ST_WOUND, ST_TRANSPARENT,
+                            ST_AE7C, ST_TRUCK)
+                           + ST_TRUCK_IN + ST_RECOVERY)
 
 
 def state_code(st: int) -> int:
@@ -291,13 +337,28 @@ class MetalSlugXAdapter(GameAdapter):
             x = xw / 65536.0
             if st in CORPSE_ST or not 0.0 < x < 4096.0:
                 continue
+            a4 = self._u16(base + 0xA4)
+            h = self._u16(base + 0x7E)
+            # v0.5.2 (R71): THE A4-AWARE LIVENESS FILTER
+            #   * unknown a4 == 0 rows never absorb/register (the
+            #     R66 predicate) — the r71 boot-1 ghost 0x6730
+            #     blocked the k=0 window while dead; the KNOWN
+            #     states keep the committed semantics.
+            #   * the h > GROUND_HEIGHT drop is refined: the LIVE
+            #     (a4 > 0) rows in the chaser-throw band STEAL LOBS
+            #     (the r71 boot-1 k=1 theft: the invisible stack at
+            #     x 1062.3); the a4 <= 0 airborne rows stay dropped
+            #     (projectiles); the R66 projectile_air states stay
+            #     excluded regardless of a4 (the committed fix).
+            if st not in _KNOWN_LIVE_ST and a4 == 0:
+                continue
+            if h > GROUND_HEIGHT and (a4 <= 0
+                                      or st in ST_PROJECTILE_AIR):
+                continue
             if abs(x - px) > 400.0:      # the scan window
                 continue
             sx = self._u16(base + 0x8E)
             if not 0 < sx <= SX_MAX:     # live-screen-x band
-                continue
-            h = self._u16(base + 0x7E)
-            if h > GROUND_HEIGHT:        # airborne: never blocks
                 continue
             row = {"slot": s, "st": st, "x": x,
                    "dx": x - px, "h": h}
