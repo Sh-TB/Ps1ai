@@ -173,7 +173,7 @@ class TestPolicyMechanics:
         ident = Mission1Policy().identity()
         assert ident["deterministic"] is True
         assert ident["trained"] is False
-        assert ident["corridor_predicate"] == "r66_corrected"
+        assert ident["corridor_predicate"] == "r70_corridor_guard"
         assert len(ident["policy_sha256"]) == 64
 
 
@@ -342,11 +342,23 @@ class TestTruckRulesR67:
                                frame_id="t", timestamp=0.0,
                                valid=True, diagnostics={})
 
-    def _run(self, ents, gren=10, n=300):
+    def _run(self, ents, gren=10, n=300, fight_f=None,
+             probe_spent=True):
         """Returns (actions, rules).  px advances +2/decision (the
-        stall sensor resets; the ladder stays out of the way)."""
+        stall sensor resets; the ladder stays out of the way).
+        fight_f: OPTIONAL pre-anchor of the R70 fight clock (the
+        next decision lands at that fight_f) — the v1.8.0 phase
+        gate only lobs ON the grid (fight_f 148 + 164k), so tests
+        asserting the lob cadence anchor the clock or extend n.
+        probe_spent: the C4 one-shot width probe is pre-spent by
+        default so the grid cadence is observable in isolation."""
         pol = Mission1Policy()
         pol.reset()
+        if fight_f is not None:
+            pol._truck_present = True
+            pol._truck_fight_f = fight_f - 1
+        if probe_spent:
+            pol._width_probed = 1
         acts, rules = [], []
         for k in range(n):
             o = self._obs(ents, gren=gren, px=1000.0 + 2 * k)
@@ -356,13 +368,13 @@ class TestTruckRulesR67:
         return acts, rules
 
     def test_truck_in_band_grenades(self):
-        # truck in the CONNECT WINDOW (v1.7.0 C1: the lob fires ONLY
-        # while |dx| in [125, 140] — the measured landing band; dx
+        # truck in the CONNECT WINDOW (the lob fires ONLY while
+        # |dx| in [130, 135] — the measured landing band; dx
         # 90 now RETREATS) -> lobs CONTINUE while the live grenade
-        # counter is positive (v1.6.0: the budget is unlimited;
-        # the gre40 cadence — 8 lobs in 300 decisions), cooldown-
-        # spaced
-        acts, rules = self._run([(133.5, 7, 64.0)])
+        # counter is positive (v1.6.0: the budget is unlimited),
+        # now PHASE-SPACED (v1.8.0 P1: one lob per 164f grid point
+        # — 8 lobs need 148 + 164*7 + tol decisions)
+        acts, rules = self._run([(133.5, 7, 64.0)], n=1320)
         assert acts.count("GRENADE") == 8
         assert rules.count("truck_connect_grenade") == 8
 
@@ -383,9 +395,9 @@ class TestTruckRulesR67:
         # soldier BEHIND the truck (150 vs 133.5): corridor-blocked
         # (the R49 bullet-steal model) — T3 never fires, the lob is
         # the correct weapon and the lobs CONTINUE (in the connect
-        # window — the C1 geometry; v1.7.0).
+        # window, ON the v1.8.0 phase grid).
         acts, rules = self._run([(133.5, 7, 64.0),
-                                 (150.0, 1, 44.0)], n=320)
+                                 (150.0, 1, 44.0)], n=1320)
         assert rules.count("truck_escort_first") == 0
         assert rules.count("truck_connect_grenade") == 8
         assert acts.count("GRENADE") == 8
@@ -421,22 +433,23 @@ class TestTruckRulesR67:
         # the truck grenades come out of the TRUCK counter; the
         # stall-ladder budget stays untouched during the truck
         # fight.  (v1.6.0: the counter is diagnostic-only — the
-        # live grenade counter is the real budget.  v1.7.0: the
-        # fight runs at the connect-window dx.)
+        # live grenade counter is the real budget.  v1.8.0: the
+        # fight runs at the connect-window dx ON the phase grid.)
         pol = Mission1Policy()
         pol.reset()
-        for k in range(300):
+        pol._width_probed = 1        # the C4 probe pre-spent
+        for k in range(1320):
             o = self._obs([(133.5, 7, 64.0)],
                           px=1000.0 + 2 * k)
             pol.predict(o)
         assert pol._truck_grenades_used == 8
         assert pol._grenades_used == 0
 
-    def test_identity_v170(self):
+    def test_identity_v181(self):
         pol = Mission1Policy()
         ident = pol.identity()
-        assert ident["policy_version"] == "1.7.1"
-        assert ident["truck_rules"] == "r69_connect_window"
+        assert ident["policy_version"] == "1.8.5"
+        assert ident["truck_rules"] == "r70_phase_law"
 
     def test_hold_backs_off_point_blank(self):
         # THE v1.4.2 PROBE LESSON (pinned) + v1.7.0 C1: below the
@@ -637,9 +650,17 @@ class TestRearFightR67V140:
                                frame_id="t", timestamp=0.0,
                                valid=True, diagnostics={})
 
-    def _run(self, ents, gren=10, n=40):
+    def _run(self, ents, gren=10, n=40, fight_f=None,
+             probe_spent=True):
         pol = Mission1Policy()
         pol.reset()
+        if fight_f is not None:
+            # the R70 pre-anchor: the next decision lands at that
+            # fight_f (the v1.8.0 phase gate lobs only on the grid)
+            pol._truck_present = True
+            pol._truck_fight_f = fight_f - 1
+        if probe_spent:
+            pol._width_probed = 1
         acts, rules = [], []
         for k in range(n):
             o = self._obs(ents, gren=gren)
@@ -669,10 +690,12 @@ class TestRearFightR67V140:
     def test_rear_truck_in_band_turn_and_lob(self):
         # the parked truck BEHIND at dx -133.5 (the R68 record
         # posture, IN the connect window): turn (truck_turn) then
-        # the lobs CONTINUE (v1.6.0: the unlimited budget — 8 in
-        # 320 decisions on the gre40 cadence); the cooldown hold
-        # fills between lobs (its own cooldown ticks).
-        acts, rules = self._run([(-133.5, 7, 64.0)], n=320)
+        # the lobs CONTINUE (v1.6.0: the unlimited budget — 8 on
+        # the v1.8.0 phase grid, pre-anchored at the k=0 point);
+        # the cooldown hold fills between lobs (its own cooldown
+        # ticks).
+        acts, rules = self._run([(-133.5, 7, 64.0)], n=1300,
+                                fight_f=148)
         assert rules[0] == "truck_turn"
         assert acts[0] == "BACK"
         assert rules.count("truck_connect_grenade") == 8
@@ -779,8 +802,10 @@ class TestR68WreckAware:
         assert ad2.dead_truck_x(px) is None
 
     def _fight_to_lob(self, pol, truck_dx=133.5, n=240):
-        """Phase 1: the truck in the CONNECT WINDOW (v1.7.0 C1:
-        [125, 140]) until lobs have landed."""
+        """Phase 1: the truck in the CONNECT WINDOW ([125, 140])
+        until lobs have landed.  (The C4 width probe is pre-spent —
+        the cadence tests observe the grid throws only.)"""
+        pol._width_probed = 1
         for k in range(n):
             pol.predict(self._obs([(truck_dx, 7, 64.0)],
                                   px=1000.0 + 2 * k))
@@ -845,14 +870,16 @@ class TestR68WreckAware:
         # THE FALSE-POSITIVE GUARD: the truck exits the scan window
         # ALIVE (no dead-family row in the diag) -> the counter
         # resets but NO hazard arms and the generic rules resume.
+        # (v1.8.0: the lob lands at the k=0 grid point ~148 — the
+        # visible phase runs 160 frames.)
         pol = Mission1Policy()
         pol.reset()
-        self._fight_to_lob(pol, n=30)          # one lob thrown
+        self._fight_to_lob(pol, n=160)         # one lob thrown
         used = pol._truck_grenades_used
-        for k in range(30, 60):                # gone 30 frames
+        for k in range(160, 190):              # gone 30 frames
             d = pol.predict(self._obs([(500.0, 1, 44.0)],
                                       px=1000.0 + 2 * k))
-            if k == 41:                        # the 12th gone frame
+            if k == 171:                       # the 12th gone frame
                 # the confirm fired: the counter reset, no hazard
                 # (the drove-off path falls through to the generic
                 # rules — its diag is transient by design)
@@ -875,7 +902,7 @@ class TestR68WreckAware:
             pol.predict(self._obs([], px=1000.0 + 2 * k, diag=diag))
         assert pol._hazard == 0
         acts = []
-        for k in range(420, 660):              # the second truck
+        for k in range(420, 910):              # the second truck
             d = pol.predict(self._obs([(133.5, 7, 64.0)],
                                       px=1000.0 + 2 * k))
             acts.append(d.action)
@@ -884,20 +911,21 @@ class TestR68WreckAware:
     def test_no_budget_reset_on_flicker(self):
         # a 1-frame scan flicker with the budget UNspent must NOT
         # reset anything (the confirmation window recovers).
+        # (v1.8.0: the lob lands at the k=0 grid point ~148.)
         pol = Mission1Policy()
         pol.reset()
-        for k in range(60):                    # the truck visible
+        for k in range(160):                   # the truck visible
             pol.predict(self._obs([(133.5, 7, 64.0)],
                                   px=1000.0 + 2 * k))
         assert pol._truck_grenades_used >= 1
         used = pol._truck_grenades_used
-        pol.predict(self._obs([], px=1000.0 + 2 * 60))    # flicker
+        pol.predict(self._obs([], px=1000.0 + 2 * 160))   # flicker
         assert pol._truck_present is True      # still counting
         assert pol._hazard == 0                # no hazard armed
         assert pol._truck_grenades_used == used  # no reset
         # the truck returns: the window resets, the fight continues
         pol.predict(self._obs([(133.5, 7, 64.0)],
-                              px=1000.0 + 2 * 61))
+                              px=1000.0 + 2 * 161))
         assert pol._truck_gone_f == 0
 
     def test_hazard_is_bounded(self):
@@ -919,7 +947,7 @@ class TestR68WreckAware:
         assert pol._hazard == 0
         assert d.diagnostics["rule"] != "truck_kill_retreat"
 
-    def test_adapter_version_v040(self):
+    def test_adapter_version_v050(self):
         from ps1play.adapters.metal_slug_x.adapter import \
             ADAPTER_VERSION
-        assert ADAPTER_VERSION == "0.4.0"
+        assert ADAPTER_VERSION == "0.5.1"

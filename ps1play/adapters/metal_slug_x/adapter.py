@@ -47,7 +47,14 @@ policy.py decodes it and the tests cross-check):
                      R67 probe correction: ground soldiers in their
                      walk/throw animation states also present
                      (sc=6, h=64), so the truck MUST be keyed on
-                     its state word, not on (6, 64))
+                     its state word, not on (6, 64),
+                     8 the truck DRIVE-IN 0x9C14/0x9E08 — v0.5.0
+                     (R70): the scripted pre-park states measured
+                     in the r69b connect probe (slot 14, f733..f810:
+                     x 842.5 -> 937.5 at +1.25 px/f, a4 already 300,
+                     h 64) — distinct from every soldier walk/throw
+                     state; lets the policy see the approach BEFORE
+                     the 0x9E88 freeze (the R70 lead-throw arm))
                  h   height word
 
 Episode semantics: one episode = one life.  Death (the alive word
@@ -58,6 +65,15 @@ gate.  Save states are NOT used by the adapter at all.
 v0.4.0 (R68): the truck dead family {0xA304, 0xA44C, 0xA45C} joins
 CORPSE_ST (the capsule-verified death/wreck states never absorb a
 bullet or pay; see the constant block for the evidence chain).
+
+v0.5.0 (R70): the truck DRIVE-IN states 0x9C14/0x9E08 map to a new
+SC_TRUCK_IN = 8 (the r69b evidence: slot 14 ran 0x9C14 from f733 to
+f808 — x 842.5 -> 937.5 at +1.25 px/f with the armor a4 already 300 —
+then 0x9E08 f809-f810, then the freeze 0x9E88 at f811).  The mapping
+is READ-ONLY perception: it changes no behavior by itself; the
+policy (v1.8.0) consumes it for the early-posture walk + the
+lead-throw schedule.  No soldier state collides with 0x9C14/0x9E08
+(the soldier walk/throw family is 0x1594/0x1be0/0x1e38/0x340c/...).
 """
 from __future__ import annotations
 
@@ -70,7 +86,7 @@ from ps1play.runtime.errors import AdapterError, EmulatorError
 from ps1play.runtime.interfaces import (ActionDecision, Frame,
                                         GameAdapter, GameObservation)
 
-ADAPTER_VERSION = "0.4.0"
+ADAPTER_VERSION = "0.5.1"
 
 # ---- the verified anchor map (THIS game only) -------------------------
 PLAYER_X = 0x0CA2E0
@@ -116,7 +132,7 @@ SX_MAX = 600                     # sane screen-x band (scan_entities)
 
 # state codes packed into the observation
 SC_NONE, SC_SOFT, SC_WOUND, SC_RECOVERY, SC_TRANSPARENT, SC_AE7C, \
-    SC_OTHER, SC_TRUCK = 0, 1, 2, 3, 4, 5, 6, 7
+    SC_OTHER, SC_TRUCK, SC_TRUCK_IN = 0, 1, 2, 3, 4, 5, 6, 7, 8
 
 OBS_LEN = 21
 N_PACKED = 5                     # nearest mortals packed into the obs
@@ -140,6 +156,11 @@ STALL_DECISIONS = 120            # px-flat streak before the ladder
 ST_TRUCK = 0x9E88                # the armored truck (the capsule
                                  #   identity; the R67 probe read it
                                  #   LIVE at x 937.5 h 64 a4 300)
+ST_TRUCK_IN = (0x9C14, 0x9E08)   # v0.5.0 (R70): the DRIVE-IN states
+                                 #   (the r69b probe: slot 14 f733..f810
+                                 #   x 842.5 -> 937.5 at +1.25 px/f,
+                                 #   a4 300 already set; 0x9E08 = the
+                                 #   2-frame pre-freeze state f809/f810)
 
 
 def state_code(st: int) -> int:
@@ -155,6 +176,8 @@ def state_code(st: int) -> int:
         return SC_AE7C
     if st == ST_TRUCK:
         return SC_TRUCK
+    if st in ST_TRUCK_IN:
+        return SC_TRUCK_IN
     return SC_OTHER
 
 
@@ -244,8 +267,21 @@ class MetalSlugXAdapter(GameAdapter):
         on the ground band (h <= GROUND_HEIGHT — the verified
         kind==enemy classifier; airborne rows are projectiles/wasps
         and never absorb a player bullet).  Read directly from the
-        verified entity table (read-only)."""
+        verified entity table (read-only).
+
+        v0.5.1 (R70): the TRUCK-FAMILY rows (st 0x9E88/0x9C14/
+        0x9E08) carry PACKING PRIORITY — the r70 boot-3 evidence:
+        with five chasers nearer than the parked truck the nearest-5
+        cut DROPPED the truck row (f909..f958), the policy's W8
+        window read it as a confirmed drive-off, the fight clock
+        re-anchored and the deterministic grid throw was spent 248f
+        late.  The truck is the fight's anchor: when its row survives
+        the live filters but loses the nearest-5 cut, it displaces
+        the FARTHEST packed row.  No soldier state collides with the
+        truck family; the dead family (0xA304/0xA44C/0xA45C) stays
+        excluded via CORPSE_ST (the v0.4.0 semantics)."""
         out = []
+        truck_row = None
         for s in range(1, SLOTS):
             base = TABLE + s * STRIDE
             st = self._u16(base)
@@ -263,10 +299,22 @@ class MetalSlugXAdapter(GameAdapter):
             h = self._u16(base + 0x7E)
             if h > GROUND_HEIGHT:        # airborne: never blocks
                 continue
-            out.append({"slot": s, "st": st, "x": x,
-                        "dx": x - px, "h": h})
+            row = {"slot": s, "st": st, "x": x,
+                   "dx": x - px, "h": h}
+            if st == ST_TRUCK or st in ST_TRUCK_IN:
+                truck_row = row          # the fight anchor
+                continue
+            out.append(row)
         out.sort(key=lambda e: abs(e["dx"]))
-        return out[:N_PACKED]
+        packed = out[:N_PACKED]
+        if truck_row is not None and \
+                all(p["slot"] != truck_row["slot"] for p in packed):
+            if len(packed) >= N_PACKED:
+                packed[-1] = truck_row   # displace the farthest
+            else:
+                packed.append(truck_row)  # the sparse-table case
+            packed.sort(key=lambda e: abs(e["dx"]))
+        return packed
 
     # ------------------------------------------------------------ --
     # the input-ownership gate (ported from the proven scripts; the

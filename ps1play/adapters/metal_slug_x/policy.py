@@ -119,6 +119,78 @@ product-path truck campaign; every rule is committed-evidence-backed):
       probe 1074 -> 1108.8 the same +35px) — the approach rule
       re-enters the tightened window after every throw.
 
+  P1/P2/P3 (v1.8.0, R70). THE PHASE LAW (the R70 capsule lever,
+      the product truck campaign; the r69b connect-probe
+      evidence, slot 14):
+
+      * the freeze: f811 (st 0x9E88 first seen; x 937.5, a4 300,
+        sx 65 all frozen thereafter);
+      * the two CONFIRMED connects landed at f989 and f1153 —
+        the PERIOD 164f apart, both = freeze + 14 (mod 164);
+      * the flight EXACTLY 30f twice (f959 -> f989,
+        f1123 -> f1153);
+      * the f877 lob landed f907 — 82f from BOTH grid points —
+        and MISSED (the width < 82f, the center-hits connect).
+
+      P1 — THE FIGHT CLOCK + THE PHASE GATE: the clock anchors on
+      the freeze frame (the first SC_TRUCK sighting); the lob
+      fires only when the land (throw + 30f) sits ON the grid
+      freeze + 178 + 164k (tolerance 2f, one throw per grid k).
+      The two R69 accidental connects become DETERMINISTIC.
+
+      P2 — THE DRIVE-IN POSTURE (adapter v0.5.0 SC_TRUCK_IN = 8,
+      the 0x9C14/0x9E08 states): during the scripted approach the
+      park x is known (937.5, three records) so the C1 window
+      semantics run on the PREDICTED post-freeze dx = 937.5 - px:
+      the player walks to the record posture ~60f EARLIER than
+      v1.7.1 managed (the r69b walk reached px 1071 only at
+      f875 — after the freeze-window k=0 at f795 was gone).
+
+      P3 — THE LEAD THROW (the R70 falsifiable arm): the k=0
+      window (land = freeze + 14) sits BEFORE the first proven
+      grid point; the throw must fire DURING the drive-in at
+      freeze - 16, gated on the live closing-rate estimate (valid
+      on >= 2 static frames, the disclosed precision limit +-2f)
+      and the predicted-land window.  IF the lead connects: three
+      connects (f825 + f989 + f1153) = a4 300 -> 0 = THE TRUCK
+      KILL at ~f1153, 165f before the scripted scroll death at
+      f1318.  IF it misses: the law is refuted at k=0 (honestly
+      recorded) and the run still secures the deterministic
+      f989/f1153 pair.
+
+  THE R70 PROBE CORRECTIONS (v1.8.1; the r70_phase_probe evidence,
+  boot 1): the v1.8.0 boot DIVERGED from the record timeline (the
+  early walk dragged the section soldiers into the corridor; the
+  f989 lob was STOLEN mid-descent by an interloper at dx ~-119 —
+  the R49 steal model EXTENDED to lobs; the swarm then shoved the
+  player out of the posture (the knockback from f985, exactly 164f
+  before the r69 record's f1149 push — the scroll cycle and the
+  vulnerability cycle are the SAME 164f clock, the independent
+  second confirmation) and killed the player at f1154.  THE
+  CORRECTIONS:
+
+    C2. THE CORRIDOR GUARD (the lob refutation): the 'the arc
+        clears the ground blockers' property is REFUTED — a lob
+        descending into an occupied corridor is EATEN.  The C1
+        lob now requires clear_line(dx_t) (the R66 corridor
+        predicate); on the r69b record timeline the corridor was
+        clean at every throw, so the guard is a no-op there.
+
+    C3. THE DRIVE-IN HYGIENE: the truckin escort check drops the
+        clear_line filter — ANY soldier within 8..220 on either
+        side outranks the posture walk (turn + FIRE until the
+        zone is clean); the r70 walk through an uncleared section
+        is the root cause of the corridor thieves.
+
+    C4. THE WIDTH PROBE (one-shot, the R70b arm): on the FIRST
+        clean-hold frame at the posture (the corridor clear, the
+        grenade ready) the policy books ONE sacrificed throw —
+        the land sits at freeze + ~59 (the arrival-time offset):
+        a CONNECT measures the window width >= 45f and unlocks
+        the 3-connect kill schedule (the probe + the grid pair);
+        a miss bounds the width < 45f (honestly recorded) and
+        the grid pair still pays the 2 connects.
+
   THE R68 PROBE CORRECTION (scripts/r68_postkill_probe.py, the
   product stack v1.5.0, 1462f): the R67 "truck KILLED, score 2300"
   reading is HEREBY CORRECTED — the truck NEVER died.  The three
@@ -154,7 +226,7 @@ from ps1play.runtime.interfaces import (ActionDecision, GameObservation,
                                         Policy)
 
 POLICY_NAME = "msx_mission1_rules"
-POLICY_VERSION = "1.7.1"
+POLICY_VERSION = "1.8.5"
 
 # the hold band's inner edge (the R67 loop-probe lesson: holding at
 # dx 52 — point-blank in the truck gun's line — LOST the duel; the
@@ -170,6 +242,19 @@ TRUCK_HOLD_MIN = 90.0
 # truck parked at 937.5); the window brackets the measurement.
 TRUCK_CONNECT_MIN = 130.0
 TRUCK_CONNECT_MAX = 135.0
+# v1.8.4 (R70): THE SPATIAL THROW BAND — the boot-4 evidence: the
+# k=1 grid throw at dx -130.5 (the phase PERFECT, the corridor
+# CLEAN) MISSED (no a4 transition), while every observed connect
+# sits at dx -133.5 EXACTLY (the R68 record + the r69b pair) and
+# the v1.7.0 outer throws (-136.5/-139.5) missed.  The connect
+# geometry is ~+-3px TIGHT around -133.5; the quantized posture
+# values are -130.5/-133.5/-135.4 — the band [131.5, 135.0]
+# admits ONLY the proven -133.5 and rejects every measured miss.
+# Below the band the C1-cont regime RETREATS (re-centers) so a
+# knockback-drifted player is back at -133.5 inside the 3-frame
+# phase tolerance.
+TRUCK_THROW_MIN = 131.5
+TRUCK_THROW_MAX = 135.0
 # v1.7.0 ran the capsule's [125, 140]; the probe FALSIFIED the outer
 # half: 3 in-window throws at dx -139.5/-136.5/-136.5 ALL missed
 # (the truck a4 FROZEN at 300 through the whole fight — 0 connects),
@@ -202,6 +287,18 @@ TRUCK_GONE_CONFIRM_F = 12        # W8: the truck-gone confirmation
                                  #   NOT fire the kill chain; the
                                  #   dead row stays gone)
 SOLDIER_CODES = (1, 2, 3)        # soft / wound / recovery
+ESCORT_CODES = (1, 2, 3, 5, 6)   # C5 (v1.8.2, R70): the corridor-
+                                 #   ABSORBING escort classes minus
+                                 #   the truck — the r70 boot-2
+                                 #   evidence: the chasers approach
+                                 #   in their walk/throw animation
+                                 #   states (sc=6 — the R67 probe
+                                 #   correction: ground soldiers)
+                                 #   and the SOLDIER_CODES-only
+                                 #   escort rules never engaged them
+                                 #   (the corridor filled, the C2
+                                 #   guard blocked the grid throw,
+                                 #   the width probe was stolen);
 
 ENGAGE_SHORT = 220.0
 FIRE_COOLDOWN = 12
@@ -216,6 +313,37 @@ TRUCK_GRENADE_CD = 40           # the R38 encounter2 gre40 evidence:
                                 #   (the v1.6.0 probe: 3 lobs at the
                                 #   90f cadence reached a4=80 and the
                                 #   window closed)
+
+# ---- R70 (v1.8.0): THE PHASE LAW -------------------------------------
+# The r69b connect-probe evidence (slot 14, the parked truck):
+#   * the freeze at f811 (st 0x9E88 first seen; x 937.5, a4 300,
+#     sx 65 — ALL frozen thereafter);
+#   * the two CONFIRMED connects landed at f989 and f1153 — the
+#     PERIOD 164f apart, both = freeze + 14 (mod 164) (178 = 14 +
+#     164, 342 = 14 + 2*164);
+#   * the flight is EXACTLY 30f twice (f959 -> f989, f1123 -> f1153);
+#   * the f877 lob landed f907 — 82f from BOTH grid points — and
+#     MISSED: the window width is < 82f (the grid is real, the
+#     center-hits connect).
+# The kill needs THREE connects (a4 300 -> 0 at -100/connect): the
+# schedule = the k=0 LEAD (land freeze+14, thrown DURING the
+# drive-in — the truck parks at the measured 937.5 regardless; the
+# player holds the record posture from f625-era evidence) + the
+# grid k=0/k=1 (the two PROVEN connects, now deterministic).
+TRUCK_LOB_FLIGHT = 30.0         # frames throw -> land (2/2 exact)
+TRUCK_PHASE_PERIOD = 164.0      # the vulnerability cycle (2/2)
+TRUCK_PHASE_BASE = 178.0        # the first grid land = freeze + 178
+TRUCK_PHASE_TOL = 2.0           # the grid tolerance (frames)
+TRUCK_LEAD_LAND = 14.0          # the k=0 lead land = freeze + 14
+TRUCK_LEAD_CAP = 2              # the disclosed lead-throw cap
+TRUCK_PARK_X = 937.5            # the scripted park (R68 probe + the
+                                #   R69 v1.7.0/v1.7.1 runs — 3 records)
+TRUCK_PARK_DX = -133.5          # the parked dx at the record posture
+TRUCK_POSTURE_PX = 1071.0       # the record posture (R68/R69)
+TRUCK_IN_DX_RATE = 1.25         # the drive-in closing rate (r69b:
+                                #   f733 x 842.5 -> f808 x 937.5)
+SC_TRUCK_IN = 8                 # the adapter v0.5.0 drive-in code
+TRUCK_WIDTH_PROBE = 1           # C4: the one-shot width-probe cap
 PROGRESS_PX = 1.0
 
 # state codes that can absorb a bullet or register a payment
@@ -251,6 +379,14 @@ class Mission1Policy(Policy):
         self._last_truck_dx = None    # v1.5.0: the last-known truck dx
         self._hazard = 0              # v1.5.0: W9 hazard frames left
         self._hazard_px = None        # v1.5.0: W9 the truck's world px
+        self._truck_fight_f = 0       # v1.8.0: P1 the freeze-frame
+                                      #   fight clock (the phase anchor)
+        self._phase_last_k = -1       # v1.8.0: the last grid k thrown
+        self._lead_spent = 0          # v1.8.0: the lead throws booked
+        self._truckin_dx = None       # v1.8.0: the last drive-in dx
+        self._truckin_px = None       # v1.8.0: the last drive-in px
+        self._truckin_static = 0      # v1.8.0: the static-history count
+        self._width_probed = 0        # v1.8.1: C4 the width probe
         self._last_diag: Dict[str, Any] = {}
 
     # ---- Policy contract ----
@@ -290,6 +426,13 @@ class Mission1Policy(Policy):
         self._last_truck_dx = None
         self._hazard = 0
         self._hazard_px = None
+        self._truck_fight_f = 0
+        self._phase_last_k = -1
+        self._lead_spent = 0
+        self._truckin_dx = None
+        self._truckin_px = None
+        self._truckin_static = 0
+        self._width_probed = 0
 
     def identity(self) -> Dict[str, Any]:
         # the engine's record seam reads identity()["name"] and
@@ -303,8 +446,8 @@ class Mission1Policy(Policy):
                 "deterministic": True,
                 "trained": False,
                 "kind": "built-in rules (no model, no training)",
-                "corridor_predicate": "r66_corrected",
-                "truck_rules": "r69_connect_window"}
+                "corridor_predicate": "r70_corridor_guard",
+                "truck_rules": "r70_phase_law"}
 
     def close(self) -> None:
         self._tel = None
@@ -380,9 +523,29 @@ class Mission1Policy(Policy):
         truck_any = next((e for e in ents
                           if e[1] == TRUCK_CODE and e[2] >= 64.0
                           and 0.0 < abs(e[0]) <= TRUCK_SPOT), None)
+        truckin = next((e for e in ents
+                        if e[1] == SC_TRUCK_IN and e[2] >= 64.0
+                        and 0.0 < abs(e[0]) <= TRUCK_SPOT), None)
         if truck_any is not None:
             dx_t = truck_any[0]
             side_t = "R" if dx_t > 0 else "L"
+            # P1 (v1.8.0, R70): THE FIGHT CLOCK — the phase anchor is
+            # the FREEZE frame (the first SC_TRUCK sighting; the
+            # r69b evidence: f811, st 0x9E88, x 937.5, a4 300, sx 65
+            # all frozen thereafter).  The clock freezes through a
+            # scan flicker (the W8 window) and resets only via the
+            # episode reset — a confirmed-gone truck never returns
+            # to the live table (the R40 wreck-complex evidence).
+            if self._truck_present:
+                self._truck_fight_f += 1
+            else:
+                # the RE-ANCHOR: a fresh truck = a fresh fight —
+                # the grid bookkeeping and the lead budget reset
+                # with the clock (the second-truck regression: the
+                # stale k blocked the new fight's k=0 window)
+                self._truck_fight_f = 0
+                self._phase_last_k = -1
+                self._lead_spent = 0
             self._truck_present = True        # v1.5.0: seen this frame
             self._truck_gone_f = 0            # v1.6.0: reset the window
             self._last_truck_dx = dx_t
@@ -390,7 +553,7 @@ class Mission1Policy(Policy):
             # the escort may stand on EITHER side; a clear-line
             # escort outranks the lob.
             soldier = next((e for e in ents
-                            if e[1] in SOLDIER_CODES
+                            if e[1] in ESCORT_CODES
                             and 8.0 < abs(e[0]) <= ENGAGE_SHORT
                             and clear_line(e[0])), None)
             if soldier is not None:
@@ -430,13 +593,74 @@ class Mission1Policy(Policy):
             # measured posture).
             in_win = TRUCK_CONNECT_MIN <= abs(dx_t) \
                 <= TRUCK_CONNECT_MAX
-            if in_win and soldier is None and gren > 0:
+            # P1 (cont., v1.8.0): THE PHASE GATE — the lob fires only
+            # ON the vulnerability grid: the land (throw + the 30f
+            # flight) must sit on freeze + 178 + 164k (the r69b
+            # connects f989/f1153; the f877-center miss bounds the
+            # width < 82f).  During the cooldown the connect hold
+            # keeps precedence (the v1.7.1 semantics); off-grid with
+            # a ready grenade the posture HOLDS (the phase-hold).
+            phase_off = (self._truck_fight_f + TRUCK_LOB_FLIGHT
+                         - TRUCK_PHASE_BASE) % TRUCK_PHASE_PERIOD
+            phase_k = int(round((self._truck_fight_f + TRUCK_LOB_FLIGHT
+                                 - TRUCK_PHASE_BASE)
+                                / TRUCK_PHASE_PERIOD))
+            phase_open = (phase_off <= TRUCK_PHASE_TOL
+                          and phase_k != self._phase_last_k)
+            # C2 (v1.8.1, R70): THE CORRIDOR GUARD — the r70 boot-1
+            # evidence REFUTED the unconditional arc: a lob
+            # descending into an occupied corridor is EATEN (the
+            # f989 theft by the interloper at dx ~-119).  The lob
+            # fires only over a CLEAN descent corridor (the R66
+            # predicate on the truck's live dx; a no-op on the
+            # r69b record timeline where the corridor was clean at
+            # every throw).
+            corridor_ok = clear_line(dx_t)
+            throw_win = TRUCK_THROW_MIN <= abs(dx_t) \
+                <= TRUCK_THROW_MAX
+            if throw_win and soldier is None and corridor_ok \
+                    and gren > 0:
                 if self._fire_cd > 0:
                     self._fire_cd -= 1
                 if self._gren_cd > 0:
                     self._gren_cd -= 1
                     self._last_diag = {"rule": "truck_connect_hold",
                                        "truck_dx": round(dx_t, 1)}
+                    return "IDLE"
+                if not phase_open:
+                    # C4 (v1.8.1, R70b): THE WIDTH PROBE — the
+                    # post-freeze arm: the first clean in-window
+                    # hold with a ready grenade books ONE
+                    # sacrificed throw (the land offset = the
+                    # arrival-time offset, ~freeze + 59): a CONNECT
+                    # = one third of the kill AND the width's lower
+                    # edge measured; a miss bounds the width
+                    # honestly.  One shot, ever (the cap; the
+                    # truckin pre-freeze arm has the lead priority).
+                    if self._width_probed < TRUCK_WIDTH_PROBE:
+                        if self._facing != side_t:
+                            mv = turn_toward(side_t)
+                            self._facing = side_t
+                            self._last_diag = {
+                                "rule": "truck_width_turn",
+                                "truck_dx": round(dx_t, 1)}
+                            return mv
+                        self._gren_cd = TRUCK_GRENADE_CD
+                        self._width_probed += 1
+                        self._truck_grenades_used += 1
+                        self._last_diag = {
+                            "rule": "truck_width_probe",
+                            "truck_dx": round(dx_t, 1),
+                            "fight_f": self._truck_fight_f,
+                            "width_probed": self._width_probed,
+                            "grenades_used":
+                                self._truck_grenades_used}
+                        return "GRENADE"
+                    self._last_diag = {"rule": "truck_phase_hold",
+                                       "truck_dx": round(dx_t, 1),
+                                       "fight_f": self._truck_fight_f,
+                                       "phase_off":
+                                           round(phase_off, 1)}
                     return "IDLE"
                 if self._facing != side_t:
                     mv = turn_toward(side_t)
@@ -445,10 +669,13 @@ class Mission1Policy(Policy):
                                        "truck_dx": round(dx_t, 1)}
                     return mv
                 self._gren_cd = TRUCK_GRENADE_CD
+                self._phase_last_k = phase_k
                 self._truck_grenades_used += 1
                 self._last_diag = {"rule": "truck_connect_grenade",
                                    "truck_dx": round(dx_t, 1),
                                    "truck_h": truck_any[2],
+                                   "fight_f": self._truck_fight_f,
+                                   "phase_k": phase_k,
                                    "grenades_used":
                                        self._truck_grenades_used}
                 return "GRENADE"
@@ -466,12 +693,23 @@ class Mission1Policy(Policy):
                 if self._gren_cd > 0:
                     self._gren_cd -= 1
                 if abs(dx_t) < TRUCK_CONNECT_MIN:
+                    # the sub-90 back-off generalized (v1.7.0): the
+                    # away-retreat below the hold band.  (The v1.8.4
+                    # re-center VARIANT is WITHDRAWN: the boot-5
+                    # evidence — a -33px truck-gun knockback pinned
+                    # the player at px 1038 for 126f (the scroll
+                    # cancels the walk) and the gun line killed at
+                    # f1076; no walk wins that state, so the band
+                    # below the throw gate HOLDS instead of walking.)
                     mv = "BACK" if side_t == "R" else "WALK"
                     self._facing = "L" if mv == "BACK" else "R"
                     self._last_diag = {"rule": "truck_connect_retreat",
                                        "truck_dx": round(dx_t, 1)}
                     return mv
-                self._last_diag = {"rule": "truck_hold",
+                self._last_diag = {"rule":
+                                       ("truck_recenter_hold"
+                                        if abs(dx_t) < TRUCK_THROW_MIN
+                                        else "truck_hold"),
                                    "truck_dx": round(dx_t, 1)}
                 return "IDLE"
             # T6' (v1.7.0 threshold = TRUCK_CONNECT_MAX; the R68
@@ -506,6 +744,162 @@ class Mission1Policy(Policy):
             # through to the generic rules (disclosed edge).
             self._last_diag = {"rule": "truck_spent_watch",
                                "truck_dx": round(dx_t, 1)}
+        elif truckin is not None:
+            # ---- P2/P3 (v1.8.0, R70): THE DRIVE-IN ARM -------------
+            # The r69b evidence: the truck runs st 0x9C14 f733..f808
+            # (x 842.5 -> 937.5 at +1.25 px/f, the armor a4 already
+            # 300), then 0x9E08 (2f), then the freeze.  The park x is
+            # SCRIPTED (937.5 — three records), so the POST-freeze dx
+            # is predictable DURING the approach: pred_dx =
+            # TRUCK_PARK_X - px.  The arm (a) walks the player to the
+            # record posture EARLY (the C1 semantics on the predicted
+            # dx) and (b) books the k=0 LEAD throw: the land must hit
+            # freeze + 14 (the grid's backward extrapolation — the
+            # R70 falsifiable arm), i.e. the throw at freeze - 16
+            # (flight 30f), gated on the live closing-rate estimate
+            # (valid only on >= 2 static player frames).
+            dx_i = truckin[0]
+            side_i = "R" if dx_i > 0 else "L"
+            if self._fire_cd > 0:
+                self._fire_cd -= 1
+            if self._gren_cd > 0:
+                self._gren_cd -= 1
+            # the drive-in static history (the velocity validity)
+            if self._truckin_dx is not None \
+                    and px == self._truckin_px:
+                self._truckin_static += 1
+            else:
+                self._truckin_static = 0
+            v_in = (dx_i - self._truckin_dx) \
+                if self._truckin_static >= 1 else 0.0
+            self._truckin_px = px
+            self._truckin_dx = dx_i
+            # T3 mirror (C3, v1.8.1): ANY soldier within the engage
+            # band on EITHER side outranks the arm — the clear_line
+            # filter is DROPPED (the r70 boot-1 root cause: the walk
+            # through an uncleared section dragged the soldiers into
+            # the corridor as chasers; the occluded ones fall to the
+            # same cadence — the R49 front-first steal model).
+            soldier_i = next((e for e in ents
+                              if e[1] in ESCORT_CODES
+                              and 8.0 < abs(e[0]) <= ENGAGE_SHORT), None)
+            if soldier_i is not None:
+                side_s = "R" if soldier_i[0] > 0 else "L"
+                if self._facing != side_s:
+                    mv = turn_toward(side_s)
+                    self._facing = side_s
+                    self._last_diag = {"rule": "truckin_escort_turn",
+                                       "escort_dx": soldier_i[0]}
+                    return mv
+                if self._fire_cd == 0:
+                    self._fire_cd = FIRE_COOLDOWN
+                    self._last_diag = {"rule": "truckin_escort_first",
+                                       "target_dx":
+                                           round(soldier_i[0], 1),
+                                       "target_sc": soldier_i[1]}
+                    return "FIRE"
+            pred_dx = TRUCK_PARK_X - px
+            in_pred = TRUCK_CONNECT_MIN <= abs(pred_dx) \
+                <= TRUCK_CONNECT_MAX
+            throw_pred = TRUCK_THROW_MIN <= abs(pred_dx) \
+                <= TRUCK_THROW_MAX
+            ftf = None
+            if v_in > 0.05:
+                ftf = (TRUCK_PARK_DX - dx_i) / v_in
+            lead_open = (throw_pred and gren > 0
+                         and self._gren_cd == 0
+                         and ftf is not None
+                         and self._truckin_static >= 2
+                         and self._lead_spent < TRUCK_LEAD_CAP
+                         and clear_line(pred_dx)
+                         and abs(ftf - (TRUCK_LOB_FLIGHT
+                                        - TRUCK_LEAD_LAND))
+                         <= TRUCK_PHASE_TOL)
+            if lead_open:
+                if self._facing != side_i:
+                    mv = turn_toward(side_i)
+                    self._facing = side_i
+                    self._last_diag = {"rule": "truck_lead_turn",
+                                       "truckin_dx": round(dx_i, 1),
+                                       "ftf": round(ftf, 1)}
+                    return mv
+                self._gren_cd = TRUCK_GRENADE_CD
+                self._lead_spent += 1
+                self._truck_grenades_used += 1
+                self._last_diag = {"rule": "truck_lead_throw",
+                                   "truckin_dx": round(dx_i, 1),
+                                   "ftf": round(ftf, 1),
+                                   "pred_dx": round(pred_dx, 1),
+                                   "lead_spent": self._lead_spent,
+                                   "grenades_used":
+                                       self._truck_grenades_used}
+                return "GRENADE"
+            if in_pred:
+                # C4 (v1.8.1, R70b): THE WIDTH PROBE — the FIRST
+                # clean-hold frame at the posture books ONE
+                # sacrificed throw (the corridor to the LAND point
+                # must be clear; the lead, if open, has priority
+                # above).  The land offset is the arrival-time
+                # offset (~freeze + 59 on the v1.8.1 timeline): a
+                # CONNECT = one third of the kill AND the width's
+                # lower edge measured; a miss bounds the width
+                # honestly.  One shot, ever (the cap).
+                corridor_i = clear_line(pred_dx)
+                # the probe yields to the lead: it fires only when
+                # the lead is SPENT or its ftf window has PASSED
+                # (the 2-static-frame history must exist first — the
+                # v1.8.1 test-taught ordering)
+                lead_dead = (self._lead_spent >= TRUCK_LEAD_CAP
+                             or (ftf is not None
+                                 and ftf < TRUCK_LOB_FLIGHT
+                                 - TRUCK_LEAD_LAND
+                                 - TRUCK_PHASE_TOL))
+                if throw_pred and corridor_i and gren > 0 \
+                        and self._gren_cd == 0 \
+                        and self._truckin_static >= 2 \
+                        and lead_dead \
+                        and self._width_probed < TRUCK_WIDTH_PROBE:
+                    if self._facing != side_i:
+                        mv = turn_toward(side_i)
+                        self._facing = side_i
+                        self._last_diag = {"rule": "truck_width_turn",
+                                           "pred_dx":
+                                               round(pred_dx, 1)}
+                        return mv
+                    self._gren_cd = TRUCK_GRENADE_CD
+                    self._width_probed += 1
+                    self._truck_grenades_used += 1
+                    self._last_diag = {"rule": "truck_width_probe",
+                                       "pred_dx": round(pred_dx, 1),
+                                       "truckin_dx": round(dx_i, 1),
+                                       "width_probed":
+                                           self._width_probed,
+                                       "grenades_used":
+                                           self._truck_grenades_used}
+                    return "GRENADE"
+                # the record posture held (IDLE) — the C1 semantics
+                # on the predicted dx; the cooldowns ticked above.
+                self._last_diag = {"rule": "truckin_hold",
+                                   "pred_dx": round(pred_dx, 1),
+                                   "ftf": (round(ftf, 1)
+                                           if ftf is not None
+                                           else None),
+                                   "corridor": corridor_i,
+                                   "static": self._truckin_static}
+                return "IDLE"
+            if abs(pred_dx) > TRUCK_CONNECT_MAX:
+                # approach the record posture (toward the park)
+                mv = "WALK" if side_i == "R" else "BACK"
+                self._facing = side_i
+                self._last_diag = {"rule": "truckin_approach",
+                                   "pred_dx": round(pred_dx, 1)}
+                return mv
+            # |pred_dx| < THROW_MIN: HOLD (v1.8.5 — the re-center
+            # walk withdrawn, see the C1-cont note; the throw gate
+            # alone blocks the off-center spend)
+            self._last_diag = {"rule": "truckin_hold",
+                               "pred_dx": round(pred_dx, 1)}
+            return "IDLE"
         elif self._truck_present:
             # ---- W8 (v1.6.0): the truck-gone CONFIRMATION window --
             # a scan flicker must NOT fire the kill chain: the truck
