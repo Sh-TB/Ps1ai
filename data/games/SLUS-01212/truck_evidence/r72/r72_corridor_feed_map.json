@@ -1,0 +1,97 @@
+{
+ "schema": "ps1play.r72-corridor-feed/1",
+ "generated": "2026-11-10T18:59:32Z",
+ "note": "offline over the r72 hybrid boot-1 JSONL (the idle-hold stream; the ledger: 1/3 boots spent, 2 held \u2014 no correction boot was needed, the lever's product question answered by boot 1)",
+ "boots": {
+  "1": {
+   "boot": 1,
+   "freeze": 1151,
+   "lands": [
+    [
+     0,
+     1329
+    ],
+    [
+     1,
+     1493
+    ],
+    [
+     2,
+     1657
+    ],
+    [
+     3,
+     1821
+    ]
+   ],
+   "n_spawns": 0,
+   "spawns": [],
+   "corridor_at_lands": {
+    "k0_land1329": {
+     "occupied": false,
+     "rows": []
+    },
+    "k1_land1493": {
+     "occupied": false,
+     "rows": []
+    },
+    "k2_land1657": {
+     "occupied": false,
+     "rows": []
+    },
+    "k3_land1821": {
+     "occupied": false,
+     "rows": []
+    }
+   },
+   "a4_ledger": [
+    [
+     1581,
+     300,
+     290,
+     "CHIP"
+    ],
+    [
+     1645,
+     290,
+     280,
+     "CHIP"
+    ],
+    [
+     1657,
+     280,
+     180,
+     "CONNECT"
+    ],
+    [
+     1709,
+     180,
+     170,
+     "CHIP"
+    ]
+   ],
+   "grid_throws": [
+    {
+     "f": 1297,
+     "fight_f": 146,
+     "phase_k": 0
+    },
+    {
+     "f": 1461,
+     "fight_f": 310,
+     "phase_k": 1
+    },
+    {
+     "f": 1626,
+     "fight_f": 475,
+     "phase_k": 2
+    }
+   ]
+  }
+ },
+ "spawn_x_spread": null,
+ "verdict": {
+  "spawn_zone": null,
+  "time_vs_position": "no spawn data"
+ }
+}

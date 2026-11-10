@@ -1,6 +1,14 @@
 """tests/test_r71_msx_chip_connect.py — R71 Metal Slug X policy
 v1.9.0 K1 THE COOLDOWN CHIP-FIRE (offline; no emulator, no boot).
 
+R72 (v2.0.0) re-anchoring: the SHIPPED default of the K1 master arm
+is now False (the idle-hold stream re-selection — the boot-3
+one-variable evidence); THIS SUITE TESTS THE ARM ITSELF, so an
+autouse fixture patches the module attribute True (the documented
+mechanism — the R71 boots 1-2 stream, the probe's BOOT-3 arm in
+reverse).  The shipped-default coverage lives in
+tests/test_r72_msx_hybrid.py.
+
 The R71 capsule lever, product track: the CHIP-CONNECT KILL
 SCHEDULE.  The R70 evidence this rule encodes:
 
@@ -93,8 +101,19 @@ def at_clock(fight_f, probe=True, gren_cd=0, fire_cd=0):
 
 
 class TestK1ChipFire:
-    def test_version_is_1_9_0(self):
-        assert POLICY_VERSION == "1.9.0"
+    @pytest.fixture(autouse=True)
+    def _k1_arm(self, monkeypatch):
+        # the K1 suite tests the ARM semantics (the R71 boots 1-2
+        # stream); the R72 shipped default (False) is covered by
+        # test_r72_msx_hybrid.py — this patch is the documented
+        # mechanism (the R71 boot-1/2 arm)
+        import ps1play.adapters.metal_slug_x.policy as _pol
+        monkeypatch.setattr(_pol, "TRUCK_CHIP_FIRE", True)
+
+    def test_version_is_2_0_0(self):
+        # v2.0.0 (R72): the volley+phase hybrid ships; the K1 arm
+        # stays patchable (this suite runs with the patch True)
+        assert POLICY_VERSION == "2.0.0"
 
     def test_chip_fire_during_cooldown_clear_corridor(self):
         # the grenade on cooldown, the corridor clear: the aimed

@@ -32,6 +32,7 @@ from ps1play.adapters.metal_slug_x.adapter import (  # noqa: E402
 from ps1play.adapters.metal_slug_x.policy import (  # noqa: E402
     FIRE_COOLDOWN, Mission1Policy,
 )
+import ps1play.adapters.metal_slug_x.policy as _policy_mod  # noqa: E402
 from ps1play.runtime.errors import AdapterError  # noqa: E402
 from ps1play.runtime.interfaces import (  # noqa: E402
     ActionDecision, Frame, GameObservation,
@@ -446,12 +447,13 @@ class TestTruckRulesR67:
         assert pol._grenades_used == 0
 
     def test_identity_v181(self):
-        # re-anchored on v1.9.0 (R71): the phase law stays, the
-        # chip-connect kill schedule (K1) ships on top
+        # re-anchored on R72 (v2.0.0): the volley+phase hybrid (the
+        # full +-2f gate + the idle-hold re-selection); the phase
+        # law and the corridor guard stay
         pol = Mission1Policy()
         ident = pol.identity()
-        assert ident["policy_version"] == "1.9.0"
-        assert ident["truck_rules"] == "r71_chip_connect"
+        assert ident["policy_version"] == "2.0.0"
+        assert ident["truck_rules"] == "r72_volley_phase_hybrid"
 
     def test_hold_backs_off_point_blank(self):
         # THE v1.4.2 PROBE LESSON (pinned) + v1.7.0 C1: below the
@@ -693,19 +695,26 @@ class TestRearFightR67V140:
         # the parked truck BEHIND at dx -133.5 (the R68 record
         # posture, IN the connect window): turn (truck_turn) then
         # the lobs CONTINUE (v1.6.0: the unlimited budget — 8 on
-        # the v1.8.0 phase grid, pre-anchored at the k=0 point);
-        # the cooldown hold fills between lobs (its own cooldown
-        # ticks).
-        acts, rules = self._run([(-133.5, 7, 64.0)], n=1300,
-                                fight_f=148)
-        assert rules[0] == "truck_turn"
-        assert acts[0] == "BACK"
-        assert rules.count("truck_connect_grenade") == 8
-        assert acts.count("GRENADE") == 8
-        # v1.9.0 (R71 K1): the cooldown holds are now the aimed
-        # chip-fire (the second damage path — the kill schedule)
-        assert "truck_chip_fire" in rules
-        assert "truck_connect_hold" not in rules
+        # the phase grid, pre-anchored at the k=0 point; the R72
+        # widened gate keeps ONE throw per grid point — the
+        # geometry: consecutive on-grid cadence lands are >= 160f
+        # apart).  The K1-era cooldown chip-fire is patched True
+        # here (the boots 1-2 stream); the R72 shipped default is
+        # the connect-hold (covered in test_r72_msx_hybrid.py).
+        mp = pytest.MonkeyPatch()
+        mp.setattr(_policy_mod, "TRUCK_CHIP_FIRE", True)
+        try:
+            acts, rules = self._run([(-133.5, 7, 64.0)], n=1300,
+                                    fight_f=148)
+            assert rules[0] == "truck_turn"
+            assert acts[0] == "BACK"
+            assert rules.count("truck_connect_grenade") == 8
+            assert acts.count("GRENADE") == 8
+            # the K1-era cooldown holds are the aimed chip-fire
+            assert "truck_chip_fire" in rules
+            assert "truck_connect_hold" not in rules
+        finally:
+            mp.undo()
 
     def test_rear_truck_out_of_band_approach(self):
         # the truck behind at -226.5 (the probe's exact posture —

@@ -242,6 +242,36 @@ product-path truck campaign; every rule is committed-evidence-backed):
           the posture HOLDS — the walkers get cleaned by the
           escort rule first, so the corridor is clean AT each
           grid window and no bullet is wasted into the feed.
+
+  R72 (v2.0.0). THE VOLLEY+PHASE HYBRID (the R72 capsule lever,
+      the product track).  The R71 boot-3 one-variable evidence
+      RESOLVED the stream question: the idle-hold stream connects
+      ON GRID (1/3 — the k=2 connect landed at freeze + 506 +- 2f
+      ON THE PHASE GRID) while the chip-fire stream does not
+      (0/2 chip-fire vs 2/7 volley) — THE PHASE LAW IS
+      STREAM-DEPENDENT (the fire input stream perturbs the
+      vulnerability phase; the R67 cadence-law precedent).  The
+      re-selection is therefore EVIDENCE-ARMED, not a preference:
+        * TRUCK_CHIP_FIRE defaults to False — the idle-hold
+          stream is the connect mechanism; the K1 arm stays in
+          the code (patchable True) as the chip-damage supplement
+          AFTER the connect mechanism is solved (the R72 capsule
+          method line verbatim);
+        * THE PHASE GATE WIDENS to the FULL tolerance: the land
+          must sit within +-2f of ANY grid point (the nearest
+          freeze + 178 + 164k, BOTH sides — the v1.9.0 gate
+          admitted only the 0..2f-after side).  The throw fires
+          at every 40f cadence frame (TRUCK_GRENADE_CD, the R38
+          gre40 law) whose land is on-grid: the r69b evidence
+          says the cadence volume pays (7 throws, 2 connects)
+          and the boot-3 evidence says the on-grid lands connect
+          (1/3) — the hybrid maximizes on-grid landings per
+          window.  Consecutive on-grid cadence lands are >= 160f
+          apart (40j mod 164 has no solution in +-2f for |j|<4),
+          so at most one cadence throw per grid window — the
+          one-per-grid-window discipline is preserved by the
+          geometry, and the _phase_last_k bookkeeping stays as
+          the belt-and-braces guard.
 """
 from __future__ import annotations
 
@@ -255,7 +285,7 @@ from ps1play.runtime.interfaces import (ActionDecision, GameObservation,
                                         Policy)
 
 POLICY_NAME = "msx_mission1_rules"
-POLICY_VERSION = "1.9.0"
+POLICY_VERSION = "2.0.0"
 
 # the hold band's inner edge (the R67 loop-probe lesson: holding at
 # dx 52 — point-blank in the truck gun's line — LOST the duel; the
@@ -382,9 +412,14 @@ TRUCK_WIDTH_PROBE = 1           # C4: the one-shot width-probe cap
 # from the SAME postures — so the question boot 3 answers: does the
 # K1 chip-fire input stream itself perturb the vulnerability phase
 # (the R67 cadence-law precedent: the fire cadence is part of the
-# deterministic wave trajectory)?  False restores the exact v1.8.5
-# hold semantics on the v0.5.2 adapter.
-TRUCK_CHIP_FIRE = True
+# deterministic wave trajectory)?
+# R72 (v2.0.0): the DEFAULT is RE-SELECTED to False per the boot-3
+# evidence — the idle-hold stream connects ON GRID (1/3) while the
+# chip-fire stream does not (0/2): the phase law is STREAM-
+# DEPENDENT.  The arm stays patchable True (the exact v1.9.0
+# semantics; the K1 unit tests keep it covered) as the chip-damage
+# supplement AFTER the connect mechanism is solved.
+TRUCK_CHIP_FIRE = False
 PROGRESS_PX = 1.0
 
 # state codes that can absorb a bullet or register a payment
@@ -488,7 +523,7 @@ class Mission1Policy(Policy):
                 "trained": False,
                 "kind": "built-in rules (no model, no training)",
                 "corridor_predicate": "r70_corridor_guard",
-                "truck_rules": "r71_chip_connect"}
+                "truck_rules": "r72_volley_phase_hybrid"}
 
     def close(self) -> None:
         self._tel = None
@@ -641,12 +676,19 @@ class Mission1Policy(Policy):
             # width < 82f).  During the cooldown the connect hold
             # keeps precedence (the v1.7.1 semantics); off-grid with
             # a ready grenade the posture HOLDS (the phase-hold).
-            phase_off = (self._truck_fight_f + TRUCK_LOB_FLIGHT
+            phase_rel = (self._truck_fight_f + TRUCK_LOB_FLIGHT
                          - TRUCK_PHASE_BASE) % TRUCK_PHASE_PERIOD
+            # R72 (v2.0.0): the FULL tolerance — the signed distance
+            # to the NEAREST grid point, BOTH sides (the v1.9.0
+            # gate admitted only the 0..2f-after side).  The land
+            # must sit within +-2f of ANY grid point (the hybrid:
+            # the gre40 cadence gated by the phase tolerance).
+            phase_off = phase_rel if phase_rel <= TRUCK_PHASE_PERIOD / 2 \
+                else phase_rel - TRUCK_PHASE_PERIOD
             phase_k = int(round((self._truck_fight_f + TRUCK_LOB_FLIGHT
                                  - TRUCK_PHASE_BASE)
                                 / TRUCK_PHASE_PERIOD))
-            phase_open = (phase_off <= TRUCK_PHASE_TOL
+            phase_open = (abs(phase_off) <= TRUCK_PHASE_TOL
                           and phase_k != self._phase_last_k)
             # C2 (v1.8.1, R70): THE CORRIDOR GUARD — the r70 boot-1
             # evidence REFUTED the unconditional arc: a lob

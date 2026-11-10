@@ -46,6 +46,7 @@ from ps1play.adapters.metal_slug_x.policy import (  # noqa: E402
     FIRE_COOLDOWN, Mission1Policy, POLICY_VERSION, TRUCK_CONNECT_MAX,
     TRUCK_CONNECT_MIN, TRUCK_GRENADE_CD, TRUCK_PHASE_PERIOD,
 )
+import ps1play.adapters.metal_slug_x.policy as _policy_mod  # noqa: E402
 from ps1play.runtime.interfaces import GameObservation  # noqa: E402
 
 OBS_LEN = 21
@@ -92,13 +93,14 @@ GRID_K0 = 148                    # the fight_f grid point (k=0)
 
 class TestConnectWindow:
     def test_version_and_identity(self):
-        assert POLICY_VERSION == "1.9.0"
+        assert POLICY_VERSION == "2.0.0"
         p = Mission1Policy()
         ident = p.identity()
-        assert ident["policy_version"] == "1.9.0"
-        # v1.9.0 (R71): the phase law STAYS + the chip-connect kill
-        # schedule (K1) ships on top — the identity tag evolves
-        assert ident["truck_rules"] == "r71_chip_connect"
+        assert ident["policy_version"] == "2.0.0"
+        # v2.0.0 (R72): the volley+phase hybrid ships (the full
+        # +-2f gate + the idle-hold re-selection); the corridor
+        # predicate stays the R70 guard
+        assert ident["truck_rules"] == "r72_volley_phase_hybrid"
         assert ident["corridor_predicate"] == "r70_corridor_guard"
 
     def test_lob_at_record_dx(self):
@@ -183,55 +185,66 @@ class TestConnectWindow:
         assert a == "GRENADE"
 
     def test_phase_hold_off_grid(self):
-        # P1 (v1.8.0) re-anchored on v1.9.0 (R71 K1): in-window +
-        # ready grenade but OFF the grid -> NEVER a lob (the phase
-        # gate is untouched); with a CLEAR corridor the aimed
-        # chip-fire is the posture (the second damage path); with
-        # the corridor OCCUPIED the posture holds exactly as
-        # pre-v1.9.0.  (The C4 width probe is pre-spent so the
-        # off-grid behavior is observable.)
-        p = Mission1Policy()
-        p._truck_present = True
-        p._truck_fight_f = 60        # phase_off = (60+30-178)%164
-        p._width_probed = 1
-        p._facing = "L"
-        a, diag = decide(p, ents=[TRUCK_L])
-        assert a == "FIRE"            # the K1 chip-fire
-        assert diag["rule"] == "truck_chip_fire"
-        assert diag["fight_f"] == 61
+        # P1 (v1.8.0) re-anchored on R72: in-window + ready grenade
+        # but OFF the grid -> NEVER a lob (the phase gate is
+        # untouched).  The K1-era clear-corridor posture (the aimed
+        # chip-fire, the second damage path) is patched True here;
+        # the R72 SHIPPED default is the phase-hold (covered in
+        # test_r72_msx_hybrid.py).  With the corridor OCCUPIED the
+        # posture holds exactly as pre-v1.9.0 (both defaults).
+        mp = pytest.MonkeyPatch()
+        mp.setattr(_policy_mod, "TRUCK_CHIP_FIRE", True)
+        try:
+            p = Mission1Policy()
+            p._truck_present = True
+            p._truck_fight_f = 60        # phase_off = (60+30-178)%164
+            p._width_probed = 1
+            p._facing = "L"
+            a, diag = decide(p, ents=[TRUCK_L])
+            assert a == "FIRE"            # the K1 chip-fire
+            assert diag["rule"] == "truck_chip_fire"
+            assert diag["fight_f"] == 61
+        finally:
+            mp.undo()
         # the corridor OCCUPIED (between escort shots): the
-        # pre-v1.9.0 hold semantics
+        # pre-v1.9.0 hold semantics (identical on both defaults)
         p._fire_cd = 5
         a, diag = decide(p, ents=[TRUCK_L, (-100.0, 1, 64.0)])
         assert a == "IDLE"
         assert diag["rule"] == "truck_hold"
 
     def test_cooldown_hold_gre40(self):
-        # re-anchored on v1.9.0 (R71 K1): during the gre40 cooldown
-        # the CHIP-FIRE runs (the corridor is clear), NO grenade;
-        # the grenade repeats ONLY at the next grid point (the
-        # phase gate untouched)
-        p = at_grid(Mission1Policy(), GRID_K0)
-        p._width_probed = 1          # the C4 probe pre-spent
-        p._facing = "L"
-        a, _ = decide(p, ents=[TRUCK_L])
-        assert a == "GRENADE"
-        # the cooldown: the chip-fire cycle, never a grenade
-        for _ in range(TRUCK_GRENADE_CD):
+        # re-anchored on R72 with the K1 ARM patched True (this is
+        # the boots 1-2 stream: during the gre40 cooldown the
+        # CHIP-FIRE runs, NO grenade; the grenade repeats ONLY at
+        # the next grid point).  The R72 SHIPPED default cadence
+        # (the connect-hold) is covered in test_r72_msx_hybrid.py.
+        mp = pytest.MonkeyPatch()
+        mp.setattr(_policy_mod, "TRUCK_CHIP_FIRE", True)
+        try:
+            p = at_grid(Mission1Policy(), GRID_K0)
+            p._width_probed = 1          # the C4 probe pre-spent
+            p._facing = "L"
+            a, _ = decide(p, ents=[TRUCK_L])
+            assert a == "GRENADE"
+            # the cooldown: the chip-fire cycle, never a grenade
+            for _ in range(TRUCK_GRENADE_CD):
+                a, diag = decide(p, ents=[TRUCK_L])
+                assert a != "GRENADE", a
+                assert diag["rule"].startswith("truck_chip"), diag
+            # the cooldown is over and the grid is NOT open (the
+            # clock walked past k=0): the chip-fire keeps the posture
             a, diag = decide(p, ents=[TRUCK_L])
-            assert a != "GRENADE", a
-            assert diag["rule"].startswith("truck_chip"), diag
-        # the cooldown is over and the grid is NOT open (the clock
-        # walked past k=0): the chip-fire keeps the posture
-        a, diag = decide(p, ents=[TRUCK_L])
-        assert a != "GRENADE"
-        assert diag["rule"].startswith("truck_chip")
-        # the next grid point (k=1) restores the lob
-        p._truck_fight_f = GRID_K0 + int(TRUCK_PHASE_PERIOD) - 1
-        a, diag = decide(p, ents=[TRUCK_L])
-        assert a == "GRENADE"
-        assert diag["phase_k"] == 1
-        assert diag["grenades_used"] == 2
+            assert a != "GRENADE"
+            assert diag["rule"].startswith("truck_chip")
+            # the next grid point (k=1) restores the lob
+            p._truck_fight_f = GRID_K0 + int(TRUCK_PHASE_PERIOD) - 1
+            a, diag = decide(p, ents=[TRUCK_L])
+            assert a == "GRENADE"
+            assert diag["phase_k"] == 1
+            assert diag["grenades_used"] == 2
+        finally:
+            mp.undo()
 
     def test_escort_outranks_lob(self):
         # a clear-line escort soldier between the player and the

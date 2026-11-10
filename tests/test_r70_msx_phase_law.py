@@ -48,6 +48,7 @@ from ps1play.adapters.metal_slug_x.policy import (  # noqa: E402
     TRUCK_PHASE_BASE, TRUCK_PHASE_PERIOD, TRUCK_PHASE_TOL,
     TRUCK_PARK_DX, TRUCK_PARK_X,
 )
+import ps1play.adapters.metal_slug_x.policy as _policy_mod  # noqa: E402
 from ps1play.runtime.interfaces import GameObservation  # noqa: E402
 
 OBS_LEN = 21
@@ -132,35 +133,50 @@ class TestPhaseGate:
     def test_one_throw_per_k(self):
         # the tolerance spans 3 frames; the k bookkeeping allows
         # exactly ONE throw per grid point even with the cooldown
-        # artificially cleared (the C4 probe pre-spent; v1.9.0: the
-        # off-grid posture is the K1 chip-fire — still never a
-        # second lob)
-        p = at_clock(GRID_K0)
-        p._width_probed = 1
-        a, _ = decide(p, ents=[TRUCK_L])
-        assert a == "GRENADE"
-        p._gren_cd = 0
-        p._truck_fight_f = GRID_K0 + 1      # still inside the tol span
-        a, diag = decide(p, ents=[TRUCK_L])
-        assert a != "GRENADE", diag
-        assert diag["rule"].startswith("truck_chip")
+        # artificially cleared (the C4 probe pre-spent; the K1-era
+        # off-grid posture = the chip-fire — patched True here, the
+        # R72 shipped default is the phase-hold: covered in
+        # test_r72_msx_hybrid.py)
+        monkeypatch_true = pytest.MonkeyPatch()
+        monkeypatch_true.setattr(_policy_mod, "TRUCK_CHIP_FIRE", True)
+        try:
+            p = at_clock(GRID_K0)
+            p._width_probed = 1
+            a, _ = decide(p, ents=[TRUCK_L])
+            assert a == "GRENADE"
+            p._gren_cd = 0
+            p._truck_fight_f = GRID_K0 + 1      # still inside the tol span
+            a, diag = decide(p, ents=[TRUCK_L])
+            assert a != "GRENADE", diag
+            assert diag["rule"].startswith("truck_chip")
+        finally:
+            monkeypatch_true.undo()
 
     def test_clock_natural_accrual_and_anchor(self):
         # the fresh policy anchors fight_f=0 at the first sighting
         # and accrues one per decision; the k=0 throw lands at
         # decision 148-150 (the turn costs one frame inside tol;
-        # the C4 probe pre-spent; v1.9.0: the anchor frame opens
-        # with the K1 chip-fire turn, facing R default)
-        p = Mission1Policy()
-        p._width_probed = 1
-        acts = []
-        for _ in range(GRID_K0 + 5):
-            a, _ = decide(p, ents=[TRUCK_L])
-            acts.append(a)
-        assert acts[0] == "BACK"            # the chip-fire turn
-        assert "FIRE" in acts[:10]          # then the aimed fire
-        assert "GRENADE" in acts[:GRID_K0 + 3]
-        assert acts.index("GRENADE") >= GRID_K0 - 1
+        # the C4 probe pre-spent; the K1-era anchor opens with the
+        # chip-fire turn — patched True; the R72 default opens with
+        # the phase-hold: covered in test_r72_msx_hybrid.py)
+        mp = pytest.MonkeyPatch()
+        mp.setattr(_policy_mod, "TRUCK_CHIP_FIRE", True)
+        try:
+            p = Mission1Policy()
+            p._width_probed = 1
+            acts = []
+            for _ in range(GRID_K0 + 5):
+                a, _ = decide(p, ents=[TRUCK_L])
+                acts.append(a)
+            assert acts[0] == "BACK"            # the chip-fire turn
+            assert "FIRE" in acts[:10]          # then the aimed fire
+            assert "GRENADE" in acts[:GRID_K0 + 3]
+            # R72: the widened +-2f gate opens the k=0 window TWO
+            # frames EARLIER than v1.9.0 (the pre-side: the land at
+            # 176 = 178-2 -> the throw at 146) — hence GRID_K0 - 2
+            assert acts.index("GRENADE") >= GRID_K0 - 2
+        finally:
+            mp.undo()
 
     def test_clock_freezes_while_truck_absent(self):
         # the W8 flicker: the truck absent a few frames must NOT
@@ -281,17 +297,24 @@ class TestDriveInArm:
 
     def test_truck_freeze_hands_over_to_p1(self):
         # the drive-in ends: the first SC_TRUCK frame anchors the
-        # clock at 0 (v1.9.0: the K1 chip-fire opens the fight —
-        # the corridor is clean on the record timeline), the grid
-        # opens at 148 (the width probe pre-spent)
-        p = Mission1Policy()
-        p._facing = "L"
-        p._width_probed = 1
-        decide(p, px=1071.0, ents=[TRUCKIN_FAR])
-        a, diag = decide(p, ents=[TRUCK_L])
-        assert a == "FIRE"
-        assert diag["rule"] == "truck_chip_fire"
-        assert diag["fight_f"] == 0
+        # clock at 0 (the K1-era freeze opens with the chip-fire —
+        # patched True here; the corridor is clean on the record
+        # timeline; the R72 default = the phase-hold, covered in
+        # test_r72_msx_hybrid.py), the grid opens at 148 (the width
+        # probe pre-spent)
+        mp = pytest.MonkeyPatch()
+        mp.setattr(_policy_mod, "TRUCK_CHIP_FIRE", True)
+        try:
+            p = Mission1Policy()
+            p._facing = "L"
+            p._width_probed = 1
+            decide(p, px=1071.0, ents=[TRUCKIN_FAR])
+            a, diag = decide(p, ents=[TRUCK_L])
+            assert a == "FIRE"
+            assert diag["rule"] == "truck_chip_fire"
+            assert diag["fight_f"] == 0
+        finally:
+            mp.undo()
 
     def test_post_freeze_width_probe_fires(self):
         # the C4 post-freeze arm: the first clean in-window hold
@@ -442,7 +465,9 @@ class TestV181Corrections:
         assert diag["rule"] == "truck_lead_throw"
 
     def test_version_bump(self):
-        assert POLICY_VERSION == "1.9.0"
+        # v2.0.0 (R72): the volley+phase hybrid (the full +-2f gate
+        # + the idle-hold re-selection); the K1 arm stays patchable
+        assert POLICY_VERSION == "2.0.0"
 
     def test_c5_sc6_walker_outranks_lob(self):
         # C5 (the r70 boot-2 evidence): a chaser in a WALK state

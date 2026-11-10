@@ -1,0 +1,4730 @@
+{
+ "schema": "ps1play.r72-cluster-xref/1",
+ "round": "R72",
+ "track": "experiment \u2014 the payment-cluster xref (offline, zero boots; the R72 capsule hypothesis lead 2)",
+ "inputs": {
+  "clusters": "r71/r71wpc_stage2.jsonl PAYMENT_CLUSTER events (tap 2 = +1000, tap 6 = +500)",
+  "exe": {
+   "sha256": "1508b53216cc20dad8c1354e7702dae2940c34e7b2adeffb00337ab6659e0f35",
+   "sha_match": true
+  },
+  "overlay": {
+   "sha256": "cab640092ecb1200268a5ed9f786e6baa641bada677f7240336ef31cdcb04fd7",
+   "sha_match": true,
+   "load_va": "0x8009c0e8"
+  },
+  "call_graph": "work/msx_recomp/index/re_index.sqlite (edges 8118 + overlay_edges 1546; workspace, read-only, never committed)"
+ },
+ "bands": [
+  {
+   "tap": 2,
+   "delta": 1000,
+   "from": 6702,
+   "to": 7702,
+   "f_rel": 4,
+   "score_addr": "0xee318",
+   "bytes_changed": 1034,
+   "n_regions": 200,
+   "bands": {
+    "stack": {
+     "n": 16,
+     "span": [
+      "0x1ffd45",
+      "0x1ffed1"
+     ],
+     "regions": [
+      [
+       "0x1ffd45",
+       "0x1ffd51"
+      ],
+      [
+       "0x1ffd58",
+       "0x1ffd5c"
+      ],
+      [
+       "0x1ffd60",
+       "0x1ffd88"
+      ],
+      [
+       "0x1ffd8c",
+       "0x1ffda1"
+      ],
+      [
+       "0x1ffda8",
+       "0x1ffdb8"
+      ],
+      [
+       "0x1ffdc0",
+       "0x1ffdc4"
+      ],
+      [
+       "0x1ffdc8",
+       "0x1ffdcc"
+      ],
+      [
+       "0x1ffdd0",
+       "0x1ffdd2"
+      ],
+      [
+       "0x1ffde4",
+       "0x1ffdf7"
+      ],
+      [
+       "0x1ffdfc",
+       "0x1ffe0a"
+      ],
+      [
+       "0x1ffe10",
+       "0x1ffe12"
+      ],
+      [
+       "0x1ffe1c",
+       "0x1ffe2a"
+      ],
+      [
+       "0x1ffe3d",
+       "0x1ffe50"
+      ],
+      [
+       "0x1ffe63",
+       "0x1ffe70"
+      ],
+      [
+       "0x1ffea5",
+       "0x1ffeb6"
+      ],
+      [
+       "0x1ffecc",
+       "0x1ffed1"
+      ]
+     ]
+    },
+    "entity": {
+     "n": 75,
+     "span": [
+      "0x0ca2ca",
+      "0x0cc9f2"
+     ],
+     "regions": [
+      [
+       "0x0ca2ca",
+       "0x0ca2cc"
+      ],
+      [
+       "0x0ca2f4",
+       "0x0ca2f6"
+      ],
+      [
+       "0x0ca2fc",
+       "0x0ca2ff"
+      ],
+      [
+       "0x0ca308",
+       "0x0ca309"
+      ],
+      [
+       "0x0ca344",
+       "0x0ca346"
+      ],
+      [
+       "0x0ca353",
+       "0x0ca354"
+      ],
+      [
+       "0x0ca376",
+       "0x0ca37a"
+      ],
+      [
+       "0x0ca6b1",
+       "0x0ca6b2"
+      ],
+      [
+       "0x0ca6c4",
+       "0x0ca6d2"
+      ],
+      [
+       "0x0ca6d8",
+       "0x0ca6e7"
+      ],
+      [
+       "0x0ca6ec",
+       "0x0ca6ee"
+      ],
+      [
+       "0x0ca70c",
+       "0x0ca70e"
+      ],
+      [
+       "0x0ca71a",
+       "0x0ca71f"
+      ],
+      [
+       "0x0ca726",
+       "0x0ca727"
+      ],
+      [
+       "0x0ca730",
+       "0x0ca73a"
+      ],
+      [
+       "0x0ca73e",
+       "0x0ca73f"
+      ],
+      [
+       "0x0ca838",
+       "0x0ca839"
+      ],
+      [
+       "0x0caabc",
+       "0x0caabe"
+      ],
+      [
+       "0x0caac4",
+       "0x0caac7"
+      ],
+      [
+       "0x0caad0",
+       "0x0caad1"
+      ],
+      [
+       "0x0cac4a",
+       "0x0cac4b"
+      ],
+      [
+       "0x0cb284",
+       "0x0cb287"
+      ],
+      [
+       "0x0cb28c",
+       "0x0cb28e"
+      ],
+      [
+       "0x0cb298",
+       "0x0cb29a"
+      ],
+      [
+       "0x0cb788",
+       "0x0cb789"
+      ],
+      [
+       "0x0cb78d",
+       "0x0cb78e"
+      ],
+      [
+       "0x0cb7a4",
+       "0x0cb7a7"
+      ],
+      [
+       "0x0cb7ac",
+       "0x0cb7af"
+      ],
+      [
+       "0x0cb7b4",
+       "0x0cb7c3"
+      ],
+      [
+       "0x0cb7c8",
+       "0x0cb7ca"
+      ],
+      [
+       "0x0cb7f6",
+       "0x0cb7fb"
+      ],
+      [
+       "0x0cb80c",
+       "0x0cb816"
+      ],
+      [
+       "0x0cb81a",
+       "0x0cb81b"
+      ],
+      [
+       "0x0cb9e6",
+       "0x0cb9e9"
+      ],
+      [
+       "0x0cba20",
+       "0x0cba21"
+      ],
+      [
+       "0x0cba25",
+       "0x0cba26"
+      ],
+      [
+       "0x0cba4c",
+       "0x0cba4f"
+      ],
+      [
+       "0x0cba54",
+       "0x0cba56"
+      ],
+      [
+       "0x0cba60",
+       "0x0cba62"
+      ],
+      [
+       "0x0cba76",
+       "0x0cba7b"
+      ],
+      [
+       "0x0cba8e",
+       "0x0cba93"
+      ],
+      [
+       "0x0cba9a",
+       "0x0cba9b"
+      ],
+      [
+       "0x0cbaa4",
+       "0x0cbaae"
+      ],
+      [
+       "0x0cbab2",
+       "0x0cbab3"
+      ],
+      [
+       "0x0cbc7e",
+       "0x0cbc81"
+      ],
+      [
+       "0x0cbcbd",
+       "0x0cbcbe"
+      ],
+      [
+       "0x0cbce4",
+       "0x0cbce7"
+      ],
+      [
+       "0x0cbcec",
+       "0x0cbcef"
+      ],
+      [
+       "0x0cbcf8",
+       "0x0cbcfa"
+      ],
+      [
+       "0x0cbd0e",
+       "0x0cbd13"
+      ],
+      [
+       "0x0cbd26",
+       "0x0cbd2b"
+      ],
+      [
+       "0x0cbd32",
+       "0x0cbd33"
+      ],
+      [
+       "0x0cbd3c",
+       "0x0cbd46"
+      ],
+      [
+       "0x0cbd4a",
+       "0x0cbd4b"
+      ],
+      [
+       "0x0cbe09",
+       "0x0cbe0a"
+      ],
+      [
+       "0x0cbe30",
+       "0x0cbe32"
+      ],
+      [
+       "0x0cbe38",
+       "0x0cbe3b"
+      ],
+      [
+       "0x0cbe44",
+       "0x0cbe45"
+      ],
+      [
+       "0x0cc214",
+       "0x0cc217"
+      ],
+      [
+       "0x0cc21c",
+       "0x0cc21f"
+      ],
+      [
+       "0x0cc228",
+       "0x0cc22a"
+      ],
+      [
+       "0x0cc71d",
+       "0x0cc71e"
+      ],
+      [
+       "0x0cc744",
+       "0x0cc746"
+      ],
+      [
+       "0x0cc74c",
+       "0x0cc74f"
+      ],
+      [
+       "0x0cc758",
+       "0x0cc759"
+      ],
+      [
+       "0x0cc786",
+       "0x0cc787"
+      ],
+      [
+       "0x0cc798",
+       "0x0cc799"
+      ],
+      [
+       "0x0cc97a",
+       "0x0cc97b"
+      ],
+      [
+       "0x0cc980",
+       "0x0cc981"
+      ],
+      [
+       "0x0cc98f",
+       "0x0cc990"
+      ],
+      [
+       "0x0cc9b0",
+       "0x0cc9b6"
+      ],
+      [
+       "0x0cc9cd",
+       "0x0cc9cf"
+      ],
+      [
+       "0x0cc9d5",
+       "0x0cc9d6"
+      ],
+      [
+       "0x0cc9dc",
+       "0x0cc9eb"
+      ],
+      [
+       "0x0cc9f0",
+       "0x0cc9f2"
+      ]
+     ]
+    },
+    "hud": {
+     "n": 13,
+     "span": [
+      "0x0ee310",
+      "0x0ef4df"
+     ],
+     "regions": [
+      [
+       "0x0ee310",
+       "0x0ee314"
+      ],
+      [
+       "0x0ee318",
+       "0x0ee31a"
+      ],
+      [
+       "0x0ee330",
+       "0x0ee33e"
+      ],
+      [
+       "0x0ee394",
+       "0x0ee3a1"
+      ],
+      [
+       "0x0eef42",
+       "0x0eef48"
+      ],
+      [
+       "0x0eef7a",
+       "0x0eef7f"
+      ],
+      [
+       "0x0ef092",
+       "0x0ef098"
+      ],
+      [
+       "0x0ef13a",
+       "0x0ef140"
+      ],
+      [
+       "0x0ef170",
+       "0x0ef178"
+      ],
+      [
+       "0x0ef17e",
+       "0x0ef187"
+      ],
+      [
+       "0x0ef1a6",
+       "0x0ef1ab"
+      ],
+      [
+       "0x0ef428",
+       "0x0ef434"
+      ],
+      [
+       "0x0ef4a2",
+       "0x0ef4df"
+      ]
+     ]
+    },
+    "other": {
+     "n": 96,
+     "span": [
+      "0x009140",
+      "0x1fff2a"
+     ],
+     "regions": [
+      [
+       "0x009140",
+       "0x009142"
+      ],
+      [
+       "0x009148",
+       "0x009149"
+      ],
+      [
+       "0x00917b",
+       "0x00917d"
+      ],
+      [
+       "0x00919c",
+       "0x00919d"
+      ],
+      [
+       "0x0091b4",
+       "0x0091ba"
+      ],
+      [
+       "0x0091cb",
+       "0x0091cc"
+      ],
+      [
+       "0x00afc0",
+       "0x00afc1"
+      ],
+      [
+       "0x093eb6",
+       "0x093eb7"
+      ],
+      [
+       "0x0948b8",
+       "0x0948bd"
+      ],
+      [
+       "0x095840",
+       "0x095855"
+      ],
+      [
+       "0x095878",
+       "0x09587c"
+      ],
+      [
+       "0x095884",
+       "0x095886"
+      ],
+      [
+       "0x09588c",
+       "0x09588f"
+      ],
+      [
+       "0x0959e8",
+       "0x0959e9"
+      ],
+      [
+       "0x09ae6a",
+       "0x09ae6b"
+      ],
+      [
+       "0x09ae72",
+       "0x09ae74"
+      ],
+      [
+       "0x09ae89",
+       "0x09ae93"
+      ],
+      [
+       "0x09aec6",
+       "0x09aec7"
+      ],
+      [
+       "0x09af94",
+       "0x09af95"
+      ],
+      [
+       "0x0c9a5e",
+       "0x0c9a61"
+      ],
+      [
+       "0x0c9a6c",
+       "0x0c9a6d"
+      ],
+      [
+       "0x0ca0a8",
+       "0x0ca0a9"
+      ],
+      [
+       "0x0d4938",
+       "0x0d4939"
+      ],
+      [
+       "0x0d4970",
+       "0x0d4975"
+      ],
+      [
+       "0x0d4ab4",
+       "0x0d4ab7"
+      ],
+      [
+       "0x0d4af4",
+       "0x0d4af7"
+      ],
+      [
+       "0x0d5570",
+       "0x0d5571"
+      ],
+      [
+       "0x0d5578",
+       "0x0d5579"
+      ],
+      [
+       "0x0d5580",
+       "0x0d5581"
+      ],
+      [
+       "0x0d5588",
+       "0x0d5589"
+      ],
+      [
+       "0x0d7eb0",
+       "0x0d7eb9"
+      ],
+      [
+       "0x0d7ec4",
+       "0x0d7ec5"
+      ],
+      [
+       "0x0d7ed8",
+       "0x0d7ed9"
+      ],
+      [
+       "0x0d7eec",
+       "0x0d7eed"
+      ],
+      [
+       "0x0d7f00",
+       "0x0d7f0f"
+      ],
+      [
+       "0x0d7f14",
+       "0x0d7f15"
+      ],
+      [
+       "0x0d7f28",
+       "0x0d7f33"
+      ],
+      [
+       "0x0d7f3c",
+       "0x0d7f4b"
+      ],
+      [
+       "0x0d7f50",
+       "0x0d7f5b"
+      ],
+      [
+       "0x0d7f64",
+       "0x0d7f67"
+      ],
+      [
+       "0x0d7f78",
+       "0x0d7f79"
+      ],
+      [
+       "0x0d7f8c",
+       "0x0d7f8f"
+      ],
+      [
+       "0x0ddb70",
+       "0x0ddb71"
+      ],
+      [
+       "0x0ddb80",
+       "0x0ddb81"
+      ],
+      [
+       "0x0ddb90",
+       "0x0ddb91"
+      ],
+      [
+       "0x0ddba0",
+       "0x0ddba1"
+      ],
+      [
+       "0x0ddbb0",
+       "0x0ddbb1"
+      ],
+      [
+       "0x0ddbc0",
+       "0x0ddbc1"
+      ],
+      [
+       "0x0ddbd0",
+       "0x0ddbd1"
+      ],
+      [
+       "0x0ddbe0",
+       "0x0ddbe1"
+      ],
+      [
+       "0x0e2390",
+       "0x0e2395"
+      ],
+      [
+       "0x0e7ffc",
+       "0x0e7ffe"
+      ],
+      [
+       "0x0e8054",
+       "0x0e805d"
+      ],
+      [
+       "0x0e8068",
+       "0x0e806a"
+      ],
+      [
+       "0x0e8138",
+       "0x0e813a"
+      ],
+      [
+       "0x0e9e08",
+       "0x0e9e0a"
+      ],
+      [
+       "0x0eb590",
+       "0x0eb593"
+      ],
+      [
+       "0x0eb7f8",
+       "0x0eb7fb"
+      ],
+      [
+       "0x0eb8a8",
+       "0x0eb8ae"
+      ],
+      [
+       "0x0eb8d0",
+       "0x0eb8d2"
+      ],
+      [
+       "0x0eb8d8",
+       "0x0eb8da"
+      ],
+      [
+       "0x0eb8e4",
+       "0x0eb8e6"
+      ],
+      [
+       "0x0eb8ec",
+       "0x0eb8ef"
+      ],
+      [
+       "0x0eb928",
+       "0x0eb92a"
+      ],
+      [
+       "0x0eb930",
+       "0x0eb932"
+      ],
+      [
+       "0x0eb93c",
+       "0x0eb93e"
+      ],
+      [
+       "0x0eb944",
+       "0x0eb947"
+      ],
+      [
+       "0x0ec9a0",
+       "0x0ec9a3"
+      ],
+      [
+       "0x0ec9a8",
+       "0x0ec9aa"
+      ],
+      [
+       "0x0ec9b4",
+       "0x0ec9b7"
+      ],
+      [
+       "0x0ec9bc",
+       "0x0ec9be"
+      ],
+      [
+       "0x0eda18",
+       "0x0eda1a"
+      ],
+      [
+       "0x0eda20",
+       "0x0eda22"
+      ],
+      [
+       "0x0eda2c",
+       "0x0eda2e"
+      ],
+      [
+       "0x0eda34",
+       "0x0eda36"
+      ],
+      [
+       "0x0eda90",
+       "0x0eda92"
+      ],
+      [
+       "0x0eda98",
+       "0x0eda9a"
+      ],
+      [
+       "0x0edaa4",
+       "0x0edaa6"
+      ],
+      [
+       "0x0edaac",
+       "0x0edaaf"
+      ],
+      [
+       "0x0edb28",
+       "0x0edb2a"
+      ],
+      [
+       "0x0eddf8",
+       "0x0eddfa"
+      ],
+      [
+       "0x0ede21",
+       "0x0ede26"
+      ],
+      [
+       "0x0ede30",
+       "0x0ede36"
+      ],
+      [
+       "0x0ede41",
+       "0x0ede46"
+      ],
+      [
+       "0x0ede62",
+       "0x0ede6b"
+      ],
+      [
+       "0x0ede72",
+       "0x0ede7b"
+      ],
+      [
+       "0x0edf03",
+       "0x0edf05"
+      ],
+      [
+       "0x0ee28c",
+       "0x0ee290"
+      ],
+      [
+       "0x0ef5e8",
+       "0x0ef5f0"
+      ],
+      [
+       "0x0ef5f4",
+       "0x0ef601"
+      ],
+      [
+       "0x0f4222",
+       "0x0f4224"
+      ],
+      [
+       "0x0f4239",
+       "0x0f4243"
+      ],
+      [
+       "0x0f4298",
+       "0x0f429d"
+      ],
+      [
+       "0x0fa068",
+       "0x0fa06d"
+      ],
+      [
+       "0x0fa69c",
+       "0x0fa69e"
+      ],
+      [
+       "0x1fff25",
+       "0x1fff2a"
+      ]
+     ]
+    }
+   }
+  },
+  {
+   "tap": 6,
+   "delta": 500,
+   "from": 7702,
+   "to": 8202,
+   "f_rel": 1,
+   "score_addr": "0xee318",
+   "bytes_changed": 2695,
+   "n_regions": 200,
+   "bands": {
+    "stack": {
+     "n": 14,
+     "span": [
+      "0x1ffd3d",
+      "0x1ffeff"
+     ],
+     "regions": [
+      [
+       "0x1ffd3d",
+       "0x1ffd4a"
+      ],
+      [
+       "0x1ffd58",
+       "0x1ffd7f"
+      ],
+      [
+       "0x1ffd84",
+       "0x1ffdb0"
+      ],
+      [
+       "0x1ffdb4",
+       "0x1ffdcb"
+      ],
+      [
+       "0x1ffdd0",
+       "0x1ffdd8"
+      ],
+      [
+       "0x1ffde4",
+       "0x1ffdec"
+      ],
+      [
+       "0x1ffdf0",
+       "0x1ffdf8"
+      ],
+      [
+       "0x1ffdfc",
+       "0x1ffe12"
+      ],
+      [
+       "0x1ffe1c",
+       "0x1ffe2a"
+      ],
+      [
+       "0x1ffe3c",
+       "0x1ffe4d"
+      ],
+      [
+       "0x1ffe64",
+       "0x1ffe70"
+      ],
+      [
+       "0x1ffe76",
+       "0x1ffe91"
+      ],
+      [
+       "0x1ffea5",
+       "0x1ffed1"
+      ],
+      [
+       "0x1ffeee",
+       "0x1ffeff"
+      ]
+     ]
+    },
+    "entity": {
+     "n": 7,
+     "span": [
+      "0x0ca6c4",
+      "0x0cba5b"
+     ],
+     "regions": [
+      [
+       "0x0ca6c4",
+       "0x0ca6d2"
+      ],
+      [
+       "0x0ca6d8",
+       "0x0ca6e6"
+      ],
+      [
+       "0x0ca730",
+       "0x0ca73a"
+      ],
+      [
+       "0x0cb7de",
+       "0x0cb7e3"
+      ],
+      [
+       "0x0cb80c",
+       "0x0cb816"
+      ],
+      [
+       "0x0cba38",
+       "0x0cba47"
+      ],
+      [
+       "0x0cba4c",
+       "0x0cba5b"
+      ]
+     ]
+    },
+    "hud": {
+     "n": 4,
+     "span": [
+      "0x0ee346",
+      "0x0ef4a6"
+     ],
+     "regions": [
+      [
+       "0x0ee346",
+       "0x0ee352"
+      ],
+      [
+       "0x0eef40",
+       "0x0eef48"
+      ],
+      [
+       "0x0ef388",
+       "0x0ef394"
+      ],
+      [
+       "0x0ef49c",
+       "0x0ef4a6"
+      ]
+     ]
+    },
+    "other": {
+     "n": 175,
+     "span": [
+      "0x009140",
+      "0x1fff30"
+     ],
+     "regions": [
+      [
+       "0x009140",
+       "0x009158"
+      ],
+      [
+       "0x009160",
+       "0x009165"
+      ],
+      [
+       "0x009178",
+       "0x009189"
+      ],
+      [
+       "0x009190",
+       "0x009198"
+      ],
+      [
+       "0x00919c",
+       "0x0091a0"
+      ],
+      [
+       "0x0091ac",
+       "0x0091bb"
+      ],
+      [
+       "0x095838",
+       "0x095855"
+      ],
+      [
+       "0x095878",
+       "0x09587c"
+      ],
+      [
+       "0x09ae89",
+       "0x09ae93"
+      ],
+      [
+       "0x0d4949",
+       "0x0d494f"
+      ],
+      [
+       "0x0d4959",
+       "0x0d4966"
+      ],
+      [
+       "0x0d5598",
+       "0x0d55b6"
+      ],
+      [
+       "0x0d55c0",
+       "0x0d55de"
+      ],
+      [
+       "0x0d7eb0",
+       "0x0d7eb6"
+      ],
+      [
+       "0x0d7ec4",
+       "0x0d7eca"
+      ],
+      [
+       "0x0d7ed8",
+       "0x0d7ede"
+      ],
+      [
+       "0x0d7f64",
+       "0x0d7f6d"
+      ],
+      [
+       "0x0ddc00",
+       "0x0ddc08"
+      ],
+      [
+       "0x0ddc40",
+       "0x0ddc46"
+      ],
+      [
+       "0x0ddc70",
+       "0x0ddc78"
+      ],
+      [
+       "0x0ddcd0",
+       "0x0ddcd8"
+      ],
+      [
+       "0x0ddce0",
+       "0x0ddce8"
+      ],
+      [
+       "0x0ddd10",
+       "0x0ddd16"
+      ],
+      [
+       "0x0ddd20",
+       "0x0ddd26"
+      ],
+      [
+       "0x0ddd40",
+       "0x0ddd48"
+      ],
+      [
+       "0x0ddd50",
+       "0x0ddd58"
+      ],
+      [
+       "0x0ddd90",
+       "0x0ddd9b"
+      ],
+      [
+       "0x0ddda0",
+       "0x0dddab"
+      ],
+      [
+       "0x0dddb0",
+       "0x0dddb8"
+      ],
+      [
+       "0x0dddc0",
+       "0x0dddc8"
+      ],
+      [
+       "0x0dde00",
+       "0x0dde06"
+      ],
+      [
+       "0x0dde10",
+       "0x0dde16"
+      ],
+      [
+       "0x0dde30",
+       "0x0dde38"
+      ],
+      [
+       "0x0dde40",
+       "0x0dde48"
+      ],
+      [
+       "0x0dde90",
+       "0x0dde9b"
+      ],
+      [
+       "0x0ddea0",
+       "0x0ddea8"
+      ],
+      [
+       "0x0ddeb0",
+       "0x0ddeb8"
+      ],
+      [
+       "0x0ddec0",
+       "0x0ddec9"
+      ],
+      [
+       "0x0dded0",
+       "0x0dded8"
+      ],
+      [
+       "0x0ddee0",
+       "0x0ddeeb"
+      ],
+      [
+       "0x0ddf30",
+       "0x0ddf37"
+      ],
+      [
+       "0x0ddf40",
+       "0x0ddf47"
+      ],
+      [
+       "0x0ddf60",
+       "0x0ddf68"
+      ],
+      [
+       "0x0ddf70",
+       "0x0ddf78"
+      ],
+      [
+       "0x0ddfb0",
+       "0x0ddfbb"
+      ],
+      [
+       "0x0ddfc0",
+       "0x0ddfcb"
+      ],
+      [
+       "0x0ddfd0",
+       "0x0ddfdb"
+      ],
+      [
+       "0x0ddfe0",
+       "0x0ddfe8"
+      ],
+      [
+       "0x0ddff0",
+       "0x0ddffb"
+      ],
+      [
+       "0x0de000",
+       "0x0de00b"
+      ],
+      [
+       "0x0de010",
+       "0x0de018"
+      ],
+      [
+       "0x0de020",
+       "0x0de02b"
+      ],
+      [
+       "0x0de030",
+       "0x0de037"
+      ],
+      [
+       "0x0de070",
+       "0x0de076"
+      ],
+      [
+       "0x0de0d0",
+       "0x0de0db"
+      ],
+      [
+       "0x0de0e0",
+       "0x0de0e8"
+      ],
+      [
+       "0x0de0f0",
+       "0x0de0fb"
+      ],
+      [
+       "0x0de100",
+       "0x0de10b"
+      ],
+      [
+       "0x0de110",
+       "0x0de118"
+      ],
+      [
+       "0x0de120",
+       "0x0de128"
+      ],
+      [
+       "0x0de130",
+       "0x0de13b"
+      ],
+      [
+       "0x0de140",
+       "0x0de148"
+      ],
+      [
+       "0x0de150",
+       "0x0de15b"
+      ],
+      [
+       "0x0de160",
+       "0x0de168"
+      ],
+      [
+       "0x0de170",
+       "0x0de17b"
+      ],
+      [
+       "0x0de180",
+       "0x0de187"
+      ],
+      [
+       "0x0de1c0",
+       "0x0de1c6"
+      ],
+      [
+       "0x0de220",
+       "0x0de22b"
+      ],
+      [
+       "0x0de230",
+       "0x0de23b"
+      ],
+      [
+       "0x0de240",
+       "0x0de24b"
+      ],
+      [
+       "0x0de250",
+       "0x0de259"
+      ],
+      [
+       "0x0de260",
+       "0x0de268"
+      ],
+      [
+       "0x0de270",
+       "0x0de278"
+      ],
+      [
+       "0x0de280",
+       "0x0de28b"
+      ],
+      [
+       "0x0de2a0",
+       "0x0de2ab"
+      ],
+      [
+       "0x0de2b0",
+       "0x0de2b8"
+      ],
+      [
+       "0x0de2c0",
+       "0x0de2cb"
+      ],
+      [
+       "0x0de2d0",
+       "0x0de2d7"
+      ],
+      [
+       "0x0de370",
+       "0x0de37b"
+      ],
+      [
+       "0x0de380",
+       "0x0de38b"
+      ],
+      [
+       "0x0de390",
+       "0x0de39b"
+      ],
+      [
+       "0x0de3a0",
+       "0x0de3a9"
+      ],
+      [
+       "0x0de3b0",
+       "0x0de3b8"
+      ],
+      [
+       "0x0de3c0",
+       "0x0de3c8"
+      ],
+      [
+       "0x0de3d0",
+       "0x0de3db"
+      ],
+      [
+       "0x0de3f0",
+       "0x0de3fb"
+      ],
+      [
+       "0x0de410",
+       "0x0de41b"
+      ],
+      [
+       "0x0de440",
+       "0x0de448"
+      ],
+      [
+       "0x0de450",
+       "0x0de458"
+      ],
+      [
+       "0x0de460",
+       "0x0de466"
+      ],
+      [
+       "0x0de470",
+       "0x0de477"
+      ],
+      [
+       "0x0de480",
+       "0x0de487"
+      ],
+      [
+       "0x0de490",
+       "0x0de498"
+      ],
+      [
+       "0x0de4a0",
+       "0x0de4a8"
+      ],
+      [
+       "0x0de4c0",
+       "0x0de4c8"
+      ],
+      [
+       "0x0de4d0",
+       "0x0de4d8"
+      ],
+      [
+       "0x0de4e0",
+       "0x0de4e7"
+      ],
+      [
+       "0x0de4f0",
+       "0x0de4fb"
+      ],
+      [
+       "0x0de500",
+       "0x0de508"
+      ],
+      [
+       "0x0de510",
+       "0x0de518"
+      ],
+      [
+       "0x0de520",
+       "0x0de52b"
+      ],
+      [
+       "0x0de540",
+       "0x0de54b"
+      ],
+      [
+       "0x0de550",
+       "0x0de558"
+      ],
+      [
+       "0x0de560",
+       "0x0de56b"
+      ],
+      [
+       "0x0de590",
+       "0x0de598"
+      ],
+      [
+       "0x0de5a0",
+       "0x0de5a8"
+      ],
+      [
+       "0x0de5b0",
+       "0x0de5b6"
+      ],
+      [
+       "0x0de5c0",
+       "0x0de5c7"
+      ],
+      [
+       "0x0de5d0",
+       "0x0de5d7"
+      ],
+      [
+       "0x0de620",
+       "0x0de628"
+      ],
+      [
+       "0x0de630",
+       "0x0de63b"
+      ],
+      [
+       "0x0de640",
+       "0x0de64b"
+      ],
+      [
+       "0x0de650",
+       "0x0de65b"
+      ],
+      [
+       "0x0de660",
+       "0x0de667"
+      ],
+      [
+       "0x0de670",
+       "0x0de67b"
+      ],
+      [
+       "0x0de695",
+       "0x0de69b"
+      ],
+      [
+       "0x0de6a0",
+       "0x0de6a8"
+      ],
+      [
+       "0x0de6b0",
+       "0x0de6bb"
+      ],
+      [
+       "0x0de710",
+       "0x0de717"
+      ],
+      [
+       "0x0de720",
+       "0x0de727"
+      ],
+      [
+       "0x0de770",
+       "0x0de778"
+      ],
+      [
+       "0x0de780",
+       "0x0de78b"
+      ],
+      [
+       "0x0de790",
+       "0x0de79b"
+      ],
+      [
+       "0x0de7a0",
+       "0x0de7ab"
+      ],
+      [
+       "0x0de7b0",
+       "0x0de7b7"
+      ],
+      [
+       "0x0de7c0",
+       "0x0de7cb"
+      ],
+      [
+       "0x0de7f0",
+       "0x0de7fb"
+      ],
+      [
+       "0x0de800",
+       "0x0de808"
+      ],
+      [
+       "0x0de810",
+       "0x0de81b"
+      ],
+      [
+       "0x0de860",
+       "0x0de867"
+      ],
+      [
+       "0x0de870",
+       "0x0de877"
+      ],
+      [
+       "0x0de8d0",
+       "0x0de8db"
+      ],
+      [
+       "0x0de8e0",
+       "0x0de8e8"
+      ],
+      [
+       "0x0de8f0",
+       "0x0de8fb"
+      ],
+      [
+       "0x0de900",
+       "0x0de907"
+      ],
+      [
+       "0x0de910",
+       "0x0de917"
+      ],
+      [
+       "0x0de940",
+       "0x0de94b"
+      ],
+      [
+       "0x0de950",
+       "0x0de958"
+      ],
+      [
+       "0x0de960",
+       "0x0de96b"
+      ],
+      [
+       "0x0de9b0",
+       "0x0de9b7"
+      ],
+      [
+       "0x0de9c0",
+       "0x0de9c7"
+      ],
+      [
+       "0x0dea10",
+       "0x0dea1b"
+      ],
+      [
+       "0x0dea20",
+       "0x0dea28"
+      ],
+      [
+       "0x0dea30",
+       "0x0dea39"
+      ],
+      [
+       "0x0dea40",
+       "0x0dea47"
+      ],
+      [
+       "0x0dea50",
+       "0x0dea57"
+      ],
+      [
+       "0x0dea60",
+       "0x0dea6b"
+      ],
+      [
+       "0x0deb90",
+       "0x0deb96"
+      ],
+      [
+       "0x0dece0",
+       "0x0dece6"
+      ],
+      [
+       "0x0dee30",
+       "0x0dee38"
+      ],
+      [
+       "0x0dee40",
+       "0x0dee48"
+      ],
+      [
+       "0x0dee50",
+       "0x0dee58"
+      ],
+      [
+       "0x0df240",
+       "0x0df246"
+      ],
+      [
+       "0x0df4c0",
+       "0x0df4c6"
+      ],
+      [
+       "0x0df620",
+       "0x0df626"
+      ],
+      [
+       "0x0df630",
+       "0x0df636"
+      ],
+      [
+       "0x0df760",
+       "0x0df766"
+      ],
+      [
+       "0x0df770",
+       "0x0df776"
+      ],
+      [
+       "0x0df780",
+       "0x0df786"
+      ],
+      [
+       "0x0df8b0",
+       "0x0df8b6"
+      ],
+      [
+       "0x0df8c0",
+       "0x0df8c6"
+      ],
+      [
+       "0x0df8d0",
+       "0x0df8d6"
+      ],
+      [
+       "0x0dfa00",
+       "0x0dfa06"
+      ],
+      [
+       "0x0dfa10",
+       "0x0dfa16"
+      ],
+      [
+       "0x0dfa20",
+       "0x0dfa26"
+      ],
+      [
+       "0x0dfb50",
+       "0x0dfb56"
+      ],
+      [
+       "0x0dfb60",
+       "0x0dfb65"
+      ],
+      [
+       "0x0e23d8",
+       "0x0e2405"
+      ],
+      [
+       "0x0e2438",
+       "0x0e2442"
+      ],
+      [
+       "0x0e2458",
+       "0x0e248a"
+      ],
+      [
+       "0x0eb8a8",
+       "0x0eb8af"
+      ],
+      [
+       "0x0ef5e8",
+       "0x0ef5f0"
+      ],
+      [
+       "0x0ef5f4",
+       "0x0ef5ff"
+      ],
+      [
+       "0x0f4239",
+       "0x0f4243"
+      ],
+      [
+       "0x1fff25",
+       "0x1fff30"
+      ]
+     ]
+    }
+   }
+  }
+ ],
+ "entity_slots": [
+  {
+   "tap": 2,
+   "delta": 1000,
+   "slots": [
+    0,
+    3,
+    4,
+    6,
+    7,
+    12,
+    16,
+    18,
+    20,
+    21,
+    24,
+    28,
+    30
+   ]
+  },
+  {
+   "tap": 6,
+   "delta": 500,
+   "slots": [
+    3,
+    16,
+    18
+   ]
+  }
+ ],
+ "hud_store_sites": [
+  {
+   "space": "exe",
+   "va": "0x8002ceb4",
+   "insn": "sb $zero, -0x1bf4($v0)",
+   "target": "0x800ee40c",
+   "off": "0x0ee40c",
+   "score_word": false,
+   "rmw": false,
+   "verified": false,
+   "func": "8002ce78",
+   "func_name": "FUN_8002ce78",
+   "ctx": []
+  },
+  {
+   "space": "exe",
+   "va": "0x8005b2b0",
+   "insn": "sw $s0, -0x1cf0($v0)",
+   "target": "0x800ee310",
+   "off": "0x0ee310",
+   "score_word": false,
+   "rmw": false,
+   "verified": false,
+   "func": null,
+   "func_name": null,
+   "ctx": []
+  },
+  {
+   "space": "exe",
+   "va": "0x8005b588",
+   "insn": "sw $zero, -0x1cf0($v0)",
+   "target": "0x800ee310",
+   "off": "0x0ee310",
+   "score_word": false,
+   "rmw": false,
+   "verified": true,
+   "func": "8005b55c",
+   "func_name": "FUN_8005b55c",
+   "ctx": []
+  },
+  {
+   "space": "exe",
+   "va": "0x8005c508",
+   "insn": "sw $a1, -0x1ce8($a2)",
+   "target": "0x800ee318",
+   "off": "0x0ee318",
+   "score_word": true,
+   "rmw": false,
+   "verified": false,
+   "func": "8005c460",
+   "func_name": "FUN_8005c460",
+   "ctx": []
+  },
+  {
+   "space": "exe",
+   "va": "0x8005c54c",
+   "insn": "sw $v0, -0x1ce8($a2)",
+   "target": "0x800ee318",
+   "off": "0x0ee318",
+   "score_word": true,
+   "rmw": false,
+   "verified": false,
+   "func": "8005c460",
+   "func_name": "FUN_8005c460",
+   "ctx": []
+  },
+  {
+   "space": "exe",
+   "va": "0x8005c734",
+   "insn": "sw $zero, -0x1ce8($v0)",
+   "target": "0x800ee318",
+   "off": "0x0ee318",
+   "score_word": true,
+   "rmw": false,
+   "verified": false,
+   "func": "8005c6d4",
+   "func_name": "FUN_8005c6d4",
+   "ctx": []
+  },
+  {
+   "space": "exe",
+   "va": "0x8005c744",
+   "insn": "sw $zero, -0x1ce0($v0)",
+   "target": "0x800ee320",
+   "off": "0x0ee320",
+   "score_word": false,
+   "rmw": false,
+   "verified": false,
+   "func": "8005c6d4",
+   "func_name": "FUN_8005c6d4",
+   "ctx": []
+  },
+  {
+   "space": "exe",
+   "va": "0x8005c7c0",
+   "insn": "sh $v0, -0x1cd8($v1)",
+   "target": "0x800ee328",
+   "off": "0x0ee328",
+   "score_word": false,
+   "rmw": false,
+   "verified": false,
+   "func": null,
+   "func_name": null,
+   "ctx": []
+  },
+  {
+   "space": "exe",
+   "va": "0x8005c860",
+   "insn": "sw $s2, -0x1c60($v0)",
+   "target": "0x800ee3a0",
+   "off": "0x0ee3a0",
+   "score_word": false,
+   "rmw": false,
+   "verified": false,
+   "func": null,
+   "func_name": null,
+   "ctx": []
+  },
+  {
+   "space": "exe",
+   "va": "0x8005c8a0",
+   "insn": "sw $v1, -0x1c60($a2)",
+   "target": "0x800ee3a0",
+   "off": "0x0ee3a0",
+   "score_word": false,
+   "rmw": false,
+   "verified": false,
+   "func": "8005c888",
+   "func_name": "FUN_8005c888",
+   "ctx": []
+  },
+  {
+   "space": "exe",
+   "va": "0x8005cec8",
+   "insn": "sw $a0, -0x1c58($v0)",
+   "target": "0x800ee3a8",
+   "off": "0x0ee3a8",
+   "score_word": false,
+   "rmw": false,
+   "verified": true,
+   "func": null,
+   "func_name": null,
+   "ctx": []
+  },
+  {
+   "space": "exe",
+   "va": "0x8005ced0",
+   "insn": "sh $v1, -0x1c54($v0)",
+   "target": "0x800ee3ac",
+   "off": "0x0ee3ac",
+   "score_word": false,
+   "rmw": false,
+   "verified": true,
+   "func": null,
+   "func_name": null,
+   "ctx": []
+  },
+  {
+   "space": "exe",
+   "va": "0x8005d2e4",
+   "insn": "sh $v0, -0x1c54($t0)",
+   "target": "0x800ee3ac",
+   "off": "0x0ee3ac",
+   "score_word": false,
+   "rmw": false,
+   "verified": false,
+   "func": null,
+   "func_name": null,
+   "ctx": []
+  },
+  {
+   "space": "exe",
+   "va": "0x8005d3d0",
+   "insn": "sh $v0, -0x1c54($t0)",
+   "target": "0x800ee3ac",
+   "off": "0x0ee3ac",
+   "score_word": false,
+   "rmw": false,
+   "verified": false,
+   "func": null,
+   "func_name": null,
+   "ctx": []
+  },
+  {
+   "space": "exe",
+   "va": "0x8005e69c",
+   "insn": "sh $a1, -0x1c34($v0)",
+   "target": "0x800ee3cc",
+   "off": "0x0ee3cc",
+   "score_word": false,
+   "rmw": false,
+   "verified": false,
+   "func": "8005e694",
+   "func_name": "FUN_8005e694",
+   "ctx": []
+  },
+  {
+   "space": "exe",
+   "va": "0x8005e6a4",
+   "insn": "sh $a1, -0x1c0c($v0)",
+   "target": "0x800ee3f4",
+   "off": "0x0ee3f4",
+   "score_word": false,
+   "rmw": false,
+   "verified": false,
+   "func": "8005e694",
+   "func_name": "FUN_8005e694",
+   "ctx": []
+  },
+  {
+   "space": "exe",
+   "va": "0x80067c14",
+   "insn": "sh $v1, -0x1bf2($v0)",
+   "target": "0x800ee40e",
+   "off": "0x0ee40e",
+   "score_word": false,
+   "rmw": false,
+   "verified": false,
+   "func": "80067c04",
+   "func_name": "FUN_80067c04",
+   "ctx": []
+  },
+  {
+   "space": "exe",
+   "va": "0x80067c28",
+   "insn": "sh $v1, -0x1bf0($v0)",
+   "target": "0x800ee410",
+   "off": "0x0ee410",
+   "score_word": false,
+   "rmw": false,
+   "verified": false,
+   "func": "80067c04",
+   "func_name": "FUN_80067c04",
+   "ctx": []
+  },
+  {
+   "space": "exe",
+   "va": "0x800680d8",
+   "insn": "sh $zero, -0x1bf6($v0)",
+   "target": "0x800ee40a",
+   "off": "0x0ee40a",
+   "score_word": false,
+   "rmw": false,
+   "verified": false,
+   "func": null,
+   "func_name": null,
+   "ctx": []
+  },
+  {
+   "space": "exe",
+   "va": "0x800680f4",
+   "insn": "sb $v0, -0x1bf4($v1)",
+   "target": "0x800ee40c",
+   "off": "0x0ee40c",
+   "score_word": false,
+   "rmw": false,
+   "verified": false,
+   "func": null,
+   "func_name": null,
+   "ctx": []
+  },
+  {
+   "space": "exe",
+   "va": "0x80068158",
+   "insn": "sh $v1, -0x1be8($v0)",
+   "target": "0x800ee418",
+   "off": "0x0ee418",
+   "score_word": false,
+   "rmw": false,
+   "verified": false,
+   "func": null,
+   "func_name": null,
+   "ctx": []
+  },
+  {
+   "space": "exe",
+   "va": "0x80068164",
+   "insn": "sh $v0, -0x1be8($v1)",
+   "target": "0x800ee418",
+   "off": "0x0ee418",
+   "score_word": false,
+   "rmw": false,
+   "verified": false,
+   "func": null,
+   "func_name": null,
+   "ctx": []
+  },
+  {
+   "space": "exe",
+   "va": "0x8006db3c",
+   "insn": "sh $zero, ($a1)",
+   "target": "0x800ee468",
+   "off": "0x0ee468",
+   "score_word": false,
+   "rmw": false,
+   "verified": false,
+   "func": "8006da74",
+   "func_name": "FUN_8006da74",
+   "ctx": []
+  },
+  {
+   "space": "exe",
+   "va": "0x8006e968",
+   "insn": "sw $v0, -0x1ae8($at)",
+   "target": "0x800ee518",
+   "off": "0x0ee518",
+   "score_word": false,
+   "rmw": false,
+   "verified": true,
+   "func": "8006e93c",
+   "func_name": "FUN_8006e93c",
+   "ctx": []
+  },
+  {
+   "space": "exe",
+   "va": "0x8006ed40",
+   "insn": "sw $v0, -0x1ae4($at)",
+   "target": "0x800ee51c",
+   "off": "0x0ee51c",
+   "score_word": false,
+   "rmw": false,
+   "verified": true,
+   "func": "8006ed0c",
+   "func_name": "FUN_8006ed0c",
+   "ctx": []
+  },
+  {
+   "space": "exe",
+   "va": "0x8006ed48",
+   "insn": "sw $zero, -0x1ae8($at)",
+   "target": "0x800ee518",
+   "off": "0x0ee518",
+   "score_word": false,
+   "rmw": false,
+   "verified": true,
+   "func": "8006ed0c",
+   "func_name": "FUN_8006ed0c",
+   "ctx": []
+  },
+  {
+   "space": "exe",
+   "va": "0x8006ed50",
+   "insn": "sw $zero, -0x1aec($at)",
+   "target": "0x800ee514",
+   "off": "0x0ee514",
+   "score_word": false,
+   "rmw": false,
+   "verified": true,
+   "func": "8006ed0c",
+   "func_name": "FUN_8006ed0c",
+   "ctx": []
+  },
+  {
+   "space": "exe",
+   "va": "0x8006ee78",
+   "insn": "sw $v1, ($v0)",
+   "target": "0x800ee480",
+   "off": "0x0ee480",
+   "score_word": false,
+   "rmw": false,
+   "verified": false,
+   "func": null,
+   "func_name": null,
+   "ctx": []
+  },
+  {
+   "space": "exe",
+   "va": "0x8006ee84",
+   "insn": "sw $v1, 4($v0)",
+   "target": "0x800ee484",
+   "off": "0x0ee484",
+   "score_word": false,
+   "rmw": false,
+   "verified": false,
+   "func": "8006ee7c",
+   "func_name": "FUN_8006ee7c",
+   "ctx": []
+  },
+  {
+   "space": "exe",
+   "va": "0x8006ee90",
+   "insn": "sw $v1, 0xc($v0)",
+   "target": "0x800ee48c",
+   "off": "0x0ee48c",
+   "score_word": false,
+   "rmw": false,
+   "verified": false,
+   "func": "8006ee7c",
+   "func_name": "FUN_8006ee7c",
+   "ctx": []
+  },
+  {
+   "space": "exe",
+   "va": "0x8006ee9c",
+   "insn": "sw $v1, 8($v0)",
+   "target": "0x800ee488",
+   "off": "0x0ee488",
+   "score_word": false,
+   "rmw": false,
+   "verified": false,
+   "func": "8006ee7c",
+   "func_name": "FUN_8006ee7c",
+   "ctx": []
+  },
+  {
+   "space": "exe",
+   "va": "0x8006eea8",
+   "insn": "sw $v1, 0x10($v0)",
+   "target": "0x800ee490",
+   "off": "0x0ee490",
+   "score_word": false,
+   "rmw": false,
+   "verified": false,
+   "func": "8006ee7c",
+   "func_name": "FUN_8006ee7c",
+   "ctx": []
+  },
+  {
+   "space": "exe",
+   "va": "0x8006eeb4",
+   "insn": "sw $v1, 0x14($v0)",
+   "target": "0x800ee494",
+   "off": "0x0ee494",
+   "score_word": false,
+   "rmw": false,
+   "verified": false,
+   "func": "8006ee7c",
+   "func_name": "FUN_8006ee7c",
+   "ctx": []
+  },
+  {
+   "space": "exe",
+   "va": "0x8006eec0",
+   "insn": "sw $v1, 0x1c($v0)",
+   "target": "0x800ee49c",
+   "off": "0x0ee49c",
+   "score_word": false,
+   "rmw": false,
+   "verified": false,
+   "func": "8006ee7c",
+   "func_name": "FUN_8006ee7c",
+   "ctx": []
+  },
+  {
+   "space": "exe",
+   "va": "0x8006eecc",
+   "insn": "sw $v1, 0x20($v0)",
+   "target": "0x800ee4a0",
+   "off": "0x0ee4a0",
+   "score_word": false,
+   "rmw": false,
+   "verified": false,
+   "func": "8006ee7c",
+   "func_name": "FUN_8006ee7c",
+   "ctx": []
+  },
+  {
+   "space": "exe",
+   "va": "0x8006eed8",
+   "insn": "sw $v1, 0x24($v0)",
+   "target": "0x800ee4a4",
+   "off": "0x0ee4a4",
+   "score_word": false,
+   "rmw": false,
+   "verified": false,
+   "func": "8006ee7c",
+   "func_name": "FUN_8006ee7c",
+   "ctx": []
+  },
+  {
+   "space": "exe",
+   "va": "0x8006eee4",
+   "insn": "sw $v1, 0x28($v0)",
+   "target": "0x800ee4a8",
+   "off": "0x0ee4a8",
+   "score_word": false,
+   "rmw": false,
+   "verified": false,
+   "func": "8006ee7c",
+   "func_name": "FUN_8006ee7c",
+   "ctx": []
+  },
+  {
+   "space": "exe",
+   "va": "0x8006eef0",
+   "insn": "sw $v1, 0x2c($v0)",
+   "target": "0x800ee4ac",
+   "off": "0x0ee4ac",
+   "score_word": false,
+   "rmw": false,
+   "verified": false,
+   "func": "8006ee7c",
+   "func_name": "FUN_8006ee7c",
+   "ctx": []
+  },
+  {
+   "space": "exe",
+   "va": "0x8006eefc",
+   "insn": "sw $v1, 0x30($v0)",
+   "target": "0x800ee4b0",
+   "off": "0x0ee4b0",
+   "score_word": false,
+   "rmw": false,
+   "verified": false,
+   "func": "8006ee7c",
+   "func_name": "FUN_8006ee7c",
+   "ctx": []
+  },
+  {
+   "space": "exe",
+   "va": "0x8006ef08",
+   "insn": "sw $v1, 0x34($v0)",
+   "target": "0x800ee4b4",
+   "off": "0x0ee4b4",
+   "score_word": false,
+   "rmw": false,
+   "verified": false,
+   "func": "8006ee7c",
+   "func_name": "FUN_8006ee7c",
+   "ctx": []
+  },
+  {
+   "space": "exe",
+   "va": "0x8006ef14",
+   "insn": "sw $v1, 0x38($v0)",
+   "target": "0x800ee4b8",
+   "off": "0x0ee4b8",
+   "score_word": false,
+   "rmw": false,
+   "verified": false,
+   "func": "8006ee7c",
+   "func_name": "FUN_8006ee7c",
+   "ctx": []
+  },
+  {
+   "space": "exe",
+   "va": "0x8006ef20",
+   "insn": "sw $v1, 0x3c($v0)",
+   "target": "0x800ee4bc",
+   "off": "0x0ee4bc",
+   "score_word": false,
+   "rmw": false,
+   "verified": false,
+   "func": "8006ee7c",
+   "func_name": "FUN_8006ee7c",
+   "ctx": []
+  },
+  {
+   "space": "exe",
+   "va": "0x8006ef2c",
+   "insn": "sw $v1, 0x40($v0)",
+   "target": "0x800ee4c0",
+   "off": "0x0ee4c0",
+   "score_word": false,
+   "rmw": false,
+   "verified": false,
+   "func": "8006ef2c",
+   "func_name": "FUN_8006ef2c",
+   "ctx": []
+  },
+  {
+   "space": "exe",
+   "va": "0x8006ef38",
+   "insn": "sw $v1, 0x18($v0)",
+   "target": "0x800ee498",
+   "off": "0x0ee498",
+   "score_word": false,
+   "rmw": false,
+   "verified": false,
+   "func": null,
+   "func_name": null,
+   "ctx": []
+  },
+  {
+   "space": "exe",
+   "va": "0x8006ef44",
+   "insn": "sw $v1, 0x44($v0)",
+   "target": "0x800ee4c4",
+   "off": "0x0ee4c4",
+   "score_word": false,
+   "rmw": false,
+   "verified": false,
+   "func": null,
+   "func_name": null,
+   "ctx": []
+  },
+  {
+   "space": "exe",
+   "va": "0x8006ef50",
+   "insn": "sw $v1, 0x48($v0)",
+   "target": "0x800ee4c8",
+   "off": "0x0ee4c8",
+   "score_word": false,
+   "rmw": false,
+   "verified": false,
+   "func": null,
+   "func_name": null,
+   "ctx": []
+  },
+  {
+   "space": "exe",
+   "va": "0x8006ef5c",
+   "insn": "sw $v1, 0x4c($v0)",
+   "target": "0x800ee4cc",
+   "off": "0x0ee4cc",
+   "score_word": false,
+   "rmw": false,
+   "verified": false,
+   "func": null,
+   "func_name": null,
+   "ctx": []
+  },
+  {
+   "space": "exe",
+   "va": "0x8006ef68",
+   "insn": "sw $v1, 0x50($v0)",
+   "target": "0x800ee4d0",
+   "off": "0x0ee4d0",
+   "score_word": false,
+   "rmw": false,
+   "verified": false,
+   "func": null,
+   "func_name": null,
+   "ctx": []
+  },
+  {
+   "space": "exe",
+   "va": "0x8006ef74",
+   "insn": "sw $v1, 0x54($v0)",
+   "target": "0x800ee4d4",
+   "off": "0x0ee4d4",
+   "score_word": false,
+   "rmw": false,
+   "verified": false,
+   "func": null,
+   "func_name": null,
+   "ctx": []
+  },
+  {
+   "space": "exe",
+   "va": "0x8006ef80",
+   "insn": "sw $v1, 0x58($v0)",
+   "target": "0x800ee4d8",
+   "off": "0x0ee4d8",
+   "score_word": false,
+   "rmw": false,
+   "verified": false,
+   "func": null,
+   "func_name": null,
+   "ctx": []
+  },
+  {
+   "space": "exe",
+   "va": "0x8006ef8c",
+   "insn": "sw $v1, 0x5c($v0)",
+   "target": "0x800ee4dc",
+   "off": "0x0ee4dc",
+   "score_word": false,
+   "rmw": false,
+   "verified": false,
+   "func": null,
+   "func_name": null,
+   "ctx": []
+  },
+  {
+   "space": "exe",
+   "va": "0x8006ef98",
+   "insn": "sw $v1, 0x60($v0)",
+   "target": "0x800ee4e0",
+   "off": "0x0ee4e0",
+   "score_word": false,
+   "rmw": false,
+   "verified": false,
+   "func": null,
+   "func_name": null,
+   "ctx": []
+  },
+  {
+   "space": "exe",
+   "va": "0x8006efa4",
+   "insn": "sw $v1, 0x64($v0)",
+   "target": "0x800ee4e4",
+   "off": "0x0ee4e4",
+   "score_word": false,
+   "rmw": false,
+   "verified": false,
+   "func": null,
+   "func_name": null,
+   "ctx": []
+  },
+  {
+   "space": "exe",
+   "va": "0x8006efb0",
+   "insn": "sw $v1, 0x68($v0)",
+   "target": "0x800ee4e8",
+   "off": "0x0ee4e8",
+   "score_word": false,
+   "rmw": false,
+   "verified": false,
+   "func": null,
+   "func_name": null,
+   "ctx": []
+  },
+  {
+   "space": "exe",
+   "va": "0x8006efbc",
+   "insn": "sw $v1, 0x6c($v0)",
+   "target": "0x800ee4ec",
+   "off": "0x0ee4ec",
+   "score_word": false,
+   "rmw": false,
+   "verified": false,
+   "func": null,
+   "func_name": null,
+   "ctx": []
+  },
+  {
+   "space": "exe",
+   "va": "0x8006efc8",
+   "insn": "sw $v1, 0x70($v0)",
+   "target": "0x800ee4f0",
+   "off": "0x0ee4f0",
+   "score_word": false,
+   "rmw": false,
+   "verified": false,
+   "func": null,
+   "func_name": null,
+   "ctx": []
+  },
+  {
+   "space": "exe",
+   "va": "0x8006efd4",
+   "insn": "sw $v1, 0x74($v0)",
+   "target": "0x800ee4f4",
+   "off": "0x0ee4f4",
+   "score_word": false,
+   "rmw": false,
+   "verified": false,
+   "func": null,
+   "func_name": null,
+   "ctx": []
+  },
+  {
+   "space": "exe",
+   "va": "0x8006efe0",
+   "insn": "sw $v1, 0x78($v0)",
+   "target": "0x800ee4f8",
+   "off": "0x0ee4f8",
+   "score_word": false,
+   "rmw": false,
+   "verified": false,
+   "func": null,
+   "func_name": null,
+   "ctx": []
+  },
+  {
+   "space": "exe",
+   "va": "0x8006efec",
+   "insn": "sw $v1, 0x7c($v0)",
+   "target": "0x800ee4fc",
+   "off": "0x0ee4fc",
+   "score_word": false,
+   "rmw": false,
+   "verified": false,
+   "func": null,
+   "func_name": null,
+   "ctx": []
+  },
+  {
+   "space": "exe",
+   "va": "0x8006eff8",
+   "insn": "sw $v1, 0x80($v0)",
+   "target": "0x800ee500",
+   "off": "0x0ee500",
+   "score_word": false,
+   "rmw": false,
+   "verified": false,
+   "func": null,
+   "func_name": null,
+   "ctx": []
+  },
+  {
+   "space": "exe",
+   "va": "0x8006f004",
+   "insn": "sw $v1, 0x84($v0)",
+   "target": "0x800ee504",
+   "off": "0x0ee504",
+   "score_word": false,
+   "rmw": false,
+   "verified": false,
+   "func": null,
+   "func_name": null,
+   "ctx": []
+  },
+  {
+   "space": "exe",
+   "va": "0x8006f010",
+   "insn": "sw $v1, 0x88($v0)",
+   "target": "0x800ee508",
+   "off": "0x0ee508",
+   "score_word": false,
+   "rmw": false,
+   "verified": false,
+   "func": null,
+   "func_name": null,
+   "ctx": []
+  },
+  {
+   "space": "exe",
+   "va": "0x8006f01c",
+   "insn": "sw $v1, 0x8c($v0)",
+   "target": "0x800ee50c",
+   "off": "0x0ee50c",
+   "score_word": false,
+   "rmw": false,
+   "verified": false,
+   "func": null,
+   "func_name": null,
+   "ctx": []
+  },
+  {
+   "space": "exe",
+   "va": "0x8006f028",
+   "insn": "sw $v1, 0x90($v0)",
+   "target": "0x800ee510",
+   "off": "0x0ee510",
+   "score_word": false,
+   "rmw": false,
+   "verified": false,
+   "func": null,
+   "func_name": null,
+   "ctx": []
+  },
+  {
+   "space": "exe",
+   "va": "0x8006f074",
+   "insn": "sw $v1, -0x1ae8($at)",
+   "target": "0x800ee518",
+   "off": "0x0ee518",
+   "score_word": false,
+   "rmw": false,
+   "verified": true,
+   "func": null,
+   "func_name": null,
+   "ctx": []
+  },
+  {
+   "space": "exe",
+   "va": "0x800718b8",
+   "insn": "sw $v1, -0x1ae8($at)",
+   "target": "0x800ee518",
+   "off": "0x0ee518",
+   "score_word": false,
+   "rmw": false,
+   "verified": true,
+   "func": "80071808",
+   "func_name": "FUN_80071808",
+   "ctx": []
+  },
+  {
+   "space": "exe",
+   "va": "0x800718d8",
+   "insn": "sw $a0, ($v1)",
+   "target": "0x800ee480",
+   "off": "0x0ee480",
+   "score_word": false,
+   "rmw": false,
+   "verified": false,
+   "func": "800718bc",
+   "func_name": "FUN_800718bc",
+   "ctx": []
+  },
+  {
+   "space": "exe",
+   "va": "0x800718e4",
+   "insn": "sw $a0, 4($v1)",
+   "target": "0x800ee484",
+   "off": "0x0ee484",
+   "score_word": false,
+   "rmw": false,
+   "verified": false,
+   "func": "800718bc",
+   "func_name": "FUN_800718bc",
+   "ctx": []
+  },
+  {
+   "space": "exe",
+   "va": "0x800718f0",
+   "insn": "sw $a0, 0xc($v1)",
+   "target": "0x800ee48c",
+   "off": "0x0ee48c",
+   "score_word": false,
+   "rmw": false,
+   "verified": false,
+   "func": "800718bc",
+   "func_name": "FUN_800718bc",
+   "ctx": []
+  },
+  {
+   "space": "exe",
+   "va": "0x800718fc",
+   "insn": "sw $a0, 8($v1)",
+   "target": "0x800ee488",
+   "off": "0x0ee488",
+   "score_word": false,
+   "rmw": false,
+   "verified": false,
+   "func": "800718bc",
+   "func_name": "FUN_800718bc",
+   "ctx": []
+  },
+  {
+   "space": "exe",
+   "va": "0x80071908",
+   "insn": "sw $a0, 0x10($v1)",
+   "target": "0x800ee490",
+   "off": "0x0ee490",
+   "score_word": false,
+   "rmw": false,
+   "verified": false,
+   "func": "800718bc",
+   "func_name": "FUN_800718bc",
+   "ctx": []
+  },
+  {
+   "space": "exe",
+   "va": "0x80071914",
+   "insn": "sw $a0, 0x14($v1)",
+   "target": "0x800ee494",
+   "off": "0x0ee494",
+   "score_word": false,
+   "rmw": false,
+   "verified": false,
+   "func": "800718bc",
+   "func_name": "FUN_800718bc",
+   "ctx": []
+  },
+  {
+   "space": "exe",
+   "va": "0x80071920",
+   "insn": "sw $a0, 0x1c($v1)",
+   "target": "0x800ee49c",
+   "off": "0x0ee49c",
+   "score_word": false,
+   "rmw": false,
+   "verified": false,
+   "func": "800718bc",
+   "func_name": "FUN_800718bc",
+   "ctx": []
+  },
+  {
+   "space": "exe",
+   "va": "0x8007192c",
+   "insn": "sw $a0, 0x20($v1)",
+   "target": "0x800ee4a0",
+   "off": "0x0ee4a0",
+   "score_word": false,
+   "rmw": false,
+   "verified": false,
+   "func": "800718bc",
+   "func_name": "FUN_800718bc",
+   "ctx": []
+  },
+  {
+   "space": "exe",
+   "va": "0x80071938",
+   "insn": "sw $a0, 0x24($v1)",
+   "target": "0x800ee4a4",
+   "off": "0x0ee4a4",
+   "score_word": false,
+   "rmw": false,
+   "verified": false,
+   "func": "800718bc",
+   "func_name": "FUN_800718bc",
+   "ctx": []
+  },
+  {
+   "space": "exe",
+   "va": "0x80071944",
+   "insn": "sw $a0, 0x28($v1)",
+   "target": "0x800ee4a8",
+   "off": "0x0ee4a8",
+   "score_word": false,
+   "rmw": false,
+   "verified": false,
+   "func": "800718bc",
+   "func_name": "FUN_800718bc",
+   "ctx": []
+  },
+  {
+   "space": "exe",
+   "va": "0x80071950",
+   "insn": "sw $a0, 0x2c($v1)",
+   "target": "0x800ee4ac",
+   "off": "0x0ee4ac",
+   "score_word": false,
+   "rmw": false,
+   "verified": false,
+   "func": "800718bc",
+   "func_name": "FUN_800718bc",
+   "ctx": []
+  },
+  {
+   "space": "exe",
+   "va": "0x8007195c",
+   "insn": "sw $a0, 0x30($v1)",
+   "target": "0x800ee4b0",
+   "off": "0x0ee4b0",
+   "score_word": false,
+   "rmw": false,
+   "verified": false,
+   "func": "800718bc",
+   "func_name": "FUN_800718bc",
+   "ctx": []
+  },
+  {
+   "space": "exe",
+   "va": "0x80071968",
+   "insn": "sw $a0, 0x34($v1)",
+   "target": "0x800ee4b4",
+   "off": "0x0ee4b4",
+   "score_word": false,
+   "rmw": false,
+   "verified": false,
+   "func": "800718bc",
+   "func_name": "FUN_800718bc",
+   "ctx": []
+  },
+  {
+   "space": "exe",
+   "va": "0x80071974",
+   "insn": "sw $a0, 0x38($v1)",
+   "target": "0x800ee4b8",
+   "off": "0x0ee4b8",
+   "score_word": false,
+   "rmw": false,
+   "verified": false,
+   "func": "800718bc",
+   "func_name": "FUN_800718bc",
+   "ctx": []
+  },
+  {
+   "space": "exe",
+   "va": "0x80071980",
+   "insn": "sw $a0, 0x3c($v1)",
+   "target": "0x800ee4bc",
+   "off": "0x0ee4bc",
+   "score_word": false,
+   "rmw": false,
+   "verified": false,
+   "func": "800718bc",
+   "func_name": "FUN_800718bc",
+   "ctx": []
+  },
+  {
+   "space": "exe",
+   "va": "0x8007198c",
+   "insn": "sw $a0, 0x40($v1)",
+   "target": "0x800ee4c0",
+   "off": "0x0ee4c0",
+   "score_word": false,
+   "rmw": false,
+   "verified": false,
+   "func": "800718bc",
+   "func_name": "FUN_800718bc",
+   "ctx": []
+  },
+  {
+   "space": "exe",
+   "va": "0x80071998",
+   "insn": "sw $a0, 0x18($v1)",
+   "target": "0x800ee498",
+   "off": "0x0ee498",
+   "score_word": false,
+   "rmw": false,
+   "verified": false,
+   "func": "800718bc",
+   "func_name": "FUN_800718bc",
+   "ctx": []
+  },
+  {
+   "space": "exe",
+   "va": "0x800719a4",
+   "insn": "sw $a0, 0x44($v1)",
+   "target": "0x800ee4c4",
+   "off": "0x0ee4c4",
+   "score_word": false,
+   "rmw": false,
+   "verified": false,
+   "func": "800718bc",
+   "func_name": "FUN_800718bc",
+   "ctx": []
+  },
+  {
+   "space": "exe",
+   "va": "0x800719b0",
+   "insn": "sw $a0, 0x48($v1)",
+   "target": "0x800ee4c8",
+   "off": "0x0ee4c8",
+   "score_word": false,
+   "rmw": false,
+   "verified": false,
+   "func": "800718bc",
+   "func_name": "FUN_800718bc",
+   "ctx": []
+  },
+  {
+   "space": "exe",
+   "va": "0x800719bc",
+   "insn": "sw $a0, 0x4c($v1)",
+   "target": "0x800ee4cc",
+   "off": "0x0ee4cc",
+   "score_word": false,
+   "rmw": false,
+   "verified": false,
+   "func": "800718bc",
+   "func_name": "FUN_800718bc",
+   "ctx": []
+  },
+  {
+   "space": "exe",
+   "va": "0x800719c8",
+   "insn": "sw $a0, 0x50($v1)",
+   "target": "0x800ee4d0",
+   "off": "0x0ee4d0",
+   "score_word": false,
+   "rmw": false,
+   "verified": false,
+   "func": "800718bc",
+   "func_name": "FUN_800718bc",
+   "ctx": []
+  },
+  {
+   "space": "exe",
+   "va": "0x800719d4",
+   "insn": "sw $a0, 0x54($v1)",
+   "target": "0x800ee4d4",
+   "off": "0x0ee4d4",
+   "score_word": false,
+   "rmw": false,
+   "verified": false,
+   "func": "800718bc",
+   "func_name": "FUN_800718bc",
+   "ctx": []
+  },
+  {
+   "space": "exe",
+   "va": "0x80072ed4",
+   "insn": "sw $v1, -0x1aec($at)",
+   "target": "0x800ee514",
+   "off": "0x0ee514",
+   "score_word": false,
+   "rmw": false,
+   "verified": true,
+   "func": null,
+   "func_name": null,
+   "ctx": []
+  },
+  {
+   "space": "exe",
+   "va": "0x800730d0",
+   "insn": "sw $zero, -0x1aec($at)",
+   "target": "0x800ee514",
+   "off": "0x0ee514",
+   "score_word": false,
+   "rmw": false,
+   "verified": true,
+   "func": null,
+   "func_name": null,
+   "ctx": []
+  },
+  {
+   "space": "exe",
+   "va": "0x8007418c",
+   "insn": "sh $a1, -0x1260($at)",
+   "target": "0x800eeda0",
+   "off": "0x0eeda0",
+   "score_word": false,
+   "rmw": false,
+   "verified": true,
+   "func": "80073fac",
+   "func_name": "FUN_80073fac",
+   "ctx": []
+  },
+  {
+   "space": "exe",
+   "va": "0x8007419c",
+   "insn": "sh $a2, -0x125e($at)",
+   "target": "0x800eeda2",
+   "off": "0x0eeda2",
+   "score_word": false,
+   "rmw": false,
+   "verified": true,
+   "func": "80073fac",
+   "func_name": "FUN_80073fac",
+   "ctx": []
+  },
+  {
+   "space": "exe",
+   "va": "0x800741d4",
+   "insn": "sw $v0, ($a2)",
+   "target": "0x800ee520",
+   "off": "0x0ee520",
+   "score_word": false,
+   "rmw": false,
+   "verified": false,
+   "func": "800741a4",
+   "func_name": "FUN_800741a4",
+   "ctx": []
+  },
+  {
+   "space": "exe",
+   "va": "0x80074220",
+   "insn": "sw $v1, -0x1ae8($at)",
+   "target": "0x800ee518",
+   "off": "0x0ee518",
+   "score_word": false,
+   "rmw": false,
+   "verified": true,
+   "func": null,
+   "func_name": null,
+   "ctx": []
+  },
+  {
+   "space": "exe",
+   "va": "0x80074430",
+   "insn": "sw $v1, -0x1ae4($at)",
+   "target": "0x800ee51c",
+   "off": "0x0ee51c",
+   "score_word": false,
+   "rmw": false,
+   "verified": false,
+   "func": null,
+   "func_name": null,
+   "ctx": []
+  },
+  {
+   "space": "exe",
+   "va": "0x80074458",
+   "insn": "sw $v0, -0x1ae4($at)",
+   "target": "0x800ee51c",
+   "off": "0x0ee51c",
+   "score_word": false,
+   "rmw": false,
+   "verified": false,
+   "func": "80074448",
+   "func_name": "FUN_80074448",
+   "ctx": []
+  },
+  {
+   "space": "exe",
+   "va": "0x80074478",
+   "insn": "sw $v0, -0x1ae4($at)",
+   "target": "0x800ee51c",
+   "off": "0x0ee51c",
+   "score_word": false,
+   "rmw": false,
+   "verified": false,
+   "func": "80074448",
+   "func_name": "FUN_80074448",
+   "ctx": []
+  },
+  {
+   "space": "exe",
+   "va": "0x80074488",
+   "insn": "sw $v0, -0x1ae4($at)",
+   "target": "0x800ee51c",
+   "off": "0x0ee51c",
+   "score_word": false,
+   "rmw": false,
+   "verified": false,
+   "func": "80074448",
+   "func_name": "FUN_80074448",
+   "ctx": []
+  },
+  {
+   "space": "exe",
+   "va": "0x800744c0",
+   "insn": "sw $v0, -0x1ae4($at)",
+   "target": "0x800ee51c",
+   "off": "0x0ee51c",
+   "score_word": false,
+   "rmw": false,
+   "verified": false,
+   "func": "80074448",
+   "func_name": "FUN_80074448",
+   "ctx": []
+  },
+  {
+   "space": "exe",
+   "va": "0x800744d0",
+   "insn": "sw $v0, -0x1ae4($at)",
+   "target": "0x800ee51c",
+   "off": "0x0ee51c",
+   "score_word": false,
+   "rmw": false,
+   "verified": false,
+   "func": "80074448",
+   "func_name": "FUN_80074448",
+   "ctx": []
+  },
+  {
+   "space": "exe",
+   "va": "0x800744d8",
+   "insn": "sw $v1, -0x1ae4($at)",
+   "target": "0x800ee51c",
+   "off": "0x0ee51c",
+   "score_word": false,
+   "rmw": false,
+   "verified": true,
+   "func": "80074448",
+   "func_name": "FUN_80074448",
+   "ctx": []
+  },
+  {
+   "space": "exe",
+   "va": "0x80075860",
+   "insn": "sw $v1, -0x1aec($at)",
+   "target": "0x800ee514",
+   "off": "0x0ee514",
+   "score_word": false,
+   "rmw": false,
+   "verified": true,
+   "func": "8007583c",
+   "func_name": "FUN_8007583c",
+   "ctx": []
+  },
+  {
+   "space": "exe",
+   "va": "0x80075a18",
+   "insn": "sw $zero, -0x1aec($at)",
+   "target": "0x800ee514",
+   "off": "0x0ee514",
+   "score_word": false,
+   "rmw": false,
+   "verified": true,
+   "func": null,
+   "func_name": null,
+   "ctx": []
+  },
+  {
+   "space": "exe",
+   "va": "0x80075b38",
+   "insn": "sw $s7, -0xbbc($at)",
+   "target": "0x800ef444",
+   "off": "0x0ef444",
+   "score_word": false,
+   "rmw": false,
+   "verified": false,
+   "func": "80075b14",
+   "func_name": "FUN_80075b14",
+   "ctx": []
+  },
+  {
+   "space": "exe",
+   "va": "0x80075c58",
+   "insn": "sw $zero, -0x1aec($at)",
+   "target": "0x800ee514",
+   "off": "0x0ee514",
+   "score_word": false,
+   "rmw": false,
+   "verified": true,
+   "func": "80075bfc",
+   "func_name": "FUN_80075bfc",
+   "ctx": []
+  },
+  {
+   "space": "exe",
+   "va": "0x80075cb8",
+   "insn": "sw $v1, -0x1aec($at)",
+   "target": "0x800ee514",
+   "off": "0x0ee514",
+   "score_word": false,
+   "rmw": false,
+   "verified": true,
+   "func": null,
+   "func_name": null,
+   "ctx": []
+  },
+  {
+   "space": "exe",
+   "va": "0x80075db0",
+   "insn": "sw $zero, -0x1aec($at)",
+   "target": "0x800ee514",
+   "off": "0x0ee514",
+   "score_word": false,
+   "rmw": false,
+   "verified": false,
+   "func": null,
+   "func_name": null,
+   "ctx": []
+  },
+  {
+   "space": "exe",
+   "va": "0x80075db8",
+   "insn": "sw $zero, -0x1aec($at)",
+   "target": "0x800ee514",
+   "off": "0x0ee514",
+   "score_word": false,
+   "rmw": false,
+   "verified": false,
+   "func": null,
+   "func_name": null,
+   "ctx": []
+  },
+  {
+   "space": "exe",
+   "va": "0x80075e44",
+   "insn": "sw $v1, -0x1aec($at)",
+   "target": "0x800ee514",
+   "off": "0x0ee514",
+   "score_word": false,
+   "rmw": false,
+   "verified": true,
+   "func": null,
+   "func_name": null,
+   "ctx": []
+  },
+  {
+   "space": "exe",
+   "va": "0x80075fe4",
+   "insn": "sw $zero, -0x1aec($at)",
+   "target": "0x800ee514",
+   "off": "0x0ee514",
+   "score_word": false,
+   "rmw": false,
+   "verified": true,
+   "func": "80075fa4",
+   "func_name": "FUN_80075fa4",
+   "ctx": []
+  },
+  {
+   "space": "exe",
+   "va": "0x80076104",
+   "insn": "sw $zero, -0x1aec($at)",
+   "target": "0x800ee514",
+   "off": "0x0ee514",
+   "score_word": false,
+   "rmw": false,
+   "verified": true,
+   "func": "800760e4",
+   "func_name": "FUN_800760e4",
+   "ctx": []
+  },
+  {
+   "space": "exe",
+   "va": "0x80076168",
+   "insn": "sw $v1, -0x1aec($at)",
+   "target": "0x800ee514",
+   "off": "0x0ee514",
+   "score_word": false,
+   "rmw": false,
+   "verified": true,
+   "func": "80076134",
+   "func_name": "FUN_80076134",
+   "ctx": []
+  },
+  {
+   "space": "exe",
+   "va": "0x80076184",
+   "insn": "sw $zero, -0x1aec($at)",
+   "target": "0x800ee514",
+   "off": "0x0ee514",
+   "score_word": false,
+   "rmw": false,
+   "verified": false,
+   "func": "80076174",
+   "func_name": "FUN_80076174",
+   "ctx": []
+  },
+  {
+   "space": "exe",
+   "va": "0x800761a0",
+   "insn": "sw $zero, -0x1aec($at)",
+   "target": "0x800ee514",
+   "off": "0x0ee514",
+   "score_word": false,
+   "rmw": false,
+   "verified": true,
+   "func": "80076194",
+   "func_name": "FUN_80076194",
+   "ctx": []
+  },
+  {
+   "space": "exe",
+   "va": "0x800761d0",
+   "insn": "sw $a0, 0xc($v1)",
+   "target": "0x800ef4f4",
+   "off": "0x0ef4f4",
+   "score_word": false,
+   "rmw": false,
+   "verified": false,
+   "func": "800761b4",
+   "func_name": "FUN_800761b4",
+   "ctx": []
+  },
+  {
+   "space": "exe",
+   "va": "0x800761dc",
+   "insn": "sw $v0, ($v1)",
+   "target": "0x800ef4e8",
+   "off": "0x0ef4e8",
+   "score_word": false,
+   "rmw": false,
+   "verified": false,
+   "func": "800761b4",
+   "func_name": "FUN_800761b4",
+   "ctx": []
+  },
+  {
+   "space": "exe",
+   "va": "0x80076e4c",
+   "insn": "sw $v0, ($a0)",
+   "target": "0x800ef4e8",
+   "off": "0x0ef4e8",
+   "score_word": false,
+   "rmw": false,
+   "verified": false,
+   "func": "80076e44",
+   "func_name": "FUN_80076e44",
+   "ctx": []
+  },
+  {
+   "space": "exe",
+   "va": "0x80076e60",
+   "insn": "sh $v0, 8($a0)",
+   "target": "0x800ef4f0",
+   "off": "0x0ef4f0",
+   "score_word": false,
+   "rmw": false,
+   "verified": false,
+   "func": "80076e44",
+   "func_name": "FUN_80076e44",
+   "ctx": []
+  },
+  {
+   "space": "exe",
+   "va": "0x80076e7c",
+   "insn": "sh $v0, 0xa($a0)",
+   "target": "0x800ef4f2",
+   "off": "0x0ef4f2",
+   "score_word": false,
+   "rmw": false,
+   "verified": false,
+   "func": null,
+   "func_name": null,
+   "ctx": []
+  },
+  {
+   "space": "exe",
+   "va": "0x80076ed4",
+   "insn": "sw $v0, ($a0)",
+   "target": "0x800ef4e8",
+   "off": "0x0ef4e8",
+   "score_word": false,
+   "rmw": false,
+   "verified": false,
+   "func": null,
+   "func_name": null,
+   "ctx": []
+  },
+  {
+   "space": "exe",
+   "va": "0x80076eec",
+   "insn": "sw $v0, 4($a0)",
+   "target": "0x800ef4ec",
+   "off": "0x0ef4ec",
+   "score_word": false,
+   "rmw": false,
+   "verified": false,
+   "func": null,
+   "func_name": null,
+   "ctx": []
+  },
+  {
+   "space": "exe",
+   "va": "0x80077020",
+   "insn": "sw $a0, 0x10($v1)",
+   "target": "0x800ef4f8",
+   "off": "0x0ef4f8",
+   "score_word": false,
+   "rmw": false,
+   "verified": false,
+   "func": null,
+   "func_name": null,
+   "ctx": []
+  },
+  {
+   "space": "exe",
+   "va": "0x8007702c",
+   "insn": "sw $v0, ($v1)",
+   "target": "0x800ef4e8",
+   "off": "0x0ef4e8",
+   "score_word": false,
+   "rmw": false,
+   "verified": false,
+   "func": null,
+   "func_name": null,
+   "ctx": []
+  },
+  {
+   "space": "exe",
+   "va": "0x80077524",
+   "insn": "sw $v1, ($a0)",
+   "target": "0x800ef4a0",
+   "off": "0x0ef4a0",
+   "score_word": false,
+   "rmw": false,
+   "verified": false,
+   "func": "800771c4",
+   "func_name": "FUN_800771c4",
+   "ctx": []
+  },
+  {
+   "space": "exe",
+   "va": "0x80077820",
+   "insn": "sw $v0, -0xb64($at)",
+   "target": "0x800ef49c",
+   "off": "0x0ef49c",
+   "score_word": false,
+   "rmw": false,
+   "verified": true,
+   "func": "800777ec",
+   "func_name": "FUN_800777ec",
+   "ctx": []
+  },
+  {
+   "space": "exe",
+   "va": "0x80077970",
+   "insn": "sb $zero, ($s1)",
+   "target": "0x800eedd5",
+   "off": "0x0eedd5",
+   "score_word": false,
+   "rmw": false,
+   "verified": false,
+   "func": null,
+   "func_name": null,
+   "ctx": []
+  },
+  {
+   "space": "exe",
+   "va": "0x800779b8",
+   "insn": "sh $v1, -0x1258($at)",
+   "target": "0x800eeda8",
+   "off": "0x0eeda8",
+   "score_word": false,
+   "rmw": false,
+   "verified": true,
+   "func": null,
+   "func_name": null,
+   "ctx": []
+  },
+  {
+   "space": "exe",
+   "va": "0x800779d0",
+   "insn": "sh $v1, -0x1256($at)",
+   "target": "0x800eedaa",
+   "off": "0x0eedaa",
+   "score_word": false,
+   "rmw": false,
+   "verified": true,
+   "func": null,
+   "func_name": null,
+   "ctx": []
+  },
+  {
+   "space": "exe",
+   "va": "0x80077b60",
+   "insn": "sb $zero, ($s1)",
+   "target": "0x800ef2f8",
+   "off": "0x0ef2f8",
+   "score_word": false,
+   "rmw": false,
+   "verified": false,
+   "func": "80077afc",
+   "func_name": "FUN_80077afc",
+   "ctx": []
+  },
+  {
+   "space": "exe",
+   "va": "0x80077c50",
+   "insn": "sh $zero, -0xb20($at)",
+   "target": "0x800ef4e0",
+   "off": "0x0ef4e0",
+   "score_word": false,
+   "rmw": false,
+   "verified": true,
+   "func": "80077afc",
+   "func_name": "FUN_80077afc",
+   "ctx": []
+  },
+  {
+   "space": "exe",
+   "va": "0x80077c58",
+   "insn": "sh $zero, -0xb1e($at)",
+   "target": "0x800ef4e2",
+   "off": "0x0ef4e2",
+   "score_word": false,
+   "rmw": false,
+   "verified": true,
+   "func": "80077afc",
+   "func_name": "FUN_80077afc",
+   "ctx": []
+  },
+  {
+   "space": "exe",
+   "va": "0x80077c60",
+   "insn": "sh $zero, -0x1258($at)",
+   "target": "0x800eeda8",
+   "off": "0x0eeda8",
+   "score_word": false,
+   "rmw": false,
+   "verified": true,
+   "func": "80077afc",
+   "func_name": "FUN_80077afc",
+   "ctx": []
+  },
+  {
+   "space": "exe",
+   "va": "0x80077c68",
+   "insn": "sh $zero, -0x1256($at)",
+   "target": "0x800eedaa",
+   "off": "0x0eedaa",
+   "score_word": false,
+   "rmw": false,
+   "verified": true,
+   "func": "80077afc",
+   "func_name": "FUN_80077afc",
+   "ctx": []
+  },
+  {
+   "space": "exe",
+   "va": "0x80077c70",
+   "insn": "sh $zero, -0x1250($at)",
+   "target": "0x800eedb0",
+   "off": "0x0eedb0",
+   "score_word": false,
+   "rmw": false,
+   "verified": true,
+   "func": "80077afc",
+   "func_name": "FUN_80077afc",
+   "ctx": []
+  },
+  {
+   "space": "exe",
+   "va": "0x80077c78",
+   "insn": "sh $zero, -0x124e($at)",
+   "target": "0x800eedb2",
+   "off": "0x0eedb2",
+   "score_word": false,
+   "rmw": false,
+   "verified": true,
+   "func": "80077afc",
+   "func_name": "FUN_80077afc",
+   "ctx": []
+  },
+  {
+   "space": "exe",
+   "va": "0x800781d4",
+   "insn": "sh $a1, ($a0)",
+   "target": "0x800ee468",
+   "off": "0x0ee468",
+   "score_word": false,
+   "rmw": false,
+   "verified": false,
+   "func": null,
+   "func_name": null,
+   "ctx": []
+  },
+  {
+   "space": "exe",
+   "va": "0x800781d8",
+   "insn": "sh $a2, 2($a0)",
+   "target": "0x800ee46a",
+   "off": "0x0ee46a",
+   "score_word": false,
+   "rmw": false,
+   "verified": false,
+   "func": null,
+   "func_name": null,
+   "ctx": []
+  },
+  {
+   "space": "exe",
+   "va": "0x8007822c",
+   "insn": "sh $v0, 4($a0)",
+   "target": "0x800ee46c",
+   "off": "0x0ee46c",
+   "score_word": false,
+   "rmw": false,
+   "verified": false,
+   "func": null,
+   "func_name": null,
+   "ctx": []
+  },
+  {
+   "space": "exe",
+   "va": "0x80078254",
+   "insn": "sh $v0, 6($a0)",
+   "target": "0x800ee46e",
+   "off": "0x0ee46e",
+   "score_word": false,
+   "rmw": false,
+   "verified": false,
+   "func": null,
+   "func_name": null,
+   "ctx": []
+  },
+  {
+   "space": "exe",
+   "va": "0x80078298",
+   "insn": "sh $a1, 4($a0)",
+   "target": "0x800ee46c",
+   "off": "0x0ee46c",
+   "score_word": false,
+   "rmw": false,
+   "verified": true,
+   "func": null,
+   "func_name": null,
+   "ctx": []
+  },
+  {
+   "space": "exe",
+   "va": "0x8007829c",
+   "insn": "sh $a2, 6($a0)",
+   "target": "0x800ee46e",
+   "off": "0x0ee46e",
+   "score_word": false,
+   "rmw": false,
+   "verified": false,
+   "func": null,
+   "func_name": null,
+   "ctx": []
+  },
+  {
+   "space": "exe",
+   "va": "0x800782f0",
+   "insn": "sh $v0, ($a0)",
+   "target": "0x800ee468",
+   "off": "0x0ee468",
+   "score_word": false,
+   "rmw": false,
+   "verified": false,
+   "func": null,
+   "func_name": null,
+   "ctx": []
+  },
+  {
+   "space": "exe",
+   "va": "0x80078318",
+   "insn": "sh $v0, 2($a0)",
+   "target": "0x800ee46a",
+   "off": "0x0ee46a",
+   "score_word": false,
+   "rmw": false,
+   "verified": false,
+   "func": null,
+   "func_name": null,
+   "ctx": []
+  },
+  {
+   "space": "exe",
+   "va": "0x80078630",
+   "insn": "sw $zero, ($v0)",
+   "target": "0x800ef4e8",
+   "off": "0x0ef4e8",
+   "score_word": false,
+   "rmw": false,
+   "verified": false,
+   "func": "80078474",
+   "func_name": "FUN_80078474",
+   "ctx": []
+  },
+  {
+   "space": "exe",
+   "va": "0x80078634",
+   "insn": "sh $v1, 8($v0)",
+   "target": "0x800ef4f0",
+   "off": "0x0ef4f0",
+   "score_word": false,
+   "rmw": false,
+   "verified": false,
+   "func": "80078474",
+   "func_name": "FUN_80078474",
+   "ctx": []
+  },
+  {
+   "space": "exe",
+   "va": "0x80078638",
+   "insn": "sh $v1, 0xa($v0)",
+   "target": "0x800ef4f2",
+   "off": "0x0ef4f2",
+   "score_word": false,
+   "rmw": false,
+   "verified": false,
+   "func": "80078474",
+   "func_name": "FUN_80078474",
+   "ctx": []
+  },
+  {
+   "space": "exe",
+   "va": "0x8007863c",
+   "insn": "sw $zero, 4($v0)",
+   "target": "0x800ef4ec",
+   "off": "0x0ef4ec",
+   "score_word": false,
+   "rmw": false,
+   "verified": false,
+   "func": "80078474",
+   "func_name": "FUN_80078474",
+   "ctx": []
+  },
+  {
+   "space": "exe",
+   "va": "0x80078648",
+   "insn": "sh $zero, -0x1258($at)",
+   "target": "0x800eeda8",
+   "off": "0x0eeda8",
+   "score_word": false,
+   "rmw": false,
+   "verified": true,
+   "func": "80078474",
+   "func_name": "FUN_80078474",
+   "ctx": []
+  },
+  {
+   "space": "exe",
+   "va": "0x80078650",
+   "insn": "sh $zero, -0x1256($at)",
+   "target": "0x800eedaa",
+   "off": "0x0eedaa",
+   "score_word": false,
+   "rmw": false,
+   "verified": true,
+   "func": "80078474",
+   "func_name": "FUN_80078474",
+   "ctx": []
+  },
+  {
+   "space": "exe",
+   "va": "0x80078658",
+   "insn": "sh $zero, -0xb20($at)",
+   "target": "0x800ef4e0",
+   "off": "0x0ef4e0",
+   "score_word": false,
+   "rmw": false,
+   "verified": true,
+   "func": "80078474",
+   "func_name": "FUN_80078474",
+   "ctx": []
+  },
+  {
+   "space": "exe",
+   "va": "0x80078660",
+   "insn": "sh $zero, -0x1254($at)",
+   "target": "0x800eedac",
+   "off": "0x0eedac",
+   "score_word": false,
+   "rmw": false,
+   "verified": true,
+   "func": "80078474",
+   "func_name": "FUN_80078474",
+   "ctx": []
+  },
+  {
+   "space": "exe",
+   "va": "0x80078668",
+   "insn": "sh $zero, -0x1252($at)",
+   "target": "0x800eedae",
+   "off": "0x0eedae",
+   "score_word": false,
+   "rmw": false,
+   "verified": true,
+   "func": "80078474",
+   "func_name": "FUN_80078474",
+   "ctx": []
+  },
+  {
+   "space": "exe",
+   "va": "0x80078670",
+   "insn": "sh $zero, -0x1250($at)",
+   "target": "0x800eedb0",
+   "off": "0x0eedb0",
+   "score_word": false,
+   "rmw": false,
+   "verified": true,
+   "func": "80078474",
+   "func_name": "FUN_80078474",
+   "ctx": []
+  },
+  {
+   "space": "exe",
+   "va": "0x80078678",
+   "insn": "sh $zero, -0x124e($at)",
+   "target": "0x800eedb2",
+   "off": "0x0eedb2",
+   "score_word": false,
+   "rmw": false,
+   "verified": true,
+   "func": "80078474",
+   "func_name": "FUN_80078474",
+   "ctx": []
+  },
+  {
+   "space": "exe",
+   "va": "0x800797dc",
+   "insn": "sh $v1, -0x1258($at)",
+   "target": "0x800eeda8",
+   "off": "0x0eeda8",
+   "score_word": false,
+   "rmw": false,
+   "verified": true,
+   "func": null,
+   "func_name": null,
+   "ctx": []
+  },
+  {
+   "space": "exe",
+   "va": "0x800797ec",
+   "insn": "sh $a0, -0x1256($at)",
+   "target": "0x800eedaa",
+   "off": "0x0eedaa",
+   "score_word": false,
+   "rmw": false,
+   "verified": true,
+   "func": null,
+   "func_name": null,
+   "ctx": []
+  },
+  {
+   "space": "exe",
+   "va": "0x800797f8",
+   "insn": "sh $v0, -0xb20($at)",
+   "target": "0x800ef4e0",
+   "off": "0x0ef4e0",
+   "score_word": false,
+   "rmw": false,
+   "verified": true,
+   "func": null,
+   "func_name": null,
+   "ctx": []
+  },
+  {
+   "space": "exe",
+   "va": "0x80079818",
+   "insn": "sh $v0, -0xb1e($at)",
+   "target": "0x800ef4e2",
+   "off": "0x0ef4e2",
+   "score_word": false,
+   "rmw": false,
+   "verified": true,
+   "func": null,
+   "func_name": null,
+   "ctx": []
+  },
+  {
+   "space": "exe",
+   "va": "0x80079840",
+   "insn": "sh $v0, -0x1254($at)",
+   "target": "0x800eedac",
+   "off": "0x0eedac",
+   "score_word": false,
+   "rmw": false,
+   "verified": true,
+   "func": "80079834",
+   "func_name": "FUN_80079834",
+   "ctx": []
+  },
+  {
+   "space": "exe",
+   "va": "0x8007984c",
+   "insn": "sh $v1, -0x1252($at)",
+   "target": "0x800eedae",
+   "off": "0x0eedae",
+   "score_word": false,
+   "rmw": false,
+   "verified": false,
+   "func": "80079834",
+   "func_name": "FUN_80079834",
+   "ctx": []
+  },
+  {
+   "space": "exe",
+   "va": "0x80079864",
+   "insn": "sh $v0, -0x1254($at)",
+   "target": "0x800eedac",
+   "off": "0x0eedac",
+   "score_word": false,
+   "rmw": false,
+   "verified": true,
+   "func": "80079834",
+   "func_name": "FUN_80079834",
+   "ctx": []
+  },
+  {
+   "space": "exe",
+   "va": "0x8007987c",
+   "insn": "sh $v0, -0x1252($at)",
+   "target": "0x800eedae",
+   "off": "0x0eedae",
+   "score_word": false,
+   "rmw": false,
+   "verified": true,
+   "func": "80079834",
+   "func_name": "FUN_80079834",
+   "ctx": []
+  },
+  {
+   "space": "exe",
+   "va": "0x80079884",
+   "insn": "sh $a3, -0x1250($at)",
+   "target": "0x800eedb0",
+   "off": "0x0eedb0",
+   "score_word": false,
+   "rmw": false,
+   "verified": true,
+   "func": "80079834",
+   "func_name": "FUN_80079834",
+   "ctx": []
+  },
+  {
+   "space": "exe",
+   "va": "0x8007988c",
+   "insn": "sh $a2, -0x124e($at)",
+   "target": "0x800eedb2",
+   "off": "0x0eedb2",
+   "score_word": false,
+   "rmw": false,
+   "verified": true,
+   "func": "80079834",
+   "func_name": "FUN_80079834",
+   "ctx": []
+  },
+  {
+   "space": "exe",
+   "va": "0x800799c8",
+   "insn": "sh $v1, -0xb20($at)",
+   "target": "0x800ef4e0",
+   "off": "0x0ef4e0",
+   "score_word": false,
+   "rmw": false,
+   "verified": false,
+   "func": "80079834",
+   "func_name": "FUN_80079834",
+   "ctx": []
+  },
+  {
+   "space": "exe",
+   "va": "0x800799d8",
+   "insn": "sh $v0, -0x1258($at)",
+   "target": "0x800eeda8",
+   "off": "0x0eeda8",
+   "score_word": false,
+   "rmw": false,
+   "verified": false,
+   "func": "80079834",
+   "func_name": "FUN_80079834",
+   "ctx": []
+  },
+  {
+   "space": "exe",
+   "va": "0x800799ec",
+   "insn": "sh $a0, -0xb1e($at)",
+   "target": "0x800ef4e2",
+   "off": "0x0ef4e2",
+   "score_word": false,
+   "rmw": false,
+   "verified": true,
+   "func": "80079834",
+   "func_name": "FUN_80079834",
+   "ctx": []
+  },
+  {
+   "space": "exe",
+   "va": "0x80079a00",
+   "insn": "sh $v0, -0x1256($at)",
+   "target": "0x800eedaa",
+   "off": "0x0eedaa",
+   "score_word": false,
+   "rmw": false,
+   "verified": false,
+   "func": "80079834",
+   "func_name": "FUN_80079834",
+   "ctx": []
+  },
+  {
+   "space": "exe",
+   "va": "0x80079f2c",
+   "insn": "sh $v0, -0x1254($at)",
+   "target": "0x800eedac",
+   "off": "0x0eedac",
+   "score_word": false,
+   "rmw": false,
+   "verified": true,
+   "func": null,
+   "func_name": null,
+   "ctx": []
+  },
+  {
+   "space": "exe",
+   "va": "0x80079f34",
+   "insn": "sh $v1, -0x1252($at)",
+   "target": "0x800eedae",
+   "off": "0x0eedae",
+   "score_word": false,
+   "rmw": false,
+   "verified": true,
+   "func": null,
+   "func_name": null,
+   "ctx": []
+  },
+  {
+   "space": "exe",
+   "va": "0x80079f54",
+   "insn": "sh $v0, -0x1254($at)",
+   "target": "0x800eedac",
+   "off": "0x0eedac",
+   "score_word": false,
+   "rmw": false,
+   "verified": true,
+   "func": null,
+   "func_name": null,
+   "ctx": []
+  },
+  {
+   "space": "exe",
+   "va": "0x80079f6c",
+   "insn": "sh $v0, -0x1252($at)",
+   "target": "0x800eedae",
+   "off": "0x0eedae",
+   "score_word": false,
+   "rmw": false,
+   "verified": true,
+   "func": null,
+   "func_name": null,
+   "ctx": []
+  },
+  {
+   "space": "exe",
+   "va": "0x80079f8c",
+   "insn": "sh $v0, -0x1250($at)",
+   "target": "0x800eedb0",
+   "off": "0x0eedb0",
+   "score_word": false,
+   "rmw": false,
+   "verified": true,
+   "func": null,
+   "func_name": null,
+   "ctx": []
+  },
+  {
+   "space": "exe",
+   "va": "0x80079fb0",
+   "insn": "sh $a0, -0x1256($at)",
+   "target": "0x800eedaa",
+   "off": "0x0eedaa",
+   "score_word": false,
+   "rmw": false,
+   "verified": true,
+   "func": null,
+   "func_name": null,
+   "ctx": []
+  },
+  {
+   "space": "exe",
+   "va": "0x80079fb8",
+   "insn": "sh $v0, -0x124e($at)",
+   "target": "0x800eedb2",
+   "off": "0x0eedb2",
+   "score_word": false,
+   "rmw": false,
+   "verified": true,
+   "func": null,
+   "func_name": null,
+   "ctx": []
+  },
+  {
+   "space": "exe",
+   "va": "0x80079fcc",
+   "insn": "sh $v1, -0x1258($at)",
+   "target": "0x800eeda8",
+   "off": "0x0eeda8",
+   "score_word": false,
+   "rmw": false,
+   "verified": true,
+   "func": null,
+   "func_name": null,
+   "ctx": []
+  },
+  {
+   "space": "exe",
+   "va": "0x80079fdc",
+   "insn": "sh $v0, -0xb20($at)",
+   "target": "0x800ef4e0",
+   "off": "0x0ef4e0",
+   "score_word": false,
+   "rmw": false,
+   "verified": true,
+   "func": null,
+   "func_name": null,
+   "ctx": []
+  },
+  {
+   "space": "exe",
+   "va": "0x80079ff8",
+   "insn": "sh $v0, -0xb1e($at)",
+   "target": "0x800ef4e2",
+   "off": "0x0ef4e2",
+   "score_word": false,
+   "rmw": false,
+   "verified": false,
+   "func": null,
+   "func_name": null,
+   "ctx": []
+  }
+ ],
+ "call_closure": {
+  "8002ce78": {
+   "exe_callers_d1": [],
+   "overlay_callers_d1": [],
+   "exe_callers_d2": []
+  },
+  "8005b55c": {
+   "exe_callers_d1": [],
+   "overlay_callers_d1": [],
+   "exe_callers_d2": []
+  },
+  "8005c460": {
+   "exe_callers_d1": [],
+   "overlay_callers_d1": [],
+   "exe_callers_d2": []
+  },
+  "8005c6d4": {
+   "exe_callers_d1": [],
+   "overlay_callers_d1": [],
+   "exe_callers_d2": []
+  },
+  "8005c888": {
+   "exe_callers_d1": [],
+   "overlay_callers_d1": [],
+   "exe_callers_d2": []
+  },
+  "8005e694": {
+   "exe_callers_d1": [],
+   "overlay_callers_d1": [],
+   "exe_callers_d2": []
+  },
+  "80067c04": {
+   "exe_callers_d1": [],
+   "overlay_callers_d1": [],
+   "exe_callers_d2": []
+  },
+  "8006da74": {
+   "exe_callers_d1": [],
+   "overlay_callers_d1": [],
+   "exe_callers_d2": []
+  },
+  "8006e93c": {
+   "exe_callers_d1": [],
+   "overlay_callers_d1": [],
+   "exe_callers_d2": []
+  },
+  "8006ed0c": {
+   "exe_callers_d1": [],
+   "overlay_callers_d1": [],
+   "exe_callers_d2": []
+  },
+  "8006ee7c": {
+   "exe_callers_d1": [],
+   "overlay_callers_d1": [],
+   "exe_callers_d2": []
+  },
+  "8006ef2c": {
+   "exe_callers_d1": [],
+   "overlay_callers_d1": [],
+   "exe_callers_d2": []
+  },
+  "80071808": {
+   "exe_callers_d1": [],
+   "overlay_callers_d1": [],
+   "exe_callers_d2": []
+  },
+  "800718bc": {
+   "exe_callers_d1": [],
+   "overlay_callers_d1": [],
+   "exe_callers_d2": []
+  },
+  "80073fac": {
+   "exe_callers_d1": [],
+   "overlay_callers_d1": [],
+   "exe_callers_d2": []
+  },
+  "800741a4": {
+   "exe_callers_d1": [],
+   "overlay_callers_d1": [],
+   "exe_callers_d2": []
+  },
+  "80074448": {
+   "exe_callers_d1": [],
+   "overlay_callers_d1": [],
+   "exe_callers_d2": []
+  },
+  "8007583c": {
+   "exe_callers_d1": [],
+   "overlay_callers_d1": [],
+   "exe_callers_d2": []
+  },
+  "80075b14": {
+   "exe_callers_d1": [],
+   "overlay_callers_d1": [],
+   "exe_callers_d2": []
+  },
+  "80075bfc": {
+   "exe_callers_d1": [],
+   "overlay_callers_d1": [],
+   "exe_callers_d2": []
+  },
+  "80075fa4": {
+   "exe_callers_d1": [],
+   "overlay_callers_d1": [],
+   "exe_callers_d2": []
+  },
+  "800760e4": {
+   "exe_callers_d1": [],
+   "overlay_callers_d1": [],
+   "exe_callers_d2": []
+  },
+  "80076134": {
+   "exe_callers_d1": [],
+   "overlay_callers_d1": [],
+   "exe_callers_d2": []
+  },
+  "80076174": {
+   "exe_callers_d1": [],
+   "overlay_callers_d1": [],
+   "exe_callers_d2": []
+  },
+  "80076194": {
+   "exe_callers_d1": [],
+   "overlay_callers_d1": [],
+   "exe_callers_d2": []
+  },
+  "800761b4": {
+   "exe_callers_d1": [],
+   "overlay_callers_d1": [],
+   "exe_callers_d2": []
+  },
+  "80076e44": {
+   "exe_callers_d1": [],
+   "overlay_callers_d1": [],
+   "exe_callers_d2": []
+  },
+  "800771c4": {
+   "exe_callers_d1": [],
+   "overlay_callers_d1": [],
+   "exe_callers_d2": []
+  },
+  "800777ec": {
+   "exe_callers_d1": [],
+   "overlay_callers_d1": [],
+   "exe_callers_d2": []
+  },
+  "80077afc": {
+   "exe_callers_d1": [],
+   "overlay_callers_d1": [],
+   "exe_callers_d2": []
+  },
+  "80078474": {
+   "exe_callers_d1": [],
+   "overlay_callers_d1": [],
+   "exe_callers_d2": []
+  },
+  "80079834": {
+   "exe_callers_d1": [],
+   "overlay_callers_d1": [],
+   "exe_callers_d2": []
+  }
+ },
+ "jal_exe_to_overlay_tail": [],
+ "jal_overlay_tail_to_hud": [
+  {
+   "from": "0x800ab2ac",
+   "to": "0x8005cad0",
+   "space": "overlay_tail"
+  },
+  {
+   "from": "0x800ab43c",
+   "to": "0x8005cad0",
+   "space": "overlay_tail"
+  },
+  {
+   "from": "0x800ab6a4",
+   "to": "0x8005cad0",
+   "space": "overlay_tail"
+  },
+  {
+   "from": "0x800aba88",
+   "to": "0x800436cc",
+   "space": "overlay_tail"
+  },
+  {
+   "from": "0x800abb5c",
+   "to": "0x8004415c",
+   "space": "overlay_tail"
+  },
+  {
+   "from": "0x800abbd8",
+   "to": "0x800436cc",
+   "space": "overlay_tail"
+  },
+  {
+   "from": "0x800abd3c",
+   "to": "0x8005cad0",
+   "space": "overlay_tail"
+  },
+  {
+   "from": "0x800abd7c",
+   "to": "0x8005cad0",
+   "space": "overlay_tail"
+  },
+  {
+   "from": "0x800abe2c",
+   "to": "0x8005cad0",
+   "space": "overlay_tail"
+  },
+  {
+   "from": "0x800ac0fc",
+   "to": "0x8005cad0",
+   "space": "overlay_tail"
+  },
+  {
+   "from": "0x800ac1f0",
+   "to": "0x8005cad0",
+   "space": "overlay_tail"
+  },
+  {
+   "from": "0x800ac488",
+   "to": "0x8005cad0",
+   "space": "overlay_tail"
+  },
+  {
+   "from": "0x800ac4bc",
+   "to": "0x8005cad0",
+   "space": "overlay_tail"
+  },
+  {
+   "from": "0x800ac578",
+   "to": "0x8005cad0",
+   "space": "overlay_tail"
+  },
+  {
+   "from": "0x800ac700",
+   "to": "0x80051d88",
+   "space": "overlay_tail"
+  },
+  {
+   "from": "0x800ac7ec",
+   "to": "0x8005cad0",
+   "space": "overlay_tail"
+  },
+  {
+   "from": "0x800ac908",
+   "to": "0x800436cc",
+   "space": "overlay_tail"
+  },
+  {
+   "from": "0x800ac9b0",
+   "to": "0x800436cc",
+   "space": "overlay_tail"
+  },
+  {
+   "from": "0x800ac9cc",
+   "to": "0x8005cad0",
+   "space": "overlay_tail"
+  },
+  {
+   "from": "0x800ac9d4",
+   "to": "0x80052958",
+   "space": "overlay_tail"
+  },
+  {
+   "from": "0x800aca00",
+   "to": "0x8005cad0",
+   "space": "overlay_tail"
+  },
+  {
+   "from": "0x800acac0",
+   "to": "0x800436cc",
+   "space": "overlay_tail"
+  },
+  {
+   "from": "0x800acc04",
+   "to": "0x8005cad0",
+   "space": "overlay_tail"
+  },
+  {
+   "from": "0x800acc1c",
+   "to": "0x80043e68",
+   "space": "overlay_tail"
+  },
+  {
+   "from": "0x800acc64",
+   "to": "0x80043a50",
+   "space": "overlay_tail"
+  },
+  {
+   "from": "0x800acc94",
+   "to": "0x8005cad0",
+   "space": "overlay_tail"
+  },
+  {
+   "from": "0x800ace88",
+   "to": "0x800436cc",
+   "space": "overlay_tail"
+  },
+  {
+   "from": "0x800acf98",
+   "to": "0x80051d88",
+   "space": "overlay_tail"
+  },
+  {
+   "from": "0x800ad08c",
+   "to": "0x8004da60",
+   "space": "overlay_tail"
+  },
+  {
+   "from": "0x800ad0e0",
+   "to": "0x8004415c",
+   "space": "overlay_tail"
+  },
+  {
+   "from": "0x800ad230",
+   "to": "0x80043960",
+   "space": "overlay_tail"
+  },
+  {
+   "from": "0x800ad534",
+   "to": "0x80043af0",
+   "space": "overlay_tail"
+  },
+  {
+   "from": "0x800ad65c",
+   "to": "0x80051d88",
+   "space": "overlay_tail"
+  },
+  {
+   "from": "0x800ad810",
+   "to": "0x8005cad0",
+   "space": "overlay_tail"
+  },
+  {
+   "from": "0x800ad890",
+   "to": "0x8005cad0",
+   "space": "overlay_tail"
+  },
+  {
+   "from": "0x800ad994",
+   "to": "0x80055a2c",
+   "space": "overlay_tail"
+  },
+  {
+   "from": "0x800ada84",
+   "to": "0x80051868",
+   "space": "overlay_tail"
+  },
+  {
+   "from": "0x800adb20",
+   "to": "0x8005cad0",
+   "space": "overlay_tail"
+  },
+  {
+   "from": "0x800ae1e0",
+   "to": "0x80052958",
+   "space": "overlay_tail"
+  },
+  {
+   "from": "0x800ae2c0",
+   "to": "0x80043a50",
+   "space": "overlay_tail"
+  },
+  {
+   "from": "0x800ae324",
+   "to": "0x800436cc",
+   "space": "overlay_tail"
+  },
+  {
+   "from": "0x800ae37c",
+   "to": "0x80050b44",
+   "space": "overlay_tail"
+  },
+  {
+   "from": "0x800ae3a0",
+   "to": "0x80050b44",
+   "space": "overlay_tail"
+  },
+  {
+   "from": "0x800ae434",
+   "to": "0x80043a50",
+   "space": "overlay_tail"
+  },
+  {
+   "from": "0x800ae458",
+   "to": "0x8005cad0",
+   "space": "overlay_tail"
+  },
+  {
+   "from": "0x800ae464",
+   "to": "0x8005585c",
+   "space": "overlay_tail"
+  },
+  {
+   "from": "0x800ae558",
+   "to": "0x8005cad0",
+   "space": "overlay_tail"
+  },
+  {
+   "from": "0x800ae638",
+   "to": "0x80051868",
+   "space": "overlay_tail"
+  },
+  {
+   "from": "0x800ae65c",
+   "to": "0x80051d88",
+   "space": "overlay_tail"
+  },
+  {
+   "from": "0x800ae774",
+   "to": "0x80052120",
+   "space": "overlay_tail"
+  },
+  {
+   "from": "0x800ae8a0",
+   "to": "0x80043e68",
+   "space": "overlay_tail"
+  },
+  {
+   "from": "0x800ae96c",
+   "to": "0x80043e68",
+   "space": "overlay_tail"
+  },
+  {
+   "from": "0x800aea1c",
+   "to": "0x80043e68",
+   "space": "overlay_tail"
+  },
+  {
+   "from": "0x800aeab4",
+   "to": "0x80043e68",
+   "space": "overlay_tail"
+  },
+  {
+   "from": "0x800aeb68",
+   "to": "0x8004433c",
+   "space": "overlay_tail"
+  },
+  {
+   "from": "0x800aeb7c",
+   "to": "0x8004433c",
+   "space": "overlay_tail"
+  },
+  {
+   "from": "0x800aeb9c",
+   "to": "0x8004433c",
+   "space": "overlay_tail"
+  },
+  {
+   "from": "0x800aebbc",
+   "to": "0x80043f38",
+   "space": "overlay_tail"
+  },
+  {
+   "from": "0x800aebd8",
+   "to": "0x80043f38",
+   "space": "overlay_tail"
+  },
+  {
+   "from": "0x800aebe8",
+   "to": "0x80043f38",
+   "space": "overlay_tail"
+  }
+ ],
+ "stack_band_frames": {
+  "8002ce78": {
+   "frame": 0,
+   "fits_top_band_d2": true
+  },
+  "8005b55c": {
+   "frame": 0,
+   "fits_top_band_d2": true
+  },
+  "8005c460": {
+   "frame": -40,
+   "fits_top_band_d2": true
+  },
+  "8005c6d4": {
+   "frame": 32,
+   "fits_top_band_d2": true
+  },
+  "8005c888": {
+   "frame": -24,
+   "fits_top_band_d2": true
+  },
+  "8005e694": {
+   "frame": null,
+   "fits_top_band_d2": null
+  },
+  "80067c04": {
+   "frame": -24,
+   "fits_top_band_d2": true
+  },
+  "8006da74": {
+   "frame": null,
+   "fits_top_band_d2": null
+  },
+  "8006e93c": {
+   "frame": null,
+   "fits_top_band_d2": null
+  },
+  "8006ed0c": {
+   "frame": 0,
+   "fits_top_band_d2": true
+  },
+  "8006ee7c": {
+   "frame": null,
+   "fits_top_band_d2": null
+  },
+  "8006ef2c": {
+   "frame": null,
+   "fits_top_band_d2": null
+  },
+  "80071808": {
+   "frame": 0,
+   "fits_top_band_d2": true
+  },
+  "800718bc": {
+   "frame": null,
+   "fits_top_band_d2": null
+  },
+  "80073fac": {
+   "frame": 0,
+   "fits_top_band_d2": true
+  },
+  "800741a4": {
+   "frame": null,
+   "fits_top_band_d2": null
+  },
+  "80074448": {
+   "frame": 0,
+   "fits_top_band_d2": true
+  },
+  "8007583c": {
+   "frame": 0,
+   "fits_top_band_d2": true
+  },
+  "80075b14": {
+   "frame": null,
+   "fits_top_band_d2": null
+  },
+  "80075bfc": {
+   "frame": 0,
+   "fits_top_band_d2": true
+  },
+  "80075fa4": {
+   "frame": 0,
+   "fits_top_band_d2": true
+  },
+  "800760e4": {
+   "frame": 0,
+   "fits_top_band_d2": true
+  },
+  "80076134": {
+   "frame": 0,
+   "fits_top_band_d2": true
+  },
+  "80076174": {
+   "frame": null,
+   "fits_top_band_d2": null
+  },
+  "80076194": {
+   "frame": 0,
+   "fits_top_band_d2": true
+  },
+  "800761b4": {
+   "frame": -24,
+   "fits_top_band_d2": true
+  },
+  "80076e44": {
+   "frame": 0,
+   "fits_top_band_d2": true
+  },
+  "800771c4": {
+   "frame": 0,
+   "fits_top_band_d2": true
+  },
+  "800777ec": {
+   "frame": -120,
+   "fits_top_band_d2": true
+  },
+  "80077afc": {
+   "frame": 0,
+   "fits_top_band_d2": true
+  },
+  "80078474": {
+   "frame": 0,
+   "fits_top_band_d2": true
+  },
+  "80079834": {
+   "frame": 0,
+   "fits_top_band_d2": true
+  }
+ },
+ "r69_tail_store_sites": 60,
+ "verdict": {
+  "hud_store_sites": 178,
+  "confirmed": 60,
+  "unverified": 118,
+  "score_word_sites": [
+   {
+    "space": "exe",
+    "va": "0x8005c508",
+    "insn": "sw $a1, -0x1ce8($a2)",
+    "target": "0x800ee318",
+    "off": "0x0ee318",
+    "score_word": true,
+    "rmw": false,
+    "verified": false,
+    "func": "8005c460",
+    "func_name": "FUN_8005c460",
+    "ctx": []
+   },
+   {
+    "space": "exe",
+    "va": "0x8005c54c",
+    "insn": "sw $v0, -0x1ce8($a2)",
+    "target": "0x800ee318",
+    "off": "0x0ee318",
+    "score_word": true,
+    "rmw": false,
+    "verified": false,
+    "func": "8005c460",
+    "func_name": "FUN_8005c460",
+    "ctx": []
+   },
+   {
+    "space": "exe",
+    "va": "0x8005c734",
+    "insn": "sw $zero, -0x1ce8($v0)",
+    "target": "0x800ee318",
+    "off": "0x0ee318",
+    "score_word": true,
+    "rmw": false,
+    "verified": false,
+    "func": "8005c6d4",
+    "func_name": "FUN_8005c6d4",
+    "ctx": []
+   }
+  ],
+  "payment_writer": "PINPOINTED (the store instruction) \u2014 with the disclosed dispatch bound",
+  "the_writer": {
+   "store_site": "0x8005c508 sw $a1, -0x1ce8($a2) -> 0x800EE318 (the P1 score word)",
+   "accum_head": "0x8005c4b4 addiu $sp,$sp,-0x28 (frame 40 B; the tail fragment before it is the previous function)",
+   "rmw_chain": [
+    "0x8005c4bc move $s0, $a0 (the flag selector)",
+    "0x8005c4cc lw $a2, ($a1) (the score-base HANDLE \u2014 pointer-mediated)",
+    "0x8005c4d0 jal 0x8007e8b4 (the format call; $a1 = 0x80011354-format)",
+    "0x8005c4d8 jal 0x8007e7d4 (the parse call) -> $a3 = the numeric delta",
+    "0x8005c4e4 andi $v0, $s0, 1 (the P1 bit)",
+    "0x8005c4f4 lw $v1, -0x1ce8($a2) (read the score)",
+    "0x8005c4fc addu $a1, $v1, $a3 (score += delta)",
+    "0x8005c500 slt vs 0x5f5e0ff (the 99,999,999 cap)",
+    "0x8005c508 sw $a1, -0x1ce8($a2) (THE PAYMENT STORE; the %100 display twin at 0x8005c54c)",
+    "0x8005c550 andi $v0, $s0, 2 (the P2 bit) -> 0x8005c578 sw $a1, 8($a2) -> 0x800EE320"
+   ],
+   "clear_twin": "0x8005c734 sw $zero -> 0x800EE318 in 0x8005c6d4; its jal callers are the game-reset cluster (exe:0x80067254, exe:0x80067b14, exe:0x80067b6c, exe:0x80067f64)",
+   "direct_jal_callers_of_accum": [],
+   "dispatch_bound": "the accumulator has NO direct jal xref \u2014 it is reached via a pointer/handle dispatch (statically invisible; the runtime PC confirmation needs the CPU-state oracle \u2014 the known beetle limit, the PCSX-Redux debugger is the follow-up)",
+   "amount_path": "the delta arrives through the format-string -> parse chain (0x8007e8b4 -> 0x8007e7d4) \u2014 the R69 falsification explained: the amounts 500/1000 appear in NO code immediate because the credit amount is formatted from the overlay kill-credit tables (0x8009C134/0x8009C48C/0x8009C91C) and re-parsed",
+   "stack_band_consistency": "the accumulator frame (-40 B) fits the churned top band at depth <= 2 \u2014 consistent with the R71 stack-band churn"
+  },
+  "score_cluster_fns": [
+   "8005c460",
+   "8005c6d4"
+  ]
+ }
+}
