@@ -460,8 +460,8 @@ class TestTruckRulesR67:
         # corridor guard stay
         pol = Mission1Policy()
         ident = pol.identity()
-        assert ident["policy_version"] == "2.3.0"
-        assert ident["truck_rules"] == "r75_extended_head_grid"
+        assert ident["policy_version"] == "2.4.0"
+        assert ident["truck_rules"] == "r77_respawn_kill_run"
 
     def test_hold_backs_off_point_blank(self):
         # THE v1.4.2 PROBE LESSON (pinned) + v1.7.0 C1: below the

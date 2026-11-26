@@ -328,6 +328,33 @@ product-path truck campaign; every rule is committed-evidence-backed):
       the k=1 connect) — whether stopping the volley at the
       handoff prevents the shove is the boot's open question;
       a k=1 miss degrades honestly (the tail continues gated).
+  R77 (v2.4.0). THE RESPAWN KILL RUN (the R77 capsule lever —
+      the kill attempt, the battery-armed edition).  The R76
+      battery measured EVERYTHING the kill needs: (1) the
+      connect-window width {255, 257, 259, 261} on the head's
+      259-grid; (2) THE FEED-CLEARING LOB: the walk-out lob +
+      the return lob kills the marchers (the score +100/+200)
+      AND connects the truck (a4 200->100) at all three walk
+      distances; (3) THE DEATH IS THE RESPAWN CYCLE: every
+      battery test crossed the f1884 death window and respawned
+      at px 992 php 120 gren 10 with the fight intact — the
+      PRESS-START auto-continue, NOT a fail state.  The policy:
+        * THE DEATH TRACKING: the dead branch counts the death
+          frames (the animation); on the alive-return the
+          respawn is detected (the auto-continue);
+        * THE RESPAWN HANDOFF: px < 1050 after a death ->
+          walk RIGHT to px 1071 (the re-entry walk, the diag
+          respawn_walk) — the fight resumes at the record
+          posture with TEN fresh grenades;
+        * THE VOLLEY MODE: post-respawn the throws run UNGATED
+          (the gre40 cadence — the r69b volume law: 2/7
+          connects; the respawned stream's phase is unknown —
+          the volume explores it);
+        * THE KILL CONTINUATION: the connects (-100) + the
+          chips -> a4 130 -> 0 -> the W8/W9 kill transition ->
+          the section continues = THE STAGE PROGRESS.  The
+          lives: 1UP=2 at the first death — the path needs
+          <=2 deaths.
 """
 from __future__ import annotations
 
@@ -341,7 +368,7 @@ from ps1play.runtime.interfaces import (ActionDecision, GameObservation,
                                         Policy)
 
 POLICY_NAME = "msx_mission1_rules"
-POLICY_VERSION = "2.3.0"
+POLICY_VERSION = "2.4.0"
 
 # the hold band's inner edge (the R67 loop-probe lesson: holding at
 # dx 52 — point-blank in the truck gun's line — LOST the duel; the
@@ -554,6 +581,9 @@ class Mission1Policy(Policy):
         self._width_probed = 0        # v1.8.1: C4 the width probe
         self._stream = "volley"       # v2.2.0: R74 the stream handoff
         self._handoff_f = None        # v2.2.0: the switch frame
+        self._dead_f = 0              # v2.4.0: R77 the death frames
+        self._respawned = False       # v2.4.0: R77 the respawn seen
+        self._respawn_walk = False    # v2.4.0: the re-entry walk
         self._last_diag: Dict[str, Any] = {}
 
     # ---- Policy contract ----
@@ -601,6 +631,9 @@ class Mission1Policy(Policy):
         self._truckin_static = 0
         self._width_probed = 0
         self._stream = "volley"
+        self._dead_f = 0
+        self._respawned = False
+        self._respawn_walk = False
 
     def identity(self) -> Dict[str, Any]:
         # the engine's record seam reads identity()["name"] and
@@ -615,7 +648,7 @@ class Mission1Policy(Policy):
                 "trained": False,
                 "kind": "built-in rules (no model, no training)",
                 "corridor_predicate": "r70_corridor_guard",
-                "truck_rules": "r75_extended_head_grid"}
+                "truck_rules": "r77_respawn_kill_run"}
 
     def close(self) -> None:
         self._tel = None
@@ -636,8 +669,27 @@ class Mission1Policy(Policy):
             ents.append((dx, sc, h))
 
         if not alive:
-            self._last_diag = {"rule": "dead", "px": px}
+            self._dead_f += 1
+            self._last_diag = {"rule": "dead", "px": px,
+                               "dead_f": self._dead_f}
             return "IDLE"
+        if self._dead_f > 0:
+            # R77 (v2.4.0): THE RESPAWN DETECTION — the alive word
+            # returned after the death animation: the PRESS-START
+            # auto-continue handed back a LOADED player at the
+            # fixed respawn posture (the R76 battery: px 992 php
+            # 120 gren 10, the fight intact)
+            dead_frames = self._dead_f
+            self._dead_f = 0
+            if px < 1050.0:
+                self._respawned = True
+                self._respawn_walk = True
+                self._last_diag = {"rule": "respawn_detected",
+                                   "px": px,
+                                   "dead_frames": dead_frames,
+                                   "php": int(x[2]),
+                                   "gren": int(x[3])}
+                return "IDLE"
 
         # ---- stall sensor (world-px progress) ----------------------
         if self._last_px is None or px >= self._last_px + PROGRESS_PX:
@@ -730,6 +782,17 @@ class Mission1Policy(Policy):
             self._truck_present = True        # v1.5.0: seen this frame
             self._truck_gone_f = 0            # v1.6.0: reset the window
             self._last_truck_dx = dx_t
+            # R77 (v2.4.0): THE RESPAWN WALK-BACK — the re-entry walk
+            # to the record posture (px 1071) before the fight rules
+            # (the respawn hands the player back at px 992 with 10
+            # grenades — the R76 battery)
+            if self._respawned and self._respawn_walk:
+                if px < 1071.0:
+                    self._facing = "R"
+                    self._last_diag = {"rule": "respawn_walk",
+                                       "px": px}
+                    return "WALK"
+                self._respawn_walk = False
             # P1 (cont., v1.8.0): THE PHASE GATE — hoisted above T3 in
             # v2.1.0 (pure arithmetic on the fight clock; the R73
             # rear-escort exemption gates on phase_open).  The lob
@@ -885,6 +948,12 @@ class Mission1Policy(Policy):
                 throw_now = phase_open or (
                     self._stream == "volley" and
                     self._truck_fight_f in TRUCK_VOLLEY_SCHEDULE)
+                # R77: THE VOLLEY MODE — post-respawn the throws
+                # run UNGATED (the gre40 cadence; the r69b volume
+                # law: 2/7 connects — the respawned stream's phase
+                # is unknown, the volume explores it)
+                if not throw_now and self._respawned:
+                    throw_now = self._gren_cd == 0
                 if not throw_now:
                     # C4 (v1.8.1, R70b): THE WIDTH PROBE — the
                     # post-freeze arm: the first clean in-window
