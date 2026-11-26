@@ -92,6 +92,7 @@ def at_clock(fight_f, probe=True, gren_cd=0, fire_cd=0):
     p = Mission1Policy()
     p._truck_present = True
     p._truck_fight_f = fight_f - 1
+    p._stream = "hold"   # v2.2.0: the K1 stream is a hold variant
     p._width_probed = 1 if probe else 0
     p._lead_spent = 2
     p._gren_cd = gren_cd
@@ -110,10 +111,11 @@ class TestK1ChipFire:
         import ps1play.adapters.metal_slug_x.policy as _pol
         monkeypatch.setattr(_pol, "TRUCK_CHIP_FIRE", True)
 
-    def test_version_is_2_1_0(self):
-        # v2.1.0 (R73): the rear-escort exemption ships; the K1 arm
-        # stays patchable (this suite runs with the patch True)
-        assert POLICY_VERSION == "2.1.0"
+    def test_version_is_2_2_0(self):
+        # v2.2.0 (R74): the stream handoff ships; the K1 arm
+        # stays patchable (this suite runs with the patch True,
+        # on the hold stream — the K1 semantics preserved)
+        assert POLICY_VERSION == "2.2.0"
 
     def test_chip_fire_during_cooldown_clear_corridor(self):
         # the grenade on cooldown, the corridor clear: the aimed

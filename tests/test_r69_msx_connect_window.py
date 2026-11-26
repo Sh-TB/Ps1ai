@@ -93,17 +93,17 @@ GRID_K0 = 148                    # the fight_f grid point (k=0)
 
 class TestConnectWindow:
     def test_version_and_identity(self):
-        assert POLICY_VERSION == "2.1.0"
+        assert POLICY_VERSION == "2.2.0"
         p = Mission1Policy()
         ident = p.identity()
-        assert ident["policy_version"] == "2.1.0"
+        assert ident["policy_version"] == "2.2.0"
         # v2.1.0 (R73): the rear-escort exemption ships (the
         # k=3 owned-window hold removed); the v2.0.0 hybrid gate
         # (the full +-2f tolerance + the idle-hold re-selection)
         # is unchanged; the corridor predicate stays the R70 guard
-        assert ident["truck_rules"] == "r73_rear_escort_exemption"
-        # (re-anchored v2.0.0 -> v2.1.0, R73: the rear-escort
-        # exemption; the hybrid gate unchanged)
+        assert ident["truck_rules"] == "r74_stream_handoff"
+        # (re-anchored v2.1.0 -> v2.2.0, R74: the stream handoff;
+        # the exemption + the hybrid gate unchanged on the tail)
         assert ident["corridor_predicate"] == "r70_corridor_guard"
 
     def test_lob_at_record_dx(self):
@@ -278,7 +278,9 @@ class TestConnectWindow:
             a, _ = decide(p, ents=[TRUCK_L], gren=10)
             if a == "GRENADE":
                 thrown += 1
-        assert thrown == 10, thrown
+        # v2.2.0: the volley head (7 scheduled throws) + the gated
+        # k=0..k=7 (8) — the live counter is still the only budget
+        assert thrown == 15, thrown
 
 
 class TestKillChainRegression:

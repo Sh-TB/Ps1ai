@@ -299,6 +299,35 @@ product-path truck campaign; every rule is committed-evidence-backed):
           wave trajectory; the R67 cadence-law precedent).  The
           disclosed divergence point is exactly the owned-window
           frames (r72b1: f1789..1793).
+  R74 (v2.2.0). THE STREAM HANDOFF (the R74 capsule lever, the
+      product track — the kill attempt).  The R73 calibration
+      table proved the ownership sets COMPLEMENT: the volley
+      stream owns k=0/k=1 (the connects at freeze+178/+342, the
+      -1f x2) and the idle-hold stream owns k=2 (freeze+506,
+      4/4 across -1f/+1f); no single stream owns all three.  The
+      shipped policy therefore STARTS on the volley head and
+      hands off to the idle-hold tail ON THE CLOCK:
+        * THE VOLLEY HEAD = the VERBATIM r69b throw schedule
+          (fight_f 64/106/147/188/229/270/311 — the R68
+          verbatim-replay precedent; a dynamic 40f cadence does
+          NOT reproduce this stream: its landing phase never
+          reaches ANY grid point — the schedule IS the stream);
+        * NO lead throws and NO C4 width probe in the head (the
+          r69b stream never led or probed — both are foreign
+          inputs to it; the probe is pre-spent);
+        * THE CLOCK HANDOFF at fight_f 350: past the k=1 window
+          close (land 344) and BEFORE the next volley frame
+          (~352) — no further off-grid input perturbs the phase
+          before the owned k=2 land at freeze+506 -> a4 0 = THE
+          KILL inside the f1844 section-locked death clock
+          (freeze+693);
+        * THE TAIL = the v2.1.0 semantics VERBATIM (the phase
+          gate +-2f both sides + the rear-escort exemption).
+      The disclosed risk (the capsule next_experiment): the r69b
+      stream got scroll-shoved at ~f1180 (freeze+369, 27f after
+      the k=1 connect) — whether stopping the volley at the
+      handoff prevents the shove is the boot's open question;
+      a k=1 miss degrades honestly (the tail continues gated).
 """
 from __future__ import annotations
 
@@ -312,7 +341,7 @@ from ps1play.runtime.interfaces import (ActionDecision, GameObservation,
                                         Policy)
 
 POLICY_NAME = "msx_mission1_rules"
-POLICY_VERSION = "2.1.0"
+POLICY_VERSION = "2.2.0"
 
 # the hold band's inner edge (the R67 loop-probe lesson: holding at
 # dx 52 — point-blank in the truck gun's line — LOST the duel; the
@@ -447,6 +476,27 @@ TRUCK_WIDTH_PROBE = 1           # C4: the one-shot width-probe cap
 # semantics; the K1 unit tests keep it covered) as the chip-damage
 # supplement AFTER the connect mechanism is solved.
 TRUCK_CHIP_FIRE = False
+# R74 (v2.2.0): THE STREAM HANDOFF.  The R73 calibration table
+# proved the ownership sets COMPLEMENT: the volley stream (the
+# v1.7.x UNGATED gre40 cadence) owns k=0/k=1 (the connects at
+# freeze+178/+342, the -1f x2); the idle-hold stream (the gated
+# cadence) owns k=2 (freeze+506, 4/4).  The shipped policy
+# therefore STARTS on the volley head and hands off to the
+# idle-hold tail ON THE CLOCK: the k=1 connect lands at
+# freeze+342 (the window closes at fight_f 314 -> land 344); the
+# handoff at fight_f 350 is past the close and BEFORE the next
+# volley frame (~352) — no further off-grid input perturbs the
+# phase before the owned k=2 land at freeze+506 -> a4 0 = THE
+# KILL inside the f1844 clock.
+TRUCK_HANDOFF_FIGHT_F = 350.0
+# THE VOLLEY HEAD = THE VERBATIM r69b THROW SCHEDULE (the R68
+# verbatim-replay precedent).  The r69b volley stream's grenade
+# frames on the SAME P1 clock (freeze f811): fight_f 64/106/147/
+# 188/229/270/311 — the lands 94/136/177/218/259/300/341 whose
+# k=0/k=1 lands CONNECTED (-1f x2).  A dynamic 40f cadence does
+# NOT reproduce this stream: its landing phase (mod 40) never
+# reaches ANY grid point — the schedule IS the stream.
+TRUCK_VOLLEY_SCHEDULE = (64, 106, 147, 188, 229, 270, 311)
 PROGRESS_PX = 1.0
 
 # state codes that can absorb a bullet or register a payment
@@ -490,6 +540,8 @@ class Mission1Policy(Policy):
         self._truckin_px = None       # v1.8.0: the last drive-in px
         self._truckin_static = 0      # v1.8.0: the static-history count
         self._width_probed = 0        # v1.8.1: C4 the width probe
+        self._stream = "volley"       # v2.2.0: R74 the stream handoff
+        self._handoff_f = None        # v2.2.0: the switch frame
         self._last_diag: Dict[str, Any] = {}
 
     # ---- Policy contract ----
@@ -536,6 +588,7 @@ class Mission1Policy(Policy):
         self._truckin_px = None
         self._truckin_static = 0
         self._width_probed = 0
+        self._stream = "volley"
 
     def identity(self) -> Dict[str, Any]:
         # the engine's record seam reads identity()["name"] and
@@ -550,7 +603,7 @@ class Mission1Policy(Policy):
                 "trained": False,
                 "kind": "built-in rules (no model, no training)",
                 "corridor_predicate": "r70_corridor_guard",
-                "truck_rules": "r73_rear_escort_exemption"}
+                "truck_rules": "r74_stream_handoff"}
 
     def close(self) -> None:
         self._tel = None
@@ -649,6 +702,19 @@ class Mission1Policy(Policy):
                 self._truck_fight_f = 0
                 self._phase_last_k = -1
                 self._lead_spent = 0
+                # v2.2.0: the fresh fight starts on the VOLLEY head
+                # (the verbatim r69b schedule owns k=0/k=1); the C4
+                # probe is pre-spent (the r69b stream never probed)
+                self._stream = "volley"
+                self._width_probed = TRUCK_WIDTH_PROBE
+            # v2.2.0: THE CLOCK HANDOFF — past the k=1 window close
+            # (land 344) and before the next volley frame (~352):
+            # the tail is the idle-hold stream (the gate owns k=2).
+            # One-way; the switch frame is recorded in _handoff_f.
+            if self._stream == "volley" and \
+                    self._truck_fight_f >= TRUCK_HANDOFF_FIGHT_F:
+                self._stream = "hold"
+                self._handoff_f = self._truck_fight_f
             self._truck_present = True        # v1.5.0: seen this frame
             self._truck_gone_f = 0            # v1.6.0: reset the window
             self._last_truck_dx = dx_t
@@ -800,7 +866,14 @@ class Mission1Policy(Policy):
                     # chip evidence + the kill math: the chips + TWO
                     # centered connects reach a4 0 in-window).
                     return chip_fire()
-                if not phase_open:
+                # R74 (v2.2.0): THE STREAM HANDOFF — the volley head
+                # throws at the VERBATIM r69b schedule (the stream
+                # that owns k=0/k=1); the hold tail throws ON the
+                # phase gate only (the stream that owns k=2).
+                throw_now = phase_open or (
+                    self._stream == "volley" and
+                    self._truck_fight_f in TRUCK_VOLLEY_SCHEDULE)
+                if not throw_now:
                     # C4 (v1.8.1, R70b): THE WIDTH PROBE — the
                     # post-freeze arm: the first clean in-window
                     # hold with a ready grenade books ONE
@@ -848,6 +921,7 @@ class Mission1Policy(Policy):
                                    "truck_h": truck_any[2],
                                    "fight_f": self._truck_fight_f,
                                    "phase_k": phase_k,
+                                   "stream": self._stream,
                                    "grenades_used":
                                        self._truck_grenades_used}
                 return "GRENADE"
@@ -983,6 +1057,10 @@ class Mission1Policy(Policy):
                          and ftf is not None
                          and self._truckin_static >= 2
                          and self._lead_spent < TRUCK_LEAD_CAP
+                         # v2.2.0: the volley head has NO lead (the
+                         # r69b stream never led — a lead throw is a
+                         # foreign input to that stream)
+                         and self._stream == "hold"
                          and clear_line(pred_dx)
                          and abs(ftf - (TRUCK_LOB_FLIGHT
                                         - TRUCK_LEAD_LAND))

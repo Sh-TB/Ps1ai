@@ -90,6 +90,7 @@ def at_clock(fight_f, facing="L", probe=True):
     p = Mission1Policy()
     p._truck_present = True
     p._truck_fight_f = fight_f - 1
+    p._stream = "hold"   # v2.2.0: the exemption lives on the hold stream
     if probe:
         p._width_probed = 1
     p._facing = facing
@@ -98,9 +99,11 @@ def at_clock(fight_f, facing="L", probe=True):
 
 class TestShippedRule:
     def test_version_and_identity(self):
-        assert POLICY_VERSION == "2.1.0"
+        # re-anchored v2.1.0 -> v2.2.0 (R74): the stream handoff
+        # ships; the exemption itself is unchanged (the tail rule)
+        assert POLICY_VERSION == "2.2.0"
         ident = Mission1Policy().identity()
-        assert ident["truck_rules"] == "r73_rear_escort_exemption"
+        assert ident["truck_rules"] == "r74_stream_handoff"
 
     def test_r72b1_blocked_window_now_throws(self):
         # THE R72b1 REPRODUCTION: fight_f 638 (the k=3 window open,

@@ -78,7 +78,8 @@ TRUCK_L = (-133.5, 7, 64.0)
 
 
 def at_clock(fight_f, probe=True):
-    """A policy whose NEXT decision lands at fight_f (the truck
+    """A policy whose NEXT decision lands at fight_f (the HOLD
+    stream — the pre-2.2.0 semantics these laws were measured on) (the truck
     already seen so the anchor reset does not fire).  By default
     the C4 width probe is pre-spent so the phase-hold behavior is
     observable in isolation; the probe tests pass probe=False."""
@@ -87,6 +88,7 @@ def at_clock(fight_f, probe=True):
     p._truck_fight_f = fight_f - 1
     if probe:
         p._width_probed = 1
+    p._stream = "hold"   # v2.2.0: these laws live on the hold stream
     p._facing = "L"
     return p
 
@@ -163,6 +165,7 @@ class TestPhaseGate:
         mp.setattr(_policy_mod, "TRUCK_CHIP_FIRE", True)
         try:
             p = Mission1Policy()
+            p._stream = "hold"  # v2.2.0: the clock/gate mechanics on the hold stream
             p._width_probed = 1
             acts = []
             for _ in range(GRID_K0 + 5):
@@ -171,10 +174,12 @@ class TestPhaseGate:
             assert acts[0] == "BACK"            # the chip-fire turn
             assert "FIRE" in acts[:10]          # then the aimed fire
             assert "GRENADE" in acts[:GRID_K0 + 3]
-            # R72: the widened +-2f gate opens the k=0 window TWO
-            # frames EARLIER than v1.9.0 (the pre-side: the land at
-            # 176 = 178-2 -> the throw at 146) — hence GRID_K0 - 2
-            assert acts.index("GRENADE") >= GRID_K0 - 2
+            # v2.2.0 (R74): the fresh fight anchors onto the VOLLEY
+            # head — the first grenade is the verbatim r69b
+            # schedule's first frame (fight_f 64 = the 65th
+            # decision: the anchor frame itself is fight_f 0); the
+            # gated k=0 window follows on the same clock
+            assert acts.index("GRENADE") == 64
         finally:
             mp.undo()
 
@@ -231,8 +236,11 @@ class TestDriveInArm:
 
     def test_lead_throw_on_ftf_window(self):
         # the truck closing +1.25 px/f on a static player: the ftf
-        # reaches 16 exactly at dx -153.5 => the lead throw
+        # reaches 16 exactly at dx -153.5 => the lead throw (the
+        # v2.2.0 lead lives on the hold stream — the volley head
+        # never leads; the volley-side coverage in test_r74)
         p = Mission1Policy()
+        p._stream = "hold"
         p._facing = "L"
         for dx in (-156.0, -154.75, -153.5):
             a, diag = decide(p, px=1071.0, ents=[(dx, 8, 64.0)])
@@ -243,6 +251,7 @@ class TestDriveInArm:
 
     def test_lead_turn_first_when_facing_wrong(self):
         p = Mission1Policy()                # the default facing R
+        p._stream = "hold"                  # v2.2.0: the lead on the hold stream
         a, diag = decide(p, px=1071.0, ents=[(-153.5, 8, 64.0)])
         # frame 1: static=0 (no history) -> no lead; the hold arms
         assert a == "IDLE"
@@ -455,7 +464,9 @@ class TestV181Corrections:
 
     def test_c4_lead_has_priority_over_probe(self):
         # the lead window (ftf ~16) opens BEFORE the probe spends
+        # (the hold stream — v2.2.0: the volley head never leads)
         p = Mission1Policy()
+        p._stream = "hold"
         p._facing = "L"
         p._truckin_static = 2
         p._truckin_dx = -154.75
@@ -465,10 +476,10 @@ class TestV181Corrections:
         assert diag["rule"] == "truck_lead_throw"
 
     def test_version_bump(self):
-        # v2.1.0 (R73): the rear-escort exemption on top of the
-        # v2.0.0 hybrid (the full +-2f gate + the idle-hold
-        # re-selection); the K1 arm stays patchable
-        assert POLICY_VERSION == "2.1.0"
+        # v2.2.0 (R74): THE STREAM HANDOFF on top of the v2.1.0
+        # exemption (the volley head = the verbatim r69b schedule;
+        # the hold tail = the full +-2f gate + the exemption)
+        assert POLICY_VERSION == "2.2.0"
 
     def test_c5_sc6_walker_outranks_lob(self):
         # C5 (the r70 boot-2 evidence): a chaser in a WALK state

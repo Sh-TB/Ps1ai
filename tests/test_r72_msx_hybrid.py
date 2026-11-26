@@ -87,6 +87,7 @@ def at_clock(fight_f, probe=True):
     p = Mission1Policy()
     p._truck_present = True
     p._truck_fight_f = fight_f - 1
+    p._stream = "hold"   # v2.2.0: the hybrid gate lives on the hold stream
     if probe:
         p._width_probed = 1
     p._facing = "L"
@@ -95,13 +96,13 @@ def at_clock(fight_f, probe=True):
 
 class TestShippedDefault:
     def test_version_and_identity(self):
-        # re-anchored v2.0.0 -> v2.1.0 (R73): the rear-escort
-        # exemption ships; the hybrid gate itself is unchanged
-        # (the R72 calibration table: k=2 owns the connect on the
-        # idle-hold stream 4/4; the k=3 window was escort-held)
-        assert POLICY_VERSION == "2.1.0"
+        # re-anchored v2.0.0 -> v2.2.0 (R73+R74): the exemption
+        # then the stream handoff; the hybrid gate itself is
+        # unchanged (the R72 calibration table: k=2 owns the
+        # connect on the idle-hold stream 4/4)
+        assert POLICY_VERSION == "2.2.0"
         ident = Mission1Policy().identity()
-        assert ident["truck_rules"] == "r73_rear_escort_exemption"
+        assert ident["truck_rules"] == "r74_stream_handoff"
 
     def test_arm_default_false(self):
         # THE R72 RE-SELECTION (the boot-3 one-variable evidence):
