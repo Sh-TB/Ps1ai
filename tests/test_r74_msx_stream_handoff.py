@@ -92,18 +92,20 @@ def fresh(fight_f, facing="L"):
 
 class TestShippedHandoff:
     def test_version_and_identity(self):
-        assert POLICY_VERSION == "2.2.0"
+        # re-anchored v2.2.0 -> v2.3.0 (R75): the head grid extends
+        assert POLICY_VERSION == "2.3.0"
         ident = Mission1Policy().identity()
-        assert ident["truck_rules"] == "r74_stream_handoff"
+        assert ident["truck_rules"] == "r75_extended_head_grid"
 
     def test_constants_match_the_r69b_evidence(self):
         # the schedule = the committed r69b grenade frames on the
-        # P1 clock (freeze f811 -> 875/917/958/999/1040/1081/1122)
+        # P1 clock + the R74b1 head-grid extension (the lands
+        # freeze+423/+587 = the 259-grid k=1/k=2 points)
         assert TRUCK_VOLLEY_SCHEDULE == (64, 106, 147, 188, 229,
-                                         270, 311)
-        # the handoff: past the k=1 land (342) + the window close
-        # (344), before the next volley cadence frame (~352)
-        assert TRUCK_HANDOFF_FIGHT_F == 350.0
+                                         270, 311, 393, 557)
+        # the handoff: past the freeze+587 land (587) and its read
+        # window, before the next 178-grid gate frame (638-642)
+        assert TRUCK_HANDOFF_FIGHT_F == 620.0
 
     def test_fresh_fight_starts_on_volley(self):
         p = Mission1Policy()
@@ -121,7 +123,7 @@ class TestShippedHandoff:
 
 class TestVolleyHead:
     def test_schedule_frames_throw(self):
-        for ff in TRUCK_VOLLEY_SCHEDULE:
+        for ff in (64, 106, 147, 188, 229, 270, 311):
             p = fresh(ff)
             a, diag = decide(p, ents=[TRUCK_L])
             assert a == "GRENADE", (ff, a, diag)
@@ -164,15 +166,15 @@ class TestVolleyHead:
 
 
 class TestHandoffClock:
-    def test_switch_at_350(self):
-        p = fresh(350)
+    def test_switch_at_620(self):
+        p = fresh(620)
         assert p._stream == "volley"
-        a, _ = decide(p, ents=[TRUCK_L])        # fight_f 350
+        a, _ = decide(p, ents=[TRUCK_L])        # fight_f 620
         assert p._stream == "hold"
-        assert p._handoff_f == 350
+        assert p._handoff_f == 620
 
     def test_one_way_and_resets_on_reanchor(self):
-        p = fresh(360)
+        p = fresh(630)
         decide(p, ents=[TRUCK_L])
         assert p._stream == "hold"
         # the fresh truck = the fresh fight = the volley head again
@@ -183,22 +185,22 @@ class TestHandoffClock:
 
     def test_tail_gate_governs_again(self):
         # post-handoff off-grid: the phase hold (the v1.9.0-era
-        # semantics restored)
-        p = fresh(400)
+        # semantics restored; the fight_f 650 land = freeze+502,
+        # +10f off the 178-grid k=2 point -> closed)
+        p = fresh(620)
         decide(p, ents=[TRUCK_L])               # the handoff frame
         assert p._stream == "hold"
-        p._truck_fight_f = 419                  # off-grid
+        p._truck_fight_f = 649                  # off-grid
         a, diag = decide(p, ents=[TRUCK_L])
         assert a == "IDLE"
         assert diag["rule"] == "truck_phase_hold"
 
-    def test_tail_k2_window_opens(self):
-        # THE TAIL'S TARGET: the k=2 grid window (the gate opens at
-        # fight_f 474, the -2f side) — the owned connect land at
-        # freeze+506 (the decision helper: fight_f N-1 -> the
-        # decision lands at fight_f N)
-        p = fresh(360)
-        decide(p, ents=[TRUCK_L])
+    def test_k2_window_opens_in_head(self):
+        # the 178-grid k=2 window still fires DURING the head (the
+        # gate OR in the throw_now condition — the r74b1 boot had
+        # it corridor-blocked; the law says it would MISS: the
+        # head's grid is +81f) — the gate machinery unchanged
+        p = fresh(472)
         p._truck_fight_f = 472
         a, diag = decide(p, ents=[TRUCK_L])     # fight_f 473: -3f
         assert a != "GRENADE"                   # closed

@@ -99,11 +99,11 @@ def at_clock(fight_f, facing="L", probe=True):
 
 class TestShippedRule:
     def test_version_and_identity(self):
-        # re-anchored v2.1.0 -> v2.2.0 (R74): the stream handoff
+        # re-anchored -> v2.3.0 (R75): the extended head grid
         # ships; the exemption itself is unchanged (the tail rule)
-        assert POLICY_VERSION == "2.2.0"
+        assert POLICY_VERSION == "2.3.0"
         ident = Mission1Policy().identity()
-        assert ident["truck_rules"] == "r74_stream_handoff"
+        assert ident["truck_rules"] == "r75_extended_head_grid"
 
     def test_r72b1_blocked_window_now_throws(self):
         # THE R72b1 REPRODUCTION: fight_f 638 (the k=3 window open,

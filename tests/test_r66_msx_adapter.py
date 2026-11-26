@@ -376,12 +376,12 @@ class TestTruckRulesR67:
         # now PHASE-SPACED (v1.8.0 P1: one lob per 164f grid point
         # — 8 lobs need 148 + 164*7 + tol decisions)
         acts, rules = self._run([(133.5, 7, 64.0)], n=1320)
-        # v2.2.0 (R74): the shipped stream = the volley head (the
-        # verbatim r69b schedule, 7 throws incl. the two that
-        # collide with the k=0/k=1 gates) + the gated tail (k=0..6)
-        assert acts.count("GRENADE") == 13
-        # v2.2.0: the volley head + the gated tail (13 total)
-        assert rules.count("truck_connect_grenade") == 13
+        # v2.3.0 (R75): the shipped stream = the volley head (the
+        # verbatim r69b schedule + the head-grid extension {393,
+        # 557}) + the gated tail (k=0..6)
+        assert acts.count("GRENADE") == 15
+        # v2.3.0: the extended head + the gated tail (15 total)
+        assert rules.count("truck_connect_grenade") == 15
 
     def test_soldier_before_truck_gun(self):
         # a CLEAR escort (70, between player and truck at 90) holds
@@ -404,10 +404,10 @@ class TestTruckRulesR67:
         acts, rules = self._run([(133.5, 7, 64.0),
                                  (150.0, 1, 44.0)], n=1320)
         assert rules.count("truck_escort_first") == 0
-        # v2.2.0: the volley head + the gated tail (see the note on
-        # test_truck_in_band_grenades)
-        assert rules.count("truck_connect_grenade") == 13
-        assert acts.count("GRENADE") == 13
+        # v2.3.0: the extended head + the gated tail (see the note
+        # on test_truck_in_band_grenades)
+        assert rules.count("truck_connect_grenade") == 15
+        assert acts.count("GRENADE") == 15
 
     def test_truck_out_of_band_no_grenade(self):
         # truck at 200 (out of the lob band): the v1.6.2 CHASE
@@ -449,8 +449,8 @@ class TestTruckRulesR67:
             o = self._obs([(133.5, 7, 64.0)],
                           px=1000.0 + 2 * k)
             pol.predict(o)
-        # v2.2.0: the volley head adds the scheduled throws
-        assert pol._truck_grenades_used == 13
+        # v2.3.0: the extended head adds the scheduled throws
+        assert pol._truck_grenades_used == 15
         assert pol._grenades_used == 0
 
     def test_identity_v181(self):
@@ -460,8 +460,8 @@ class TestTruckRulesR67:
         # corridor guard stay
         pol = Mission1Policy()
         ident = pol.identity()
-        assert ident["policy_version"] == "2.2.0"
-        assert ident["truck_rules"] == "r74_stream_handoff"
+        assert ident["policy_version"] == "2.3.0"
+        assert ident["truck_rules"] == "r75_extended_head_grid"
 
     def test_hold_backs_off_point_blank(self):
         # THE v1.4.2 PROBE LESSON (pinned) + v1.7.0 C1: below the
@@ -716,11 +716,11 @@ class TestRearFightR67V140:
                                     fight_f=148)
             assert rules[0] == "truck_turn"
             assert acts[0] == "BACK"
-            # v2.2.0: the anchor at k=0 leaves the schedule frames
-            # 188..311 (4) + the gated k=2..k=6 (5) + the anchor
+            # v2.3.0: the anchor at k=0 leaves the schedule frames
+            # 188..557 (6) + the gated k=2..k=6 (5) + the anchor
             # k=0 throw (1)
-            assert rules.count("truck_connect_grenade") == 10
-            assert acts.count("GRENADE") == 10
+            assert rules.count("truck_connect_grenade") == 12
+            assert acts.count("GRENADE") == 12
             # the K1-era cooldown holds are the aimed chip-fire
             assert "truck_chip_fire" in rules
             assert "truck_connect_hold" not in rules

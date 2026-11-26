@@ -111,11 +111,11 @@ class TestK1ChipFire:
         import ps1play.adapters.metal_slug_x.policy as _pol
         monkeypatch.setattr(_pol, "TRUCK_CHIP_FIRE", True)
 
-    def test_version_is_2_2_0(self):
-        # v2.2.0 (R74): the stream handoff ships; the K1 arm
+    def test_version_is_2_3_0(self):
+        # v2.3.0 (R75): the extended head grid ships; the K1 arm
         # stays patchable (this suite runs with the patch True,
         # on the hold stream — the K1 semantics preserved)
-        assert POLICY_VERSION == "2.2.0"
+        assert POLICY_VERSION == "2.3.0"
 
     def test_chip_fire_during_cooldown_clear_corridor(self):
         # the grenade on cooldown, the corridor clear: the aimed

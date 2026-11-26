@@ -341,7 +341,7 @@ from ps1play.runtime.interfaces import (ActionDecision, GameObservation,
                                         Policy)
 
 POLICY_NAME = "msx_mission1_rules"
-POLICY_VERSION = "2.2.0"
+POLICY_VERSION = "2.3.0"
 
 # the hold band's inner edge (the R67 loop-probe lesson: holding at
 # dx 52 — point-blank in the truck gun's line — LOST the duel; the
@@ -485,10 +485,21 @@ TRUCK_CHIP_FIRE = False
 # idle-hold tail ON THE CLOCK: the k=1 connect lands at
 # freeze+342 (the window closes at fight_f 314 -> land 344); the
 # handoff at fight_f 350 is past the close and BEFORE the next
-# volley frame (~352) — no further off-grid input perturbs the
-# phase before the owned k=2 land at freeze+506 -> a4 0 = THE
-# KILL inside the f1844 clock.
-TRUCK_HANDOFF_FIGHT_F = 350.0
+# volley frame (~352).
+# R75 (v2.3.0): THE HEAD-PHASE EXTENDED SCHEDULE.  The r74b1 boot
+# proved the head's OWN connect grid = freeze+259 (+81f, ~the
+# half-period vs the r69b/178-grid; the +-1-throw stream delta
+# shifted the phase — deterministic and reproducible): the 229
+# throw landed ON it (+0f, CONNECTED), the 270/311 throws missed
+# (+41f/+82f off — the predicted off-window).  The head's grid
+# CONTINUES at freeze+423 and freeze+587 (the throws at fight_f
+# 393 and 557) — the schedule is EXTENDED by them and the
+# handoff moves to fight_f 620 (past the freeze+587 land and its
+# read window): 3 head connects = a4 300->200->100->0 = THE KILL
+# INSIDE the death clock (the r74b1 death at freeze+733 admits
+# the freeze+587 land with ~146f of runway).  The extension
+# throws are ON the head's grid — not perturbations.
+TRUCK_HANDOFF_FIGHT_F = 620.0
 # THE VOLLEY HEAD = THE VERBATIM r69b THROW SCHEDULE (the R68
 # verbatim-replay precedent).  The r69b volley stream's grenade
 # frames on the SAME P1 clock (freeze f811): fight_f 64/106/147/
@@ -496,7 +507,8 @@ TRUCK_HANDOFF_FIGHT_F = 350.0
 # k=0/k=1 lands CONNECTED (-1f x2).  A dynamic 40f cadence does
 # NOT reproduce this stream: its landing phase (mod 40) never
 # reaches ANY grid point — the schedule IS the stream.
-TRUCK_VOLLEY_SCHEDULE = (64, 106, 147, 188, 229, 270, 311)
+TRUCK_VOLLEY_SCHEDULE = (64, 106, 147, 188, 229, 270, 311,
+                         393, 557)
 PROGRESS_PX = 1.0
 
 # state codes that can absorb a bullet or register a payment
@@ -603,7 +615,7 @@ class Mission1Policy(Policy):
                 "trained": False,
                 "kind": "built-in rules (no model, no training)",
                 "corridor_predicate": "r70_corridor_guard",
-                "truck_rules": "r74_stream_handoff"}
+                "truck_rules": "r75_extended_head_grid"}
 
     def close(self) -> None:
         self._tel = None
