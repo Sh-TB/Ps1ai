@@ -110,10 +110,10 @@ class TestK1ChipFire:
         import ps1play.adapters.metal_slug_x.policy as _pol
         monkeypatch.setattr(_pol, "TRUCK_CHIP_FIRE", True)
 
-    def test_version_is_2_0_0(self):
-        # v2.0.0 (R72): the volley+phase hybrid ships; the K1 arm
+    def test_version_is_2_1_0(self):
+        # v2.1.0 (R73): the rear-escort exemption ships; the K1 arm
         # stays patchable (this suite runs with the patch True)
-        assert POLICY_VERSION == "2.0.0"
+        assert POLICY_VERSION == "2.1.0"
 
     def test_chip_fire_during_cooldown_clear_corridor(self):
         # the grenade on cooldown, the corridor clear: the aimed

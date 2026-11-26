@@ -272,6 +272,33 @@ product-path truck campaign; every rule is committed-evidence-backed):
           one-per-grid-window discipline is preserved by the
           geometry, and the _phase_last_k bookkeeping stays as
           the belt-and-braces guard.
+  R73 (v2.1.0). THE REAR-ESCORT EXEMPTION (the R73 capsule lever,
+      the product track; the R72 calibration table
+      data/games/SLUS-01212/truck_evidence/r73/r73_calibration.json).
+      The k-ownership law CONFIRMED on both sides of the tolerance:
+      on the idle-hold stream the k=2 window connects 4/4 across
+      BOTH side buckets (-1f v2.0.0 boot, +1f v1.9.0 boot) while
+      k=0/k=1 never connect (0/4: -2f and +0f) — the windows are
+      STREAM-OWNED, the side does not matter.  And the r72 boot-1
+      death frame audit found THE BLOCKED WINDOW: the k=3 grid
+      window (fight_f 638-642, phase open, 9 grenades live) never
+      threw — every frame was held by the T3 escort rule on a
+      REAR escort at dx +37.8 (the OPPOSITE side of the truck at
+      -133.5): the escort-first FIRE cadence outranked the grid
+      throw from f1780 to the death f1844.  A rear escort cannot
+      eat the lob (the C2 corridor predicate already guards the
+      truck-line descent; a lob toward -133.5 never passes x>0),
+      so holding the owned window on it is a pure loss:
+        * during the PHASE-OPEN frames ONLY, a clear-line escort on
+          the OPPOSITE side of the truck no longer holds the grid
+          throw (T3 falls through to the throw branch);
+        * the same-side escorts keep FULL precedence (the D7/R49
+          law: the lob descends into their line and gets eaten);
+        * the OFF-window frames keep byte-identical behavior (the
+          stream law — the fire cadence is part of the deterministic
+          wave trajectory; the R67 cadence-law precedent).  The
+          disclosed divergence point is exactly the owned-window
+          frames (r72b1: f1789..1793).
 """
 from __future__ import annotations
 
@@ -285,7 +312,7 @@ from ps1play.runtime.interfaces import (ActionDecision, GameObservation,
                                         Policy)
 
 POLICY_NAME = "msx_mission1_rules"
-POLICY_VERSION = "2.0.0"
+POLICY_VERSION = "2.1.0"
 
 # the hold band's inner edge (the R67 loop-probe lesson: holding at
 # dx 52 — point-blank in the truck gun's line — LOST the duel; the
@@ -523,7 +550,7 @@ class Mission1Policy(Policy):
                 "trained": False,
                 "kind": "built-in rules (no model, no training)",
                 "corridor_predicate": "r70_corridor_guard",
-                "truck_rules": "r72_volley_phase_hybrid"}
+                "truck_rules": "r73_rear_escort_exemption"}
 
     def close(self) -> None:
         self._tel = None
@@ -625,13 +652,45 @@ class Mission1Policy(Policy):
             self._truck_present = True        # v1.5.0: seen this frame
             self._truck_gone_f = 0            # v1.6.0: reset the window
             self._last_truck_dx = dx_t
+            # P1 (cont., v1.8.0): THE PHASE GATE — hoisted above T3 in
+            # v2.1.0 (pure arithmetic on the fight clock; the R73
+            # rear-escort exemption gates on phase_open).  The lob
+            # fires only ON the vulnerability grid: the land
+            # (throw + the 30f flight) must sit on freeze + 178 +
+            # 164k (the r69b connects f989/f1153; the f877-center
+            # miss bounds the width < 82f).
+            phase_rel = (self._truck_fight_f + TRUCK_LOB_FLIGHT
+                         - TRUCK_PHASE_BASE) % TRUCK_PHASE_PERIOD
+            # R72 (v2.0.0): the FULL tolerance — the signed distance
+            # to the NEAREST grid point, BOTH sides (the v1.9.0
+            # gate admitted only the 0..2f-after side).
+            phase_off = phase_rel if phase_rel <= TRUCK_PHASE_PERIOD / 2 \
+                else phase_rel - TRUCK_PHASE_PERIOD
+            phase_k = int(round((self._truck_fight_f + TRUCK_LOB_FLIGHT
+                                 - TRUCK_PHASE_BASE)
+                                / TRUCK_PHASE_PERIOD))
+            phase_open = (abs(phase_off) <= TRUCK_PHASE_TOL
+                          and phase_k != self._phase_last_k)
             # T3: soldiers before the truck gun (the D7 recipe) —
             # the escort may stand on EITHER side; a clear-line
             # escort outranks the lob.
+            # R73 (v2.1.0): THE REAR-ESCORT EXEMPTION — during the
+            # phase-open frames ONLY, a clear-line escort on the
+            # OPPOSITE side of the truck does NOT hold the grid
+            # throw (the r72 boot-1 audit: the k=3 window f1789-1793
+            # held every frame by the escort-first cadence on a rear
+            # escort at dx +37.8 while the truck sat at -133.5 — a
+            # lob toward the truck never passes x>0, so the hold was
+            # a pure loss of the owned window).  Same-side escorts
+            # keep FULL precedence (the D7/R49 law); the off-window
+            # frames keep byte-identical behavior (the stream law).
             soldier = next((e for e in ents
                             if e[1] in ESCORT_CODES
                             and 8.0 < abs(e[0]) <= ENGAGE_SHORT
-                            and clear_line(e[0])), None)
+                            and clear_line(e[0])
+                            and not (phase_open
+                                     and (e[0] > 0) != (dx_t > 0))),
+                           None)
             if soldier is not None:
                 side_s = "R" if soldier[0] > 0 else "L"
                 if self._facing != side_s:
@@ -669,27 +728,9 @@ class Mission1Policy(Policy):
             # measured posture).
             in_win = TRUCK_CONNECT_MIN <= abs(dx_t) \
                 <= TRUCK_CONNECT_MAX
-            # P1 (cont., v1.8.0): THE PHASE GATE — the lob fires only
-            # ON the vulnerability grid: the land (throw + the 30f
-            # flight) must sit on freeze + 178 + 164k (the r69b
-            # connects f989/f1153; the f877-center miss bounds the
-            # width < 82f).  During the cooldown the connect hold
-            # keeps precedence (the v1.7.1 semantics); off-grid with
-            # a ready grenade the posture HOLDS (the phase-hold).
-            phase_rel = (self._truck_fight_f + TRUCK_LOB_FLIGHT
-                         - TRUCK_PHASE_BASE) % TRUCK_PHASE_PERIOD
-            # R72 (v2.0.0): the FULL tolerance — the signed distance
-            # to the NEAREST grid point, BOTH sides (the v1.9.0
-            # gate admitted only the 0..2f-after side).  The land
-            # must sit within +-2f of ANY grid point (the hybrid:
-            # the gre40 cadence gated by the phase tolerance).
-            phase_off = phase_rel if phase_rel <= TRUCK_PHASE_PERIOD / 2 \
-                else phase_rel - TRUCK_PHASE_PERIOD
-            phase_k = int(round((self._truck_fight_f + TRUCK_LOB_FLIGHT
-                                 - TRUCK_PHASE_BASE)
-                                / TRUCK_PHASE_PERIOD))
-            phase_open = (abs(phase_off) <= TRUCK_PHASE_TOL
-                          and phase_k != self._phase_last_k)
+            # P1: the phase gate lives ABOVE the T3 escort block since
+            # v2.1.0 (the R73 exemption gates on phase_open); the
+            # C2/throw branch below consumes it.
             # C2 (v1.8.1, R70): THE CORRIDOR GUARD — the r70 boot-1
             # evidence REFUTED the unconditional arc: a lob
             # descending into an occupied corridor is EATEN (the

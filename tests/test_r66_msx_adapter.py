@@ -447,13 +447,14 @@ class TestTruckRulesR67:
         assert pol._grenades_used == 0
 
     def test_identity_v181(self):
-        # re-anchored on R72 (v2.0.0): the volley+phase hybrid (the
-        # full +-2f gate + the idle-hold re-selection); the phase
-        # law and the corridor guard stay
+        # re-anchored on R73 (v2.1.0): the rear-escort exemption on
+        # top of the v2.0.0 volley+phase hybrid (the full +-2f gate
+        # + the idle-hold re-selection); the phase law and the
+        # corridor guard stay
         pol = Mission1Policy()
         ident = pol.identity()
-        assert ident["policy_version"] == "2.0.0"
-        assert ident["truck_rules"] == "r72_volley_phase_hybrid"
+        assert ident["policy_version"] == "2.1.0"
+        assert ident["truck_rules"] == "r73_rear_escort_exemption"
 
     def test_hold_backs_off_point_blank(self):
         # THE v1.4.2 PROBE LESSON (pinned) + v1.7.0 C1: below the

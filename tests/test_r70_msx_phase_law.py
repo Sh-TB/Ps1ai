@@ -465,9 +465,10 @@ class TestV181Corrections:
         assert diag["rule"] == "truck_lead_throw"
 
     def test_version_bump(self):
-        # v2.0.0 (R72): the volley+phase hybrid (the full +-2f gate
-        # + the idle-hold re-selection); the K1 arm stays patchable
-        assert POLICY_VERSION == "2.0.0"
+        # v2.1.0 (R73): the rear-escort exemption on top of the
+        # v2.0.0 hybrid (the full +-2f gate + the idle-hold
+        # re-selection); the K1 arm stays patchable
+        assert POLICY_VERSION == "2.1.0"
 
     def test_c5_sc6_walker_outranks_lob(self):
         # C5 (the r70 boot-2 evidence): a chaser in a WALK state

@@ -1,0 +1,812 @@
+{
+ "r69b": {
+  "stream": "volley_gre40",
+  "file": "r69/r69b_connect_probe.jsonl",
+  "boots": [
+   {
+    "freeze_f": 811,
+    "throws": [
+     {
+      "f": 875,
+      "rule": "truck_connect_grenade",
+      "gren_pre": 10,
+      "gren_used": null,
+      "land": 905.0,
+      "outcome": "MISS",
+      "k": -1,
+      "side": 80.0
+     },
+     {
+      "f": 917,
+      "rule": "truck_connect_grenade",
+      "gren_pre": 9,
+      "gren_used": null,
+      "land": 947.0,
+      "outcome": "MISS",
+      "k": 0,
+      "side": -42.0
+     },
+     {
+      "f": 958,
+      "rule": "truck_connect_grenade",
+      "gren_pre": 9,
+      "gren_used": null,
+      "land": 988.0,
+      "outcome": "CONNECT",
+      "k": 0,
+      "side": -1.0,
+      "a4_f": 989
+     },
+     {
+      "f": 999,
+      "rule": "truck_connect_grenade",
+      "gren_pre": 8,
+      "gren_used": null,
+      "land": 1029.0,
+      "outcome": "MISS",
+      "k": 0,
+      "side": 40.0
+     },
+     {
+      "f": 1040,
+      "rule": "truck_connect_grenade",
+      "gren_pre": 8,
+      "gren_used": null,
+      "land": 1070.0,
+      "outcome": "MISS",
+      "k": 0,
+      "side": 81.0
+     },
+     {
+      "f": 1081,
+      "rule": "truck_connect_grenade",
+      "gren_pre": 8,
+      "gren_used": null,
+      "land": 1111.0,
+      "outcome": "MISS",
+      "k": 1,
+      "side": -42.0
+     },
+     {
+      "f": 1122,
+      "rule": "truck_connect_grenade",
+      "gren_pre": 8,
+      "gren_used": null,
+      "land": 1152.0,
+      "outcome": "CONNECT",
+      "k": 1,
+      "side": -1.0,
+      "a4_f": 1153
+     }
+    ],
+    "a4": [
+     {
+      "f": 131,
+      "from": null,
+      "to": null,
+      "cls": "PAY"
+     },
+     {
+      "f": 203,
+      "from": null,
+      "to": null,
+      "cls": "PAY"
+     },
+     {
+      "f": 241,
+      "from": null,
+      "to": null,
+      "cls": "PAY"
+     },
+     {
+      "f": 299,
+      "from": null,
+      "to": null,
+      "cls": "PAY"
+     },
+     {
+      "f": 425,
+      "from": null,
+      "to": null,
+      "cls": "PAY"
+     },
+     {
+      "f": 475,
+      "from": null,
+      "to": null,
+      "cls": "PAY"
+     },
+     {
+      "f": 537,
+      "from": null,
+      "to": null,
+      "cls": "PAY"
+     },
+     {
+      "f": 989,
+      "from": null,
+      "to": null,
+      "cls": "CONNECT"
+     },
+     {
+      "f": 1153,
+      "from": null,
+      "to": null,
+      "cls": "CONNECT"
+     }
+    ],
+    "death": {
+     "f": 1318,
+     "ev": "DEATH",
+     "px": 1105.8,
+     "score": 1700,
+     "table": [
+      {
+       "slot": 4,
+       "st": "0x727c",
+       "x": 24.0,
+       "h": 60,
+       "a4": 0,
+       "sx": 65527,
+       "corpse": false
+      },
+      {
+       "slot": 6,
+       "st": "0x74c8",
+       "x": 776.0,
+       "h": 152,
+       "a4": 0,
+       "sx": 65440,
+       "corpse": false
+      },
+      {
+       "slot": 7,
+       "st": "0xb570",
+       "x": 264.0,
+       "h": 160,
+       "a4": 0,
+       "sx": 264,
+       "corpse": false
+      },
+      {
+       "slot": 10,
+       "st": "0x4be4",
+       "x": 664.0,
+       "h": 64,
+       "a4": 0,
+       "sx": 65503,
+       "corpse": true
+      },
+      {
+       "slot": 14,
+       "st": "0x9e88",
+       "x": 937.5,
+       "h": 64,
+       "a4": 100,
+       "sx": 65,
+       "corpse": false
+      },
+      {
+       "slot": 16,
+       "st": "0x180",
+       "x": 953.7,
+       "h": 75,
+       "a4": 0,
+       "sx": 81,
+       "corpse": false
+      },
+      {
+       "slot": 18,
+       "st": "0xabdc",
+       "x": 1040.7,
+       "h": 212,
+       "a4": 300,
+       "sx": 168,
+       "corpse": false
+      },
+      {
+       "slot": 20,
+       "st": "0x180",
+       "x": 924.5,
+       "h": 89,
+       "a4": 0,
+       "sx": 52,
+       "corpse": false
+      }
+     ]
+    },
+    "n_rows": 1325
+   }
+  ]
+ },
+ "r70": {
+  "stream": "v1.8.x_walk_hold",
+  "file": "r70/r70_phase_probe.jsonl",
+  "boots": [
+   {
+    "freeze_f": 811,
+    "throws": [
+     {
+      "f": 823,
+      "rule": "truck_width_probe",
+      "gren_pre": 10,
+      "gren_used": null,
+      "land": 853.0,
+      "outcome": "CHIP",
+      "k": -1,
+      "side": 28.0,
+      "a4_f": 855
+     }
+    ],
+    "a4": [
+     {
+      "f": 855,
+      "from": 300,
+      "to": 290,
+      "cls": "CHIP"
+     }
+    ],
+    "death": {
+     "f": 1076,
+     "ev": "DEATH",
+     "px": 1038.0,
+     "score": 1300,
+     "table": [
+      {
+       "slot": 4,
+       "st": "0x727c",
+       "x": 24.0,
+       "h": 60,
+       "a4": 0,
+       "sx": 65527,
+       "corpse": false
+      },
+      {
+       "slot": 6,
+       "st": "0x74c8",
+       "x": 776.0,
+       "h": 152,
+       "a4": 0,
+       "sx": 65440,
+       "corpse": false
+      },
+      {
+       "slot": 7,
+       "st": "0xb570",
+       "x": 264.0,
+       "h": 160,
+       "a4": 0,
+       "sx": 264,
+       "corpse": false
+      },
+      {
+       "slot": 10,
+       "st": "0x4be4",
+       "x": 664.0,
+       "h": 64,
+       "a4": 0,
+       "sx": 65503,
+       "corpse": true
+      },
+      {
+       "slot": 11,
+       "st": "0x4054",
+       "x": 1007.0,
+       "h": 64,
+       "a4": 0,
+       "sx": 135,
+       "corpse": false
+      },
+      {
+       "slot": 14,
+       "st": "0x9e88",
+       "x": 937.5,
+       "h": 64,
+       "a4": 290,
+       "sx": 65,
+       "corpse": false
+      },
+      {
+       "slot": 16,
+       "st": "0x4054",
+       "x": 995.0,
+       "h": 64,
+       "a4": 0,
+       "sx": 122,
+       "corpse": false
+      },
+      {
+       "slot": 23,
+       "st": "0x4054",
+       "x": 996.5,
+       "h": 64,
+       "a4": 0,
+       "sx": 124,
+       "corpse": false
+      }
+     ]
+    },
+    "n_rows": 1088
+   }
+  ]
+ },
+ "r71b3": {
+  "stream": "idle_hold",
+  "file": "r71/r71_chip_probe.jsonl",
+  "boots": [
+   {
+    "freeze_f": 1151,
+    "throws": [
+     {
+      "f": 1163,
+      "rule": "truck_width_probe",
+      "gren_pre": 10,
+      "gren_used": 1,
+      "land": 1193.0,
+      "outcome": "MISS",
+      "k": -1,
+      "side": 28.0
+     },
+     {
+      "f": 1299,
+      "rule": "truck_connect_grenade",
+      "gren_pre": 10,
+      "gren_used": 2,
+      "land": 1329.0,
+      "outcome": "MISS",
+      "k": 0,
+      "side": 0.0
+     },
+     {
+      "f": 1463,
+      "rule": "truck_connect_grenade",
+      "gren_pre": 10,
+      "gren_used": 3,
+      "land": 1493.0,
+      "outcome": "MISS",
+      "k": 1,
+      "side": 0.0
+     },
+     {
+      "f": 1628,
+      "rule": "truck_connect_grenade",
+      "gren_pre": 10,
+      "gren_used": 4,
+      "land": 1658.0,
+      "outcome": "CONNECT",
+      "k": 2,
+      "side": 1.0,
+      "a4_f": 1659
+     }
+    ],
+    "a4": [
+     {
+      "f": 1581,
+      "from": 300,
+      "to": 290,
+      "cls": "CHIP"
+     },
+     {
+      "f": 1647,
+      "from": 290,
+      "to": 280,
+      "cls": "CHIP"
+     },
+     {
+      "f": 1659,
+      "from": 280,
+      "to": 180,
+      "cls": "CONNECT"
+     },
+     {
+      "f": 1689,
+      "from": 180,
+      "to": 170,
+      "cls": "CHIP"
+     },
+     {
+      "f": 1717,
+      "from": 170,
+      "to": 160,
+      "cls": "CHIP"
+     }
+    ],
+    "death": {
+     "f": 1850,
+     "ev": "DEATH",
+     "px": 1071.0,
+     "score": 800,
+     "table": [
+      {
+       "slot": 7,
+       "st": "0xb570",
+       "x": 264.0,
+       "h": 160,
+       "a4": 0,
+       "sx": 264,
+       "corpse": false
+      },
+      {
+       "slot": 18,
+       "st": "0x727c",
+       "x": 24.0,
+       "h": 60,
+       "a4": 0,
+       "sx": 65524,
+       "corpse": false
+      },
+      {
+       "slot": 19,
+       "st": "0x4be4",
+       "x": 664.0,
+       "h": 64,
+       "a4": 0,
+       "sx": 65500,
+       "corpse": true
+      },
+      {
+       "slot": 21,
+       "st": "0x74c8",
+       "x": 776.0,
+       "h": 152,
+       "a4": 0,
+       "sx": 65440,
+       "corpse": false
+      },
+      {
+       "slot": 26,
+       "st": "0x9e88",
+       "x": 937.5,
+       "h": 64,
+       "a4": 160,
+       "sx": 65,
+       "corpse": false
+      },
+      {
+       "slot": 27,
+       "st": "0x4054",
+       "x": 1108.8,
+       "h": 64,
+       "a4": 0,
+       "sx": 236,
+       "corpse": false
+      }
+     ],
+     "boot": 3
+    },
+    "n_rows": 1885
+   }
+  ]
+ },
+ "r71b2": {
+  "stream": "chipfire",
+  "file": "r71/r71_chip_probe_boot2.jsonl",
+  "boots": [
+   {
+    "freeze_f": 1151,
+    "throws": [
+     {
+      "f": 1163,
+      "rule": "truck_width_probe",
+      "gren_pre": 10,
+      "gren_used": 1,
+      "land": 1193.0,
+      "outcome": "CHIP",
+      "k": -1,
+      "side": 28.0,
+      "a4_f": 1199
+     },
+     {
+      "f": 1299,
+      "rule": "truck_connect_grenade",
+      "gren_pre": 10,
+      "gren_used": 2,
+      "land": 1329.0,
+      "outcome": "CHIP",
+      "k": 0,
+      "side": 0.0,
+      "a4_f": 1335
+     }
+    ],
+    "a4": [
+     {
+      "f": 1173,
+      "from": 300,
+      "to": 290,
+      "cls": "CHIP"
+     },
+     {
+      "f": 1185,
+      "from": 290,
+      "to": 280,
+      "cls": "CHIP"
+     },
+     {
+      "f": 1199,
+      "from": 280,
+      "to": 270,
+      "cls": "CHIP"
+     },
+     {
+      "f": 1273,
+      "from": 270,
+      "to": 260,
+      "cls": "CHIP"
+     },
+     {
+      "f": 1299,
+      "from": 260,
+      "to": 250,
+      "cls": "CHIP"
+     },
+     {
+      "f": 1323,
+      "from": 250,
+      "to": 240,
+      "cls": "CHIP"
+     },
+     {
+      "f": 1335,
+      "from": 240,
+      "to": 230,
+      "cls": "CHIP"
+     },
+     {
+      "f": 1347,
+      "from": 230,
+      "to": 220,
+      "cls": "CHIP"
+     },
+     {
+      "f": 1373,
+      "from": 220,
+      "to": 210,
+      "cls": "CHIP"
+     },
+     {
+      "f": 1423,
+      "from": 210,
+      "to": 200,
+      "cls": "CHIP"
+     },
+     {
+      "f": 1477,
+      "from": 200,
+      "to": 190,
+      "cls": "CHIP"
+     },
+     {
+      "f": 1503,
+      "from": 190,
+      "to": 180,
+      "cls": "CHIP"
+     },
+     {
+      "f": 1529,
+      "from": 180,
+      "to": 170,
+      "cls": "CHIP"
+     }
+    ],
+    "death": {
+     "f": 1714,
+     "ev": "DEATH",
+     "px": 1105.8,
+     "score": 1800,
+     "table": [
+      {
+       "slot": 7,
+       "st": "0xb570",
+       "x": 264.0,
+       "h": 160,
+       "a4": 0,
+       "sx": 264,
+       "corpse": false
+      },
+      {
+       "slot": 13,
+       "st": "0xabdc",
+       "x": 1040.7,
+       "h": 212,
+       "a4": 300,
+       "sx": 168,
+       "corpse": false
+      },
+      {
+       "slot": 18,
+       "st": "0x727c",
+       "x": 24.0,
+       "h": 60,
+       "a4": 0,
+       "sx": 65524,
+       "corpse": false
+      },
+      {
+       "slot": 19,
+       "st": "0x4be4",
+       "x": 664.0,
+       "h": 64,
+       "a4": 0,
+       "sx": 65500,
+       "corpse": true
+      },
+      {
+       "slot": 21,
+       "st": "0x74c8",
+       "x": 776.0,
+       "h": 152,
+       "a4": 0,
+       "sx": 65440,
+       "corpse": false
+      },
+      {
+       "slot": 26,
+       "st": "0x9e88",
+       "x": 937.5,
+       "h": 64,
+       "a4": 170,
+       "sx": 65,
+       "corpse": false
+      }
+     ],
+     "boot": 2
+    },
+    "n_rows": 1760
+   }
+  ]
+ },
+ "r72b1": {
+  "stream": "idle_hold_hybrid",
+  "file": "r72/r72_hybrid_probe_boot1.jsonl",
+  "boots": [
+   {
+    "freeze_f": 1151,
+    "throws": [
+     {
+      "f": 1163,
+      "rule": "truck_width_probe",
+      "gren_pre": 10,
+      "gren_used": 1,
+      "land": 1193.0,
+      "outcome": "MISS",
+      "k": -1,
+      "side": 28.0
+     },
+     {
+      "f": 1297,
+      "rule": "truck_connect_grenade",
+      "gren_pre": null,
+      "gren_used": 2,
+      "land": 1327.0,
+      "outcome": "MISS",
+      "k": 0,
+      "side": -2.0
+     },
+     {
+      "f": 1297,
+      "rule": "truck_connect_grenade",
+      "gren_pre": 10,
+      "gren_used": 2,
+      "land": 1327.0,
+      "outcome": "MISS",
+      "k": 0,
+      "side": -2.0
+     },
+     {
+      "f": 1461,
+      "rule": "truck_connect_grenade",
+      "gren_pre": null,
+      "gren_used": 3,
+      "land": 1491.0,
+      "outcome": "MISS",
+      "k": 1,
+      "side": -2.0
+     },
+     {
+      "f": 1461,
+      "rule": "truck_connect_grenade",
+      "gren_pre": 10,
+      "gren_used": 3,
+      "land": 1491.0,
+      "outcome": "MISS",
+      "k": 1,
+      "side": -2.0
+     },
+     {
+      "f": 1626,
+      "rule": "truck_connect_grenade",
+      "gren_pre": null,
+      "gren_used": 4,
+      "land": 1656.0,
+      "outcome": "CONNECT",
+      "k": 2,
+      "side": -1.0,
+      "a4_f": 1657
+     },
+     {
+      "f": 1626,
+      "rule": "truck_connect_grenade",
+      "gren_pre": 10,
+      "gren_used": 4,
+      "land": 1656.0,
+      "outcome": "CONNECT",
+      "k": 2,
+      "side": -1.0,
+      "a4_f": 1657
+     }
+    ],
+    "a4": [
+     {
+      "f": 1581,
+      "from": 300,
+      "to": 290,
+      "cls": "CHIP"
+     },
+     {
+      "f": 1645,
+      "from": 290,
+      "to": 280,
+      "cls": "CHIP"
+     },
+     {
+      "f": 1657,
+      "from": 280,
+      "to": 180,
+      "cls": "CONNECT"
+     },
+     {
+      "f": 1709,
+      "from": 180,
+      "to": 170,
+      "cls": "CHIP"
+     }
+    ],
+    "death": {
+     "f": 1844,
+     "ev": "DEATH",
+     "px": 1071.0,
+     "score": 700,
+     "throws": [
+      {
+       "f": 1297,
+       "fight_f": 146,
+       "phase_k": 0,
+       "phase_off": null,
+       "grenades_used": 2
+      },
+      {
+       "f": 1461,
+       "fight_f": 310,
+       "phase_k": 1,
+       "phase_off": null,
+       "grenades_used": 3
+      },
+      {
+       "f": 1626,
+       "fight_f": 475,
+       "phase_k": 2,
+       "phase_off": null,
+       "grenades_used": 4
+      }
+     ],
+     "connects": [
+      {
+       "f": 1657,
+       "fight_f": 506,
+       "throw": {
+        "f": 1626,
+        "fight_f": 475,
+        "phase_k": 2,
+        "phase_off": null,
+        "grenades_used": 4
+       }
+      }
+     ],
+     "chips": 3,
+     "boot": 1
+    },
+    "n_rows": 1858
+   }
+  ]
+ }
+}

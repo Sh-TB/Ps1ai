@@ -95,9 +95,13 @@ def at_clock(fight_f, probe=True):
 
 class TestShippedDefault:
     def test_version_and_identity(self):
-        assert POLICY_VERSION == "2.0.0"
+        # re-anchored v2.0.0 -> v2.1.0 (R73): the rear-escort
+        # exemption ships; the hybrid gate itself is unchanged
+        # (the R72 calibration table: k=2 owns the connect on the
+        # idle-hold stream 4/4; the k=3 window was escort-held)
+        assert POLICY_VERSION == "2.1.0"
         ident = Mission1Policy().identity()
-        assert ident["truck_rules"] == "r72_volley_phase_hybrid"
+        assert ident["truck_rules"] == "r73_rear_escort_exemption"
 
     def test_arm_default_false(self):
         # THE R72 RE-SELECTION (the boot-3 one-variable evidence):
