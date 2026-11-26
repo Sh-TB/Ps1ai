@@ -1,0 +1,25 @@
+{
+ "round": "R76",
+ "boot": 4,
+ "route_f": null,
+ "freeze_f": 1151,
+ "n_tests": 45,
+ "survivors": [
+  "D01",
+  "D02",
+  "D03",
+  "D04",
+  "D05",
+  "D06",
+  "D07",
+  "D08",
+  "D09",
+  "D10",
+  "E01",
+  "E02",
+  "E03"
+ ],
+ "truck_kills": [],
+ "marcher_kills": {},
+ "wallclock_s": 21.8
+}
