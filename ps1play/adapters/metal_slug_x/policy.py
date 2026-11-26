@@ -355,6 +355,31 @@ product-path truck campaign; every rule is committed-evidence-backed):
           the section continues = THE STAGE PROGRESS.  The
           lives: 1UP=2 at the first death — the path needs
           <=2 deaths.
+
+  R78 (v2.5.0). THE DRIFT GUARD + THE FEED-CLEARING PAIRS (the
+      R77 boot decoded — the php word = px - 872.5 EXACTLY (a
+      position copy, never the health); the deaths = the
+      SCRIPTED PERIODIC EVENTS (~498f apart: 1884, 2382, ~3100),
+      input-independent, each followed by the PRESS-START
+      auto-continue respawn; the lives = the hard limit ~3):
+        * THE DRIFT GUARD: the policy's LEFT/BACK inputs at
+          px >= 1071 fight the section scroll and LOSE — the px
+          drifts to the ~1105 boundary and the death event
+          lands there (the r75b1/r77b1 walk-in deaths).  The
+          guard: any BACK decision at px >= 1071 becomes IDLE
+          (the hold — the A-block: the IDLE stands are stable);
+        * THE FEED-CLEARING PAIR MODE (the B07-9 PROVEN
+          pattern): when the truck line is BARRICADED (the
+          marchers between the player and the truck), the pair
+          runs: walk RIGHT to px ~1133 (the lob lands at
+          ~999.5 = the marcher stack) -> the lob -> walk LEFT
+          back to px <= 1073 -> the volley resumes (the
+          connects every 4th throw — the r74 "never lands"
+          analysis was a mod-40/mod-164 error: the cadence
+          cycle {95,136,13,54} returns to the grid window
+          every 4th throw);
+        * the death events are ACCEPTED (the respawn hands
+          back a loaded player; the handoff is v2.4.0's).
 """
 from __future__ import annotations
 
@@ -368,7 +393,7 @@ from ps1play.runtime.interfaces import (ActionDecision, GameObservation,
                                         Policy)
 
 POLICY_NAME = "msx_mission1_rules"
-POLICY_VERSION = "2.4.0"
+POLICY_VERSION = "2.5.2"
 
 # the hold band's inner edge (the R67 loop-probe lesson: holding at
 # dx 52 — point-blank in the truck gun's line — LOST the duel; the
@@ -584,6 +609,9 @@ class Mission1Policy(Policy):
         self._dead_f = 0              # v2.4.0: R77 the death frames
         self._respawned = False       # v2.4.0: R77 the respawn seen
         self._respawn_walk = False    # v2.4.0: the re-entry walk
+        self._pair_phase = 0          # v2.5.0: R78 0=idle 1=walk-out
+        self._barricade_f = 0         # v2.5.0: the blocked-corridor
+                                      #   persistence counter
         self._last_diag: Dict[str, Any] = {}
 
     # ---- Policy contract ----
@@ -634,6 +662,8 @@ class Mission1Policy(Policy):
         self._dead_f = 0
         self._respawned = False
         self._respawn_walk = False
+        self._pair_phase = 0
+        self._barricade_f = 0
 
     def identity(self) -> Dict[str, Any]:
         # the engine's record seam reads identity()["name"] and
@@ -648,7 +678,7 @@ class Mission1Policy(Policy):
                 "trained": False,
                 "kind": "built-in rules (no model, no training)",
                 "corridor_predicate": "r70_corridor_guard",
-                "truck_rules": "r77_respawn_kill_run"}
+                "truck_rules": "r80_wall_lob_facing"}
 
     def close(self) -> None:
         self._tel = None
@@ -793,6 +823,51 @@ class Mission1Policy(Policy):
                                        "px": px}
                     return "WALK"
                 self._respawn_walk = False
+            # R78 (v2.5.0): THE WALK-OUT VOLLEY (the barricade
+            # response — the B07-9 battery-proven pattern): the
+            # walked-out lobs BLAST-CATCH the marchers AND the
+            # truck (the blast radius >= 62px — the B09 connect at
+            # the land 62px short) — walk to px ~1130 (the lob
+            # lands ~999.5 = the marcher stack), then the ungated
+            # gre40 volley from there: the a4 drains (the connects)
+            # AND the feed dies (the +100s)
+            if self._pair_phase == 0:
+                blocked = any(dx_t < b[0] < 0.0 for b in ents
+                              if b[1] in MORTAL_CODES)
+                # the PERSISTENT barricade only (the r75b1: 520f of
+                # blocked corridor); the transient escorts are the
+                # T3's job — the arm threshold 200f
+                self._barricade_f = \
+                    (self._barricade_f + 1) if blocked else 0
+                if self._barricade_f > 200 and gren > 0:
+                    self._pair_phase = 1
+            if self._pair_phase == 1:
+                # R79: the lob AT THE WALL (px ~1105.8 = the right
+                # boundary — the walk-out target 1130 was UNREACHABLE
+                # and the lob never fired in the r78 boot); the
+                # wall-lob lands at ~972.3: the marchers at 27px +
+                # the truck at 35px — INSIDE the B09-proven blast
+                # radius (>=62px)
+                if px < 1103.0:
+                    self._facing = "R"
+                    self._last_diag = {"rule": "pair_walk_out",
+                                       "px": px}
+                    return "WALK"
+                self._last_diag = {"rule": "pair_volley",
+                                   "px": px, "gren": gren}
+                if self._gren_cd == 0 and gren > 0:
+                    # R80: THE FACING FIX — the lob arcs in the
+                    # FACING direction: the wall walk set facing R
+                    # (the r79 boot lobbed AWAY — the gren counter
+                    # never dropped); the truck + the marchers are
+                    # LEFT: face L
+                    self._facing = "L"
+                    self._gren_cd = TRUCK_GRENADE_CD
+                    self._truck_grenades_used += 1
+                    return "GRENADE"
+                if self._gren_cd > 0:
+                    self._gren_cd -= 1
+                return "IDLE"
             # P1 (cont., v1.8.0): THE PHASE GATE — hoisted above T3 in
             # v2.1.0 (pure arithmetic on the fight clock; the R73
             # rear-escort exemption gates on phase_open).  The lob

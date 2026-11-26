@@ -93,15 +93,15 @@ GRID_K0 = 148                    # the fight_f grid point (k=0)
 
 class TestConnectWindow:
     def test_version_and_identity(self):
-        assert POLICY_VERSION == "2.4.0"
+        assert POLICY_VERSION == "2.5.2"
         p = Mission1Policy()
         ident = p.identity()
-        assert ident["policy_version"] == "2.4.0"
+        assert ident["policy_version"] == "2.5.2"
         # v2.1.0 (R73): the rear-escort exemption ships (the
         # k=3 owned-window hold removed); the v2.0.0 hybrid gate
         # (the full +-2f tolerance + the idle-hold re-selection)
         # is unchanged; the corridor predicate stays the R70 guard
-        assert ident["truck_rules"] == "r77_respawn_kill_run"
+        assert ident["truck_rules"] == "r80_wall_lob_facing"
         # (re-anchored v2.2.0 -> v2.3.0, R75: the extended head
         # grid; the exemption + the hybrid gate unchanged)
         assert ident["corridor_predicate"] == "r70_corridor_guard"

@@ -479,7 +479,7 @@ class TestV181Corrections:
         # v2.2.0 (R74): THE STREAM HANDOFF on top of the v2.1.0
         # exemption (the volley head = the verbatim r69b schedule;
         # the hold tail = the full +-2f gate + the exemption)
-        assert POLICY_VERSION == "2.4.0"
+        assert POLICY_VERSION == "2.5.2"
 
     def test_c5_sc6_walker_outranks_lob(self):
         # C5 (the r70 boot-2 evidence): a chaser in a WALK state

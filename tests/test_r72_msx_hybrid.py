@@ -100,9 +100,9 @@ class TestShippedDefault:
         # then the stream handoff; the hybrid gate itself is
         # unchanged (the R72 calibration table: k=2 owns the
         # connect on the idle-hold stream 4/4)
-        assert POLICY_VERSION == "2.4.0"
+        assert POLICY_VERSION == "2.5.2"
         ident = Mission1Policy().identity()
-        assert ident["truck_rules"] == "r77_respawn_kill_run"
+        assert ident["truck_rules"] == "r80_wall_lob_facing"
 
     def test_arm_default_false(self):
         # THE R72 RE-SELECTION (the boot-3 one-variable evidence):
