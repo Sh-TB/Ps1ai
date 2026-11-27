@@ -1,0 +1,25 @@
+{
+ "cap": 3,
+ "count": 3,
+ "log": [
+  {
+   "n": 1,
+   "ts": "2026-11-27T05:53:10Z",
+   "script": "r84_calibrated_probe.py",
+   "reason": "BOOT the v2.1.0 rear-escort exemption probe (the shipped default; the k=3 owned window is the new evidence target)"
+  },
+  {
+   "n": 2,
+   "ts": "2026-11-27T05:55:44Z",
+   "script": "r84_calibrated_probe.py",
+   "reason": "BOOT the v2.1.0 rear-escort exemption probe (the shipped default; the k=3 owned window is the new evidence target)"
+  },
+  {
+   "n": 3,
+   "ts": "2026-11-27T05:58:56Z",
+   "script": "r84_calibrated_probe.py",
+   "reason": "BOOT the v2.1.0 rear-escort exemption probe (the shipped default; the k=3 owned window is the new evidence target)"
+  }
+ ],
+ "disclosed": "R74 product track: boot 1 = the v2.2.0 STREAM HANDOFF kill attempt (the shipped default: the volley head = the verbatim r69b schedule fight_f 64/106/147/188/229/270/311; the clock handoff at fight_f 350; the idle-hold tail v2.1.0 verbatim); boots 2-3 = the correction cycle.  Read-only product-loop probes: legal inputs only, zero RAM writes, no training, no runtime LLM."
+}

@@ -1,0 +1,10 @@
+{"ts": 1795758162.407659, "event": "TRACE_OPEN", "pid": 1281}
+{"ts": 1795758162.415518, "event": "TRACE_CLOSE"}
+{"ts": 1795758283.2061496, "event": "TRACE_OPEN", "pid": 1361}
+{"ts": 1795758283.2100189, "event": "TRACE_CLOSE"}
+{"ts": 1795758346.995016, "event": "TRACE_OPEN", "pid": 1439}
+{"ts": 1795758346.9997444, "event": "TRACE_CLOSE"}
+{"ts": 1795758802.1368241, "event": "TRACE_OPEN", "pid": 1670}
+{"ts": 1795758802.1407201, "event": "TRACE_CLOSE"}
+{"ts": 1795759830.2230265, "event": "TRACE_OPEN", "pid": 1974}
+{"ts": 1795759830.2266994, "event": "TRACE_CLOSE"}

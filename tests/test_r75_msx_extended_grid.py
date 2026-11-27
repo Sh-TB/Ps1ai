@@ -73,9 +73,9 @@ def fresh(fight_f, facing="L"):
 
 class TestExtendedGrid:
     def test_version_and_identity(self):
-        assert POLICY_VERSION == "2.5.2"
+        assert POLICY_VERSION == "2.6.1"
         ident = Mission1Policy().identity()
-        assert ident["truck_rules"] == "r80_wall_lob_facing"
+        assert ident["truck_rules"] == "r82_chipfire_kill"
 
     def test_extension_frames_on_the_head_grid(self):
         # the 393/557 throws land EXACTLY on the head's 259-grid

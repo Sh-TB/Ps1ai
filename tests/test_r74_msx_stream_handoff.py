@@ -93,9 +93,9 @@ def fresh(fight_f, facing="L"):
 class TestShippedHandoff:
     def test_version_and_identity(self):
         # re-anchored v2.2.0 -> v2.3.0 (R75): the head grid extends
-        assert POLICY_VERSION == "2.5.2"
+        assert POLICY_VERSION == "2.6.1"
         ident = Mission1Policy().identity()
-        assert ident["truck_rules"] == "r80_wall_lob_facing"
+        assert ident["truck_rules"] == "r82_chipfire_kill"
 
     def test_constants_match_the_r69b_evidence(self):
         # the schedule = the committed r69b grenade frames on the

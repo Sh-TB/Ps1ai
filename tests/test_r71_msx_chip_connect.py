@@ -115,7 +115,7 @@ class TestK1ChipFire:
         # v2.3.0 (R75): the extended head grid ships; the K1 arm
         # stays patchable (this suite runs with the patch True,
         # on the hold stream — the K1 semantics preserved)
-        assert POLICY_VERSION == "2.5.2"
+        assert POLICY_VERSION == "2.6.1"
 
     def test_chip_fire_during_cooldown_clear_corridor(self):
         # the grenade on cooldown, the corridor clear: the aimed

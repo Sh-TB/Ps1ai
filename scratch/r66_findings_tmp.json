@@ -1,0 +1,26 @@
+{
+ "round": "R66",
+ "starvation_root_cause": "ROOT CAUSE (OBSERVED, n=13+13 skips): the R50/R51 corridor predicate counted EVERY live entity between player and target as a blocker. The dumps show the top blockers are non-absorbing, non-paying classes: in-flight projectile_air entities (0xbdf8/0x1be0/0x2950/0x9558/0xac64) and the bullet-TRANSPARENT 0xab94 wasp (n=4 piercing evidence, R50/R51). The player also never advanced in pass A (a single px value across all skips). The starvation is a PROTOCOL-PREDICATE defect in the MSX workstream, NOT an observer defect and NOT a runtime defect.",
+ "gate_fix": "the corrected corridor predicate (blockers must absorb the bullet or register the payment) \u2014 TESTED in-game; it produced the +500 capture",
+ "magnitude_table": {
+  "plus500_n": 4,
+  "plus1000_n": 7
+ },
+ "pay_frame_law": "OBSERVED (n=1 vs n=2 this round, consistent with the R48-R52 mid-window pays): the +500 paid at tail f1 (bullet-impact frame, victim still pre-hit) while the +1000s paid at tail f3/f4. The payout PRECEDES the victim's visible 0x5b0c registration by ~2 frames in every capture: the score accumulator pays on the internal damage event, not on the death state. The registration witness is the slot12@0xa0 pulse.",
+ "discriminator_status": "OBSERVED (n=1 vs n=4): 21 union-net offsets separate the +500 pay-frame vector from all four banked +1000 vectors with zero overlap \u2014 but the +500 capture is a different entity/state class (one-hit 0x1e38 kill vs wound-recovery connects), so identity words dominate. The +500 class has exactly ONE pay-frame capture; the discriminator stays PENDING until n>=2 +500 captures exist. What IS established: the +500 capture exists at pay-frame granularity, the +500 class is NOT confined to surviving 0x42bc connects (R66: a one-bullet kill paid +500), and the +1000 class reproduced (2 more).",
+ "product_path": {
+  "command": "python3 -m ps1play play metal_slug_x --episodes 2 --max-frames 10000 --verbose --screenshot --output data/r66",
+  "determinism": "BYTE-IDENTICAL outcome metrics across two independent product-path runs (same frames, scores, action counts)",
+  "milestone": {
+   "status": "OBSERVED",
+   "furthest_px_product_path": 1164.0,
+   "note": "the R65 baseline had NO product path for MSX at all; R66 adds the fourth registered runtime game. The furthest clean-product-path milestone is the truck encounter zone (px ~1164); the experiment frontiers (px 1224.9/1254.8, 6 continue-rescues) are TAINTED-lineage postures and are labeled as such, never a clean claim. Mission 1 NOT cleared."
+  }
+ },
+ "evidence_refs": [
+  "data/games/SLUS-01212/truck_evidence/r66/r66_analysis.json",
+  "data/games/SLUS-01212/truck_evidence/r66/r66_product_run.json",
+  "data/games/SLUS-01212/truck_evidence/r66/r66_boot3_s2a.jsonl",
+  "data/games/SLUS-01212/truck_evidence/r66/r66_boot4_s2b.jsonl"
+ ]
+}

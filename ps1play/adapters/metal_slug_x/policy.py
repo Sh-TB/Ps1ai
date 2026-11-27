@@ -393,7 +393,7 @@ from ps1play.runtime.interfaces import (ActionDecision, GameObservation,
                                         Policy)
 
 POLICY_NAME = "msx_mission1_rules"
-POLICY_VERSION = "2.5.2"
+POLICY_VERSION = "2.6.1"
 
 # the hold band's inner edge (the R67 loop-probe lesson: holding at
 # dx 52 — point-blank in the truck gun's line — LOST the duel; the
@@ -606,6 +606,7 @@ class Mission1Policy(Policy):
         self._width_probed = 0        # v1.8.1: C4 the width probe
         self._stream = "volley"       # v2.2.0: R74 the stream handoff
         self._handoff_f = None        # v2.2.0: the switch frame
+        self._prev_act = None         # v2.6.0: R81 the previous action
         self._dead_f = 0              # v2.4.0: R77 the death frames
         self._respawned = False       # v2.4.0: R77 the respawn seen
         self._respawn_walk = False    # v2.4.0: the re-entry walk
@@ -678,7 +679,7 @@ class Mission1Policy(Policy):
                 "trained": False,
                 "kind": "built-in rules (no model, no training)",
                 "corridor_predicate": "r70_corridor_guard",
-                "truck_rules": "r80_wall_lob_facing"}
+                "truck_rules": "r82_chipfire_kill"}
 
     def close(self) -> None:
         self._tel = None
@@ -823,51 +824,16 @@ class Mission1Policy(Policy):
                                        "px": px}
                     return "WALK"
                 self._respawn_walk = False
-            # R78 (v2.5.0): THE WALK-OUT VOLLEY (the barricade
-            # response — the B07-9 battery-proven pattern): the
-            # walked-out lobs BLAST-CATCH the marchers AND the
-            # truck (the blast radius >= 62px — the B09 connect at
-            # the land 62px short) — walk to px ~1130 (the lob
-            # lands ~999.5 = the marcher stack), then the ungated
-            # gre40 volley from there: the a4 drains (the connects)
-            # AND the feed dies (the +100s)
-            if self._pair_phase == 0:
-                blocked = any(dx_t < b[0] < 0.0 for b in ents
-                              if b[1] in MORTAL_CODES)
-                # the PERSISTENT barricade only (the r75b1: 520f of
-                # blocked corridor); the transient escorts are the
-                # T3's job — the arm threshold 200f
-                self._barricade_f = \
-                    (self._barricade_f + 1) if blocked else 0
-                if self._barricade_f > 200 and gren > 0:
-                    self._pair_phase = 1
-            if self._pair_phase == 1:
-                # R79: the lob AT THE WALL (px ~1105.8 = the right
-                # boundary — the walk-out target 1130 was UNREACHABLE
-                # and the lob never fired in the r78 boot); the
-                # wall-lob lands at ~972.3: the marchers at 27px +
-                # the truck at 35px — INSIDE the B09-proven blast
-                # radius (>=62px)
-                if px < 1103.0:
-                    self._facing = "R"
-                    self._last_diag = {"rule": "pair_walk_out",
-                                       "px": px}
-                    return "WALK"
-                self._last_diag = {"rule": "pair_volley",
-                                   "px": px, "gren": gren}
-                if self._gren_cd == 0 and gren > 0:
-                    # R80: THE FACING FIX — the lob arcs in the
-                    # FACING direction: the wall walk set facing R
-                    # (the r79 boot lobbed AWAY — the gren counter
-                    # never dropped); the truck + the marchers are
-                    # LEFT: face L
-                    self._facing = "L"
-                    self._gren_cd = TRUCK_GRENADE_CD
-                    self._truck_grenades_used += 1
-                    return "GRENADE"
-                if self._gren_cd > 0:
-                    self._gren_cd -= 1
-                return "IDLE"
+            # R82/R84: the chip-fire moved BELOW the phase calc —
+            # the schedule throws own their windows (the r72b1
+            # law), the bullets fill the gaps
+
+            # R81 (v2.6.x): the pair mode REMOVED — the landing map
+            # falsified the walk-out volley (the w>=5 lobs do
+            # nothing; the landing barely moves with the thrower);
+            # the kill goes through the CHIP-FIRE (the r82/r83
+            # boots: 13 chips 130->0 = the deterministic kill)
+
             # P1 (cont., v1.8.0): THE PHASE GATE — hoisted above T3 in
             # v2.1.0 (pure arithmetic on the fight clock; the R73
             # rear-escort exemption gates on phase_open).  The lob
@@ -916,10 +882,21 @@ class Mission1Policy(Policy):
                                        "escort_dx": soldier[0]}
                     return mv
                 if self._fire_cd == 0:
-                    self._fire_cd = FIRE_COOLDOWN
+                    # R84: the ENDGAME CADENCE — at the fight_f >= 500
+                    # (or post-respawn) the aimed fire runs at the
+                    # 13f cadence (the R71 chip law: 13 chips x 13f =
+                    # 169f -> the kill ~1845 BEFORE the scripted
+                    # death #1 at 1884 -> the CLEAN resolve -> the
+                    # m2_gate); the bullets pierce the marchers (the
+                    # R51 law) so the escort hold loses nothing
+                    self._fire_cd = FIRE_COOLDOWN if not (
+                        self._respawned or
+                        self._truck_fight_f >= 500) else 13
                     self._last_diag = {"rule": "truck_escort_first",
                                        "target_dx": round(soldier[0], 1),
-                                       "target_sc": soldier[1]}
+                                       "target_sc": soldier[1],
+                                       "endgame": self._truck_fight_f
+                                           >= 500}
                     return "FIRE"
             # T7 REMOVED in v1.6.0 (the R68 probe correction): the
             # budget-spent blast retreat stood DOWN the fight while
@@ -1004,6 +981,28 @@ class Mission1Policy(Policy):
                                    "gren_cd": self._gren_cd}
                 return "IDLE"
 
+            # R82/R84: THE CHIP-FIRE — after the phase calc and the
+            # escort handling: the schedule windows OWN their frames
+            # (the r72b1 law), the escort-first law keeps precedence
+            # (the D7/R49), the corridor guard does NOT gate the
+            # bullets (the pierce = the chips, the R51 law; the R71
+            # measured 13 chips by the aimed fire).  R84: armed
+            # PRE-DEATH too (the fight_f >= 500 arm: the r84 boot-1
+            # armed at 550 and MISSED the kill by 6f — 13 chips x
+            # 13f = 169f landed at ~1890 vs the death at 1884; the
+            # 500 arm starts ~f1650 -> the kill ~1845 -> the CLEAN
+            # resolve -> the m2_gate)
+            if (self._respawned or self._truck_fight_f >= 500) \
+                    and soldier is None and not phase_open \
+                    and self._truck_fight_f not in TRUCK_VOLLEY_SCHEDULE:
+                if self._fire_cd > 0:
+                    self._fire_cd -= 1
+                elif truck_any is not None:
+                    self._last_diag = {"rule": "respawn_chip_fire",
+                                       "px": px,
+                                       "respawned": self._respawned}
+                    self._fire_cd = 13
+                    return "FIRE"
             if throw_win and soldier is None and corridor_ok \
                     and gren > 0:
                 if self._fire_cd > 0:
@@ -1023,10 +1022,13 @@ class Mission1Policy(Policy):
                 throw_now = phase_open or (
                     self._stream == "volley" and
                     self._truck_fight_f in TRUCK_VOLLEY_SCHEDULE)
-                # R77: THE VOLLEY MODE — post-respawn the throws
-                # run UNGATED (the gre40 cadence; the r69b volume
-                # law: 2/7 connects — the respawned stream's phase
-                # is unknown, the volume explores it)
+                # R81/R84: the volley — post-respawn only (the
+                # respawn walk-back hands the player back
+                # RIGHT-facing; the M02 law rides free); the
+                # pre-death streams stay byte-gated (the r69-r75
+                # laws) — the R84 kill goes through the CHIP-FIRE
+                # above, not the lobs (the M02 law is
+                # savestate-scoped)
                 if not throw_now and self._respawned:
                     throw_now = self._gren_cd == 0
                 if not throw_now:
@@ -1069,6 +1071,13 @@ class Mission1Policy(Policy):
                     self._last_diag = {"rule": "truck_turn",
                                        "truck_dx": round(dx_t, 1)}
                     return mv
+                # R81: the pre-lob tap (the volley mode only) —
+                # the R-facing set on the adjacent frame
+                if self._respawned and self._prev_act != "WALK":
+                    self._prev_act = "WALK"
+                    self._last_diag = {"rule": "prelob_tap",
+                                       "px": px}
+                    return "WALK"
                 self._gren_cd = TRUCK_GRENADE_CD
                 self._phase_last_k = phase_k
                 self._truck_grenades_used += 1
@@ -1078,8 +1087,10 @@ class Mission1Policy(Policy):
                                    "fight_f": self._truck_fight_f,
                                    "phase_k": phase_k,
                                    "stream": self._stream,
+                                   "facing": "R",
                                    "grenades_used":
                                        self._truck_grenades_used}
+                self._prev_act = "GRENADE"
                 return "GRENADE"
             # C1 (cont.): INSIDE the hold regime (|dx| <= 140) but
             # not lobbing (no grenades / escort uncleared / below

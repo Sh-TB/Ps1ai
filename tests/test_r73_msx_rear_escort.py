@@ -101,9 +101,9 @@ class TestShippedRule:
     def test_version_and_identity(self):
         # re-anchored -> v2.3.0 (R75): the extended head grid
         # ships; the exemption itself is unchanged (the tail rule)
-        assert POLICY_VERSION == "2.5.2"
+        assert POLICY_VERSION == "2.6.1"
         ident = Mission1Policy().identity()
-        assert ident["truck_rules"] == "r80_wall_lob_facing"
+        assert ident["truck_rules"] == "r82_chipfire_kill"
 
     def test_r72b1_blocked_window_now_throws(self):
         # THE R72b1 REPRODUCTION: fight_f 638 (the k=3 window open,

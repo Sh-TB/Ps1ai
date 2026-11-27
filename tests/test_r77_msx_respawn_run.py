@@ -77,9 +77,9 @@ def fresh(px=1071.0, facing="L", fight_f=100):
 
 class TestRespawnRun:
     def test_version_and_identity(self):
-        assert POLICY_VERSION == "2.5.2"
+        assert POLICY_VERSION == "2.6.1"
         ident = Mission1Policy().identity()
-        assert ident["truck_rules"] == "r80_wall_lob_facing"
+        assert ident["truck_rules"] == "r82_chipfire_kill"
 
     def test_death_counts_frames(self):
         p = fresh()
@@ -129,12 +129,17 @@ class TestRespawnRun:
         p._respawned = True
         p._respawn_walk = False
         p._truck_fight_f = 59          # off-schedule, off-grid
+        # R82/R84: the chip-fire FIRST post-respawn (the kill path:
+        # the bullets pierce the marchers, the r82/r83 boots killed
+        # the truck with 13 chips; the volley lobs never connect
+        # in-boot — the M02 law is savestate-scoped)
         a, diag = decide(p, gren=10, ents=[TRUCK_L])
-        assert a == "GRENADE", (a, diag)
-        assert p._gren_cd == 40
-        # the cadence: the next frame holds (the cooldown)
+        assert a == "FIRE" and diag["rule"] == "respawn_chip_fire", \
+            (a, diag)
+        assert p._fire_cd == 13
+        # the cadence: the next frames hold (the cooldown)
         a, diag = decide(p, gren=10, ents=[TRUCK_L])
-        assert a != "GRENADE"
+        assert a != "FIRE"
 
     def test_no_volley_without_respawn(self):
         # the pre-respawn stream unchanged: the off-schedule
