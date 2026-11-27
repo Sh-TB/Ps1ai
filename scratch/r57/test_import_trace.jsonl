@@ -8,3 +8,9 @@
 {"ts": 1795758802.1407201, "event": "TRACE_CLOSE"}
 {"ts": 1795759830.2230265, "event": "TRACE_OPEN", "pid": 1974}
 {"ts": 1795759830.2266994, "event": "TRACE_CLOSE"}
+{"ts": 1795760165.1316214, "event": "TRACE_OPEN", "pid": 2148}
+{"ts": 1795760165.1355724, "event": "TRACE_CLOSE"}
+{"ts": 1795760228.4138486, "event": "TRACE_OPEN", "pid": 2226}
+{"ts": 1795760228.4179945, "event": "TRACE_CLOSE"}
+{"ts": 1795760467.2964454, "event": "TRACE_OPEN", "pid": 2361}
+{"ts": 1795760467.3008256, "event": "TRACE_CLOSE"}

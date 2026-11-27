@@ -13,3 +13,12 @@
 {"ts": 1795759830.1313837, "event": "TRACE_OPEN", "pid": 1972}
 {"ts": 1795759830.1314304, "event": "BLOCKED_IMPORT", "module": "ps1play.learn.teacher"}
 {"ts": 1795759830.1314497, "event": "TRACE_CLOSE"}
+{"ts": 1795760165.0323267, "event": "TRACE_OPEN", "pid": 2146}
+{"ts": 1795760165.0323796, "event": "BLOCKED_IMPORT", "module": "ps1play.learn.teacher"}
+{"ts": 1795760165.0324, "event": "TRACE_CLOSE"}
+{"ts": 1795760228.3166897, "event": "TRACE_OPEN", "pid": 2224}
+{"ts": 1795760228.316743, "event": "BLOCKED_IMPORT", "module": "ps1play.learn.teacher"}
+{"ts": 1795760228.316764, "event": "TRACE_CLOSE"}
+{"ts": 1795760467.159572, "event": "TRACE_OPEN", "pid": 2359}
+{"ts": 1795760467.1596239, "event": "BLOCKED_IMPORT", "module": "ps1play.learn.teacher"}
+{"ts": 1795760467.15965, "event": "TRACE_CLOSE"}
